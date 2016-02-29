@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace DataStructure
 {
     [Serializable]
-    public class IndexConclusion
+    public class IndexConclusion : Conclusion
     {
         public override string ToString()
         {

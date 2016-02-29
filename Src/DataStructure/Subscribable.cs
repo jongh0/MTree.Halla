@@ -10,7 +10,7 @@ namespace DataStructure
 {
     [BsonDiscriminator(RootClass = true)]
     [Serializable]
-    public class ISubscribable
+    public class Subscribable
     {
         [BsonId]
         public ObjectId Id { get; set; }
@@ -20,8 +20,8 @@ namespace DataStructure
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"Id: {Id}");
-            sb.AppendLine($"Code: {Code}");
+            sb.AppendLine($"{nameof(Id)}: {Id}");
+            sb.AppendLine($"{nameof(Code)}: {Code}");
 
             return sb.ToString();
         }

@@ -9,7 +9,7 @@ using Configuration;
 namespace DataStructure
 {
     [Serializable]
-    public class BiddingPrice : ISubscribable
+    public class BiddingPrice : Subscribable
     {
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime Time { get; set; }
@@ -22,7 +22,7 @@ namespace DataStructure
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(base.ToString());
-            sb.AppendLine($"Time: {Time.ToString(Config.Default.DateTimeFormat)}");
+            sb.AppendLine($"{nameof(Time)}: {Time.ToString(Config.Default.DateTimeFormat)}");
 
             if (Bids != null)
             {

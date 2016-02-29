@@ -1,4 +1,4 @@
-﻿namespace EbestProvider
+﻿namespace KrxProvider
 {
     partial class Form1
     {
@@ -36,7 +36,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 261);
             this.Name = "Form1";
-            this.Text = "EbestProvider";
+            this.Text = "KrxProvider";
             this.ResumeLayout(false);
 
         }

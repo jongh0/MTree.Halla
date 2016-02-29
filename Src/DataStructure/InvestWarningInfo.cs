@@ -8,17 +8,19 @@ using System.Threading.Tasks;
 namespace DataStructure
 {
     [Serializable]
-    public class InvestWarning
+    public class InvestWarningInfo
     {
         /// <summary>
         /// 지정유무
         /// </summary>
+        [BsonElement("IDe")]
         public bool IsDesignated { get; set; }
 
         /// <summary>
         /// 공시일
         /// </summary>
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
+        [BsonElement("Disc")]
         public DateTime Disclosure { get; set; }
 
         /// <summary>
@@ -36,11 +38,10 @@ namespace DataStructure
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"IsDesignated: {IsDesignated}");
-            sb.AppendLine($"Disclosure: {Disclosure.ToShortDateString()}");
-            sb.AppendLine($"Start: {Start.ToShortDateString()}");
-            sb.AppendLine($"End: {End.ToShortDateString()}");
-
+            sb.AppendLine($"{nameof(IsDesignated)}: {IsDesignated}");
+            sb.AppendLine($"{nameof(Disclosure)}: {Disclosure.ToShortDateString()}");
+            sb.AppendLine($"{nameof(Start)}: {Start.ToShortDateString()}");
+            sb.AppendLine($"{nameof(End)}: {End.ToShortDateString()}");
 
             return sb.ToString();
         }

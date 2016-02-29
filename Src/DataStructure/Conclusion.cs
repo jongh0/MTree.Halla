@@ -20,25 +20,29 @@ namespace DataStructure
     #endregion
 
     [Serializable]
-    public class IConclusion : ISubscribable
+    public class Conclusion : Subscribable
     {
+        [BsonElement("Amt")]
         long Amount { get; set; }
 
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
+        [BsonElement("CTi")]
         DateTime ConcludedTime { get; set; }
 
+        [BsonElement("MTTy")]
         MarketTimeType MarketTimeType { get; set; }
 
+        [BsonElement("Prc")]
         float Price { get; set; }
 
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(base.ToString());
-            sb.AppendLine($"Amount: {Amount}");
-            sb.AppendLine($"ConcludedTime: {ConcludedTime.ToString(Config.Default.DateTimeFormat)}");
-            sb.AppendLine($"MarketTimeType: {MarketTimeType}");
-            sb.AppendLine($"Price: {Price}");
+            sb.AppendLine($"{nameof(Amount)}: {Amount}");
+            sb.AppendLine($"{nameof(ConcludedTime)}: {ConcludedTime.ToString(Config.Default.DateTimeFormat)}");
+            sb.AppendLine($"{nameof(MarketTimeType)}: {MarketTimeType}");
+            sb.AppendLine($"{nameof(Price)}: {Price}");
 
             return sb.ToString();
         }

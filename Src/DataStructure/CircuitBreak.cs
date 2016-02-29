@@ -18,25 +18,29 @@ namespace DataStructure
     #endregion
 
     [Serializable]
-    public class CircuitBreak : ISubscribable
+    public class CircuitBreak : Subscribable
     {
+        [BsonElement("CBSt")]
         public CircuitBreakType CircuitBreakState { get; set; }
 
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
+        [BsonElement("ETi")]
         public DateTime EventTime { get; set; }
 
+        [BsonElement("BPr")]
         public float BasePrice { get; set; }
 
+        [BsonElement("IPr")]
         public float InvokePrice { get; set; }
 
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(base.ToString());
-            sb.AppendLine($"CircuitBreakState: {CircuitBreakState}");
-            sb.AppendLine($"EventTime: {EventTime.ToString(Config.Default.DateTimeFormat)}");
-            sb.AppendLine($"BasePrice: {BasePrice}");
-            sb.AppendLine($"InvokePrice: {InvokePrice}");
+            sb.AppendLine($"{nameof(CircuitBreakState)}: {CircuitBreakState}");
+            sb.AppendLine($"{nameof(EventTime)}: {EventTime.ToString(Config.Default.DateTimeFormat)}");
+            sb.AppendLine($"{nameof(BasePrice)}: {BasePrice}");
+            sb.AppendLine($"{nameof(InvokePrice)}: {InvokePrice}");
 
             return sb.ToString();
         }

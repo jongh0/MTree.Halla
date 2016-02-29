@@ -60,10 +60,10 @@
     <Compile Include="BiddingPrice.cs" />
     <Compile Include="BiddingPriceEntity.cs" />
     <Compile Include="CircuitBreak.cs" />
-    <Compile Include="IConclusion.cs" />
+    <Compile Include="Conclusion.cs" />
     <Compile Include="IndexConclusion.cs" />
-    <Compile Include="InvestWarning.cs" />
-    <Compile Include="ISubscribable.cs" />
+    <Compile Include="InvestWarningInfo.cs" />
+    <Compile Include="Subscribable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StockConclusion.cs" />
     <Compile Include="StockMaster.cs" />
@@ -77,6 +77,10 @@
     <ProjectReference Include="..\Configuration\Configuration.csproj">
       <Project>{e0cbcca9-8a3c-4bdd-a251-52f424cff52b}</Project>
       <Name>Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Utility\Utility.csproj">
+      <Project>{8f050846-3606-4544-9476-f25d17a0147d}</Project>
+      <Name>Utility</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

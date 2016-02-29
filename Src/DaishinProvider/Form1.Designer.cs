@@ -36,7 +36,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 261);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "DaishinProvider";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
 
