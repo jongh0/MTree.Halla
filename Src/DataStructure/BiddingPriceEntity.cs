@@ -21,7 +21,7 @@ namespace DataStructure
 
         public override string ToString()
         {
-            return $"{nameof(Index)}: {Index}, {nameof(Price)}: {Price}, {nameof(Amount)}: {Amount}";
+            return $"{Index}, {Price}, {Amount}";
         }
     }
 }

@@ -62,7 +62,7 @@
     <Compile Include="CircuitBreak.cs" />
     <Compile Include="Conclusion.cs" />
     <Compile Include="IndexConclusion.cs" />
-    <Compile Include="InvestWarningInfo.cs" />
+    <Compile Include="InvestWarningEntity.cs" />
     <Compile Include="Subscribable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StockConclusion.cs" />

@@ -38,7 +38,7 @@ namespace DataStructure
             StringBuilder sb = new StringBuilder();
             sb.Append(base.ToString());
             sb.AppendLine($"{nameof(CircuitBreakState)}: {CircuitBreakState}");
-            sb.AppendLine($"{nameof(EventTime)}: {EventTime.ToString(Config.Default.DateTimeFormat)}");
+            sb.AppendLine($"{nameof(EventTime)}: {EventTime}");
             sb.AppendLine($"{nameof(BasePrice)}: {BasePrice}");
             sb.AppendLine($"{nameof(InvokePrice)}: {InvokePrice}");
 

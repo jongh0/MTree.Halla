@@ -167,55 +167,55 @@ namespace DataStructure
         /// 매매정지(KRX)
         /// </summary>
         [BsonElement("THa")]
-        public InvestWarningInfo TradingHalt { get; set; }
+        public InvestWarningEntity TradingHalt { get; set; }
 
         /// <summary>
         /// 관리(KRX)
         /// </summary>
         [BsonElement("AIs")]
-        public InvestWarningInfo AdministrativeIssue { get; set; }
+        public InvestWarningEntity AdministrativeIssue { get; set; }
 
         /// <summary>
         /// 주의(KRX)
         /// </summary>
         [BsonElement("ICa")]
-        public InvestWarningInfo InvestCaution { get; set; }
+        public InvestWarningEntity InvestCaution { get; set; }
 
         /// <summary>
         /// 경고(KRX)
         /// </summary>
         [BsonElement("IWa")]
-        public InvestWarningInfo InvestWarning { get; set; }
+        public InvestWarningEntity InvestWarning { get; set; }
 
         /// <summary>
         /// 위험(KRX)
         /// </summary>
         [BsonElement("IRi")]
-        public InvestWarningInfo InvestmentRisk { get; set; }
+        public InvestWarningEntity InvestmentRisk { get; set; }
 
         /// <summary>
         /// 불성실공시(KRX)
         /// </summary>
         [BsonElement("UAn")]
-        public InvestWarningInfo UnfairAnnouncement { get; set; }
+        public InvestWarningEntity UnfairAnnouncement { get; set; }
 
         /// <summary>
         /// 주의환기(KRX)
         /// </summary>
         [BsonElement("CAt")]
-        public InvestWarningInfo CallingAttention { get; set; }
+        public InvestWarningEntity CallingAttention { get; set; }
 
         /// <summary>
         /// Overheated(KRX)
         /// </summary>
         [BsonElement("CTr")]
-        public InvestWarningInfo CleaningTrade { get; set; }
+        public InvestWarningEntity CleaningTrade { get; set; }
 
         /// <summary>
         /// 단기과열(KRX)
         /// </summary>
         [BsonElement("Ovh")]
-        public InvestWarningInfo Overheated { get; set; }
+        public InvestWarningEntity Overheated { get; set; }
 
         /// <summary>
         /// 자산(Naver)

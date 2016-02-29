@@ -40,7 +40,7 @@ namespace DataStructure
             StringBuilder sb = new StringBuilder();
             sb.Append(base.ToString());
             sb.AppendLine($"{nameof(Amount)}: {Amount}");
-            sb.AppendLine($"{nameof(ConcludedTime)}: {ConcludedTime.ToString(Config.Default.DateTimeFormat)}");
+            sb.AppendLine($"{nameof(ConcludedTime)}: {ConcludedTime}");
             sb.AppendLine($"{nameof(MarketTimeType)}: {MarketTimeType}");
             sb.AppendLine($"{nameof(Price)}: {Price}");
 

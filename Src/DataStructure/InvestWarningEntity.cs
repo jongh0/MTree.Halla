@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace DataStructure
 {
     [Serializable]
-    public class InvestWarningInfo
+    public class InvestWarningEntity
     {
         /// <summary>
         /// 지정유무
@@ -37,13 +37,7 @@ namespace DataStructure
 
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"{nameof(IsDesignated)}: {IsDesignated}");
-            sb.AppendLine($"{nameof(Disclosure)}: {Disclosure.ToShortDateString()}");
-            sb.AppendLine($"{nameof(Start)}: {Start.ToShortDateString()}");
-            sb.AppendLine($"{nameof(End)}: {End.ToShortDateString()}");
-
-            return sb.ToString();
+            return $"{IsDesignated}, {Disclosure}, {Start}, {End}";
         }
     }
 }
