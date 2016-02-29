@@ -50,61 +50,61 @@ namespace DataStructure
     public class StockMaster : Subscribable
     {
         /// <summary>
-        /// 종목명(대신)
+        /// 종목명(Daishin)
         /// </summary>
         public string Name { get; set; }
 
         /// <summary>
-        /// 결산월(대신)
+        /// 결산월(Daishin)
         /// </summary>
         [BsonElement("SMo")]
         public int SettlementMonth { get; set; }
 
         /// <summary>
-        /// 액면가(대신)
+        /// 액면가(Daishin)
         /// </summary>
         [BsonElement("FVa")]
         public int FaceValue { get; set; }
 
         /// <summary>
-        /// 상장일(ebest)
+        /// 상장일(Ebest)
         /// </summary>
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         [BsonElement("LDa")]
         public DateTime ListedDate { get; set; }
 
         /// <summary>
-        /// 유동주식수(ebest)
+        /// 유동주식수(Ebest)
         /// </summary>
         [BsonElement("CVo")]
         public long CirculatingVolume { get; set; }
 
         /// <summary>
-        /// 상장주식수(대신)
+        /// 상장주식수(Daishin)
         /// </summary>
         [BsonElement("SVo")]
         public long ShareVolume { get; set; }
 
         /// <summary>
-        /// 자본금(대신)
+        /// 자본금(Daishin)
         /// </summary>
         [BsonElement("LCa")]
         public long ListedCapital { get; set; }
 
         /// <summary>
-        /// 기준가(대신)
+        /// 기준가(Daishin)
         /// </summary>
         [BsonElement("BPr")]
         public float BasisPrice { get; set; }
 
         /// <summary>
-        /// 상한가(대신)
+        /// 상한가(Daishin)
         /// </summary>
         [BsonElement("ULi")]
         public int UpperLimit { get; set; }
 
         /// <summary>
-        /// 하한가(대신)
+        /// 하한가(Daishin)
         /// </summary>
         [BsonElement("LLi")]
         public int LowerLimit { get; set; }
@@ -116,25 +116,25 @@ namespace DataStructure
         public float PreviousClosedPrice { get; set; }
 
         /// <summary>
-        /// 전일거래량(대신)
+        /// 전일거래량(Daishin)
         /// </summary>
         [BsonElement("PVo")]
         public long PreviousVolume { get; set; }
 
         /// <summary>
-        /// 호가단위(대신)
+        /// 호가단위(Daishin)
         /// </summary>
         [BsonElement("QUn")]
         public int QuantityUnit { get; set; }
 
         /// <summary>
-        /// 외국인한도(대신)
+        /// 외국인한도(Daishin)
         /// </summary>
         [BsonElement("FLi")]
         public long ForeigneLimit { get; set; }
 
         /// <summary>
-        /// 외국인잔량(대신)
+        /// 외국인잔량(Daishin)
         /// </summary>
         [BsonElement("FARe")]
         public long ForeigneAvailableRemain { get; set; }
@@ -250,7 +250,7 @@ namespace DataStructure
         public double PER { get; set; }
 
         /// <summary>
-        /// 락(ebest)
+        /// 락(Ebest)
         /// </summary>
         [BsonElement("VAl")]
         public ValueAlteredType ValueAltered { get; set; }
