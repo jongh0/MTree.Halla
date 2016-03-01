@@ -8,13 +8,13 @@ namespace MTree.Configuration
 {
     public class EbestConfiguration
     {
-        public string UserId { get; set; } = "admin";
+        public string UserId { get; set; }
 
-        public string UserPw { get; set; } = "1234";
+        public string UserPw { get; set; }
 
-        public string CertPw { get; set; } = "1234";
+        public string CertPw { get; set; }
 
-        public string AccountPw { get; set; } = "1234";
+        public string AccountPw { get; set; }
 
         public string ServerAddress { get; set; } = "Hts.etrade.co.kr";
 

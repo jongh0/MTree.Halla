@@ -204,26 +204,25 @@ namespace MTree.EbestProvider
             return ret;
         }
 
-        private void LoginStateCheckerThread()
+        private void LoginStateCheckerThread() // TODO : 확인 필요함
         {
-            //Thread.CurrentThread.Name = "LoginStateCheckerThread";
-            ////Thread.Sleep(10000);
-            //while (loginInfo.LoginState != LoginState.LoggedOut)
-            //{
-            //    if (isAnyDataReceived == false)
-            //    {
-            //        IndexMaster indexMaster = new IndexMaster();
-            //        //GetQuote("001", ref indexMaster);
-            //    }
-            //    isAnyDataReceived = false;
-            //    Thread.Sleep(1000 * 60 * 10);
-            //}
+            Thread.CurrentThread.Name = "LoginStateCheckerThread";
+            //Thread.Sleep(10000);
+            while (loginInfo.LoginState != LoginState.LoggedOut)
+            {
+                if (isAnyDataReceived == false)
+                {
+                    IndexMaster indexMaster = new IndexMaster();
+                    //GetQuote("001", ref indexMaster);
+                }
+                isAnyDataReceived = false;
+                Thread.Sleep(1000 * 60 * 10);
+            }
 
-            //loginInfo.LoginState = LoginState.LoggedOut;
-            //if (loginInfo.LoginState == LoginState.LoggedOut)
-            //{
-            //    LogManager.WriteEventLog($"Session disconnected", EventID.ETraceProvider);
-            //}
+            loginInfo.LoginState = LoginState.LoggedOut;
+
+            if (loginInfo.LoginState == LoginState.LoggedOut)
+                logger.Info("Session disconnected");
         }
 
         public bool GetQuote(string code, ref StockMaster stockMaster)
@@ -548,17 +547,17 @@ namespace MTree.EbestProvider
                 if (quotingIndexMaster == null)
                     return;
 
-                //string temp = currentIndexQueryObj.GetFieldData("t1511OutBlock", "jniljisu", 0);
-                //if (temp == "") temp = "0";
-                //quotingIndexMaster.PreviousClosedPrice = Convert.ToDouble(temp); // 현재가
+                string temp = currentIndexQueryObj.GetFieldData("t1511OutBlock", "jniljisu", 0);
+                if (temp == "") temp = "0";
+                quotingIndexMaster.PreviousClosedPrice = Convert.ToDouble(temp); // 현재가
 
-                //temp = currentIndexQueryObj.GetFieldData("t1511OutBlock", "jnilvolume", 0);
-                //if (temp == "") temp = "0";
-                //quotingIndexMaster.PreviousVolume = Convert.ToInt64(temp); //전일거래량
+                temp = currentIndexQueryObj.GetFieldData("t1511OutBlock", "jnilvolume", 0);
+                if (temp == "") temp = "0";
+                quotingIndexMaster.PreviousVolume = Convert.ToInt64(temp); //전일거래량
 
-                //temp = currentIndexQueryObj.GetFieldData("t1511OutBlock", "jnilvalue", 0);
-                //if (temp == "") temp = "0";
-                //quotingIndexMaster.PreviousTradeCost = Convert.ToInt64(temp);  //전일거래대금
+                temp = currentIndexQueryObj.GetFieldData("t1511OutBlock", "jnilvalue", 0);
+                if (temp == "") temp = "0";
+                quotingIndexMaster.PreviousTradeCost = Convert.ToInt64(temp);  //전일거래대금
             }
             catch (Exception ex)
             {
