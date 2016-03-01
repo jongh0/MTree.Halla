@@ -1,0 +1,6 @@
+﻿{
+  "DateFormat": "yyyy-MM-dd",
+  "TimeFormat": "HH:mm:ss.fff",
+  "DateTimeFormat": "yyyy-MM-dd HH:mm:ss.fff",
+  "MongoDbConnectionString": "mongodb://localhost"
+}
