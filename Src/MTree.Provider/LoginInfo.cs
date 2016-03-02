@@ -8,11 +8,9 @@ namespace MTree.Provider
 {
     public enum LoginState
     {
+        Disconnected,
         LoggedIn,
         LoggedOut,
-        LoggingIn,
-        LoggingOut,
-        Disconnected,
     }
 
     public enum BrokerageFirm
@@ -25,7 +23,7 @@ namespace MTree.Provider
     public enum BrokerageServerType
     {
         Real,
-        Sham,
+        Simul,
     }
 
     public class LoginInfo

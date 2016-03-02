@@ -38,11 +38,11 @@
   <ItemGroup>
     <Reference Include="Interop.XA_DATASETLib">
       <HintPath>..\packages\Ebest\Interop.XA_DATASETLib.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="Interop.XA_SESSIONLib">
       <HintPath>..\packages\Ebest\Interop.XA_SESSIONLib.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.2.3\lib\net45\NLog.dll</HintPath>
