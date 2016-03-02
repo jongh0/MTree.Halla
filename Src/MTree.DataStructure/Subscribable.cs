@@ -17,11 +17,15 @@ namespace MTree.DataStructure
 
         public string Code { get; set; }
 
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
+        public DateTime Time { get; set; }
+
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"{nameof(Id)}: {Id}");
             sb.AppendLine($"{nameof(Code)}: {Code}");
+            sb.AppendLine($"{nameof(Time)}: {Time}");
 
             return sb.ToString();
         }

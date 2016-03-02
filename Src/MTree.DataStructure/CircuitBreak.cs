@@ -22,10 +22,6 @@ namespace MTree.DataStructure
         [BsonElement("CBSt")]
         public CircuitBreakType CircuitBreakState { get; set; }
 
-        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
-        [BsonElement("ETi")]
-        public DateTime EventTime { get; set; }
-
         [BsonElement("BPr")]
         public float BasePrice { get; set; }
 
@@ -37,7 +33,6 @@ namespace MTree.DataStructure
             StringBuilder sb = new StringBuilder();
             sb.Append(base.ToString());
             sb.AppendLine($"{nameof(CircuitBreakState)}: {CircuitBreakState}");
-            sb.AppendLine($"{nameof(EventTime)}: {EventTime}");
             sb.AppendLine($"{nameof(BasePrice)}: {BasePrice}");
             sb.AppendLine($"{nameof(InvokePrice)}: {InvokePrice}");
 

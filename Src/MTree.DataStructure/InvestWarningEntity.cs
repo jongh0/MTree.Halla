@@ -35,9 +35,11 @@ namespace MTree.DataStructure
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime End { get; set; }
 
+        public string reason { get; set; } // TODO : Halla에는 없던 부분 이전거에서 복사, 필요한가?
+
         public override string ToString()
         {
-            return $"{IsDesignated}, {Disclosure}, {Start}, {End}";
+            return $"{IsDesignated}, {Disclosure}, {Start}, {End}, {reason}";
         }
     }
 }

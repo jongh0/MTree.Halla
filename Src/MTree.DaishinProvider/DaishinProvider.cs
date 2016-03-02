@@ -252,7 +252,7 @@ namespace MTree.DaishinProvider
                 long sec = (long)conclusionSubscribeObj.GetHeaderValue(18);
 
                 var now = DateTime.Now;
-                conclusion.ConcludedTime = new DateTime(now.Year, now.Month, now.Day, (int)(time / 100), (int)(time % 100), (int)sec, now.Millisecond); // Daishin doesn't provide milisecond 
+                conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 100), (int)(time % 100), (int)sec, now.Millisecond); // Daishin doesn't provide milisecond 
 
                 // 13 - (long) 현재가
                 conclusion.Price = conclusionSubscribeObj.GetHeaderValue(13);

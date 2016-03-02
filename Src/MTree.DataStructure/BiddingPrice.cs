@@ -10,9 +10,6 @@ namespace MTree.DataStructure
     [Serializable]
     public class BiddingPrice : Subscribable
     {
-        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
-        public DateTime Time { get; set; }
-
         public List<BiddingPriceEntity> Bids { get; set; }
 
         public List<BiddingPriceEntity> Offers { get; set; }
