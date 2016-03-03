@@ -1,11 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MTree.Configuration
 {
@@ -71,7 +67,7 @@ namespace MTree.Configuration
                 if (File.Exists(filePath) == true)
                 {
                     config = JsonConvert.DeserializeObject<T>(File.ReadAllText(filePath));
-                    logger.Info("Configuration loaded");
+                    logger.Info($"{Path.GetFileName(filePath)} configuration loaded");
                 }
             }
             catch (Exception ex)
@@ -93,7 +89,7 @@ namespace MTree.Configuration
                     serializer.NullValueHandling = NullValueHandling.Ignore;
                     serializer.Formatting = Formatting.Indented;
                     serializer.Serialize(stream, config);
-                    logger.Info("Configuration saved");
+                    logger.Info($"{Path.GetFileName(filePath)} configuration saved");
                 }
             }
             catch (Exception ex)

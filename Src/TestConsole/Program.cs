@@ -14,13 +14,13 @@ namespace TestConsole
 
         static void Main(string[] args)
         {
-            Console.WriteLine(Config.Ebest.UserId);
+            Console.WriteLine(Config.Ebest.UserPw);
 
-            while (true)
-            {
-                logger.Info("hhhhhhh");
-                Thread.Sleep(500);
-            }
+            //while (true)
+            //{
+            //    logger.Info("hhhhhhh");
+            //    Thread.Sleep(500);
+            //}
         }
     }
 }

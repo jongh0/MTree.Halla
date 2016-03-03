@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Newtonsoft.Json;
 
 namespace MTree.Configuration
 {
@@ -16,10 +12,13 @@ namespace MTree.Configuration
 
         public string AccountPw { get; set; }
 
+        [JsonIgnore]
         public string ServerAddress { get; set; } = "Hts.etrade.co.kr";
 
+        [JsonIgnore]
         public string DemoServerAddress { get; set; } = "demo.etrade.co.kr";
 
+        [JsonIgnore]
         public int ServerPort { get; set; } = 20001;
     }
 }

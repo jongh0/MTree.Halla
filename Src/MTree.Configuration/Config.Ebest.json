@@ -2,8 +2,5 @@
   "UserId": "",
   "UserPw": "",
   "CertPw": "",
-  "AccountPw": "",
-  "ServerAddress": "Hts.etrade.co.kr",
-  "DemoServerAddress": "demo.etrade.co.kr",
-  "ServerPort": 20001
+  "AccountPw": ""
 }
