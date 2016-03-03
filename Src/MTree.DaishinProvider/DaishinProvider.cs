@@ -86,7 +86,7 @@ namespace MTree.DaishinProvider
 
             if (Monitor.TryEnter(lockObject, 1000 * 10) == false)
             {
-                logger.Error($"Quoting failed, Code: {code}");
+                logger.Error($"Quoting failed. Not able to lock object. Code: {code}");
                 return false;
             }
 
@@ -107,6 +107,10 @@ namespace MTree.DaishinProvider
                 {
                     if (waitQuoting.WaitOne(1000 * 10) == false)
                         ret = -1;
+                }
+                else
+                {
+                    logger.Error($"Quoting request failed. Code: {code}, Quoting result: {ret}");
                 }
             }
             catch (Exception ex)
@@ -131,7 +135,10 @@ namespace MTree.DaishinProvider
             try
             {
                 if (quotingStockMaster == null)
+                {
+                    logger.Error($"Current quoting master is not assigned. Received Code: {stockMstObj.GetHeaderValue(0).Substring(1)}");
                     return;
+                }
 
                 if (quotingStockMaster.Code != stockMstObj.GetHeaderValue(0).Substring(1))
                 {
@@ -139,10 +146,16 @@ namespace MTree.DaishinProvider
                     return;
                 }
 
-                // 0 - (string) 종목 코드
+                // 1 - (string) 종목 명
                 quotingStockMaster.Name = stockMstObj.GetHeaderValue(1);
                 // 2 - (string) 대신 업종코드
-                var temp = stockMstObj.GetHeaderValue(2);
+                var daishingCode = stockMstObj.GetHeaderValue(2);
+                // 3 - (string) 그룹코드
+                var groupCode = stockMstObj.GetHeaderValue(3);
+                // 5 - (string) 소속구분
+                var classification = stockMstObj.GetHeaderValue(5);
+                // 5 - (string) 대형,중형,소형
+                var size = stockMstObj.GetHeaderValue(6);
                 // 8 - (long) 상한가
                 quotingStockMaster.UpperLimit = (int)stockMstObj.GetHeaderValue(8);
                 // 9- (long) 하한가
@@ -176,6 +189,24 @@ namespace MTree.DaishinProvider
                     unfairAnnouncementState.Start = DateTime.Now;
                     quotingStockMaster.UnfairAnnouncement = unfairAnnouncementState;
                 }
+                quotingStockMaster.QuantityUnit = (int)stockMstObj.GetHeaderValue(43);
+                // 46 - (long) 소속구분코드
+                var classificationCode = (char)stockMstObj.GetHeaderValue(45);
+                // 46 - (long) 전일 거래량
+                quotingStockMaster.PreviousVolume = (long)stockMstObj.GetHeaderValue(46);
+                // 52 - (string) 벤처 구분. [코스닥 : 일반기업 / 벤처기업] [프리보드 : 일반기업 / 벤처기업 / 테크노파크일반 / 테크노파크벤쳐]
+                var venture = (string)stockMstObj.GetHeaderValue(52);
+                // 53 - (short) KOSPI200 채용 여부
+                var kospi200 = (string)stockMstObj.GetHeaderValue(53);
+                // 54 - (short) 액면가
+                quotingStockMaster.FaceValue = (int)stockMstObj.GetHeaderValue(54);
+                // 69 -(char) 불성실 공시구분 => KRX에서 조회
+                //if ((char)currentPriceQueryObj.GetHeaderValue(69) != '0')
+                //{
+                //    InvestWarningEntity unfairAnnouncementState = new InvestWarningEntity();
+                //    unfairAnnouncementState.Start = DateTime.Now;
+                //    quotingStockMaster.UnfairAnnouncement = unfairAnnouncementState;
+                //}
             }
             catch (Exception ex)
             {
@@ -253,6 +284,7 @@ namespace MTree.DaishinProvider
         {
             try
             {
+                var now = DateTime.Now;
                 StockConclusion conclusion = new StockConclusion();
 
                 // 0 - (string) 종목 코드
@@ -264,8 +296,6 @@ namespace MTree.DaishinProvider
                 // 18 - (long) 시간 (초)
                 long time = (long)stockCurObj.GetHeaderValue(3);
                 long sec = (long)stockCurObj.GetHeaderValue(18);
-
-                var now = DateTime.Now;
                 conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 100), (int)(time % 100), (int)sec, now.Millisecond); // Daishin doesn't provide milisecond 
 
                 // 13 - (long) 현재가

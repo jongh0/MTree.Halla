@@ -140,28 +140,28 @@ namespace MTree.DataStructure
         public long ForeigneAvailableRemain { get; set; }
 
         /// <summary>
-        /// 외국인한도비율((float)ForeigneLimit / ShareVolume * 100)
+        /// 외국인한도비율
         /// </summary>
         [BsonElement("FLRa")]
-        public float ForeigneLimitRate { get; set; }
+        public float ForeigneLimitRate { get { return (float)ForeigneLimit / ShareVolume * 100; } }
 
         /// <summary>
-        /// 외국인보유(ForeigneLimit - ForeigneAvailableRemain)
+        /// 외국인보유
         /// </summary>
         [BsonElement("FHo")]
-        public long ForeigneHold { get; set; }
+        public long ForeigneHold { get { return ForeigneLimit - ForeigneAvailableRemain; } }
 
         /// <summary>
-        /// 외국인소진율((float)ForeigneHold / ForeigneLimit * 100)
+        /// 외국인소진율
         /// </summary>
         [BsonElement("FERa")]
-        public float ForeigneExhaustingRate { get; set; }
+        public float ForeigneExhaustingRate { get { return (float)ForeigneHold / ForeigneLimit * 100; } }
 
         /// <summary>
-        /// 외국인잔량률((float)ForeigneAvailableRemain / ShareVolume * 100)
+        /// 외국인잔량률
         /// </summary>
         [BsonElement("FARRa")]
-        public float ForeigneAvailableRemainRate { get; set; }
+        public float ForeigneAvailableRemainRate { get { return (float)ForeigneAvailableRemain / ShareVolume * 100; } }
 
         /// <summary>
         /// 매매정지(KRX)
@@ -224,30 +224,30 @@ namespace MTree.DataStructure
         public double Asset { get; set; }
 
         /// <summary>
-        /// Asset / ShareVolume
+        /// Bookvalue Per Share
         /// </summary>
-        public double BPS { get; set; }
+        public double BPS { get { return Asset / ShareVolume; } }
 
         /// <summary>
-        /// BasisPrice / BPS
+        /// Price Earning Ratio 
         /// </summary>
-        public double PBR { get; set; }
+        public double PBR { get { return BasisPrice / BPS; } }
 
         /// <summary>
-        /// 당기순이익(Naver(
+        /// 당기순이익(Naver)
         /// </summary>
         [BsonElement("NIn")]
         public double NetIncome { get; set; }
 
         /// <summary>
-        /// NetIncome / ShareVolume
+        /// Earning Per Share
         /// </summary>
-        public double EPS { get; set; }
+        public double EPS { get { return NetIncome / ShareVolume; } }
 
         /// <summary>
-        /// BasisPrice / EPS
+        /// Price Earning Ratio
         /// </summary>
-        public double PER { get; set; }
+        public double PER { get { return BasisPrice / EPS; } }
 
         /// <summary>
         /// 락(Ebest)
