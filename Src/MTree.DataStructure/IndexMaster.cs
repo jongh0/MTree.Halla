@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,10 +12,13 @@ namespace MTree.DataStructure
     {
         public string Name { get; set; }
 
+        [BsonElement("PCPr")]
         public double PreviousClosedPrice { get; set; }
 
+        [BsonElement("PVo")]
         public long PreviousVolume { get; set; }
 
+        [BsonElement("PTCo")]
         public long PreviousTradeCost { get; set; }
     }
 }
