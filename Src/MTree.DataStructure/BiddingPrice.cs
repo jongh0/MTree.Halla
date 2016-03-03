@@ -18,7 +18,6 @@ namespace MTree.DataStructure
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(base.ToString());
-            sb.AppendLine($"{nameof(Time)}: {Time}");
 
             if (Bids != null)
             {

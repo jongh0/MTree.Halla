@@ -20,7 +20,6 @@ namespace MTree.DataStructure
         /// 공시일
         /// </summary>
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
-        [BsonElement("Disc")]
         public DateTime Disclosure { get; set; }
 
         /// <summary>

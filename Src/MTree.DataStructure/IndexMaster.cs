@@ -20,5 +20,16 @@ namespace MTree.DataStructure
 
         [BsonElement("PTCo")]
         public long PreviousTradeCost { get; set; }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"{nameof(Name)}: {Name}");
+            sb.AppendLine($"{nameof(PreviousClosedPrice)}: {PreviousClosedPrice}");
+            sb.AppendLine($"{nameof(PreviousVolume)}: {PreviousVolume}");
+            sb.AppendLine($"{nameof(PreviousTradeCost)}: {PreviousTradeCost}");
+
+            return sb.ToString();
+        }
     }
 }

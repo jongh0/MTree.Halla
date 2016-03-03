@@ -10,7 +10,6 @@ namespace MTree.DataStructure
     [Serializable]
     public class IndexConclusion : Conclusion
     {
-        [BsonElement("Idx")]
         public double Index { get; set; }
 
         public double Volume { get; set; }
@@ -36,6 +35,14 @@ namespace MTree.DataStructure
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(base.ToString());
+            sb.AppendLine($"{nameof(Index)}: {Index}");
+            sb.AppendLine($"{nameof(Volume)}: {Volume}");
+            sb.AppendLine($"{nameof(Value)}: {Value}");
+            sb.AppendLine($"{nameof(UpperLimitedItemCount)}: {UpperLimitedItemCount}");
+            sb.AppendLine($"{nameof(IncreasingItemCount)}: {IncreasingItemCount}");
+            sb.AppendLine($"{nameof(SteadyItemCount)}: {SteadyItemCount}");
+            sb.AppendLine($"{nameof(DecreasingItemCount)}: {DecreasingItemCount}");
+            sb.AppendLine($"{nameof(LowerLimitedItemCount)}: {LowerLimitedItemCount}");
 
             return sb.ToString();
         }
