@@ -16,19 +16,19 @@ namespace MTree.DataStructure
 
         public double Value { get; set; }
 
-        [BsonElement("ULICo")]
+        [BsonElement("ULIC")]
         public int UpperLimitedItemCount { get; set; }
 
-        [BsonElement("IICo")]
+        [BsonElement("IIC")]
         public int IncreasingItemCount { get; set; }
 
-        [BsonElement("SICo")]
+        [BsonElement("SIC")]
         public int SteadyItemCount { get; set; }
 
-        [BsonElement("DICo")]
+        [BsonElement("DIC")]
         public int DecreasingItemCount { get; set; }
 
-        [BsonElement("LLICo")]
+        [BsonElement("LLIC")]
         public int LowerLimitedItemCount { get; set; }
 
         public override string ToString()

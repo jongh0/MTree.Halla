@@ -23,7 +23,7 @@ namespace MTree.DataStructure
     {
         public long Amount { get; set; }
 
-        [BsonElement("MTTy")]
+        [BsonElement("MTT")]
         public MarketTimeType MarketTimeType { get; set; }
 
         public float Price { get; set; }

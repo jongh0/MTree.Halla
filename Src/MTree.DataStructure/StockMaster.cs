@@ -57,202 +57,204 @@ namespace MTree.DataStructure
         /// <summary>
         /// 결산월(Daishin)
         /// </summary>
-        [BsonElement("SMo")]
+        [BsonElement("SM")]
         public int SettlementMonth { get; set; }
 
         /// <summary>
         /// 액면가(Daishin)
         /// </summary>
-        [BsonElement("FVa")]
+        [BsonElement("FV")]
         public int FaceValue { get; set; }
 
         /// <summary>
         /// 상장일(Ebest)
         /// </summary>
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
-        [BsonElement("LDa")]
+        [BsonElement("LD")]
         public DateTime ListedDate { get; set; }
 
         /// <summary>
         /// 유동주식수(Ebest)
         /// </summary>
-        [BsonElement("CVo")]
+        [BsonElement("CV")]
         public long CirculatingVolume { get; set; }
 
         /// <summary>
         /// 상장주식수(Daishin)
         /// </summary>
-        [BsonElement("SVo")]
+        [BsonElement("SV")]
         public long ShareVolume { get; set; }
 
         /// <summary>
         /// 자본금(Daishin)
         /// </summary>
-        [BsonElement("LCa")]
+        [BsonElement("LC")]
         public long ListedCapital { get; set; }
 
         /// <summary>
         /// 기준가(Daishin)
         /// </summary>
-        [BsonElement("BPr")]
+        [BsonElement("BP")]
         public float BasisPrice { get; set; }
 
         /// <summary>
         /// 상한가(Daishin)
         /// </summary>
-        [BsonElement("ULi")]
+        [BsonElement("UL")]
         public int UpperLimit { get; set; }
 
         /// <summary>
         /// 하한가(Daishin)
         /// </summary>
-        [BsonElement("LLi")]
+        [BsonElement("LL")]
         public int LowerLimit { get; set; }
 
         /// <summary>
         /// 전일종가
         /// </summary>
-        [BsonElement("PCPr")]
+        [BsonElement("PCP")]
         public float PreviousClosedPrice { get; set; }
 
         /// <summary>
         /// 전일거래량(Daishin)
         /// </summary>
-        [BsonElement("PVo")]
+        [BsonElement("PV")]
         public long PreviousVolume { get; set; }
 
         /// <summary>
         /// 호가단위(Daishin)
         /// </summary>
-        [BsonElement("QUn")]
+        [BsonElement("QU")]
         public int QuantityUnit { get; set; }
 
         /// <summary>
         /// 외국인한도(Daishin)
         /// </summary>
-        [BsonElement("FLi")]
+        [BsonElement("FL")]
         public long ForeigneLimit { get; set; }
 
         /// <summary>
         /// 외국인잔량(Daishin)
         /// </summary>
-        [BsonElement("FARe")]
+        [BsonElement("FAR")]
         public long ForeigneAvailableRemain { get; set; }
 
         /// <summary>
         /// 외국인한도비율
         /// </summary>
-        [BsonElement("FLRa")]
+        [BsonIgnore]
         public float ForeigneLimitRate { get { return (float)ForeigneLimit / ShareVolume * 100; } }
 
         /// <summary>
         /// 외국인보유
         /// </summary>
-        [BsonElement("FHo")]
+        [BsonIgnore]
         public long ForeigneHold { get { return ForeigneLimit - ForeigneAvailableRemain; } }
 
         /// <summary>
         /// 외국인소진율
         /// </summary>
-        [BsonElement("FERa")]
+        [BsonIgnore]
         public float ForeigneExhaustingRate { get { return (float)ForeigneHold / ForeigneLimit * 100; } }
 
         /// <summary>
         /// 외국인잔량률
         /// </summary>
-        [BsonElement("FARRa")]
+        [BsonIgnore]
         public float ForeigneAvailableRemainRate { get { return (float)ForeigneAvailableRemain / ShareVolume * 100; } }
 
         /// <summary>
         /// 매매정지(KRX)
         /// </summary>
-        [BsonElement("THa")]
+        [BsonElement("TH")]
         public InvestWarningEntity TradingHalt { get; set; }
 
         /// <summary>
         /// 관리(KRX)
         /// </summary>
-        [BsonElement("AIs")]
+        [BsonElement("AI")]
         public InvestWarningEntity AdministrativeIssue { get; set; }
 
         /// <summary>
         /// 주의(KRX)
         /// </summary>
-        [BsonElement("ICa")]
+        [BsonElement("IC")]
         public InvestWarningEntity InvestCaution { get; set; }
 
         /// <summary>
         /// 경고(KRX)
         /// </summary>
-        [BsonElement("IWa")]
+        [BsonElement("IW")]
         public InvestWarningEntity InvestWarning { get; set; }
 
         /// <summary>
         /// 위험(KRX)
         /// </summary>
-        [BsonElement("IRi")]
+        [BsonElement("IR")]
         public InvestWarningEntity InvestmentRisk { get; set; }
 
         /// <summary>
         /// 불성실공시(KRX)
         /// </summary>
-        [BsonElement("UAn")]
+        [BsonElement("UA")]
         public InvestWarningEntity UnfairAnnouncement { get; set; }
 
         /// <summary>
         /// 주의환기(KRX)
         /// </summary>
-        [BsonElement("CAt")]
+        [BsonElement("CA")]
         public InvestWarningEntity CallingAttention { get; set; }
 
         /// <summary>
         /// Overheated(KRX)
         /// </summary>
-        [BsonElement("CTr")]
+        [BsonElement("CT")]
         public InvestWarningEntity CleaningTrade { get; set; }
 
         /// <summary>
         /// 단기과열(KRX)
         /// </summary>
-        [BsonElement("Ovh")]
         public InvestWarningEntity Overheated { get; set; }
 
         /// <summary>
         /// 자산(Naver)
         /// </summary>
-        [BsonElement("Ass")]
         public double Asset { get; set; }
 
         /// <summary>
         /// Bookvalue Per Share
         /// </summary>
+        [BsonIgnore]
         public double BPS { get { return Asset / ShareVolume; } }
 
         /// <summary>
         /// Price Earning Ratio 
         /// </summary>
+        [BsonIgnore]
         public double PBR { get { return BasisPrice / BPS; } }
 
         /// <summary>
         /// 당기순이익(Naver)
         /// </summary>
-        [BsonElement("NIn")]
+        [BsonElement("NI")]
         public double NetIncome { get; set; }
 
         /// <summary>
         /// Earning Per Share
         /// </summary>
+        [BsonIgnore]
         public double EPS { get { return NetIncome / ShareVolume; } }
 
         /// <summary>
         /// Price Earning Ratio
         /// </summary>
+        [BsonIgnore]
         public double PER { get { return BasisPrice / EPS; } }
 
         /// <summary>
         /// 락(Ebest)
         /// </summary>
-        [BsonElement("VAl")]
+        [BsonElement("VA")]
         public ValueAlteredType ValueAltered { get; set; }
 
         public override string ToString()

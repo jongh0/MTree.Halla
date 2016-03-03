@@ -8,12 +8,11 @@ using System.Threading.Tasks;
 namespace MTree.DataStructure
 {
     [Serializable]
-    public class InvestWarningEntity
+    public class InvestWarningEntity // TODO: 이름을 Warning으로 바꿔도 될까?
     {
         /// <summary>
         /// 지정유무
         /// </summary>
-        [BsonElement("IDe")]
         public bool IsDesignated { get; set; }
 
         /// <summary>
@@ -34,7 +33,7 @@ namespace MTree.DataStructure
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime End { get; set; }
 
-        public string Reason { get; set; } // TODO : Halla에는 없던 부분 이전거에서 복사, 필요한가? =? 필요합. 모델링에 추가.
+        public string Reason { get; set; }
 
         public override string ToString()
         {

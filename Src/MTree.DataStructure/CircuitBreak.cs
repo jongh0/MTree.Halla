@@ -19,13 +19,13 @@ namespace MTree.DataStructure
     [Serializable]
     public class CircuitBreak : Subscribable
     {
-        [BsonElement("CBSt")]
+        [BsonElement("CBS")]
         public CircuitBreakType CircuitBreakState { get; set; }
 
-        [BsonElement("BPr")]
+        [BsonElement("BP")]
         public float BasePrice { get; set; }
 
-        [BsonElement("IPr")]
+        [BsonElement("IP")]
         public float InvokePrice { get; set; }
 
         public override string ToString()

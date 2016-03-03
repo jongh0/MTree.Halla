@@ -61,7 +61,7 @@ namespace MTree.DbProvider
         {
             try
             {
-                RegisterDbClass<Conclusion>(); // TODO : DataStructure에 있는 것들 모두 등록해야하나?
+                //RegisterDbClass<Conclusion>(); // TODO : DataStructure에 있는 것들 모두 등록해야하나?
 
                 client = new MongoClient(connectionString);
                 masterDb = client.GetDatabase(masterDbString);

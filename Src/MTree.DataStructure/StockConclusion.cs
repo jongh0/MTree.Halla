@@ -19,7 +19,7 @@ namespace MTree.DataStructure
     [Serializable]
     public class StockConclusion : Conclusion
     {
-        [BsonElement("CTy")]
+        [BsonElement("CT")]
         public ConclusionType ConclusionType { get; set; }
 
         public override string ToString()

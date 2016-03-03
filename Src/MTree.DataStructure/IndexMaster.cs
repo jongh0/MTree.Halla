@@ -12,13 +12,13 @@ namespace MTree.DataStructure
     {
         public string Name { get; set; }
 
-        [BsonElement("PCPr")]
+        [BsonElement("PCP")]
         public double PreviousClosedPrice { get; set; }
 
-        [BsonElement("PVo")]
+        [BsonElement("PV")]
         public long PreviousVolume { get; set; }
 
-        [BsonElement("PTCo")]
+        [BsonElement("PTC")]
         public long PreviousTradeCost { get; set; }
 
         public override string ToString()
