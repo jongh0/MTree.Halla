@@ -1,4 +1,6 @@
-﻿using MTree.DataStructure;
+﻿using CPUTILLib;
+using DSCBO1Lib;
+using MTree.DataStructure;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -15,7 +17,7 @@ namespace MTree.DaishinProvider
 
         public int QueryableCount
         {
-            get { return stateQueryObj.GetLimitRemainCount(CPUTILLib.LIMIT_TYPE.LT_SUBSCRIBE); }
+            get { return sessionObj.GetLimitRemainCount(LIMIT_TYPE.LT_SUBSCRIBE); }
         }
 
         public bool IsQueryable
@@ -47,26 +49,33 @@ namespace MTree.DaishinProvider
         private StockMaster quotingStockMaster;
 
         #region Daishin Specific
-        private CPUTILLib.CpCybos stateQueryObj;
-        private DSCBO1Lib.StockMst currentPriceQueryObj;
-        private DSCBO1Lib.StockCur conclusionSubscribeObj;
+        private CpCybos sessionObj;
+        private StockMst stockMstObj;
+        private StockCur stockCurObj;
         #endregion
 
         public DaishinProvider()
         {
-            waitQuoting = new AutoResetEvent(false);
+            try
+            {
+                waitQuoting = new AutoResetEvent(false);
 
-            stateQueryObj = new CPUTILLib.CpCybos();
-            stateQueryObj.OnDisconnect += StateQueryObj_OnDisconnect;
+                sessionObj = new CpCybos();
+                sessionObj.OnDisconnect += sessionObj_OnDisconnect;
 
-            currentPriceQueryObj = new DSCBO1Lib.StockMst();
-            currentPriceQueryObj.Received += CurrentPriceQueryObj_Received;
+                stockMstObj = new StockMst();
+                stockMstObj.Received += stockMstObj_Received;
 
-            conclusionSubscribeObj = new DSCBO1Lib.StockCur();
-            conclusionSubscribeObj.Received += ConclusionSubscribeObj_Received;
+                stockCurObj = new StockCur();
+                stockCurObj.Received += stockCurObj_Received;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
         }
 
-        private void StateQueryObj_OnDisconnect()
+        private void sessionObj_OnDisconnect()
         {
             logger.Info("Disconnected");
         }
@@ -91,8 +100,8 @@ namespace MTree.DaishinProvider
 
                 quotingStockMaster = stockMaster;
 
-                currentPriceQueryObj.SetInputValue(0, code);
-                ret = currentPriceQueryObj.BlockRequest();
+                stockMstObj.SetInputValue(0, code);
+                ret = stockMstObj.BlockRequest();
 
                 if (ret == 0)
                 {
@@ -112,51 +121,56 @@ namespace MTree.DaishinProvider
             return (ret == 0);
         }
 
-        private void CurrentPriceQueryObj_Received()
+        private void stockMstObj_Received()
+        {
+            StockMasterReceived();
+        }
+
+        private void StockMasterReceived()
         {
             try
             {
                 if (quotingStockMaster == null)
                     return;
 
-                if (quotingStockMaster.Code != currentPriceQueryObj.GetHeaderValue(0).Substring(1))
+                if (quotingStockMaster.Code != stockMstObj.GetHeaderValue(0).Substring(1))
                 {
-                    logger.Warn($"{quotingStockMaster.Code} != {currentPriceQueryObj.GetHeaderValue(0).Substring(1)}");
+                    logger.Warn($"{quotingStockMaster.Code} != {stockMstObj.GetHeaderValue(0).Substring(1)}");
                     return;
                 }
 
                 // 0 - (string) 종목 코드
-                quotingStockMaster.Name = currentPriceQueryObj.GetHeaderValue(1);
+                quotingStockMaster.Name = stockMstObj.GetHeaderValue(1);
                 // 2 - (string) 대신 업종코드
-                var temp = currentPriceQueryObj.GetHeaderValue(2);
+                var temp = stockMstObj.GetHeaderValue(2);
                 // 8 - (long) 상한가
-                quotingStockMaster.UpperLimit = (int)currentPriceQueryObj.GetHeaderValue(8);
+                quotingStockMaster.UpperLimit = (int)stockMstObj.GetHeaderValue(8);
                 // 9- (long) 하한가
-                quotingStockMaster.LowerLimit = (int)currentPriceQueryObj.GetHeaderValue(9);
+                quotingStockMaster.LowerLimit = (int)stockMstObj.GetHeaderValue(9);
                 // 10 - (long) 전일종가
-                quotingStockMaster.PreviousClosedPrice = (int)currentPriceQueryObj.GetHeaderValue(10);
+                quotingStockMaster.PreviousClosedPrice = (int)stockMstObj.GetHeaderValue(10);
                 // 11 - (long) 현재가
                 //currentQuotingkMaster.LastSale = (int)currentPriceQueryObj.GetHeaderValue(11);     
                 // 26 - (short) 결산월     
-                quotingStockMaster.SettlementMonth = (int)currentPriceQueryObj.GetHeaderValue(26);
+                quotingStockMaster.SettlementMonth = (int)stockMstObj.GetHeaderValue(26);
                 // 27 - (long) basis price (기준가)
-                quotingStockMaster.BasisPrice = (int)currentPriceQueryObj.GetHeaderValue(27);
+                quotingStockMaster.BasisPrice = (int)stockMstObj.GetHeaderValue(27);
                 // 31 - (decimal) 상장주식수 (단주)
-                quotingStockMaster.ShareVolume = (long)currentPriceQueryObj.GetHeaderValue(31);
+                quotingStockMaster.ShareVolume = (long)stockMstObj.GetHeaderValue(31);
                 // 32 - (long) 상장자본금
-                quotingStockMaster.ListedCapital = (long)currentPriceQueryObj.GetHeaderValue(32) * 1000000;
+                quotingStockMaster.ListedCapital = (long)stockMstObj.GetHeaderValue(32) * 1000000;
                 // 37 - (long) 외국인 한도수량
-                quotingStockMaster.ForeigneLimit = (long)currentPriceQueryObj.GetHeaderValue(37);
+                quotingStockMaster.ForeigneLimit = (long)stockMstObj.GetHeaderValue(37);
                 // 39 - (decimal) 외국인 주문가능수량
-                quotingStockMaster.ForeigneAvailableRemain = (long)currentPriceQueryObj.GetHeaderValue(39);
+                quotingStockMaster.ForeigneAvailableRemain = (long)stockMstObj.GetHeaderValue(39);
                 // 43 - (short) 매매 수량 단위 
-                quotingStockMaster.QuantityUnit = (int)currentPriceQueryObj.GetHeaderValue(43);
+                quotingStockMaster.QuantityUnit = (int)stockMstObj.GetHeaderValue(43);
                 // 46 - (long) 전일 거래량
-                quotingStockMaster.PreviousVolume = (long)currentPriceQueryObj.GetHeaderValue(46);
+                quotingStockMaster.PreviousVolume = (long)stockMstObj.GetHeaderValue(46);
                 // 54 - (short) 액면가
-                quotingStockMaster.FaceValue = (int)currentPriceQueryObj.GetHeaderValue(54);
+                quotingStockMaster.FaceValue = (int)stockMstObj.GetHeaderValue(54);
                 // 69 -(char) 불성실 공시구분
-                if ((char)currentPriceQueryObj.GetHeaderValue(69) != '0')
+                if ((char)stockMstObj.GetHeaderValue(69) != '0')
                 {
                     InvestWarningEntity unfairAnnouncementState = new InvestWarningEntity();
                     unfairAnnouncementState.Start = DateTime.Now;
@@ -179,12 +193,12 @@ namespace MTree.DaishinProvider
 
             try
             {
-                conclusionSubscribeObj.SetInputValue(0, "A" + code); // Add Prefix
-                conclusionSubscribeObj.Subscribe();
+                stockCurObj.SetInputValue(0, "A" + code); // Add Prefix
+                stockCurObj.Subscribe();
 
                 while (true)
                 {
-                    status = conclusionSubscribeObj.GetDibStatus();
+                    status = stockCurObj.GetDibStatus();
                     if (status != 1) // 1 - 수신대기
                         break;
 
@@ -197,7 +211,7 @@ namespace MTree.DaishinProvider
             }
             finally
             {
-                string msg = conclusionSubscribeObj.GetDibMsg1();
+                string msg = stockCurObj.GetDibMsg1();
                 logger.Log(status == 0 ? LogLevel.Info : LogLevel.Error, $"Code: {code}, Status: {status}, Msg: {msg}");
             }
 
@@ -210,12 +224,12 @@ namespace MTree.DaishinProvider
 
             try
             {
-                conclusionSubscribeObj.SetInputValue(0, "A" + code); // Add Prefix
-                conclusionSubscribeObj.Unsubscribe();
+                stockCurObj.SetInputValue(0, "A" + code); // Add Prefix
+                stockCurObj.Unsubscribe();
 
                 while (true)
                 {
-                    status = conclusionSubscribeObj.GetDibStatus();
+                    status = stockCurObj.GetDibStatus();
                     if (status != 1) // 1 - 수신대기
                         break;
 
@@ -228,45 +242,45 @@ namespace MTree.DaishinProvider
             }
             finally
             {
-                string msg = conclusionSubscribeObj.GetDibMsg1();
+                string msg = stockCurObj.GetDibMsg1();
                 logger.Log(status == 0 ? LogLevel.Info : LogLevel.Error, $"Code: {code}, Status: {status}, Msg: {msg}");
             }
 
             return (status == 0);
         }
 
-        private void ConclusionSubscribeObj_Received()
+        private void stockCurObj_Received()
         {
             try
             {
                 StockConclusion conclusion = new StockConclusion();
 
                 // 0 - (string) 종목 코드
-                string code = conclusionSubscribeObj.GetHeaderValue(0);
+                string code = stockCurObj.GetHeaderValue(0);
                 if (code.Length != 0)
                     conclusion.Code = code.Substring(1); // Remove prefix
 
                 // 3 - (long) 시간
                 // 18 - (long) 시간 (초)
-                long time = (long)conclusionSubscribeObj.GetHeaderValue(3);
-                long sec = (long)conclusionSubscribeObj.GetHeaderValue(18);
+                long time = (long)stockCurObj.GetHeaderValue(3);
+                long sec = (long)stockCurObj.GetHeaderValue(18);
 
                 var now = DateTime.Now;
                 conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 100), (int)(time % 100), (int)sec, now.Millisecond); // Daishin doesn't provide milisecond 
 
                 // 13 - (long) 현재가
-                conclusion.Price = conclusionSubscribeObj.GetHeaderValue(13);
+                conclusion.Price = stockCurObj.GetHeaderValue(13);
 
                 // 14 - (char)체결 상태
-                char type = (char)conclusionSubscribeObj.GetHeaderValue(14);
+                char type = (char)stockCurObj.GetHeaderValue(14);
                 if (type == '1') conclusion.ConclusionType = ConclusionType.Buy;
                 else if (type == '2') conclusion.ConclusionType = ConclusionType.Sell;
 
                 // 17 - (long) 순간체결수량
-                conclusion.Amount = conclusionSubscribeObj.GetHeaderValue(17);
+                conclusion.Amount = stockCurObj.GetHeaderValue(17);
 
                 // 20 - (char) 장 구분 플래그
-                char typeTime = (char)conclusionSubscribeObj.GetHeaderValue(20);
+                char typeTime = (char)stockCurObj.GetHeaderValue(20);
                 if (typeTime == '1') conclusion.MarketTimeType = MarketTimeType.BeforeExpect;
                 else if (typeTime == '2') conclusion.MarketTimeType = MarketTimeType.Normal;
                 else if (typeTime == '3') conclusion.MarketTimeType = MarketTimeType.BeforeOffTheClock;
