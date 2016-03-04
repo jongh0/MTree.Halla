@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<logicalClassDesignerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/ModelStore" xmlns:dm9="http://schemas.microsoft.com/VisualStudio/TeamArchitect/ComponentDesigner" dslVersion="1.0.0.0" Id="d4543e06-2b30-47e6-91f3-bab6034e5b1f" name="MDbAgent" linkedPackageId="467f5106-5aac-4ee6-9212-919b1b32c676" xmlns="http://schemas.microsoft.com/dsltools/LogicalClassDesigner">
+  <profileInstances>
+    <packageHasProfileInstances Id="cbdd7e7b-0c16-40c0-9cd7-40e83a88fd5d">
+      <profileInstance Id="8640ac37-6442-44be-887e-a82485e99b02" name="StandardProfileL2">
+        <elementDefinition Id="e34d544e-0fea-4ed6-ac5e-1b74119ac791" />
+      </profileInstance>
+      <elementDefinition Id="0caec977-1f8c-4ba3-a7db-8cc9ad9cc73b" />
+    </packageHasProfileInstances>
+    <packageHasProfileInstances Id="f8d449fb-e20a-40ed-a05b-4a18191c6135">
+      <profileInstance Id="94177ea4-bcd2-4491-a2f5-dda7442d157e" name="StandardProfileL3">
+        <elementDefinition Id="532ea607-fb19-44b8-8502-3351b05452be" />
+      </profileInstance>
+      <elementDefinition Id="29349502-908c-4fda-9054-c48619c59ed0" />
+    </packageHasProfileInstances>
+    <packageHasProfileInstances Id="56cb8df4-16fb-4544-96d6-5e3d8d222e49">
+      <profileInstance Id="2040acf0-707d-4f60-83e0-d60e04f47769" name="TextTemplateBindings">
+        <elementDefinition Id="0f6be66b-2ae9-4a5a-948c-d9579f5224a0" />
+      </profileInstance>
+      <elementDefinition Id="f272697a-727e-4e60-b8af-24206f289f68" />
+    </packageHasProfileInstances>
+  </profileInstances>
+  <packagedElements>
+    <logicalClassDesignerModelHasTypes>
+      <Interface Id="992cca9f-6718-44bc-858e-fa063779416b" name="IDbal" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="6c4c1166-0773-40ed-8053-3293a9a9b24d" />
+        <ownedOperations>
+          <operation Id="11816117-1708-4bce-b252-54e53524bef7" name="GetChart" isLeaf="false" isStatic="false" isAbstract="true" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="258b541d-5f1f-44e2-b292-5fd540849c44" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="f2c6b45d-68ca-438c-92b4-c16184b18ffa" name="code" direction="In" isUnique="false">
+                  <elementDefinition Id="01cf55f7-f3b2-4ae8-a66d-cf7ba681cf61" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="9c8a05b1-6889-46ef-803c-cb0307332de8" LastKnownName="string" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="cac9512d-2ede-4468-8a25-673481ebd8c5" name="start" direction="In" isUnique="false">
+                  <elementDefinition Id="07312070-d1f0-425c-bd13-cbfc82ec743f" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="884a6770-9472-470b-b972-9300f9178e33" LastKnownName="DateTime" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="be700aa4-bcd8-4b04-a1b5-a9e775200348" name="end" direction="In" isUnique="false">
+                  <elementDefinition Id="f944c2ba-9952-4b56-88a1-b8ebad0d0428" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="884a6770-9472-470b-b972-9300f9178e33" LastKnownName="DateTime" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="537f180e-a51b-42cc-ba41-3fc353c6ef59" name="chartType" direction="In" isUnique="false">
+                  <elementDefinition Id="38cff3f4-ecce-4f5a-95da-fcfec6fd0246" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="293314a1-0975-4373-8565-0ceb10633a38" LastKnownName="ChartType" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="5026d8a9-66a7-40b7-8437-a3d69237091a" direction="Return">
+                  <elementDefinition Id="65aa12fe-5874-462a-a15f-523692ab4446" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="e09678b7-4fa8-4d06-8d9a-2a963fbae479" LastKnownName="Chart" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+        </ownedOperations>
+      </Interface>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="17de662f-ce1a-4728-994a-579e74974741" name="MongoDbHandler" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="de937e4f-f2fc-4d6c-ab2e-71bb2f6a7de8" />
+        <suppliersInternal>
+          <interfaceRealization Id="745df356-3d0d-43d4-b678-bddc6fa57a13">
+            <interfaceMoniker Id="992cca9f-6718-44bc-858e-fa063779416b" LastKnownName="IDbal" />
+            <elementDefinition Id="0643e6f1-9105-4e40-aa7f-52b6d31815e7" />
+          </interfaceRealization>
+        </suppliersInternal>
+        <ownedOperationsInternal>
+          <operation Id="9fbcd21d-735e-443a-ae1a-35a9c4023e37" name="GetChart" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="a600953b-da39-4ae1-ad3a-9fbf1e740275" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="93d6425d-d051-4fd6-99fb-68814a725cf7" name="code" direction="In" isUnique="false">
+                  <elementDefinition Id="0a194289-341c-43fa-9b04-eabdaf8f86a2" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="9c8a05b1-6889-46ef-803c-cb0307332de8" LastKnownName="string" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="144f8864-6a8c-467c-ac3e-311d45746a8d" name="start" direction="In" isUnique="false">
+                  <elementDefinition Id="7c38402f-184b-45c0-931b-302489e3ddd4" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="884a6770-9472-470b-b972-9300f9178e33" LastKnownName="DateTime" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="2cfdb0c3-9163-4b82-96ec-742c34129869" name="end" direction="In" isUnique="false">
+                  <elementDefinition Id="80e27404-eff0-4442-b139-8bfbaebb2c16" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="884a6770-9472-470b-b972-9300f9178e33" LastKnownName="DateTime" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="bc3764de-993d-4ccb-a97d-a33971d47d5b" name="chartType" direction="In" isUnique="false">
+                  <elementDefinition Id="6c9e8189-12c2-4ec3-b050-f31c8d0d3800" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="293314a1-0975-4373-8565-0ceb10633a38" LastKnownName="ChartType" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="8d69d58c-0af8-4c9a-aba9-f1f9816d456f" direction="Return">
+                  <elementDefinition Id="eb4d657e-4d7d-4941-b2fa-e880bbee567d" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="e09678b7-4fa8-4d06-8d9a-2a963fbae479" LastKnownName="Chart" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+        </ownedOperationsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <packageHasNamedElement>
+      <referencedType Id="9c8a05b1-6889-46ef-803c-cb0307332de8" name="string" isAbstract="false" isLeaf="false" cachedFullName="string">
+        <elementDefinition Id="7f4da27c-25be-44e8-bea2-c54ca9a31cb3" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="884a6770-9472-470b-b972-9300f9178e33" name="DateTime" isAbstract="false" isLeaf="false" cachedFullName="DateTime">
+        <elementDefinition Id="f4390af5-fc38-4d69-8276-0f9dfb9189e0" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="293314a1-0975-4373-8565-0ceb10633a38" name="ChartType" isAbstract="false" isLeaf="false" cachedFullName="HallaModeling::ChartType">
+        <elementDefinition Id="dc028194-3257-49ed-b821-e5d17fceafaf" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="e09678b7-4fa8-4d06-8d9a-2a963fbae479" name="Chart" isAbstract="false" isLeaf="false" cachedFullName="HallaModeling::Chart">
+        <elementDefinition Id="9ce91441-65ca-4694-b624-c20da2694502" />
+      </referencedType>
+    </packageHasNamedElement>
+  </packagedElements>
+  <package Id="467f5106-5aac-4ee6-9212-919b1b32c676" name="HallaModeling">
+    <elementDefinition Id="1daf07bb-4f77-4afe-8f56-ddfa2c1f436c" />
+  </package>
+</logicalClassDesignerModel>

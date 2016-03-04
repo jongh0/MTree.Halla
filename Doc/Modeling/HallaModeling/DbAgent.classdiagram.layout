@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<logicalClassDesignerDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 12.125, 8.5" name="MDbAgent">
+  <logicalClassDesignerModelMoniker Id="d4543e06-2b30-47e6-91f3-bab6034e5b1f" />
+  <nestedChildShapes>
+    <interfaceShape Id="aab0afb8-c0d1-42fa-be08-d90ac12236be" absoluteBounds="6.375, 2.25, 5.5, 1.1295572916666665" hideQualifiedName="false" increaseHeight="0" customColor="207, 223, 191">
+      <interfaceMoniker Id="992cca9f-6718-44bc-858e-fa063779416b" LastKnownName="IDbal" />
+      <nestedChildShapes>
+        <AttributeElementListCompartment Id="c8f794c0-ec09-4e93-885c-3db468bd8109" absoluteBounds="6.39, 2.64, 5.4700000000000006, 0.226318359375" name="AttributesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <OperationElementListCompartment Id="4e214779-8848-4bc7-a678-c82a205fdfac" absoluteBounds="6.39, 2.876318359375, 5.4700000000000006, 0.40323893229166663" name="OperationsCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </interfaceShape>
+    <classShape Id="aa1c0172-b038-4ab1-a1ef-fa361831c163" absoluteBounds="4, 4.875, 5.25, 1.129557291666667" hideQualifiedName="false" increaseHeight="0" customColor="181, 193, 223">
+      <classMoniker Id="17de662f-ce1a-4728-994a-579e74974741" LastKnownName="MongoDbHandler" />
+      <nestedChildShapes>
+        <AttributeElementListCompartment Id="0a39c7a4-34e3-49f8-8f25-4c2663880ab2" absoluteBounds="4.015, 5.265, 5.2200000000000006, 0.226318359375" name="AttributesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <OperationElementListCompartment Id="977497b5-a61c-4356-afb5-3429d0c07e2a" absoluteBounds="4.015, 5.501318359375, 5.2200000000000006, 0.40323893229166663" name="OperationsCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <realizationConnector edgePoints="[(6.625 : 4.875); (6.625 : 3.75455729166667); (9.125 : 3.75455729166667); (9.125 : 3.37955729166667)]" fixedFrom="NotFixed" fixedTo="NotFixed" customColor="113, 111, 110" showAsLollipop="false">
+      <interfaceRealizationMoniker Id="745df356-3d0d-43d4-b678-bddc6fa57a13" />
+      <relativeChildShapes />
+      <nodes>
+        <classShapeMoniker Id="aa1c0172-b038-4ab1-a1ef-fa361831c163" />
+        <interfaceShapeMoniker Id="aab0afb8-c0d1-42fa-be08-d90ac12236be" />
+      </nodes>
+    </realizationConnector>
+  </nestedChildShapes>
+</logicalClassDesignerDiagram>

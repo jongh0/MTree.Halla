@@ -1,0 +1,622 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<logicalClassDesignerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm4="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/ModelStore" xmlns:dm9="http://schemas.microsoft.com/VisualStudio/TeamArchitect/ComponentDesigner" dslVersion="1.0.0.0" Id="23016176-29e9-4328-9440-99dccec5ab4d" name="CodeMapObjectDiagram" linkedPackageId="e76e0b2e-5094-4338-8f41-09fe149cb4ed" xmlns="http://schemas.microsoft.com/dsltools/LogicalClassDesigner">
+  <packagedElements>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="67d6663d-3878-4111-b662-4d864e4714ec" name="업종" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="c8a9fd03-b58c-4d9b-a44f-73e3d9266035" />
+        <targetEnds>
+          <association Id="0891f2a9-7971-47c9-ab41-5720b1019b57" isDerived="false" sourceEndRoleName="" targetEndRoleName="" isLeaf="false" isAbstract="false">
+            <classMoniker Id="786ed0d8-0328-4b93-bd70-e534701b23b4" LastKnownName="IT" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="06b44e2b-c048-43b6-a1ff-402981067da9" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="c9e93bc7-4218-4b47-a1c5-194bb6f1021f" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="9fef739a-8e33-4518-bd87-9d7709c86fbc" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="ee328500-3e05-4e77-a5ec-030ab85a7aef" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="28dcbd8c-3836-4e91-9d57-cfe8c0c1eaf1" />
+          </association>
+          <association Id="9f3fbe22-0d05-4100-b1bd-3a9062fa9f7f" isDerived="false" sourceEndRoleName="" targetEndRoleName="" isLeaf="false" isAbstract="false">
+            <classMoniker Id="a36c0eb5-51e1-4a04-8817-3f1383cb8fb9" LastKnownName="건설" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="c65d9d34-b09b-4493-99a7-dbcaf30f2d18" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="f16669dd-1be6-45f9-b16d-6413a175715d" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="09af0af8-575b-45c1-ad10-43f601b7f793" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="b422a856-49bc-4265-ac37-d42ac00d0a3a" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="4cbd7fee-0dec-4f3d-be91-c4f704241d89" />
+          </association>
+          <association Id="53954575-c43e-4b6c-97a2-8b2623348c7a" isDerived="false" sourceEndRoleName="" targetEndRoleName="" isLeaf="false" isAbstract="false">
+            <classMoniker Id="868d85ad-64d2-4d4a-b09c-af5f6b4fa796" LastKnownName="제약" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="81cf8c1e-5f2b-4b0d-a0dc-231b6d7f94b8" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="3de03103-0342-4be9-8925-65222ea80579" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="9bfc935e-698f-4671-9575-c7927126c8fb" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="ecd4c557-2cd0-4d2a-8e4c-e2648d2c59a4" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="8f787ab8-0280-4b02-9cbb-9a9b8d493dd1" />
+          </association>
+        </targetEnds>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="786ed0d8-0328-4b93-bd70-e534701b23b4" name="IT" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="0136467a-dfc4-4262-bad6-272b9f0075e5" />
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="a36c0eb5-51e1-4a04-8817-3f1383cb8fb9" name="건설" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="0a0f291e-b446-4b0b-8232-ac57274bdba2" />
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="7f6e145c-c68a-47c6-a342-19b385fbeb63" name="지카바이러스" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="1e877ea5-3ba0-44f8-937a-d5817fe8dac5" />
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="708b5c57-2218-497b-aa82-4925eebb11c7" name="삼성페이" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="3b61355a-e8d3-41ee-8ea7-ef19b9caab3b" />
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="018670f7-6854-4863-9717-b85bc30bf5da" name="드론" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="f8a23f95-20e9-4a9c-890b-053f735fb172" />
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="22c67251-0324-4564-ba32-d017bbcf2ac2" name="ebest 테마" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="26a832fe-14f0-4955-947a-a82773f36fd6" />
+        <targetEnds>
+          <association Id="35c0f8a5-e28c-458f-a47c-007bca449a9a" isDerived="false" sourceEndRoleName="" targetEndRoleName="" isLeaf="false" isAbstract="false">
+            <classMoniker Id="708b5c57-2218-497b-aa82-4925eebb11c7" LastKnownName="삼성페이" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="97de885c-ccd3-4dfb-ab1d-65e23e0b2e59" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="5c6ef36a-525f-4ab8-bb53-9ede6616123a" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="22edadb0-d3eb-4e30-bdab-f4b233fcfb09" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="acfec355-7375-482f-adc0-4143c95cf978" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="1133807f-c5cb-4f00-aa52-d45ed3dc368e" />
+          </association>
+          <association Id="1ff0a3d8-8162-470c-8110-852c1cad7fdb" isDerived="false" sourceEndRoleName="" targetEndRoleName="" isLeaf="false" isAbstract="false">
+            <classMoniker Id="7f6e145c-c68a-47c6-a342-19b385fbeb63" LastKnownName="지카바이러스" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="40d82f56-7b6e-47da-ac50-4174011931c1" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="6862c7ed-2b43-465b-8d84-12f0bd3d8a9c" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="8da86411-db41-43f8-b582-e5ddcac62274" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="9673c6b4-6e08-4a88-a079-6bc9d5ac7735" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="8d3c6cbb-f6ca-449a-9d1b-7c46d93c27c3" />
+          </association>
+          <association Id="f72b629d-6c14-4aff-89b9-12a730ff88af" isDerived="false" sourceEndRoleName="" targetEndRoleName="" isLeaf="false" isAbstract="false">
+            <classMoniker Id="018670f7-6854-4863-9717-b85bc30bf5da" LastKnownName="드론" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="c56f82ed-d01a-4b42-82b0-9d2c49d87c30" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="5f8d8a9a-582e-486d-8c6b-599b5609ae98" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="b720f560-c71a-4ada-bdbb-912150b5706a" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="a621327c-bec9-4038-87ae-0eecdba813fa" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="97c64e77-8c88-4200-a606-eeafa174b765" />
+          </association>
+          <association Id="43145f53-f5ee-41e2-ba76-804098dc5440" isDerived="false" sourceEndRoleName="" targetEndRoleName="" isLeaf="false" isAbstract="false">
+            <classMoniker Id="81c65781-2563-49ad-823b-ba8937c20841" LastKnownName="반기문" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="8440c62f-2be2-4e7f-89e1-e31fa3b7e035" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="b92756c5-fec8-4a19-b695-f5f90e185ce2" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="36fa28d3-efd1-47a9-a984-8e60f13a976a" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="9c3953ea-47f9-4062-b11a-07363ab40160" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="37c529da-b8c5-432a-9c15-6ef257031cf5" />
+          </association>
+        </targetEnds>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="6b78ff97-6bc2-4251-86f4-0498257b0118" name="테마" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="b6b566f0-0718-4da2-8a84-16093b3d54fd" />
+        <targetEnds>
+          <association Id="0eff7cd9-9039-47e4-9311-b744ba658a62" isDerived="false" sourceEndRoleName="" targetEndRoleName="" isLeaf="false" isAbstract="false">
+            <classMoniker Id="22c67251-0324-4564-ba32-d017bbcf2ac2" LastKnownName="ebest 테마" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="b156ccc4-8afb-474a-ab2d-1a3a3b66b823" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="5ee767f3-cc51-46ca-b118-ab139e838b8c" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="1f648a07-ac58-4818-ac63-f5d1041b4d86" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="53dd79ef-a511-47c8-9e88-84ae3073a5c5" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="ca062f22-08e1-42dc-9dca-e3ea30a257e8" />
+          </association>
+          <association Id="a7c6387f-37c6-407c-9976-5b1571c14687" isDerived="false" sourceEndRoleName="" targetEndRoleName="" isLeaf="false" isAbstract="false">
+            <classMoniker Id="3ae52ff0-702d-4d82-9d6a-39e067507f0a" LastKnownName="대신테마" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="bb925553-d28e-4cbe-8ca5-185c55e7f897" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="0acf3f6b-76e9-4b1b-94f0-871962fa5481" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="586f8bc8-3131-45ef-9490-7dff6c0ad6aa" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="224744ad-44a9-4c43-a167-6da230bbee99" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="5153b9c6-9955-4412-bc91-2d700903d7bd" />
+          </association>
+        </targetEnds>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="3ae52ff0-702d-4d82-9d6a-39e067507f0a" name="대신테마" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="ab1595c3-f539-436b-8dec-fd5850178ef0" />
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="868d85ad-64d2-4d4a-b09c-af5f6b4fa796" name="제약" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="7bd7714c-98c5-4382-85f3-cafe7cf2cf32" />
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="854a1b4d-96ae-4b1e-93d5-ab33a0ee4163" name="KOSPI" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="361199f3-2a15-4894-b47e-fe44d79333e7" />
+        <targetEnds>
+          <association Id="9e72c76e-d193-4c9b-a871-0c7b32535ae6" isDerived="false" sourceEndRoleName="" targetEndRoleName="" isLeaf="false" isAbstract="false">
+            <classMoniker Id="8e77aea2-18a9-4d72-b67b-b7539180880c" LastKnownName="KOSPI50" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="2a911bf8-665d-47d9-b0ba-33361f5fe717" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="298ca615-a6f3-4f04-b0d3-bb31687b7558" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="d004dd85-ab1a-4d2c-ac2d-a07b0892bf32" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="45bbc806-ee18-4a71-95e6-c2cf09ada829" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="bb54daa9-5b53-433f-bb40-aec9d2f42431" />
+          </association>
+          <association Id="6d7c0d74-806e-4377-a682-1f1ac620af2d" isDerived="false" sourceEndRoleName="" targetEndRoleName="" isLeaf="false" isAbstract="false">
+            <classMoniker Id="4b4958bd-4eff-4aea-9aa4-68990fa32ea3" LastKnownName="KOSPI100" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="a2611117-3fde-4cb5-ada1-e9e0a2188126" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="2f19beb4-768a-443d-b015-da96ec3a866c" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="9d935238-ef6f-4810-a372-40ad92f54920" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="3090f35e-4a7e-4efb-a8a5-b5e17fcc7bec" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="3ccd4f4f-dbcd-46e7-8834-8d8fb12d71fe" />
+          </association>
+          <association Id="3a87f068-fdd9-491d-ab51-7ec6c725ab9c" isDerived="false" sourceEndRoleName="" targetEndRoleName="" isLeaf="false" isAbstract="false">
+            <classMoniker Id="ec436481-24be-49b6-b1d0-c962bc202af0" LastKnownName="삼성전자" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="8b201c2c-d1d1-4466-9338-aa07900b1410" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="39cdec68-eb2f-4ace-8ebb-189ad90be5fe" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="c5b301cf-7b8b-4461-9db7-c90dd183c323" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="ce99e1f0-ada9-437c-a5aa-7fc6745a4b4e" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="bc9de44f-4079-42d5-99e4-46cae262de99" />
+          </association>
+        </targetEnds>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="8e77aea2-18a9-4d72-b67b-b7539180880c" name="KOSPI50" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="8c1179a7-8f24-4aaa-a3c0-db8151741dd6" />
+        <targetEnds>
+          <association Id="37a296c9-449a-4821-80ce-95ee97dbfa72" isDerived="false" sourceEndRoleName="" targetEndRoleName="" isLeaf="false" isAbstract="false">
+            <classMoniker Id="3201a919-b9ca-4ea7-b06c-0cca146b17a9" LastKnownName="삼성전자" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="440ddead-942f-4485-9a72-83c779f57746" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="317c5dd4-3e4e-431a-bf7d-76fcb030d0c9" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="8454f05c-b8af-4adc-bfd8-7dc5f92928d4" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="64eb3b6c-8a3f-4e73-9fbf-e66b2eacfe80" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="b52c5a98-c110-4313-9df0-d75d51cd70e6" />
+          </association>
+          <association Id="9f9b61ba-ecea-4a3c-a446-8753d422dba0" isDerived="false" sourceEndRoleName="" targetEndRoleName="" isLeaf="false" isAbstract="false">
+            <classMoniker Id="c8ce762f-a12e-4686-ae11-3a69bf947c6e" LastKnownName="LG전자" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="12862cf3-08a6-47e1-86e5-1c3b7da6974a" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="6dd4ec69-f986-480b-af0b-eeecd7720a55" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="ef0b086a-7099-4d5e-af8f-930a1cf0925b" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="e86e3fd4-7398-4ec4-b8a5-ac2ee069ad53" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="97dd6eb1-1d5a-4e48-8b4a-91bdf2c7527c" />
+          </association>
+        </targetEnds>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="4b4958bd-4eff-4aea-9aa4-68990fa32ea3" name="KOSPI100" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="7b6dd60d-94e8-40a3-9409-91565dc7034a" />
+        <targetEnds>
+          <association Id="1b079ece-822b-42ea-b66d-18711159ad88" isDerived="false" sourceEndRoleName="" targetEndRoleName="" isLeaf="false" isAbstract="false">
+            <classMoniker Id="14e358be-4379-4825-86f8-767a18ae91b0" LastKnownName="삼성전자" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="ca6063a2-c689-4f3e-a9fe-3fa3a0e64144" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="6d60a35f-45be-4eaa-b89b-4e9fab9f8098" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="b5e78c45-958e-4b38-8a0c-667616082186" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="b63a1209-0399-4b14-928b-cb8f6c64d925" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="3f571945-aaa0-47ea-878e-7b3e9bd816eb" />
+          </association>
+        </targetEnds>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="3201a919-b9ca-4ea7-b06c-0cca146b17a9" name="삼성전자" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="bb564d50-6c7b-4239-be07-e200c79806bf" />
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="c8ce762f-a12e-4686-ae11-3a69bf947c6e" name="LG전자" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="dbd67168-f8cc-4105-9ba7-8d7a6eccefa9" />
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="ec436481-24be-49b6-b1d0-c962bc202af0" name="삼성전자" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="83d0fe55-210c-4a0b-a057-edaed7fb24c2" />
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="14e358be-4379-4825-86f8-767a18ae91b0" name="삼성전자" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="5c169f84-c21b-46a6-bb45-20843d73caac" />
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="f7e643ea-3462-44d1-b187-bd9afbe10c4d" name="상호출자제한" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="dd102091-7e7f-42dd-b985-723056e88b7a" />
+        <targetEnds>
+          <association Id="11b0ea08-c68c-4514-b269-360fd5222a43" isDerived="false" sourceEndRoleName="상호출자제한" targetEndRoleName="삼성" isLeaf="false" isAbstract="false">
+            <classMoniker Id="ef996aa5-cdd8-474b-b068-8b919dee6b9f" LastKnownName="삼성" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="217adbd1-6709-4324-a4aa-ee97f0696575" name="상호출자제한" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="b5f279a0-b57f-4686-88db-c6c444deec87" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="ad789b73-f678-4a3f-bf47-d01d19c55fc7" name="삼성" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="6a5dd5d3-bbb8-4f8c-9df6-0f5b551058d8" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="4ed90860-7219-4a6c-9c72-a5ecb08c6267" />
+          </association>
+          <association Id="9d77375b-4f89-44ed-9c20-aebee4b7569a" isDerived="false" sourceEndRoleName="상호출자제한" targetEndRoleName="LG" isLeaf="false" isAbstract="false">
+            <classMoniker Id="12694a21-6b69-4290-adcc-f05dd4ed11d7" LastKnownName="LG" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="f7c5eb8f-e522-4ad7-b73b-0e53244778e7" name="상호출자제한" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="516ef799-9b4b-4038-bd16-1c376669df36" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="07030725-9860-4c86-9539-a2cd65b655b4" name="LG" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="672ea9a3-80ae-4ec8-88c3-c28f516b1ebc" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="52d3a292-c2b7-4b1d-a147-9e91d546bd7b" />
+          </association>
+        </targetEnds>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="ef996aa5-cdd8-474b-b068-8b919dee6b9f" name="삼성" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="bc12593b-1a16-4916-80f0-7b753a34e0bb" />
+        <targetEnds>
+          <association Id="d9049574-c3ee-4b00-96d7-a13f920192af" isDerived="false" sourceEndRoleName="삼성" targetEndRoleName="삼성전자" isLeaf="false" isAbstract="false">
+            <classMoniker Id="e451bf9f-5877-4a17-8c85-1221ada7fb8b" LastKnownName="삼성전자" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="a5419637-fd2b-4bbf-b9a6-9a626166fd04" name="삼성" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="aa1a3930-dd4a-434f-ba94-00815885197c" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="706b172e-fb16-4b60-8e2c-cdb120a60340" name="삼성전자" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="ef0e389a-c0ec-43ae-a74c-80fae42e8825" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="ee6008a2-b75e-439b-bf23-9bf6b226473c" />
+          </association>
+          <association Id="7fd1c3c3-1a94-49dc-b3f6-f7dbda3e55a3" isDerived="false" sourceEndRoleName="삼성" targetEndRoleName="삼성전기" isLeaf="false" isAbstract="false">
+            <classMoniker Id="22db4736-9ea0-4870-8f71-15a2d24e52d9" LastKnownName="삼성전기" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="375a005d-aee8-47fb-a47d-2b9ce6783718" name="삼성" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="384119e7-caf5-4ea8-b83c-e320faca0dac" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="d7618d89-6b34-4fb3-87d0-829c1e8c3c0f" name="삼성전기" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="cff8190a-ce6c-471e-873d-3683d615771b" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="45884c4d-6d02-4c46-be9e-2d99b310f481" />
+          </association>
+        </targetEnds>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="e451bf9f-5877-4a17-8c85-1221ada7fb8b" name="삼성전자" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="d07c6c79-99b7-488b-a637-7f94f4843b2f" />
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="22db4736-9ea0-4870-8f71-15a2d24e52d9" name="삼성전기" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="dbbf6e7c-baf5-492b-a994-e1f24eb9bc09" />
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="12694a21-6b69-4290-adcc-f05dd4ed11d7" name="LG" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="bcf482ac-5e21-45f2-bcee-3d00767dfab5" />
+        <targetEnds>
+          <association Id="168d9c5c-28db-4ed1-9e1a-5cf71806cbf4" isDerived="false" sourceEndRoleName="LG" targetEndRoleName="LG" isLeaf="false" isAbstract="false">
+            <classMoniker Id="f9780217-c7d6-4cca-9888-2b40226dbe2e" LastKnownName="LG" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="85b85ee1-2f6b-47dd-b2a9-b8184dd5526d" name="LG" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="624f9a0a-f0b1-4e6e-a7b0-47d80384e9ac" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="f609a8d2-2434-4715-a30d-9b6dbc088040" name="LG" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="88cb1711-9121-4c5a-bc25-7e5723575c46" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="0cab09e8-9436-4425-8108-a82db062c547" />
+          </association>
+          <association Id="b0d68b73-aa92-487a-8019-54533e40057f" isDerived="false" sourceEndRoleName="LG" targetEndRoleName="LG전자" isLeaf="false" isAbstract="false">
+            <classMoniker Id="22fb1c01-9e71-4edb-84aa-c21f3086dd4a" LastKnownName="LG전자" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="7bcef3a4-7d0c-426a-a043-9375415c62ac" name="LG" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="1326314d-2f25-47f6-9fb4-3d2b7c9628ac" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="65eab3d6-d094-4435-862e-9feeb80fc417" name="LG전자" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="7ad17506-0220-46ea-a297-325e708ba62f" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="3ddab0c6-c76e-431f-b06a-3625841e54d6" />
+          </association>
+        </targetEnds>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="f9780217-c7d6-4cca-9888-2b40226dbe2e" name="LG" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="9d57e557-1276-44f0-bc88-a8da02976cf0" />
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="22fb1c01-9e71-4edb-84aa-c21f3086dd4a" name="LG전자" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="5b92db64-975d-467b-935e-d95e7b03e4b9" />
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="81c65781-2563-49ad-823b-ba8937c20841" name="반기문" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="15970ac3-e69c-4d8b-a7ba-f832b54f3716" />
+        <targetEnds>
+          <association Id="93d3c7cf-cec2-4159-9b1c-c556ec7b4cd8" isDerived="false" sourceEndRoleName="" targetEndRoleName="" isLeaf="false" isAbstract="false">
+            <classMoniker Id="3a9fd4d3-acbb-48ce-a827-3ed5fd245f1c" LastKnownName="신성이엔지" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="cb3631f5-a294-4236-92b5-4010a417f993" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="7bcfcad3-e449-4d95-a78c-e98db8cc9451" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="7f0efe22-f888-4109-818e-2b1a3506b435" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="0af3e116-bf80-4012-be66-245e028d42cb" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="2f5e89d3-e55a-4311-ae47-eddbb71e39a8" />
+          </association>
+          <association Id="426ab5cd-5a37-41fa-883d-0e715b743ce4" isDerived="false" sourceEndRoleName="반기문" targetEndRoleName="EG" isLeaf="false" isAbstract="false">
+            <classMoniker Id="9e308a81-2281-48ee-9c9b-e0f4bbd6eb20" LastKnownName="EG" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="297ccd2a-cb58-4686-87d3-e38e52048a58" name="반기문" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="fd2e3333-3ea5-4cb6-b6ee-07aa9715f4f2" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="4d3c640f-4153-4b05-bdac-626c4f904487" name="EG" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="0d6e725f-9169-48b3-96b6-226bb6713b46" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="e142a7e6-b000-49f6-b4fb-608f7be791f4" />
+          </association>
+        </targetEnds>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="3a9fd4d3-acbb-48ce-a827-3ed5fd245f1c" name="신성이엔지" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="87203199-c7fe-424e-8c94-0edff694446a" />
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="4c547ad7-0200-4d45-a58e-49de793c6ca7" name="CodeMap" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="1daf97f9-4837-453c-86c7-47fba32dc0a5" />
+        <targetEnds>
+          <association Id="d862285a-0e10-4cfa-9db4-26f73123d79b" isDerived="false" sourceEndRoleName="" targetEndRoleName="" isLeaf="false" isAbstract="false">
+            <classMoniker Id="67d6663d-3878-4111-b662-4d864e4714ec" LastKnownName="업종" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="0974e3c5-70dd-47ed-b658-5c609b04d513" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="258ed95b-8e00-4e7e-9aac-d1536133af90" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="0977d29c-a8d2-48f0-b2e5-e91f4354d394" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="e78c19ac-cbcf-4b20-ac76-6ce2d6947dd6" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="0b4fc978-2eae-4157-848e-cc8efc96e40e" />
+          </association>
+          <association Id="fb8858ed-3783-478d-a64a-3ff5c35fa4ac" isDerived="false" sourceEndRoleName="" targetEndRoleName="" isLeaf="false" isAbstract="false">
+            <classMoniker Id="6b78ff97-6bc2-4251-86f4-0498257b0118" LastKnownName="테마" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="7c43ece6-d247-4d3b-a03b-efa958bad164" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="c9006cd9-80dd-4269-a7b1-cc047aff3dc9" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="b2289841-3d73-47a9-9d28-fbd3c5131733" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="b309e8ae-c05a-43c3-b3b2-9808d2ff890d" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="ef3d9b13-bcfc-45b4-9113-9edba79b1e1a" />
+          </association>
+          <association Id="dccc1a52-cf7c-49a1-84af-18482d4f4000" isDerived="false" sourceEndRoleName="" targetEndRoleName="" isLeaf="false" isAbstract="false">
+            <classMoniker Id="854a1b4d-96ae-4b1e-93d5-ab33a0ee4163" LastKnownName="KOSPI" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="ca9acbd7-4218-4bef-97bc-dd7eb3af66ad" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="7b89baec-ae59-4584-9ea4-8e6294aa981b" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="093990f8-7202-4ceb-90e9-7881aaa73c70" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="08f45015-abf5-45ef-918d-fbfc705cfdb8" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="e3112f8e-0489-43cc-9567-34013d74724a" />
+          </association>
+          <association Id="b0c7fcf1-09aa-4355-a2bd-a89252324797" isDerived="false" sourceEndRoleName="" targetEndRoleName="상호출자제한" isLeaf="false" isAbstract="false">
+            <classMoniker Id="f7e643ea-3462-44d1-b187-bd9afbe10c4d" LastKnownName="상호출자제한" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="5ff26c8e-a389-4f26-a328-fee26324d73c" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="d2bba1b2-5a65-47d7-aed3-23d035092d6a" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="f84abccf-1c83-48af-8b4f-465eacdfbd1d" name="상호출자제한" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="cd6743d9-1e60-4da6-8959-ceef4d316dcc" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="13c8081b-3161-43ff-932f-c76712978941" />
+          </association>
+        </targetEnds>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="9e308a81-2281-48ee-9c9b-e0f4bbd6eb20" name="EG" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="3cf225bc-ce40-433f-9840-0a293c59c609" />
+      </class>
+    </logicalClassDesignerModelHasTypes>
+  </packagedElements>
+  <package Id="e76e0b2e-5094-4338-8f41-09fe149cb4ed" name="HallaModeling">
+    <elementDefinition Id="1daf07bb-4f77-4afe-8f56-ddfa2c1f436c" />
+    <profileInstances>
+      <packageHasProfileInstances Id="2bdc4741-96d5-45d3-bf14-e98ffdb7989d">
+        <profileInstance Id="8e2496cf-5a9f-4d52-9141-ac80659d78a5" name="StandardProfileL2">
+          <elementDefinition Id="e34d544e-0fea-4ed6-ac5e-1b74119ac791" />
+        </profileInstance>
+        <elementDefinition Id="0caec977-1f8c-4ba3-a7db-8cc9ad9cc73b" />
+      </packageHasProfileInstances>
+      <packageHasProfileInstances Id="ab60311e-9650-4c1c-b257-ec88cd83704b">
+        <profileInstance Id="49e370ee-0a98-4546-9d09-d65bb07016d3" name="StandardProfileL3">
+          <elementDefinition Id="532ea607-fb19-44b8-8502-3351b05452be" />
+        </profileInstance>
+        <elementDefinition Id="29349502-908c-4fda-9054-c48619c59ed0" />
+      </packageHasProfileInstances>
+      <packageHasProfileInstances Id="e329f701-d455-4c5c-adea-ac3a2923a7b3">
+        <profileInstance Id="3f6c03c1-088c-4e3a-b396-1375a4bd6218" name="TextTemplateBindings">
+          <elementDefinition Id="0f6be66b-2ae9-4a5a-948c-d9579f5224a0" />
+        </profileInstance>
+        <elementDefinition Id="f272697a-727e-4e60-b8af-24206f289f68" />
+      </packageHasProfileInstances>
+    </profileInstances>
+  </package>
+</logicalClassDesignerModel>

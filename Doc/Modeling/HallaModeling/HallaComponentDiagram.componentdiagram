@@ -1,0 +1,344 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<componentModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/ModelStore" xmlns:dm9="http://schemas.microsoft.com/dsltools/LogicalClassDesigner" xmlns:dm10="http://schemas.microsoft.com/VisualStudio/TeamArchitect/SequenceDesigner" dslVersion="1.0.0.0" Id="c383ef1e-9fd2-4f2f-8e78-1cef58a13e72" name="HallaComponentDiagram" linkedPackageId="a06c716e-5caa-49c9-b05c-71947e31ab6d" xmlns="http://schemas.microsoft.com/VisualStudio/TeamArchitect/ComponentDesigner">
+  <ownedCommentsInternal>
+    <comment Id="76856642-1547-473c-96de-62df7e88b0fb">
+      <elementDefinition Id="e5aacc6c-0534-4419-9af8-e59ac01e6c9f" />
+      <body>증권사로부터 데이터 수집. 
+</body>
+      <annotatedElements>
+        <componentMoniker Id="c4d286d7-28c4-4a2c-b92a-0434ece1b170" LastKnownName="IProvider" />
+      </annotatedElements>
+    </comment>
+  </ownedCommentsInternal>
+  <packagedElements>
+    <componentModelHasComponents>
+      <component Id="c4d286d7-28c4-4a2c-b92a-0434ece1b170" name="IProvider" isAbstract="true" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="b43c8d5c-6beb-4f22-8dfe-ce47b761ee7d" />
+        <suppliersInternal>
+          <dependency Id="bf151192-88fc-4644-9ca9-b7e0e7fc81fe">
+            <componentMoniker Id="35c87929-7f15-4ad2-babd-d41e0c7faa1e" LastKnownName="DataStructure.dll" />
+            <elementDefinition Id="4dd0430c-b5b4-4086-8ad7-70c8b122d2ed" />
+          </dependency>
+        </suppliersInternal>
+        <ownedAttributesInternal>
+          <requiredInterface Id="37e4a90a-94ad-42b4-a166-f3c0f6c78caa" name="Port1" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isService="false" isBehavior="false">
+            <elementDefinition Id="7e50f4f3-11b5-451b-a8ec-dbb335c965af" />
+            <type_NamedElement>
+              <interfaceMoniker Id="c110006b-3a55-47f1-988e-4e48a00f6624" LastKnownName="WCF" />
+            </type_NamedElement>
+          </requiredInterface>
+        </ownedAttributesInternal>
+      </component>
+    </componentModelHasComponents>
+    <componentModelHasComponents>
+      <component Id="46954c11-d7e7-4275-895b-77a2b5887a56" name="RealtimeProvider.exe" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="73d99f09-8971-44cd-9401-f6ac77a69df8" />
+        <ownedAttributesInternal>
+          <providedInterface Id="71b6b18b-1acb-42d7-be2b-1d6c68f2e355" name="Port1" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isService="false" isBehavior="false">
+            <elementDefinition Id="3e389a08-f2df-4a95-9500-a1cf2b0c40ff" />
+            <type_NamedElement>
+              <interfaceMoniker Id="3ded6d03-889d-4008-8e05-b490049319cf" LastKnownName="WCF/ISubscribing" />
+            </type_NamedElement>
+          </providedInterface>
+          <providedInterface Id="0734aa59-3c63-4bf0-95c0-70ee1e84e2ea" name="Port2" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isService="false" isBehavior="false">
+            <elementDefinition Id="a94c90ad-6d23-4606-8e81-297e4eeed136" />
+            <type_NamedElement>
+              <interfaceMoniker Id="c65f5e0e-d13d-438f-a087-b1e031876117" LastKnownName="WCF" />
+            </type_NamedElement>
+          </providedInterface>
+        </ownedAttributesInternal>
+      </component>
+    </componentModelHasComponents>
+    <componentModelHasComponents>
+      <component Id="35c87929-7f15-4ad2-babd-d41e0c7faa1e" name="DataStructure.dll" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="ed1743a9-b90f-4be9-aa0d-8b79c17d467c" />
+      </component>
+    </componentModelHasComponents>
+    <componentModelHasComponents>
+      <component Id="7801a6d7-c285-4a50-90e4-2e55bdaa0a5c" name="Utility.dll" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="ca4c0e76-ff45-4127-aee9-894c36f7421b" />
+      </component>
+    </componentModelHasComponents>
+    <componentModelHasComponents>
+      <component Id="714efc08-3635-40f9-81af-65114cda7056" name="Trader" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="fdb30217-7b65-4678-a5c6-3a2090a1bd7d" />
+      </component>
+    </componentModelHasComponents>
+    <componentModelHasComponents>
+      <component Id="d878bf72-561d-4c39-87df-e4bda9c349a7" name="HistorySaver" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="e711d1fd-559c-4b2b-9f01-e9d6ebf6b3f7" />
+        <suppliersInternal>
+          <dependency Id="d159e1c0-5a59-484c-b77e-4b4c30e76ca1">
+            <componentMoniker Id="c4fbe51a-864d-4af7-bd3e-8cceaa143639" LastKnownName="DbAgent.dll" />
+            <elementDefinition Id="85d846f2-7d45-45ed-a724-b7077623e13b" />
+          </dependency>
+        </suppliersInternal>
+        <generalsInternal>
+          <generalization Id="eb83c134-7c9c-46d3-bbd3-ab46a67346ba" isSubstitutable="false">
+            <componentMoniker Id="b4b039d3-566a-4933-a19b-30be5469c375" LastKnownName="Consumer.dll" />
+            <elementDefinition Id="5088004a-5564-4db4-8749-31920aaf4daa" />
+          </generalization>
+        </generalsInternal>
+      </component>
+    </componentModelHasComponents>
+    <componentModelHasComponents>
+      <component Id="a3419c0b-7691-4375-aefb-0acfea069b05" name="PushService" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="618ac7c3-d1bc-4b1c-b64e-8c0a51c55092" />
+        <generalsInternal>
+          <generalization Id="97813995-e3cf-4c28-8767-d21650ba2127" isSubstitutable="false">
+            <componentMoniker Id="b4b039d3-566a-4933-a19b-30be5469c375" LastKnownName="Consumer.dll" />
+            <elementDefinition Id="5229a834-8590-49f9-8697-c53cc7bca14f" />
+          </generalization>
+        </generalsInternal>
+      </component>
+    </componentModelHasComponents>
+    <componentModelHasComponents>
+      <component Id="152e003b-71eb-4b33-8956-867a3a6ecfd7" name="DaishinProvider" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="37a68373-7164-46d3-9455-5a0e9ad04b4d" />
+        <generalsInternal>
+          <generalization Id="7b735a12-7eb7-45d0-9d2a-e285610967d3" isSubstitutable="false">
+            <componentMoniker Id="c4d286d7-28c4-4a2c-b92a-0434ece1b170" LastKnownName="IProvider" />
+            <elementDefinition Id="506c759c-1473-4a40-8a3c-63c224c2f771" />
+          </generalization>
+        </generalsInternal>
+      </component>
+    </componentModelHasComponents>
+    <componentModelHasComponents>
+      <component Id="ebaf1727-8561-49f5-a62d-0a29a9c1a51b" name="EbestProvider" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="3f17649c-fc8a-41dc-a331-61f4244eefbf" />
+        <generalsInternal>
+          <generalization Id="b2dbd037-697c-4c4f-96ef-63a668fa68cc" isSubstitutable="false">
+            <componentMoniker Id="c4d286d7-28c4-4a2c-b92a-0434ece1b170" LastKnownName="IProvider" />
+            <elementDefinition Id="a0f9ae74-29d0-4ecc-a6da-53e6851c2ce0" />
+          </generalization>
+        </generalsInternal>
+      </component>
+    </componentModelHasComponents>
+    <componentModelHasComponents>
+      <component Id="c4fbe51a-864d-4af7-bd3e-8cceaa143639" name="DbAgent.dll" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="465dcff4-b572-438a-bc60-d681691bad55" />
+      </component>
+    </componentModelHasComponents>
+    <componentModelHasComponents>
+      <component Id="b4b039d3-566a-4933-a19b-30be5469c375" name="Consumer.dll" isAbstract="true" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="5224e6be-a237-4233-ba67-882ca09254f4" />
+        <suppliersInternal>
+          <dependency Id="54ccbb6e-4d52-4b1d-b043-aca34086f6fd">
+            <componentMoniker Id="35c87929-7f15-4ad2-babd-d41e0c7faa1e" LastKnownName="DataStructure.dll" />
+            <elementDefinition Id="24c9c1d4-fdf0-4cd7-a852-a0207d7bdb26" />
+          </dependency>
+          <dependency Id="c2df98ea-9f82-4287-b18b-bce070ffa1ee">
+            <componentMoniker Id="c4fbe51a-864d-4af7-bd3e-8cceaa143639" LastKnownName="DbAgent.dll" />
+            <elementDefinition Id="ef541276-d289-446a-977b-3034382599a7" />
+          </dependency>
+          <dependency Id="f49d3c1d-4627-45d8-854e-c1dabf6a9075">
+            <componentMoniker Id="f07b89df-1b63-4c28-893e-3c605ce22ca4" LastKnownName="Gateway.dll" />
+            <elementDefinition Id="3b6719ee-70e7-4aa0-a384-ab204b2ebe14" />
+          </dependency>
+        </suppliersInternal>
+      </component>
+    </componentModelHasComponents>
+    <componentModelHasComponents>
+      <component Id="2360fa6f-7432-49b8-b287-e302b45e4154" name="Automation" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="8b7678cb-9309-460d-9a39-d2abcc8bfc33" />
+      </component>
+    </componentModelHasComponents>
+    <componentModelHasComponents>
+      <component Id="f59eefb7-f153-47e2-a68d-abc468eb1f1f" name="DashBoard" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="402f19f4-10ca-4ac3-9183-43039ede9683" />
+        <generalsInternal>
+          <generalization Id="7ff09399-3cf5-48ae-9d28-c3386f7bd05d" isSubstitutable="false">
+            <componentMoniker Id="b4b039d3-566a-4933-a19b-30be5469c375" LastKnownName="Consumer.dll" />
+            <elementDefinition Id="5660bb3a-7b8a-423e-9a39-d41ad4ffd7e1" />
+          </generalization>
+        </generalsInternal>
+      </component>
+    </componentModelHasComponents>
+    <componentModelHasComponents>
+      <component Id="f07b89df-1b63-4c28-893e-3c605ce22ca4" name="Gateway.dll" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="b52e77a8-08d0-4b30-9d55-2a20a1e28cbb" />
+        <suppliersInternal>
+          <dependency Id="ca85b963-e087-456f-a65b-ac55ad80d45e">
+            <componentMoniker Id="518472d4-97ed-446a-b2a8-0a723d84d984" LastKnownName="DbProvider.dll" />
+            <elementDefinition Id="825b4893-b0ee-4345-b3fa-8c5129c6b8c8" />
+          </dependency>
+        </suppliersInternal>
+        <ownedAttributesInternal>
+          <requiredInterface Id="f5d77ff3-a452-4401-b918-a1ccf098fe1a" name="Port1" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isService="false" isBehavior="false">
+            <elementDefinition Id="45315bbe-68f6-48c4-bc28-d4dd83704544" />
+            <type_NamedElement>
+              <interfaceMoniker Id="76e6c3fc-a954-4da7-ad3c-4c2ce8ce75d8" LastKnownName="WCF" />
+            </type_NamedElement>
+          </requiredInterface>
+        </ownedAttributesInternal>
+      </component>
+    </componentModelHasComponents>
+    <componentModelHasComponents>
+      <component Id="518472d4-97ed-446a-b2a8-0a723d84d984" name="DbProvider.dll" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="922cdb79-0cdf-4a61-8838-f3e2dd877bb1" />
+        <suppliersInternal>
+          <dependency Id="bb718f7b-c99d-41e7-80cb-a7b4adf44be4">
+            <componentMoniker Id="c4fbe51a-864d-4af7-bd3e-8cceaa143639" LastKnownName="DbAgent.dll" />
+            <elementDefinition Id="036243b4-222f-4d12-9c3b-992cebb8b8be" />
+          </dependency>
+        </suppliersInternal>
+      </component>
+    </componentModelHasComponents>
+    <componentModelHasComponents>
+      <component Id="f89bee96-fc19-4279-954a-68185fb100be" name="TechnicalAnalyzer" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="5dc4f711-cac3-4ee2-bdde-1831eea35338" />
+        <generalsInternal>
+          <generalization Id="695fc4d5-9d9c-44bb-a4c1-364b7e9cf3fc" isSubstitutable="false">
+            <componentMoniker Id="b4b039d3-566a-4933-a19b-30be5469c375" LastKnownName="Consumer.dll" />
+            <elementDefinition Id="7ecc8f11-a121-4daa-b85c-6715406d17c1" />
+          </generalization>
+        </generalsInternal>
+      </component>
+    </componentModelHasComponents>
+    <componentModelHasComponents>
+      <component Id="7d0f62f4-2c1e-4a99-b8a5-208886651416" name="StrategyManager" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="c6196ebe-5754-411a-a3fc-c8bf418e8a49" />
+        <suppliersInternal>
+          <dependency Id="29c3fb23-e603-421e-83ed-1320e1a4df08">
+            <componentMoniker Id="f89bee96-fc19-4279-954a-68185fb100be" LastKnownName="TechnicalAnalyzer" />
+            <elementDefinition Id="dc8744f6-003f-45da-96d0-8340f6ca6254" />
+          </dependency>
+          <dependency Id="4c760d1d-ef12-4ecb-bcc7-f00a5d7f5f50">
+            <componentMoniker Id="714efc08-3635-40f9-81af-65114cda7056" LastKnownName="Trader" />
+            <elementDefinition Id="570d44c4-0fcd-47e6-a39a-61974aa732d0" />
+          </dependency>
+          <dependency Id="0ed9eedf-2373-4019-a0d1-84a44611664f">
+            <componentMoniker Id="45b37019-4ee6-4ecb-80f1-fc2703ad358e" LastKnownName="MLManager" />
+            <elementDefinition Id="ad4fb211-b4af-4084-a6b7-39e4c71aaf1f" />
+          </dependency>
+        </suppliersInternal>
+        <generalsInternal>
+          <generalization Id="13524d91-7fca-43f1-9fec-9ea3e5342eac" isSubstitutable="false">
+            <componentMoniker Id="b4b039d3-566a-4933-a19b-30be5469c375" LastKnownName="Consumer.dll" />
+            <elementDefinition Id="8e0c8ec3-8318-4a5c-a408-baf19ddf42df" />
+          </generalization>
+        </generalsInternal>
+      </component>
+    </componentModelHasComponents>
+    <componentModelHasComponents>
+      <component Id="45b37019-4ee6-4ecb-80f1-fc2703ad358e" name="MLManager" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="6ffde612-c5ee-47d6-9804-2529dfe21ad0" />
+        <suppliersInternal>
+          <dependency Id="2ae470a4-3470-4f65-815e-7f25552e9653">
+            <componentMoniker Id="f89bee96-fc19-4279-954a-68185fb100be" LastKnownName="TechnicalAnalyzer" />
+            <elementDefinition Id="b68d6280-d0f9-4710-8938-f91e6f22601d" />
+          </dependency>
+        </suppliersInternal>
+        <generalsInternal>
+          <generalization Id="3fcb17e6-86b3-43ee-96a6-ce0509031b6c" isSubstitutable="false">
+            <componentMoniker Id="b4b039d3-566a-4933-a19b-30be5469c375" LastKnownName="Consumer.dll" />
+            <elementDefinition Id="66133ee3-d296-447f-bf47-22f8212c5781" />
+          </generalization>
+        </generalsInternal>
+      </component>
+    </componentModelHasComponents>
+    <componentModelHasComponents>
+      <component Id="4bb2f933-a9a3-4352-8ffe-04bf2b4249d9" name="DaishinTrader" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="b99c7e90-dc3f-491f-aae3-001137f2e8df" />
+        <generalsInternal>
+          <generalization Id="3102cfad-76ad-49c2-b8e2-3426836cd0d1" isSubstitutable="false">
+            <componentMoniker Id="714efc08-3635-40f9-81af-65114cda7056" LastKnownName="Trader" />
+            <elementDefinition Id="7a9da73e-14b3-40fb-b5c7-b03bd0b56cc1" />
+          </generalization>
+        </generalsInternal>
+      </component>
+    </componentModelHasComponents>
+    <componentModelHasComponents>
+      <component Id="5306af9d-06bc-4e20-943a-b66cd9f54d40" name="EbestTrader" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="5f8cc2c5-3367-4d62-8a11-b500588eaf2c" />
+        <generalsInternal>
+          <generalization Id="33f767e1-732f-40b0-9aea-a44ca5bb7355" isSubstitutable="false">
+            <componentMoniker Id="714efc08-3635-40f9-81af-65114cda7056" LastKnownName="Trader" />
+            <elementDefinition Id="81ae4a10-cabe-429d-ba72-5e97b9ec97fe" />
+          </generalization>
+        </generalsInternal>
+      </component>
+    </componentModelHasComponents>
+    <componentModelHasComponents>
+      <component Id="0252afcb-fbdf-4739-b2dd-c94a7d85fa8e" name="SimTrader" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="8471679d-ea2d-41ad-87fb-6dd745dc7af6" />
+        <generalsInternal>
+          <generalization Id="18ce78cf-e6e2-42be-88eb-7ccd67fdc714" isSubstitutable="false">
+            <componentMoniker Id="714efc08-3635-40f9-81af-65114cda7056" LastKnownName="Trader" />
+            <elementDefinition Id="5267bc5d-3a70-4fa7-98b7-329e4ecc5008" />
+          </generalization>
+        </generalsInternal>
+      </component>
+    </componentModelHasComponents>
+    <modelContainsNamedElements>
+      <Interface Id="3ded6d03-889d-4008-8e05-b490049319cf" name="WCF/ISubscribing" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="9bed5538-788a-4528-876f-5d74604aa43d" />
+      </Interface>
+    </modelContainsNamedElements>
+    <modelContainsNamedElements>
+      <Interface Id="c110006b-3a55-47f1-988e-4e48a00f6624" name="WCF" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="490d7ec1-d6f5-430b-bb95-bd545febe0c8" />
+      </Interface>
+    </modelContainsNamedElements>
+    <componentModelHasComponents>
+      <component Id="a4510d2b-14a3-438d-91cb-14bfa65561e8" name="KiwoomProvider" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="e8d950fd-42be-406d-9648-34696656fc01" />
+        <generalsInternal>
+          <generalization Id="30d487f7-2107-4b96-9a43-ebc64e470107" isSubstitutable="false">
+            <componentMoniker Id="c4d286d7-28c4-4a2c-b92a-0434ece1b170" LastKnownName="IProvider" />
+            <elementDefinition Id="9604592d-b10a-48b3-9042-6c9dbb9c5a81" />
+          </generalization>
+        </generalsInternal>
+      </component>
+    </componentModelHasComponents>
+    <componentModelHasComponents>
+      <component Id="7a09af36-1d73-44c8-beb8-fee0a53526fd" name="KiwoomTrader" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="2d3b85fd-1e28-4117-a43f-355b6ca4c346" />
+        <generalsInternal>
+          <generalization Id="fcdf7f6c-b7b4-4cd8-8c5b-5f0c7d86d13d" isSubstitutable="false">
+            <componentMoniker Id="714efc08-3635-40f9-81af-65114cda7056" LastKnownName="Trader" />
+            <elementDefinition Id="3c9ee3f7-679e-46ca-97b1-445634560e9a" />
+          </generalization>
+        </generalsInternal>
+      </component>
+    </componentModelHasComponents>
+    <componentModelHasComponents>
+      <component Id="9bb24336-7204-48cf-97ac-19513085d197" name="Configuration.dll" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="802b0cff-f64a-421c-9fbd-3fd8be828f50" />
+      </component>
+    </componentModelHasComponents>
+    <modelContainsNamedElements>
+      <Interface Id="c65f5e0e-d13d-438f-a087-b1e031876117" name="WCF" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="0aa3cef4-12b2-4979-9641-262aa92832ba" />
+      </Interface>
+    </modelContainsNamedElements>
+    <modelContainsNamedElements>
+      <Interface Id="76e6c3fc-a954-4da7-ad3c-4c2ce8ce75d8" name="WCF" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="da0c3bb7-c0e6-415c-989c-0e2f17c5c3a0" />
+      </Interface>
+    </modelContainsNamedElements>
+  </packagedElements>
+  <package Id="a06c716e-5caa-49c9-b05c-71947e31ab6d" name="HallaModeling">
+    <elementDefinition Id="1daf07bb-4f77-4afe-8f56-ddfa2c1f436c" />
+    <profileInstances>
+      <packageHasProfileInstances Id="bc9b8636-4fc3-49c2-9b74-f0208846661b">
+        <profileInstance Id="bd767a90-1ac2-4386-8c8c-e9f05f498159" name="StandardProfileL2">
+          <elementDefinition Id="e34d544e-0fea-4ed6-ac5e-1b74119ac791" />
+        </profileInstance>
+        <elementDefinition Id="0caec977-1f8c-4ba3-a7db-8cc9ad9cc73b" />
+      </packageHasProfileInstances>
+      <packageHasProfileInstances Id="c8998ffd-4709-4633-a6a2-856b46c7954f">
+        <profileInstance Id="2f2cfccf-c045-4430-8e14-707751346340" name="StandardProfileL3">
+          <elementDefinition Id="532ea607-fb19-44b8-8502-3351b05452be" />
+        </profileInstance>
+        <elementDefinition Id="29349502-908c-4fda-9054-c48619c59ed0" />
+      </packageHasProfileInstances>
+      <packageHasProfileInstances Id="365d3c94-becc-4e93-be92-0ea39a164792">
+        <profileInstance Id="3be05490-91e2-409e-b5b6-9b81425e446f" name="TextTemplateBindings">
+          <elementDefinition Id="0f6be66b-2ae9-4a5a-948c-d9579f5224a0" />
+        </profileInstance>
+        <elementDefinition Id="f272697a-727e-4e60-b8af-24206f289f68" />
+      </packageHasProfileInstances>
+    </profileInstances>
+  </package>
+</componentModel>

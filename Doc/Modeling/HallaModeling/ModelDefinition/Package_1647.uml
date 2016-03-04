@@ -1,0 +1,264 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/VisualStudio/TeamArchitect/ComponentDesigner" xmlns:dm9="http://schemas.microsoft.com/dsltools/LogicalClassDesigner" xmlns:dm10="http://schemas.microsoft.com/VisualStudio/TeamArchitect/SequenceDesigner"
+  dslVersion="1.0.0.0"
+  Id="7d3ead97-82ee-40ff-a4dd-e3012603ad11"
+  name="SubscribingManager" xmlns="http://schemas.microsoft.com/dsltools/ModelStore">
+  <ownedCommentsInternal>
+    <comment
+      Id="b4b99082-cc0c-4359-a8cf-fa74158b0858">
+      <body>- OnProviderReset : 매 거래일 시작전 증권사 API Reset 시 호출
+- OnTradingStart : 장 시작 시 호출
+- OnTradingEnd : 장 마감 시 호출</body>
+      <annotatedElements>
+        <classMoniker
+          Id="24905440-ea01-4440-a683-e2e32c59ebae"
+          LastKnownName="SubscribingManager"
+          LastKnownLocation="Package_1647.uml" />
+        <classMoniker
+          Id="e474d2ee-19a0-4cd9-b1cb-f752d00d4fad"
+          LastKnownName="ProviderFactory"
+          LastKnownLocation="Package_1639.uml" />
+      </annotatedElements>
+    </comment>
+  </ownedCommentsInternal>
+  <packagedElements>
+    <packageHasNamedElement>
+      <class
+        Id="24905440-ea01-4440-a683-e2e32c59ebae"
+        name="SubscribingManager"
+        isAbstract="false"
+        isLeaf="false"
+        isActiveClass="false">
+        <suppliersInternal>
+          <dependency
+            Id="bff59e3c-3b50-4f42-a1c5-0d7cfadaee2e">
+            <enumerationMoniker
+              Id="9a2cedce-8a2f-4b96-ba42-d01647a70f69"
+              LastKnownName="SubscribingState"
+              LastKnownLocation="Package_1647.uml" />
+          </dependency>
+        </suppliersInternal>
+        <targetEnds>
+          <association
+            Id="7cb78f47-7f4e-4fc8-9c27-bd3103453419"
+            isDerived="false"
+            sourceEndRoleName=""
+            targetEndRoleName=""
+            isLeaf="false"
+            isAbstract="false">
+            <classMoniker
+              Id="e474d2ee-19a0-4cd9-b1cb-f752d00d4fad"
+              LastKnownName="ProviderFactory"
+              LastKnownLocation="Package_1639.uml" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd
+                  Id="ac151ea3-e5b4-4fda-846b-51539846d6f6"
+                  isLeaf="false"
+                  isStatic="false"
+                  isReadOnly="false"
+                  isDerived="false"
+                  isDerivedUnion="false"
+                  aggregation="None"
+                  isComposite="false"
+                  isNavigableOwned="false" />
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd
+                  Id="d996d8b0-0c22-496c-af55-af87cfa319ee"
+                  isLeaf="false"
+                  isStatic="false"
+                  isReadOnly="false"
+                  isDerived="false"
+                  isDerivedUnion="false"
+                  aggregation="None"
+                  isComposite="false" />
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+          </association>
+        </targetEnds>
+        <ownedOperationsInternal>
+          <operation
+            Id="56dbb61a-0d08-46b5-b743-b2b8d407c358"
+            name="OnTradingStart"
+            visibility="Private"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false">
+            <description>Event</description>
+          </operation>
+          <operation
+            Id="97bfc512-f103-472a-9e60-a708cb1d7466"
+            name="OnTradingEnd"
+            visibility="Private"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false" />
+          <operation
+            Id="93593c65-215c-4168-885b-d9d3f0ef40b0"
+            name="OnProviderReset(providerType:ProviderType)"
+            visibility="Private"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false" />
+        </ownedOperationsInternal>
+      </class>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <enumeration
+        Id="9a2cedce-8a2f-4b96-ba42-d01647a70f69"
+        name="SubscribingState"
+        isAbstract="false"
+        isLeaf="false">
+        <ownedLiterals>
+          <enumerationLiteral
+            Id="0170202d-1bc0-4943-8b27-daeb183278bb"
+            name="Idle" />
+          <enumerationLiteral
+            Id="95ea5106-fe0f-4cef-b4bd-8e0f6deda38a"
+            name="Mastering" />
+          <enumerationLiteral
+            Id="a0cb15cb-3efe-43a6-8374-80e40d908750"
+            name="MasterCompleted" />
+          <enumerationLiteral
+            Id="5ed233d1-1fff-4958-82e3-d6d1474ac260"
+            name="Subscribing" />
+        </ownedLiterals>
+      </enumeration>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <undefinedType
+        Id="e6f9831c-ef88-4aa2-93a3-f654cb29a2c2"
+        name="SubscribingState&gt;" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <undefinedType
+        Id="74f64f8f-d419-4b2d-95fc-fe0635b85255"
+        name="Dictionary&lt;code:string, state" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <undefinedType
+        Id="f02766f1-6600-414b-9c05-e3de60456d90"
+        name="Dictionary&lt;code:string, state:SubscribingState&gt;" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <undefinedType
+        Id="cc2a9a70-6461-48e4-8583-df03b93c792e"
+        name="Dictionary&lt;providerType:ProviderType, codes:Queue&lt;string&gt;&gt;" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <undefinedType
+        Id="f0b68960-4402-4e99-9388-b6b27aaaea20"
+        name="List&lt;string&gt;" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <undefinedType
+        Id="2588eb7f-a81d-4fb0-b966-83698f871c3e"
+        name="List&lt;code:string&gt;" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <undefinedType
+        Id="a8b0685a-116d-453a-b31d-a7514276ceeb"
+        name="ProviderType" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <class
+        Id="88f509fa-1e80-4fc0-afc0-25bbba2c9071"
+        name="TransactionManager"
+        isAbstract="false"
+        isLeaf="false"
+        isActiveClass="false">
+        <ownedAttributesInternal>
+          <property
+            Id="050b29af-b2a5-40b1-8697-c9559eb73931"
+            name="transactionBuffer"
+            visibility="Private"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isUnique="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false">
+            <type_NamedElement>
+              <undefinedTypeMoniker
+                Id="15e47962-a590-4f21-9f64-866f5b89528e"
+                LastKnownName="Queue&lt;ISubscribable&gt;"
+                LastKnownLocation="Package_1647.uml" />
+            </type_NamedElement>
+          </property>
+          <property
+            Id="d27cc7c7-ccbe-481f-8c69-dfcbe498a704"
+            name="Instance"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isUnique="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false">
+            <type_NamedElement>
+              <classMoniker
+                Id="88f509fa-1e80-4fc0-afc0-25bbba2c9071"
+                LastKnownName="TransactionManager"
+                LastKnownLocation="Package_1647.uml" />
+            </type_NamedElement>
+          </property>
+        </ownedAttributesInternal>
+        <ownedOperationsInternal>
+          <operation
+            Id="c2d559d9-c19b-467b-a6d3-71b8ea2374cd"
+            name="OnNewTransactionReceived"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false">
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter
+                  Id="ac2742af-f43b-406d-b2d2-42be4b666f92"
+                  name="newTransaction"
+                  direction="In"
+                  isUnique="false">
+                  <type_NamedElement>
+                    <undefinedTypeMoniker
+                      Id="ba26fdc5-4cac-4436-a49d-38927922943e"
+                      LastKnownName="ISubscribable"
+                      LastKnownLocation="Package_1647.uml" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation
+            Id="c79a6961-f500-4868-9c50-44e88e2398b5"
+            name="DistributeTransaction"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false" />
+        </ownedOperationsInternal>
+      </class>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <undefinedType
+        Id="ba26fdc5-4cac-4436-a49d-38927922943e"
+        name="ISubscribable" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <undefinedType
+        Id="15e47962-a590-4f21-9f64-866f5b89528e"
+        name="Queue&lt;ISubscribable&gt;" />
+    </packageHasNamedElement>
+  </packagedElements>
+</package>

@@ -1,0 +1,466 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<logicalClassDesignerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/ModelStore" xmlns:dm9="http://schemas.microsoft.com/VisualStudio/TeamArchitect/ComponentDesigner" xmlns:dm10="http://schemas.microsoft.com/VisualStudio/TeamArchitect/SequenceDesigner" dslVersion="1.0.0.0" Id="08e66e6e-8d8e-4f15-9788-046b07d78635" name="Gateway" linkedPackageId="125b0c6c-2356-4745-b645-fe2d97167ca4" xmlns="http://schemas.microsoft.com/dsltools/LogicalClassDesigner">
+  <profileInstances>
+    <packageHasProfileInstances Id="702fd728-efeb-49d0-8fbe-2a8f6b07d511">
+      <profileInstance Id="87dd14af-86de-46c1-ab9a-d2e3b61c97fb" name="StandardProfileL2">
+        <elementDefinition Id="e34d544e-0fea-4ed6-ac5e-1b74119ac791" />
+      </profileInstance>
+      <elementDefinition Id="0caec977-1f8c-4ba3-a7db-8cc9ad9cc73b" />
+    </packageHasProfileInstances>
+    <packageHasProfileInstances Id="01952c42-4b7a-4fed-8b37-7a7d867bf97d">
+      <profileInstance Id="50aa45ca-904c-4ce8-a52e-8978eaffe3ac" name="StandardProfileL3">
+        <elementDefinition Id="532ea607-fb19-44b8-8502-3351b05452be" />
+      </profileInstance>
+      <elementDefinition Id="29349502-908c-4fda-9054-c48619c59ed0" />
+    </packageHasProfileInstances>
+    <packageHasProfileInstances Id="1bbefbbf-9c49-4ebd-a69e-97ee3a4a4663">
+      <profileInstance Id="1d3a74ee-cee3-41b3-84b3-5a2b4eff7c7d" name="TextTemplateBindings">
+        <elementDefinition Id="0f6be66b-2ae9-4a5a-948c-d9579f5224a0" />
+      </profileInstance>
+      <elementDefinition Id="f272697a-727e-4e60-b8af-24206f289f68" />
+    </packageHasProfileInstances>
+  </profileInstances>
+  <packagedElements>
+    <logicalClassDesignerModelHasTypes>
+      <Interface Id="817bc220-d53b-449d-a3dd-d665d04879c5" name="ISubscribing" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="caa28477-a25d-4058-b236-4c4976be8915" />
+        <ownedAttributes>
+          <property Id="9c04a576-4d75-4fde-9811-ac010defcc34" name="observers : ConcurrentDictionary&lt;code:string, stock" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="5f7a7835-6ab3-419c-90b2-2f62bf737f59" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="912f6fa6-d402-4f64-a0b8-5aec99e57e74" LastKnownName="ChartableStock&gt;" />
+            </type_NamedElement>
+          </property>
+        </ownedAttributes>
+        <ownedOperations>
+          <operation Id="dd5ae911-6131-4a60-ba07-cf68bc2289c0" name="Subscribe" isLeaf="false" isStatic="false" isAbstract="true" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="f9cf3629-8cc6-4feb-bff6-c6dbca776dd4" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="7ad6973f-efd9-4694-a95c-5166e16d07b8" direction="Return" isUnique="false">
+                  <elementDefinition Id="6fe79438-ca4d-4040-bd3d-6cb4249fad74" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="8b5dc9cf-cf94-4c71-b900-41bf9601b1ec" LastKnownName="bool" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="106b25e1-65ff-4896-9deb-85b0efdabc4f" name="stock" direction="In" isUnique="false">
+                  <elementDefinition Id="d13ff35b-27d7-4628-aabc-b1106bbb72fa" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="dfa69867-a0e3-4c64-893e-8e311f5e60a9" LastKnownName="ChartableStock" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="eda1adcf-bfca-4ba7-9bbe-e61b208acce3" name="type" direction="In" isUnique="false">
+                  <elementDefinition Id="ed0202a9-3ea1-426a-a22e-794f1a94bf80" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="c543be84-36b5-4cfd-bb5c-22b25ba7b027" LastKnownName="Type" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="5a9f168e-0c06-478c-88f5-efa93112eb82" name="targetDate=null" direction="In" isUnique="false">
+                  <elementDefinition Id="6aee47d7-7407-48c3-a27e-856503c754a7" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="a9de335c-07d1-40d5-8760-bfcc39203d1b" LastKnownName="DateTime" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="a6980e75-2182-48a2-812b-488558473871" name="GetMaster" isLeaf="false" isStatic="false" isAbstract="true" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="f4cd8ff5-5481-4429-858a-c22ba31fc316" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="19773797-8906-4913-82fa-29d774193abe" name="code" direction="In" isUnique="false">
+                  <elementDefinition Id="a53cf2fe-f75f-4d3a-8d8d-f81b895b968e" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="e24156ac-ac58-48ab-87a2-6fa7f1deaaa8" LastKnownName="string" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="e90f4cf4-a937-4b04-8e81-692b7b50db11" name="targetDate=null" direction="In" isUnique="false">
+                  <elementDefinition Id="7270eec1-6fdd-47aa-9453-d82cadbc06cb" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="a9de335c-07d1-40d5-8760-bfcc39203d1b" LastKnownName="DateTime" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="e4d6cced-c69d-4a60-a0fd-cb427443004c" direction="Return" isUnique="false">
+                  <elementDefinition Id="369a1d3f-732a-46e3-a2b2-79a652549c52" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="f889a8a4-4a92-490b-8f17-a965a456715f" LastKnownName="StockMaster" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="990ce40c-f1b5-449a-b960-8a96a587e338" name="OnDateChanged" isLeaf="false" isStatic="false" isAbstract="true" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="65a0a70b-25a0-4fe3-ac79-d15cf37cb7f5" />
+          </operation>
+          <operation Id="c31d36bc-e17b-4d88-b32d-975b90d24280" name="OnNewTransactionNotified" isLeaf="false" isStatic="false" isAbstract="true" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="45172910-96cc-4330-a038-f5e9b4645c93" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="56cce580-1321-4725-bfa8-61e1a41e1859" name="newTransaction" direction="In" isUnique="false">
+                  <elementDefinition Id="8a14c757-fa1b-43da-8b17-bfba7be66e22" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="ca8e3b8e-6fbf-4308-a2a9-88cf775e3728" LastKnownName="ISubscribable" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="b271b8e5-722c-4737-922e-99c925df6245" name="Unsubscribe" isLeaf="false" isStatic="false" isAbstract="true" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="5e896299-8734-4e01-8880-66901ce32a8c" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="c369f6cf-7d6b-4557-aedc-2d77a42f4919" name="stock" direction="In" isUnique="false">
+                  <elementDefinition Id="c6c23da0-06aa-4ec6-bdf4-23e3cf52f797" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="dfa69867-a0e3-4c64-893e-8e311f5e60a9" LastKnownName="ChartableStock" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="bc19daff-585a-4b0b-914a-b971356d7c4c" name="type" direction="In" isUnique="false">
+                  <elementDefinition Id="07701f67-aa1c-4551-b26a-c47bb85f2d52" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="c543be84-36b5-4cfd-bb5c-22b25ba7b027" LastKnownName="Type" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="5e5807b1-b970-4347-b194-3b6683c2dda9" name="targetDate=null" direction="In" isUnique="false">
+                  <elementDefinition Id="d6c68f3e-7cb0-490c-8e29-2fb044ef0913" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="a9de335c-07d1-40d5-8760-bfcc39203d1b" LastKnownName="DateTime" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="802496f7-af73-4bba-8f10-13314d5a5919" direction="Return" isUnique="false">
+                  <elementDefinition Id="248f6589-b575-4283-812c-3cc0c6ca403d" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="8b5dc9cf-cf94-4c71-b900-41bf9601b1ec" LastKnownName="bool" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+        </ownedOperations>
+      </Interface>
+    </logicalClassDesignerModelHasTypes>
+    <packageHasNamedElement>
+      <referencedType Id="e24156ac-ac58-48ab-87a2-6fa7f1deaaa8" name="string" isAbstract="false" isLeaf="false" cachedFullName="string">
+        <elementDefinition Id="7f4da27c-25be-44e8-bea2-c54ca9a31cb3" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="c543be84-36b5-4cfd-bb5c-22b25ba7b027" name="Type" isAbstract="false" isLeaf="false" cachedFullName="Type">
+        <elementDefinition Id="7edee19b-34ad-4f64-93fe-26ed4ac230df" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="8b5dc9cf-cf94-4c71-b900-41bf9601b1ec" name="bool" isAbstract="false" isLeaf="false" cachedFullName="bool">
+        <elementDefinition Id="ba62702d-26e3-421e-83bd-999a511d00f9" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="a9de335c-07d1-40d5-8760-bfcc39203d1b" name="DateTime" isAbstract="false" isLeaf="false" cachedFullName="DateTime">
+        <elementDefinition Id="f4390af5-fc38-4d69-8276-0f9dfb9189e0" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="f889a8a4-4a92-490b-8f17-a965a456715f" name="StockMaster" isAbstract="false" isLeaf="false" cachedFullName="HallaModeling::StockMaster">
+        <elementDefinition Id="06661a73-ef4f-454a-ae5f-a06c324d4657" />
+      </referencedType>
+    </packageHasNamedElement>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="55bcf20f-611b-4048-85a9-749eebbb25ea" name="RealtimeSubscribing" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="f1a976a5-7d9e-4ec5-be9c-d539a40e64a0" />
+        <suppliersInternal>
+          <interfaceRealization Id="08514ecf-ff04-49f7-bc92-4676bab8424b">
+            <interfaceMoniker Id="817bc220-d53b-449d-a3dd-d665d04879c5" LastKnownName="ISubscribing" />
+            <elementDefinition Id="6f49e141-a3b4-4a38-b7d6-7566b01c1798" />
+          </interfaceRealization>
+        </suppliersInternal>
+        <ownedOperationsInternal>
+          <operation Id="95ffa3b4-e132-4221-978e-96cce3f05061" name="Subscribe" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="14fcd2f5-c9bf-4c11-8260-22c9f4a82821" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="5fa8caaa-fbb8-4fde-818d-e2af34214212" name="code" direction="In" isUnique="false">
+                  <elementDefinition Id="8a5c57b8-2d67-422c-bdc8-689b6b96060d" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="dfa69867-a0e3-4c64-893e-8e311f5e60a9" LastKnownName="ChartableStock" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="1c6f70fe-11c9-4352-b762-e298bf192fc7" name="type" direction="In" isUnique="false">
+                  <elementDefinition Id="7b235abf-d1dc-4de8-adca-e8ffb8fe06e9" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="c543be84-36b5-4cfd-bb5c-22b25ba7b027" LastKnownName="Type" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="1b48e686-2af6-4900-8da1-55ed258acc85" name="targetDate=null" direction="In" isUnique="false">
+                  <elementDefinition Id="dd41c20a-097e-4d2d-80cf-1971174cad57" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="a9de335c-07d1-40d5-8760-bfcc39203d1b" LastKnownName="DateTime" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="60dfa31a-27f3-41de-8190-36dfce8dd4fb" direction="Return" isUnique="false">
+                  <elementDefinition Id="000e5beb-f907-4674-b2d9-2234278cd6a0" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="8b5dc9cf-cf94-4c71-b900-41bf9601b1ec" LastKnownName="bool" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="87d40601-b3ea-437f-8073-5ff96716bf09" name="GetMaster" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="44d6aa1f-0fe8-4f94-89d8-63ffecc08581" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="763b2680-05a7-484d-b01e-fa980db0896b" name="code" direction="In" isUnique="false">
+                  <elementDefinition Id="6aaae599-7e94-4ae2-ac1f-3ef7b27526be" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="e24156ac-ac58-48ab-87a2-6fa7f1deaaa8" LastKnownName="string" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="5207a262-c669-4196-9d6b-d16054e4441e" name="targetDate=null" direction="In" isUnique="false">
+                  <elementDefinition Id="79ca425d-4b03-49cf-957a-adaf73d92eb4" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="a9de335c-07d1-40d5-8760-bfcc39203d1b" LastKnownName="DateTime" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="740585a7-b4fa-49eb-bc0e-6f8869788204" direction="Return" isUnique="false">
+                  <elementDefinition Id="44e68633-af90-4211-99df-b9381898827a" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="f889a8a4-4a92-490b-8f17-a965a456715f" LastKnownName="StockMaster" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="04838c77-11df-4c57-975c-383251a964c4" name="OnDateChanged" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="87e998a8-fd97-476a-8b3d-577a99833b7c" />
+          </operation>
+          <operation Id="11a8a03b-2f44-4a4f-8aee-a4b1d3b05b9b" name="OnNewTransactionNotified" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="8c7dff89-c91e-44b6-be3b-a0953b33b189" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="d6700652-95fe-483b-be86-157ba2b139f8" name="newTransaction" direction="In" isUnique="false">
+                  <elementDefinition Id="50d3e9ce-310a-48e8-9c3b-959dc4cbc36c" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="ca8e3b8e-6fbf-4308-a2a9-88cf775e3728" LastKnownName="ISubscribable" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="39c3d6ba-adad-4cf3-b4e7-5e87105aba11" name="Unsubscribe" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="3bac81ed-4bd2-4ab2-ad7d-2f4254d9a934" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="cbb1dcc7-a23d-4913-ba2a-9295c5c272f1" name="stock" direction="In" isUnique="false">
+                  <elementDefinition Id="a8f4c930-c6ff-4f52-9acd-78ac238d5eef" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="dfa69867-a0e3-4c64-893e-8e311f5e60a9" LastKnownName="ChartableStock" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="80aaa9ae-0d1d-4b3f-9ba9-fe72b26ea0e2" name="type" direction="In" isUnique="false">
+                  <elementDefinition Id="c5f47701-f8fb-4031-9af2-e45fa2e78d51" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="c543be84-36b5-4cfd-bb5c-22b25ba7b027" LastKnownName="Type" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="bffcb140-6338-4250-8d8b-a5e50fc687f3" name="targetDate=null" direction="In" isUnique="false">
+                  <elementDefinition Id="a3b4e363-f6cc-486f-b891-aa4c6b245e30" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="a9de335c-07d1-40d5-8760-bfcc39203d1b" LastKnownName="DateTime" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="e45b8f80-0d72-4e31-8404-2538f899c2d9" direction="Return" isUnique="false">
+                  <elementDefinition Id="e0e590d2-129b-40ff-b2b2-5aeb212f5231" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="8b5dc9cf-cf94-4c71-b900-41bf9601b1ec" LastKnownName="bool" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+        </ownedOperationsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="d8fa74a2-7943-47bc-9a3d-e31984154ed7" name="HistorySubscribing" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="4fbea270-379b-4682-bc15-dc7cea47946d" />
+        <suppliersInternal>
+          <interfaceRealization Id="07205ae9-9eb7-4fc0-a42e-e58967d9b63c">
+            <interfaceMoniker Id="817bc220-d53b-449d-a3dd-d665d04879c5" LastKnownName="ISubscribing" />
+            <elementDefinition Id="6020177d-1312-4bd7-81c9-30c186e0598f" />
+          </interfaceRealization>
+        </suppliersInternal>
+        <ownedOperationsInternal>
+          <operation Id="a46b1860-4e37-4b6c-aa4a-0e0c68670ca4" name="Subscribe" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="077ba3f7-82cf-429b-8868-37e578ba7e31" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="9df76165-dffd-4996-a191-5cc86d118423" name="code" direction="In" isUnique="false">
+                  <elementDefinition Id="a952abf7-c724-407c-9676-4340ab01e059" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="dfa69867-a0e3-4c64-893e-8e311f5e60a9" LastKnownName="ChartableStock" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="917272e5-e8d8-4c67-89fd-062993d2dc5c" name="type" direction="In" isUnique="false">
+                  <elementDefinition Id="60be82df-453d-43ce-b378-a16a34e5fa23" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="c543be84-36b5-4cfd-bb5c-22b25ba7b027" LastKnownName="Type" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="099f5db7-8aaa-4448-9c54-a895207c04e7" name="targetDate=null" direction="In" isUnique="false">
+                  <elementDefinition Id="30dfa710-47e2-4c76-93be-d1aefcee3461" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="a9de335c-07d1-40d5-8760-bfcc39203d1b" LastKnownName="DateTime" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="3920f8e2-d7d6-4c91-b936-6453f684be3e" direction="Return" isUnique="false">
+                  <elementDefinition Id="75dd2b83-e031-4b53-92e3-b06ae533a1f6" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="8b5dc9cf-cf94-4c71-b900-41bf9601b1ec" LastKnownName="bool" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="72a6826c-161d-4967-ae5d-4846c18053d9" name="GetMaster" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="933dd689-a2aa-48ad-b6ce-9e39a57dda44" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="c40a508b-94c4-483d-bbc8-9159828e1b66" name="code" direction="In" isUnique="false">
+                  <elementDefinition Id="d36643d8-eac5-446e-b052-092d0fe67fca" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="e24156ac-ac58-48ab-87a2-6fa7f1deaaa8" LastKnownName="string" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="9ff8e411-4e8a-4703-9f25-b4e5f1e4980e" name="targetDate=null" direction="In" isUnique="false">
+                  <elementDefinition Id="38d69dbc-a420-4b03-ad68-2c2e39e1b8df" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="a9de335c-07d1-40d5-8760-bfcc39203d1b" LastKnownName="DateTime" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="ba79e9f2-3eae-4aa0-8e57-80a28b1f6b97" direction="Return" isUnique="false">
+                  <elementDefinition Id="6992e33a-1102-4450-9440-c5b9a5ed5c41" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="f889a8a4-4a92-490b-8f17-a965a456715f" LastKnownName="StockMaster" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="591366da-2074-4d72-8667-20198ace7e07" name="OnDateChanged" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="a940997a-795d-48f0-87ac-82feb08d7c0b" />
+          </operation>
+          <operation Id="67f5939c-691b-469d-81ac-f972ee5b6d3d" name="OnNewTransactionNotified" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="bb8f1c0f-3498-4606-9d49-be2597bb0cb0" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="b4d24fe2-4ca2-4bd7-a722-274a5228d131" name="newTransaction" direction="In" isUnique="false">
+                  <elementDefinition Id="ddacc9a9-3c58-4eb7-88af-fac0bbbe34e5" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="ca8e3b8e-6fbf-4308-a2a9-88cf775e3728" LastKnownName="ISubscribable" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="d2acf1dd-d2a8-4efe-a0e2-a5fa6040cf6b" name="Unsubscribe" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="370525f0-c996-40ed-83d0-4654132194ab" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="07a130d7-a1bf-46aa-9924-1e4de64ab522" name="stock" direction="In" isUnique="false">
+                  <elementDefinition Id="433e7cce-602c-479f-8481-b6f087735448" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="dfa69867-a0e3-4c64-893e-8e311f5e60a9" LastKnownName="ChartableStock" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="15357571-1890-4446-bd04-5aac60c110f0" name="type" direction="In" isUnique="false">
+                  <elementDefinition Id="f2e5f4b5-7274-46c1-b8a1-105f9e2d064d" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="c543be84-36b5-4cfd-bb5c-22b25ba7b027" LastKnownName="Type" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="123ca465-df5a-4ccf-a607-64fb54f45d7d" name="targetDate=null" direction="In" isUnique="false">
+                  <elementDefinition Id="a43fc03c-6948-48f0-b1ff-8130c0bfe4a0" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="a9de335c-07d1-40d5-8760-bfcc39203d1b" LastKnownName="DateTime" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="11bd5895-f00f-48f1-9cf7-f80b9ee4e1ba" direction="Return" isUnique="false">
+                  <elementDefinition Id="d1cce6ee-ab4d-4cb9-8d8b-38f2929616e5" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="8b5dc9cf-cf94-4c71-b900-41bf9601b1ec" LastKnownName="bool" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+        </ownedOperationsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <packageHasNamedElement>
+      <referencedType Id="dfa69867-a0e3-4c64-893e-8e311f5e60a9" name="ChartableStock" isAbstract="false" isLeaf="false" cachedFullName="HallaModeling::ChartableStock">
+        <elementDefinition Id="4bc906e1-c034-4113-a536-d5a2576d4318" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="ca8e3b8e-6fbf-4308-a2a9-88cf775e3728" name="ISubscribable" isAbstract="false" isLeaf="false" cachedFullName="HallaModeling::ISubscribable">
+        <elementDefinition Id="fb9f7304-4bc8-48f4-82ac-23e8e804afc4" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="912f6fa6-d402-4f64-a0b8-5aec99e57e74" name="ChartableStock&gt;" isAbstract="false" isLeaf="false" cachedFullName="ChartableStock&gt;">
+        <elementDefinition Id="84181cd9-da23-492b-bcc6-69723cc7128e" />
+      </referencedType>
+    </packageHasNamedElement>
+  </packagedElements>
+  <package Id="125b0c6c-2356-4745-b645-fe2d97167ca4" name="HallaModeling">
+    <elementDefinition Id="1daf07bb-4f77-4afe-8f56-ddfa2c1f436c" />
+  </package>
+</logicalClassDesignerModel>
