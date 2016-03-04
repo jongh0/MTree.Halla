@@ -14,7 +14,7 @@ namespace TestConsole
 
         static void Main(string[] args)
         {
-            Console.WriteLine(Config.Ebest.UserPw);
+            Console.WriteLine(Config.Daishin.AccountPw);
 
             //while (true)
             //{
