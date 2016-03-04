@@ -59,6 +59,30 @@ namespace MTree.Configuration
         }
         #endregion
 
+        #region Daishin Configuration
+        private static readonly string daishinConfigFileName = "Config.Daishin.json";
+        private static DaishinConfiguration _daishin;
+        public static DaishinConfiguration Daishin
+        {
+            get
+            {
+                if (_daishin == null)
+                {
+                    lock (lockObject)
+                    {
+                        if (_daishin == null)
+                        {
+                            LoadConfiguration(ref _daishin, daishinConfigFileName);
+                            SaveConfiguration(_daishin, daishinConfigFileName);
+                        }
+                    }
+                }
+
+                return _daishin;
+            }
+        }
+        #endregion
+
         #region Load / Save Configuration
         private static void LoadConfiguration<T>(ref T config, string filePath)
         {
