@@ -29,8 +29,6 @@ namespace MTree.EbestProvider
             get { return (queryableCount < maxQueryableCount); }
         }
 
-        private LoginInfo loginInfo;
-
         static private object lockObject = new object();
 
         static private volatile EbestProvider _instance;
@@ -59,9 +57,16 @@ namespace MTree.EbestProvider
 
         public int Port { get; set; }
 
+        private LoginInfo loginInfo;
+
         private AutoResetEvent waitQuoting;
         private StockMaster quotingStockMaster;
         private IndexMaster quotingIndexMaster;
+
+        private CancellationTokenSource loginCheckerCancelSource;
+        private CancellationToken loginCheckerCancelToken;
+
+        private bool isAnyDataReceived;
 
         #region Ebest Specific
         private XASessionClass sessionObj;
@@ -74,6 +79,9 @@ namespace MTree.EbestProvider
             try
             {
                 waitQuoting = new AutoResetEvent(false);
+
+                loginCheckerCancelSource = new CancellationTokenSource();
+                loginCheckerCancelToken = loginCheckerCancelSource.Token;
 
                 #region XASession
                 sessionObj = new XASessionClass();
@@ -135,6 +143,8 @@ namespace MTree.EbestProvider
                 StockMasterReceived();
             else if (szTrCode == "t1511")
                 IndexMasterReceived();
+
+            isAnyDataReceived = true;
         }
 
         private void queryObj_ReceiveChartRealData(string szTrCode)
@@ -152,6 +162,8 @@ namespace MTree.EbestProvider
         {
             if (szTrCode == "IJ_")
                 IndexPriceReceived(szTrCode);
+
+            isAnyDataReceived = true;
         }
         #endregion
 
@@ -159,19 +171,63 @@ namespace MTree.EbestProvider
         private void sessionObj_Event_Logout()
         {
             loginInfo.LoginState = LoginState.LoggedOut;
+            loginCheckerCancelSource.Cancel();
         }
 
         private void sessionObj_Event_Login(string szCode, string szMsg)
         {
             logger.Info($"szCode: {szCode}, szMsg: {szMsg}");
             loginInfo.LoginState = LoginState.LoggedIn;
+
+            Task.Run(() => { LoginStateChecker(); }, loginCheckerCancelToken);
         }
 
         private void sessionObj_Disconnect()
         {
             loginInfo.LoginState = LoginState.Disconnected;
+            loginCheckerCancelSource.Cancel();
         } 
         #endregion
+
+        private void LoginStateChecker()
+        {
+            logger.Info("LoginStateChecker started");
+
+            while (loginInfo.LoginState == LoginState.LoggedIn)
+            {
+                try
+                {
+                    loginCheckerCancelToken.ThrowIfCancellationRequested();
+
+                    if (isAnyDataReceived == false)
+                    {
+                        IndexMaster indexMaster = new IndexMaster();
+                        GetQuote("001", ref indexMaster);
+                    }
+
+                    isAnyDataReceived = false;
+
+                    // 10분 sleep
+                    int sleepCount = 60 * 10;
+                    while (sleepCount-- > 0)
+                    {
+                        loginCheckerCancelToken.ThrowIfCancellationRequested();
+                        Thread.Sleep(1000);
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    Console.WriteLine("Operation canceled");
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex);
+                }
+            }
+
+            logger.Info("LoginStateChecker stopped");
+        }
 
         public bool Login()
         {
@@ -189,9 +245,13 @@ namespace MTree.EbestProvider
                         ret = sessionObj.Login(loginInfo.UserId, loginInfo.UserPw, loginInfo.CertPw, (int)XA_SERVER_TYPE.XA_SIMUL_SERVER, true);
 
                     if (ret == true)
+                    {
                         logger.Info("Login success");
+                    }
                     else
+                    {
                         logger.Error("Login fail");
+                    }
                 }
                 else
                 {
