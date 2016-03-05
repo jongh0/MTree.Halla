@@ -8,12 +8,12 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Xml.Serialization;
-using XA_DATASETLib;
-using XA_SESSIONLib;
 using System.Threading.Tasks;
 using MTree.DataStructure;
 using MTree.Configuration;
 using MTree.Provider;
+using XA_SESSIONLib;
+using XA_DATASETLib;
 
 namespace MTree.EbestProvider
 {
@@ -152,7 +152,7 @@ namespace MTree.EbestProvider
         private void realObj_ReceiveRealData(string szTrCode)
         {
             if (szTrCode == "IJ_")
-                IndexPriceReceived(szTrCode);
+                IndexConclusionReceived(szTrCode);
 
             isAnyDataReceived = true;
         }
@@ -281,7 +281,7 @@ namespace MTree.EbestProvider
             return true;
         }
 
-        public bool IndexSubscribe(string code)
+        public bool SubscribeIndex(string code)
         {
             if (IsQueryable == false)
             {
@@ -306,7 +306,7 @@ namespace MTree.EbestProvider
             return false;
         }
 
-        public bool IndexUnsubscribe(string code)
+        public bool UnsubscribeIndex(string code)
         {
             try
             {
@@ -325,7 +325,7 @@ namespace MTree.EbestProvider
             return false;
         }
 
-        private void IndexPriceReceived(string szTrCode)
+        private void IndexConclusionReceived(string szTrCode)
         {
             try
             {

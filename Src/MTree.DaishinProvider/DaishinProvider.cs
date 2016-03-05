@@ -76,6 +76,16 @@ namespace MTree.DaishinProvider
             logger.Info("Disconnected");
         }
 
+        private void stockMstObj_Received()
+        {
+            StockMasterReceived();
+        }
+
+        private void stockCurObj_Received()
+        {
+            StockConclusionReceived();
+        }
+
         public bool GetQuote(string code, ref StockMaster stockMaster)
         {
             logger.Info($"Start quoting, Code: {code}");
@@ -121,84 +131,94 @@ namespace MTree.DaishinProvider
             return (ret == 0);
         }
 
-        private void stockMstObj_Received()
-        {
-            StockMasterReceived();
-        }
-
         private void StockMasterReceived()
         {
             try
             {
+                // 0 - (string) 종목 코드
+                string code = stockMstObj.GetHeaderValue(0).ToString().Substring(1);
+
                 if (quotingStockMaster == null)
                 {
-                    logger.Error($"Current quoting master is not assigned. Received Code: {stockMstObj.GetHeaderValue(0).Substring(1)}");
+                    logger.Error($"Current quoting master is not assigned. Received Code: {code}");
                     return;
                 }
 
-                if (quotingStockMaster.Code != stockMstObj.GetHeaderValue(0).Substring(1))
+                if (quotingStockMaster.Code != code)
                 {
-                    logger.Warn($"{quotingStockMaster.Code} != {stockMstObj.GetHeaderValue(0).Substring(1)}");
+                    logger.Warn($"{quotingStockMaster.Code} != {code}");
                     return;
                 }
 
                 // 1 - (string) 종목 명
-                quotingStockMaster.Name = stockMstObj.GetHeaderValue(1);
+                quotingStockMaster.Name = stockMstObj.GetHeaderValue(1).ToString();
+
                 // 2 - (string) 대신 업종코드
-                var daishingCode = stockMstObj.GetHeaderValue(2);
+                var daishingCode = stockMstObj.GetHeaderValue(2).ToString();
+
                 // 3 - (string) 그룹코드
-                var groupCode = stockMstObj.GetHeaderValue(3);
+                var groupCode = stockMstObj.GetHeaderValue(3).ToString();
+
                 // 5 - (string) 소속구분
-                var classification = stockMstObj.GetHeaderValue(5);
-                // 5 - (string) 대형,중형,소형
-                var size = stockMstObj.GetHeaderValue(6);
+                var classification = stockMstObj.GetHeaderValue(5).ToString();
+
+                // 6 - (string) 대형,중형,소형
+                var size = stockMstObj.GetHeaderValue(6).ToString();
+
                 // 8 - (long) 상한가
                 quotingStockMaster.UpperLimit = (int)stockMstObj.GetHeaderValue(8);
+
                 // 9- (long) 하한가
                 quotingStockMaster.LowerLimit = (int)stockMstObj.GetHeaderValue(9);
+
                 // 10 - (long) 전일종가
                 quotingStockMaster.PreviousClosedPrice = (int)stockMstObj.GetHeaderValue(10);
+
                 // 11 - (long) 현재가
-                //currentQuotingkMaster.LastSale = (int)currentPriceQueryObj.GetHeaderValue(11);     
+                //currentQuotingkMaster.LastSale = (int)currentPriceQueryObj.GetHeaderValue(11);  
+                   
                 // 26 - (short) 결산월     
                 quotingStockMaster.SettlementMonth = (int)stockMstObj.GetHeaderValue(26);
+
                 // 27 - (long) basis price (기준가)
                 quotingStockMaster.BasisPrice = (int)stockMstObj.GetHeaderValue(27);
+
                 // 31 - (decimal) 상장주식수 (단주)
                 quotingStockMaster.ShareVolume = (long)stockMstObj.GetHeaderValue(31);
+
                 // 32 - (long) 상장자본금
-                quotingStockMaster.ListedCapital = (long)stockMstObj.GetHeaderValue(32) * 1000000;
+                quotingStockMaster.ListedCapital = (long)stockMstObj.GetHeaderValue(32) * 1000000; // TODO : 단위 안넘치나?
+
                 // 37 - (long) 외국인 한도수량
                 quotingStockMaster.ForeigneLimit = (long)stockMstObj.GetHeaderValue(37);
+
                 // 39 - (decimal) 외국인 주문가능수량
                 quotingStockMaster.ForeigneAvailableRemain = (long)stockMstObj.GetHeaderValue(39);
+
                 // 43 - (short) 매매 수량 단위 
                 quotingStockMaster.QuantityUnit = (int)stockMstObj.GetHeaderValue(43);
+
+                // 45 - (char) 소속 구분(코드)
+                var classificationCode = (char)stockMstObj.GetHeaderValue(45);
+
                 // 46 - (long) 전일 거래량
                 quotingStockMaster.PreviousVolume = (long)stockMstObj.GetHeaderValue(46);
+
+                // 46 - (long) 전일 거래량
+                quotingStockMaster.PreviousVolume = (long)stockMstObj.GetHeaderValue(46);
+
+                // 52 - (string) 벤처 구분. [코스닥 : 일반기업 / 벤처기업] [프리보드 : 일반기업 / 벤처기업 / 테크노파크일반 / 테크노파크벤쳐]
+                var venture = (string)stockMstObj.GetHeaderValue(52);
+
+                // 53 - (short) KOSPI200 채용 여부
+                var kospi200 = (string)stockMstObj.GetHeaderValue(53);
+
                 // 54 - (short) 액면가
                 quotingStockMaster.FaceValue = (int)stockMstObj.GetHeaderValue(54);
+
                 // 69 -(char) 불성실 공시구분
                 if ((char)stockMstObj.GetHeaderValue(69) != '0')
                     quotingStockMaster.UnfairAnnouncement = new Warning() { Start = DateTime.Now };
-                quotingStockMaster.QuantityUnit = (int)stockMstObj.GetHeaderValue(43);
-                // 46 - (long) 소속구분코드
-                var classificationCode = (char)stockMstObj.GetHeaderValue(45);
-                // 46 - (long) 전일 거래량
-                quotingStockMaster.PreviousVolume = (long)stockMstObj.GetHeaderValue(46);
-                // 52 - (string) 벤처 구분. [코스닥 : 일반기업 / 벤처기업] [프리보드 : 일반기업 / 벤처기업 / 테크노파크일반 / 테크노파크벤쳐]
-                var venture = (string)stockMstObj.GetHeaderValue(52);
-                // 53 - (short) KOSPI200 채용 여부
-                var kospi200 = (string)stockMstObj.GetHeaderValue(53);
-                // 54 - (short) 액면가
-                quotingStockMaster.FaceValue = (int)stockMstObj.GetHeaderValue(54);
-                // 69 -(char) 불성실 공시구분 => KRX에서 조회
-                //if ((char)currentPriceQueryObj.GetHeaderValue(69) != '0')
-                //{
-                //    InvestWarningEntity unfairAnnouncementState = new InvestWarningEntity();
-                //    unfairAnnouncementState.Start = DateTime.Now;
-                //    quotingStockMaster.UnfairAnnouncement = unfairAnnouncementState;
-                //}
             }
             catch (Exception ex)
             {
@@ -210,7 +230,7 @@ namespace MTree.DaishinProvider
             }
         }
 
-        public bool PriceSubscribe(string code)
+        public bool SubscribeStock(string code)
         {
             int status = 1;
 
@@ -241,7 +261,7 @@ namespace MTree.DaishinProvider
             return (status == 0);
         }
 
-        public bool PriceUnsubscribe(string code)
+        public bool UnsubscribeStock(string code)
         {
             int status = 1;
 
@@ -272,7 +292,7 @@ namespace MTree.DaishinProvider
             return (status == 0);
         }
 
-        private void stockCurObj_Received()
+        private void StockConclusionReceived()
         {
             try
             {
