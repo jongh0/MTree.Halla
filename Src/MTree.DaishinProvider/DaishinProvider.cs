@@ -184,11 +184,7 @@ namespace MTree.DaishinProvider
                 quotingStockMaster.FaceValue = (int)stockMstObj.GetHeaderValue(54);
                 // 69 -(char) 불성실 공시구분
                 if ((char)stockMstObj.GetHeaderValue(69) != '0')
-                {
-                    InvestWarningEntity unfairAnnouncementState = new InvestWarningEntity();
-                    unfairAnnouncementState.Start = DateTime.Now;
-                    quotingStockMaster.UnfairAnnouncement = unfairAnnouncementState;
-                }
+                    quotingStockMaster.UnfairAnnouncement = new Warning() { Start = DateTime.Now };
                 quotingStockMaster.QuantityUnit = (int)stockMstObj.GetHeaderValue(43);
                 // 46 - (long) 소속구분코드
                 var classificationCode = (char)stockMstObj.GetHeaderValue(45);

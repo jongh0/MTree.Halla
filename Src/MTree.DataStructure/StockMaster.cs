@@ -167,54 +167,55 @@ namespace MTree.DataStructure
         /// 매매정지(KRX)
         /// </summary>
         [BsonElement("TH")]
-        public InvestWarningEntity TradingHalt { get; set; }
+        public Warning TradingHalt { get; set; }
 
         /// <summary>
         /// 관리(KRX)
         /// </summary>
         [BsonElement("AI")]
-        public InvestWarningEntity AdministrativeIssue { get; set; }
+        public Warning AdministrativeIssue { get; set; }
 
         /// <summary>
         /// 주의(KRX)
         /// </summary>
         [BsonElement("IC")]
-        public InvestWarningEntity InvestCaution { get; set; }
+        public Warning InvestCaution { get; set; }
 
         /// <summary>
         /// 경고(KRX)
         /// </summary>
         [BsonElement("IW")]
-        public InvestWarningEntity InvestWarning { get; set; }
+        public Warning InvestWarning { get; set; }
 
         /// <summary>
         /// 위험(KRX)
         /// </summary>
         [BsonElement("IR")]
-        public InvestWarningEntity InvestmentRisk { get; set; }
+        public Warning InvestmentRisk { get; set; }
 
         /// <summary>
         /// 불성실공시(KRX)
         /// </summary>
         [BsonElement("UA")]
-        public InvestWarningEntity UnfairAnnouncement { get; set; }
+        public Warning UnfairAnnouncement { get; set; }
 
         /// <summary>
         /// 주의환기(KRX)
         /// </summary>
         [BsonElement("CA")]
-        public InvestWarningEntity CallingAttention { get; set; }
+        public Warning CallingAttention { get; set; }
 
         /// <summary>
-        /// Overheated(KRX)
+        /// Overheated(KRX) // TODO : KRX 맞음?
         /// </summary>
         [BsonElement("CT")]
-        public InvestWarningEntity CleaningTrade { get; set; }
+        public Warning CleaningTrade { get; set; }
 
         /// <summary>
         /// 단기과열(KRX)
         /// </summary>
-        public InvestWarningEntity Overheated { get; set; }
+        [BsonElement("OH")]
+        public Warning Overheated { get; set; }
 
         /// <summary>
         /// 자산(Naver)
@@ -257,45 +258,62 @@ namespace MTree.DataStructure
         [BsonElement("VA")]
         public ValueAlteredType ValueAltered { get; set; }
 
+        public StockMaster()
+        {
+            // TODO : 생성해주는게 맞나?
+            //AdministrativeIssue = new Warning();
+            //InvestCaution = new Warning();
+            //InvestWarning = new Warning();
+            //InvestmentRisk = new Warning();
+            //UnfairAnnouncement = new Warning();
+            //CallingAttention = new Warning();
+            //CleaningTrade = new Warning();
+            //Overheated = new Warning();
+        }
+
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append(base.ToString());
-            sb.AppendLine($"{nameof(Name)}: {Name}");
-            sb.AppendLine($"{nameof(SettlementMonth)}: {SettlementMonth}");
-            sb.AppendLine($"{nameof(FaceValue)}: {FaceValue}");
-            sb.AppendLine($"{nameof(ListedDate)}: {ListedDate}");
-            sb.AppendLine($"{nameof(CirculatingVolume)}: {CirculatingVolume}");
-            sb.AppendLine($"{nameof(ShareVolume)}: {ShareVolume}");
-            sb.AppendLine($"{nameof(ListedCapital)}: {ListedCapital}");
-            sb.AppendLine($"{nameof(BasisPrice)}: {BasisPrice}");
-            sb.AppendLine($"{nameof(UpperLimit)}: {UpperLimit}");
-            sb.AppendLine($"{nameof(LowerLimit)}: {LowerLimit}");
-            sb.AppendLine($"{nameof(PreviousClosedPrice)}: {PreviousClosedPrice}");
-            sb.AppendLine($"{nameof(PreviousVolume)}: {PreviousVolume}");
-            sb.AppendLine($"{nameof(QuantityUnit)}: {QuantityUnit}");
-            sb.AppendLine($"{nameof(ForeigneLimit)}: {ForeigneLimit}");
-            sb.AppendLine($"{nameof(ForeigneAvailableRemain)}: {ForeigneAvailableRemain}");
-            sb.AppendLine($"{nameof(ForeigneLimitRate)}: {ForeigneLimitRate}");
-            sb.AppendLine($"{nameof(ForeigneHold)}: {ForeigneHold}");
-            sb.AppendLine($"{nameof(ForeigneExhaustingRate)}: {ForeigneExhaustingRate}");
-            sb.AppendLine($"{nameof(ForeigneAvailableRemainRate)}: {ForeigneAvailableRemainRate}");
-            sb.AppendLine($"{nameof(TradingHalt)}: {TradingHalt}");
-            sb.AppendLine($"{nameof(AdministrativeIssue)}: {AdministrativeIssue}");
-            sb.AppendLine($"{nameof(InvestCaution)}: {InvestCaution}");
-            sb.AppendLine($"{nameof(InvestWarning)}: {InvestWarning}");
-            sb.AppendLine($"{nameof(InvestmentRisk)}: {InvestmentRisk}");
-            sb.AppendLine($"{nameof(UnfairAnnouncement)}: {UnfairAnnouncement}");
-            sb.AppendLine($"{nameof(CallingAttention)}: {CallingAttention}");
-            sb.AppendLine($"{nameof(CleaningTrade)}: {CleaningTrade}");
-            sb.AppendLine($"{nameof(Overheated)}: {Overheated}");
-            sb.AppendLine($"{nameof(Asset)}: {Asset}");
-            sb.AppendLine($"{nameof(BPS)}: {BPS}");
-            sb.AppendLine($"{nameof(PBR)}: {PBR}");
-            sb.AppendLine($"{nameof(NetIncome)}: {NetIncome}");
-            sb.AppendLine($"{nameof(EPS)}: {EPS}");
-            sb.AppendLine($"{nameof(PER)}: {PER}");
-            sb.AppendLine($"{nameof(ValueAltered)}: {ValueAltered}");
+            try
+            {
+                sb.Append(base.ToString());
+                sb.AppendLine($"{nameof(Name)}: {Name}");
+                sb.AppendLine($"{nameof(SettlementMonth)}: {SettlementMonth}");
+                sb.AppendLine($"{nameof(FaceValue)}: {FaceValue}");
+                sb.AppendLine($"{nameof(ListedDate)}: {ListedDate}");
+                sb.AppendLine($"{nameof(CirculatingVolume)}: {CirculatingVolume}");
+                sb.AppendLine($"{nameof(ShareVolume)}: {ShareVolume}");
+                sb.AppendLine($"{nameof(ListedCapital)}: {ListedCapital}");
+                sb.AppendLine($"{nameof(BasisPrice)}: {BasisPrice}");
+                sb.AppendLine($"{nameof(UpperLimit)}: {UpperLimit}");
+                sb.AppendLine($"{nameof(LowerLimit)}: {LowerLimit}");
+                sb.AppendLine($"{nameof(PreviousClosedPrice)}: {PreviousClosedPrice}");
+                sb.AppendLine($"{nameof(PreviousVolume)}: {PreviousVolume}");
+                sb.AppendLine($"{nameof(QuantityUnit)}: {QuantityUnit}");
+                sb.AppendLine($"{nameof(ForeigneLimit)}: {ForeigneLimit}");
+                sb.AppendLine($"{nameof(ForeigneAvailableRemain)}: {ForeigneAvailableRemain}");
+                sb.AppendLine($"{nameof(ForeigneLimitRate)}: {ForeigneLimitRate}");
+                sb.AppendLine($"{nameof(ForeigneHold)}: {ForeigneHold}");
+                sb.AppendLine($"{nameof(ForeigneExhaustingRate)}: {ForeigneExhaustingRate}");
+                sb.AppendLine($"{nameof(ForeigneAvailableRemainRate)}: {ForeigneAvailableRemainRate}");
+                sb.AppendLine($"{nameof(TradingHalt)}: {TradingHalt}");
+                sb.AppendLine($"{nameof(AdministrativeIssue)}: {AdministrativeIssue}");
+                sb.AppendLine($"{nameof(InvestCaution)}: {InvestCaution}");
+                sb.AppendLine($"{nameof(InvestWarning)}: {InvestWarning}");
+                sb.AppendLine($"{nameof(InvestmentRisk)}: {InvestmentRisk}");
+                sb.AppendLine($"{nameof(UnfairAnnouncement)}: {UnfairAnnouncement}");
+                sb.AppendLine($"{nameof(CallingAttention)}: {CallingAttention}");
+                sb.AppendLine($"{nameof(CleaningTrade)}: {CleaningTrade}");
+                sb.AppendLine($"{nameof(Overheated)}: {Overheated}");
+                sb.AppendLine($"{nameof(Asset)}: {Asset}");
+                sb.AppendLine($"{nameof(BPS)}: {BPS}");
+                sb.AppendLine($"{nameof(PBR)}: {PBR}");
+                sb.AppendLine($"{nameof(NetIncome)}: {NetIncome}");
+                sb.AppendLine($"{nameof(EPS)}: {EPS}");
+                sb.AppendLine($"{nameof(PER)}: {PER}");
+                sb.AppendLine($"{nameof(ValueAltered)}: {ValueAltered}");
+            }
+            catch { }
 
             return sb.ToString();
         }

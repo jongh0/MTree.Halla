@@ -63,7 +63,7 @@
     <Compile Include="Conclusion.cs" />
     <Compile Include="IndexConclusion.cs" />
     <Compile Include="IndexMaster.cs" />
-    <Compile Include="InvestWarningEntity.cs" />
+    <Compile Include="Warning.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StockConclusion.cs" />
     <Compile Include="StockMaster.cs" />

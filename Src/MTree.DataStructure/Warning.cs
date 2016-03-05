@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace MTree.DataStructure
 {
     [Serializable]
-    public class InvestWarningEntity // TODO: 이름을 Warning으로 바꿔도 될까?
+    public class Warning
     {
         /// <summary>
         /// 지정유무
