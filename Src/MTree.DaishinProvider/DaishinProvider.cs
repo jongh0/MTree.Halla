@@ -1,6 +1,7 @@
 ﻿using CPUTILLib;
 using DSCBO1Lib;
 using MTree.DataStructure;
+using MTree.Provider;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace MTree.DaishinProvider
 {
-    class DaishinProvider
+    class DaishinProvider : BrokerageFirmProvider
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -45,21 +46,16 @@ namespace MTree.DaishinProvider
             }
         }
 
-        private AutoResetEvent waitQuoting;
-        private StockMaster quotingStockMaster;
-
         #region Daishin Specific
         private CpCybos sessionObj;
         private StockMst stockMstObj;
         private StockCur stockCurObj;
         #endregion
 
-        public DaishinProvider()
+        public DaishinProvider() : base()
         {
             try
             {
-                waitQuoting = new AutoResetEvent(false);
-
                 sessionObj = new CpCybos();
                 sessionObj.OnDisconnect += sessionObj_OnDisconnect;
 
@@ -313,9 +309,7 @@ namespace MTree.DaishinProvider
                 else if (typeTime == '4') conclusion.MarketTimeType = MarketTimeType.AfterOffTheClock;
                 else if (typeTime == '5') conclusion.MarketTimeType = MarketTimeType.AfterOffTheClock;
 
-                // TODO : Conclusion 처리 추가해야함
-                //if (ConclusionUpdated != null)
-                //    ConclusionUpdated(conclusion);
+                stockConclusionQueue.Enqueue(conclusion);
             }
             catch (Exception ex)
             {

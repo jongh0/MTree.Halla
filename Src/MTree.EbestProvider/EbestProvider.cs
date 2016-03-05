@@ -17,7 +17,7 @@ using MTree.Provider;
 
 namespace MTree.EbestProvider
 {
-    public class EbestProvider
+    public class EbestProvider : BrokerageFirmProvider
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -51,19 +51,13 @@ namespace MTree.EbestProvider
 
         private readonly string resFilePath = "\\Res";
 
-        private Dictionary<string, IndexConclusion> prevIndexConclusions;
-
         public string Server { get; set; }
 
         public int Port { get; set; }
 
         private LoginInfo loginInfo;
 
-        private AutoResetEvent waitQuoting;
-        private StockMaster quotingStockMaster;
-        private IndexMaster quotingIndexMaster;
-
-        private CancellationTokenSource loginCheckerCancelSource;
+        private CancellationTokenSource loginCheckerCancelSource = new CancellationTokenSource();
         private CancellationToken loginCheckerCancelToken;
 
         private bool isAnyDataReceived;
@@ -74,13 +68,10 @@ namespace MTree.EbestProvider
         private XAQueryClass queryObj; 
         #endregion
 
-        private EbestProvider()
+        private EbestProvider() : base()
         {
             try
             {
-                waitQuoting = new AutoResetEvent(false);
-
-                loginCheckerCancelSource = new CancellationTokenSource();
                 loginCheckerCancelToken = loginCheckerCancelSource.Token;
 
                 #region XASession
@@ -106,7 +97,7 @@ namespace MTree.EbestProvider
 
                 #region Login
                 loginInfo = new LoginInfo();
-                loginInfo.LoginState = LoginState.Disconnected;
+                loginInfo.LoginState = LoginStateType.Disconnected;
                 loginInfo.UserId = Config.Ebest.UserId;
                 loginInfo.UserPw = Config.Ebest.UserPw;
                 loginInfo.CertPw = Config.Ebest.CertPw;
@@ -170,21 +161,21 @@ namespace MTree.EbestProvider
         #region XASession
         private void sessionObj_Event_Logout()
         {
-            loginInfo.LoginState = LoginState.LoggedOut;
+            loginInfo.LoginState = LoginStateType.LoggedOut;
             loginCheckerCancelSource.Cancel();
         }
 
         private void sessionObj_Event_Login(string szCode, string szMsg)
         {
             logger.Info($"szCode: {szCode}, szMsg: {szMsg}");
-            loginInfo.LoginState = LoginState.LoggedIn;
+            loginInfo.LoginState = LoginStateType.LoggedIn;
 
             Task.Run(() => { LoginStateChecker(); }, loginCheckerCancelToken);
         }
 
         private void sessionObj_Disconnect()
         {
-            loginInfo.LoginState = LoginState.Disconnected;
+            loginInfo.LoginState = LoginStateType.Disconnected;
             loginCheckerCancelSource.Cancel();
         } 
         #endregion
@@ -193,7 +184,7 @@ namespace MTree.EbestProvider
         {
             logger.Info("LoginStateChecker started");
 
-            while (loginInfo.LoginState == LoginState.LoggedIn)
+            while (loginInfo.LoginState == LoginStateType.LoggedIn)
             {
                 try
                 {
@@ -273,7 +264,7 @@ namespace MTree.EbestProvider
                 if (sessionObj.IsConnected() == false)
                     return false;
 
-                if (loginInfo.LoginState != LoginState.LoggedIn)
+                if (loginInfo.LoginState != LoginStateType.LoggedIn)
                     return false;
 
                 sessionObj.Logout();
@@ -338,81 +329,77 @@ namespace MTree.EbestProvider
         {
             try
             {
-                IndexConclusion indexUpdated = new IndexConclusion();
+                IndexConclusion conclusion = new IndexConclusion();
 
                 string temp = realObj.GetFieldData("OutBlock", "upcode");
-                indexUpdated.Code = temp;
+                conclusion.Code = temp;
 
                 temp = realObj.GetFieldData("OutBlock", "time");
                 var now = DateTime.Now;
                 uint time;
 
                 if (uint.TryParse(temp, out time) == true)
-                    indexUpdated.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100, now.Millisecond);
+                    conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100, now.Millisecond);
                 else
-                    indexUpdated.Time = now;
+                    conclusion.Time = now;
 
                 temp = realObj.GetFieldData("OutBlock", "jisu");
                 double index;
                 if (double.TryParse(temp, out index) == true)
-                    indexUpdated.Index = index;
+                    conclusion.Index = index;
 
                 temp = realObj.GetFieldData("OutBlock", "volume");
                 double volumn;
                 if (double.TryParse(temp, out volumn) == true)
-                    indexUpdated.Volume = volumn * 1000;
+                    conclusion.Volume = volumn * 1000;
 
                 temp = realObj.GetFieldData("OutBlock", "value");
                 double value;
                 if (double.TryParse(temp, out value) == true)
-                    indexUpdated.Value = value;
+                    conclusion.Value = value;
 
                 temp = realObj.GetFieldData("OutBlock", "upjo");
                 int upperLimitCount;
                 if (int.TryParse(temp, out upperLimitCount) == true)
-                    indexUpdated.UpperLimitedItemCount = upperLimitCount;
+                    conclusion.UpperLimitedItemCount = upperLimitCount;
 
                 temp = realObj.GetFieldData("OutBlock", "highjo");
                 int increasingCount;
                 if (int.TryParse(temp, out increasingCount) == true)
-                    indexUpdated.IncreasingItemCount = increasingCount;
+                    conclusion.IncreasingItemCount = increasingCount;
 
                 temp = realObj.GetFieldData("OutBlock", "unchgjo");
                 int steadyCount;
                 if (int.TryParse(temp, out steadyCount) == true)
-                    indexUpdated.SteadyItemCount = steadyCount;
+                    conclusion.SteadyItemCount = steadyCount;
 
                 temp = realObj.GetFieldData("OutBlock", "lowjo");
                 int decreasingCount;
                 if (int.TryParse(temp, out decreasingCount) == true)
-                    indexUpdated.DecreasingItemCount = decreasingCount;
+                    conclusion.DecreasingItemCount = decreasingCount;
 
                 temp = realObj.GetFieldData("OutBlock", "downjo");
                 int lowerLimitedCount;
                 if (int.TryParse(temp, out lowerLimitedCount) == true)
-                    indexUpdated.LowerLimitedItemCount = lowerLimitedCount;
+                    conclusion.LowerLimitedItemCount = lowerLimitedCount;
 
-                if (prevIndexConclusions.ContainsKey(indexUpdated.Code) == false)
-                    prevIndexConclusions.Add(indexUpdated.Code, new IndexConclusion());
+                if (prevIndexConclusions.ContainsKey(conclusion.Code) == false)
+                    prevIndexConclusions.TryAdd(conclusion.Code, new IndexConclusion());
 
-                if (prevIndexConclusions[indexUpdated.Code].Value == indexUpdated.Value && 
-                    prevIndexConclusions[indexUpdated.Code].Volume == indexUpdated.Volume)
+                if (prevIndexConclusions[conclusion.Code].Value == conclusion.Value && 
+                    prevIndexConclusions[conclusion.Code].Volume == conclusion.Volume)
                     return;
 
                 double newReceived;
-                newReceived = indexUpdated.Value;
-                indexUpdated.Value = indexUpdated.Value - prevIndexConclusions[indexUpdated.Code].Value;
-                prevIndexConclusions[indexUpdated.Code].Value = newReceived;
+                newReceived = conclusion.Value;
+                conclusion.Value = conclusion.Value - prevIndexConclusions[conclusion.Code].Value;
+                prevIndexConclusions[conclusion.Code].Value = newReceived;
 
-                newReceived = indexUpdated.Volume;
-                indexUpdated.Volume = indexUpdated.Volume - prevIndexConclusions[indexUpdated.Code].Volume;
-                prevIndexConclusions[indexUpdated.Code].Volume = newReceived;
+                newReceived = conclusion.Volume;
+                conclusion.Volume = conclusion.Volume - prevIndexConclusions[conclusion.Code].Volume;
+                prevIndexConclusions[conclusion.Code].Volume = newReceived;
 
-                // TODO : Conclusion 처리 추가해야함
-                //if (IndexValueUpdated != null)
-                //{
-                //    IndexValueUpdated(indexUpdated);
-                //}
+                indexConclusionQueue.Enqueue(conclusion);
             }
             catch (Exception ex)
             {

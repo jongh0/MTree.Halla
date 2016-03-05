@@ -17,5 +17,20 @@ namespace MTree.RealTimeProvider
         {
             base.Channel.KeepConnection();
         }
+
+        public void NotifyBiddingPrice(BiddingPrice biddingPrice)
+        {
+            base.Channel.NotifyBiddingPrice(biddingPrice);
+        }
+
+        public void NotifyIndexConclusion(IndexConclusion conclusion)
+        {
+            base.Channel.NotifyIndexConclusion(conclusion);
+        }
+
+        public void NotifyStockConclusion(StockConclusion conclusion)
+        {
+            base.Channel.NotifyStockConclusion(conclusion);
+        }
     }
 }

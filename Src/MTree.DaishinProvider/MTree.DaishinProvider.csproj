@@ -119,6 +119,10 @@
       <Project>{da1959a9-15fa-47aa-98ac-3844a723fea1}</Project>
       <Name>MTree.DataStructure</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MTree.Provider\MTree.Provider.csproj">
+      <Project>{891f9baa-d335-4a1b-8fa3-bb0e4d76410a}</Project>
+      <Name>MTree.Provider</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

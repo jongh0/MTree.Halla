@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace MTree.Provider
 {
-    public enum LoginState
+    public enum LoginStateType
     {
         Disconnected,
         LoggedIn,
         LoggedOut,
     }
 
-    public enum BrokerageFirm
+    public enum BrokerageFirmType
     {
         Krx,
         Daishin,
@@ -30,9 +30,9 @@ namespace MTree.Provider
     {
         public Guid GUID { get; set; }
 
-        public LoginState LoginState { get; set; }
+        public LoginStateType LoginState { get; set; }
 
-        public BrokerageFirm BrokerageFirm { get; set; }
+        public BrokerageFirmType BrokerageFirm { get; set; }
 
         public BrokerageServerType ProviderType { get; set; }
 
