@@ -131,12 +131,16 @@ namespace MTree.HistorySaver
             biddingPriceQueue.Enqueue(biddingPrice);
         }
 
-        public void StockConclusionUpdated(StockConclusion conclusion)
+        public void CircuitBreakUpdated(CircuitBreak circuitBreak)
+        {
+        }
+
+        public void ConclusionUpdated(StockConclusion conclusion)
         {
             stockConclusionQueue.Enqueue(conclusion);
         }
 
-        public void IndexConclusionUpdated(IndexConclusion conclusion)
+        public void ConclusionUpdated(IndexConclusion conclusion)
         {
             indexConclusionQueue.Enqueue(conclusion);
         }

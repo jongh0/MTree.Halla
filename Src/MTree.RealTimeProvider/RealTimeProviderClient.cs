@@ -23,14 +23,19 @@ namespace MTree.RealTimeProvider
             base.Channel.NotifyBiddingPrice(biddingPrice);
         }
 
-        public void NotifyIndexConclusion(IndexConclusion conclusion)
+        public void NotifyCircuitBreak(CircuitBreak circuitBreak)
         {
-            base.Channel.NotifyIndexConclusion(conclusion);
+            base.Channel.NotifyCircuitBreak(circuitBreak);
         }
 
-        public void NotifyStockConclusion(StockConclusion conclusion)
+        public void NotifyConclusion(IndexConclusion conclusion)
         {
-            base.Channel.NotifyStockConclusion(conclusion);
+            base.Channel.NotifyConclusion(conclusion);
+        }
+
+        public void NotifyConclusion(StockConclusion conclusion)
+        {
+            base.Channel.NotifyConclusion(conclusion);
         }
     }
 }

@@ -14,10 +14,13 @@ namespace MTree.RealTimeProvider
         void NotifyBiddingPrice(BiddingPrice biddingPrice);
 
         [OperationContract(IsOneWay = true)]
-        void NotifyStockConclusion(StockConclusion conclusion);
+        void NotifyCircuitBreak(CircuitBreak circuitBreak);
 
         [OperationContract(IsOneWay = true)]
-        void NotifyIndexConclusion(IndexConclusion conclusion);
+        void NotifyConclusion(StockConclusion conclusion);
+
+        [OperationContract(IsOneWay = true)]
+        void NotifyConclusion(IndexConclusion conclusion);
     }
 
     public interface IRealTimeProviderCallback
@@ -26,9 +29,12 @@ namespace MTree.RealTimeProvider
         void BiddingPriceUpdated(BiddingPrice biddingPrice);
 
         [OperationContract(IsOneWay = true)]
-        void StockConclusionUpdated(StockConclusion conclusion);
+        void CircuitBreakUpdated(CircuitBreak circuitBreak);
 
         [OperationContract(IsOneWay = true)]
-        void IndexConclusionUpdated(IndexConclusion conclusion);
+        void ConclusionUpdated(StockConclusion conclusion);
+
+        [OperationContract(IsOneWay = true)]
+        void ConclusionUpdated(IndexConclusion conclusion);
     }
 }
