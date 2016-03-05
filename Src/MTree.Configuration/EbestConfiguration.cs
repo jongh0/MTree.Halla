@@ -13,12 +13,12 @@ namespace MTree.Configuration
         public string AccountPw { get; set; }
 
         [JsonIgnore]
-        public string ServerAddress { get; set; } = "Hts.etrade.co.kr";
+        public string ServerAddress { get; } = "Hts.etrade.co.kr";
 
         [JsonIgnore]
-        public string DemoServerAddress { get; set; } = "demo.etrade.co.kr";
+        public string DemoServerAddress { get; } = "demo.etrade.co.kr";
 
         [JsonIgnore]
-        public int ServerPort { get; set; } = 20001;
+        public int ServerPort { get; } = 20001;
     }
 }
