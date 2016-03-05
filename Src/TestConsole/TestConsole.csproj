@@ -81,6 +81,10 @@
       <Project>{da1959a9-15fa-47aa-98ac-3844a723fea1}</Project>
       <Name>MTree.DataStructure</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MTree.DbProvider\MTree.DbProvider.csproj">
+      <Project>{57195e80-20a3-4fd0-83c8-92af91784dda}</Project>
+      <Name>MTree.DbProvider</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MTree.RealTimeProvider\MTree.RealTimeProvider.csproj">
       <Project>{c9620f6e-d254-45f4-81c1-f33b0855fadc}</Project>
       <Name>MTree.RealTimeProvider</Name>
