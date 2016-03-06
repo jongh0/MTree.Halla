@@ -52,7 +52,7 @@ namespace MTree.DaishinProvider
         private StockCur stockCurObj;
         #endregion
 
-        public DaishinProvider() : base()
+        public DaishinProvider() : base(new object())
         {
             try
             {
@@ -300,7 +300,7 @@ namespace MTree.DaishinProvider
                 StockConclusion conclusion = new StockConclusion();
 
                 // 0 - (string) 종목 코드
-                string code = stockCurObj.GetHeaderValue(0);
+                string code = stockCurObj.GetHeaderValue(0).ToString();
                 if (code.Length != 0)
                     conclusion.Code = code.Substring(1); // Remove prefix
 
@@ -311,7 +311,7 @@ namespace MTree.DaishinProvider
                 conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 100), (int)(time % 100), (int)sec, now.Millisecond); // Daishin doesn't provide milisecond 
 
                 // 13 - (long) 현재가
-                conclusion.Price = stockCurObj.GetHeaderValue(13);
+                conclusion.Price = (float)stockCurObj.GetHeaderValue(13);
 
                 // 14 - (char)체결 상태
                 char type = (char)stockCurObj.GetHeaderValue(14);
@@ -319,7 +319,7 @@ namespace MTree.DaishinProvider
                 else if (type == '2') conclusion.ConclusionType = ConclusionType.Sell;
 
                 // 17 - (long) 순간체결수량
-                conclusion.Amount = stockCurObj.GetHeaderValue(17);
+                conclusion.Amount = (long)stockCurObj.GetHeaderValue(17);
 
                 // 20 - (char) 장 구분 플래그
                 char typeTime = (char)stockCurObj.GetHeaderValue(20);
