@@ -71,7 +71,6 @@ namespace MTree.Provider
                         break;
                     }
                     catch (Exception ex)
-
                     {
                         logger.Error(ex);
                     }

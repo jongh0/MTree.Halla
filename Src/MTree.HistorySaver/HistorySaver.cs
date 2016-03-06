@@ -31,16 +31,44 @@ namespace MTree.HistorySaver
 
         public HistorySaver()
         {
-            cancelToken = cancelSource.Token;
+            try
+            {
+                cancelToken = cancelSource.Token;
 
-            MongoDbProvider.Instance.Connect();
-            biddingPriceCollection = MongoDbProvider.Instance.GetDatabase(DbType.BiddingPrice).GetCollection<BiddingPrice>(Config.Default.MongoDbDateCollectionName);
-            stockConclusionCollection = MongoDbProvider.Instance.GetDatabase(DbType.StockConclusion).GetCollection<StockConclusion>(Config.Default.MongoDbDateCollectionName);
-            indexConclusionCollection = MongoDbProvider.Instance.GetDatabase(DbType.IndexConclusion).GetCollection<IndexConclusion>(Config.Default.MongoDbDateCollectionName);
+                MongoDbProvider.Instance.Connect();
+                biddingPriceCollection = MongoDbProvider.Instance.GetDatabase(DbType.BiddingPrice).GetCollection<BiddingPrice>(Config.Default.MongoDbDateCollectionName);
+                stockConclusionCollection = MongoDbProvider.Instance.GetDatabase(DbType.StockConclusion).GetCollection<StockConclusion>(Config.Default.MongoDbDateCollectionName);
+                indexConclusionCollection = MongoDbProvider.Instance.GetDatabase(DbType.IndexConclusion).GetCollection<IndexConclusion>(Config.Default.MongoDbDateCollectionName);
 
-            StartBiddingPriceQueueTask();
-            StartStockConclusionQueueTask();
-            StartIndexConclusionQueueTask();
+                CreateIndex();
+
+                StartBiddingPriceQueueTask();
+                StartStockConclusionQueueTask();
+                StartIndexConclusionQueueTask();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
+        private void CreateIndex()
+        {
+            try
+            {
+                var biddingKeys = Builders<BiddingPrice>.IndexKeys.Ascending(i => i.Code).Ascending(i => i.Time);
+                biddingPriceCollection.Indexes.CreateOneAsync(biddingKeys);
+
+                var stockKeys = Builders<StockConclusion>.IndexKeys.Ascending(i => i.Code).Ascending(i => i.Time);
+                stockConclusionCollection.Indexes.CreateOneAsync(stockKeys);
+
+                var indexKeys = Builders<IndexConclusion>.IndexKeys.Ascending(i => i.Code).Ascending(i => i.Time);
+                indexConclusionCollection.Indexes.CreateOneAsync(indexKeys);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
         }
 
         private void StartBiddingPriceQueueTask()
@@ -64,6 +92,10 @@ namespace MTree.HistorySaver
                     catch (OperationCanceledException)
                     {
                         break;
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error(ex);
                     }
                 }
 
@@ -93,6 +125,10 @@ namespace MTree.HistorySaver
                     {
                         break;
                     }
+                    catch (Exception ex)
+                    {
+                        logger.Error(ex);
+                    }
                 }
 
                 logger.Info("stockConclusionQueue task stopped");
@@ -120,6 +156,10 @@ namespace MTree.HistorySaver
                     catch (OperationCanceledException)
                     {
                         break;
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error(ex);
                     }
                 }
 
