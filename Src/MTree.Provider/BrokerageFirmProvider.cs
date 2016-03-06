@@ -70,6 +70,11 @@ namespace MTree.Provider
                     {
                         break;
                     }
+                    catch (Exception ex)
+
+                    {
+                        logger.Error(ex);
+                    }
                 }
 
                 logger.Info("biddingPriceQueue task stopped");
@@ -99,6 +104,10 @@ namespace MTree.Provider
                     {
                         break;
                     }
+                    catch (Exception ex)
+                    {
+                        logger.Error(ex);
+                    }
                 }
 
                 logger.Info("stockConclusionQueue task stopped");
@@ -127,6 +136,10 @@ namespace MTree.Provider
                     catch (OperationCanceledException)
                     {
                         break;
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error(ex);
                     }
                 }
 
