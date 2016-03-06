@@ -9,11 +9,12 @@ using System.Threading;
 using MTree.DataStructure;
 using MTree.RealTimeProvider;
 using MTree.Configuration;
+using MTree.Consumer;
 
 namespace MTree.HistorySaver
 {
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
-    public class HistorySaverCallback : IRealTimeProviderCallback
+    public class HistorySaver : ClientConsumer, IRealTimeProviderCallback
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -28,7 +29,7 @@ namespace MTree.HistorySaver
         private ConcurrentQueue<StockConclusion> stockConclusionQueue = new ConcurrentQueue<StockConclusion>();
         private ConcurrentQueue<IndexConclusion> indexConclusionQueue = new ConcurrentQueue<IndexConclusion>();
 
-        public HistorySaverCallback()
+        public HistorySaver()
         {
             cancelToken = cancelSource.Token;
 

@@ -8,5 +8,11 @@ namespace MTree.Provider
 {
     public class BaseProvider
     {
+        protected object lockObject;
+
+        public BaseProvider()
+        {
+            lockObject = new object();
+        }
     }
 }

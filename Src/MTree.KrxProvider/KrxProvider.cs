@@ -1,19 +1,28 @@
-﻿using System;
+﻿using MTree.Provider;
+using MTree.RealTimeProvider;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ServiceModel;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MTree.DataStructure;
 
 namespace MTree.KrxProvider
 {
-    public class KrxProvider
+    [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
+    public class KrxProvider : ClientProvider, IRealTimeProviderCallback
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
+        public KrxProvider() : base()
+        {
+        }
+
         #region 관리종목
-        public static void Collect040301()
+        public void Collect040301()
         {
             try
             {
@@ -47,7 +56,7 @@ namespace MTree.KrxProvider
         #endregion
 
         #region 상호출자제한기업집단 그룹별 현재가
-        public static void Collect040306()
+        public void Collect040306()
         {
             try
             {
@@ -77,7 +86,27 @@ namespace MTree.KrxProvider
             {
                 logger.Error(ex);
             }
-        } 
+        }
         #endregion
+
+        public void BiddingPriceUpdated(BiddingPrice biddingPrice)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CircuitBreakUpdated(CircuitBreak circuitBreak)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ConclusionUpdated(IndexConclusion conclusion)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ConclusionUpdated(StockConclusion conclusion)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

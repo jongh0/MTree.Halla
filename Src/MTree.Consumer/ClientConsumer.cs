@@ -6,16 +6,16 @@ using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MTree.Provider
+namespace MTree.Consumer
 {
-    public class ClientProvider : BaseProvider
+    public class ClientConsumer : BaseConsumer
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         protected InstanceContext context;
         protected RealTimeProviderClient client;
 
-        public ClientProvider() : base()
+        public ClientConsumer() : base()
         {
             try
             {

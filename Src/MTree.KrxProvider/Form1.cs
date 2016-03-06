@@ -12,9 +12,13 @@ namespace MTree.KrxProvider
 {
     public partial class Form1 : Form
     {
+        private KrxProvider provider;
+
         public Form1()
         {
             InitializeComponent();
+
+            provider = new KrxProvider();
         }
     }
 }

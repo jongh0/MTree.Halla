@@ -14,10 +14,13 @@ using MTree.Configuration;
 using MTree.Provider;
 using XA_SESSIONLib;
 using XA_DATASETLib;
+using System.ServiceModel;
+using MTree.RealTimeProvider;
 
 namespace MTree.EbestProvider
 {
-    public class EbestProvider : BrokerageFirmProvider
+    [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
+    public class EbestProvider : BrokerageFirmProvider, IRealTimeProviderCallback
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -29,33 +32,7 @@ namespace MTree.EbestProvider
             get { return (queryableCount < maxQueryableCount); }
         }
 
-        static private object lockObject = new object();
-
-        static private volatile EbestProvider _instance;
-        static public EbestProvider Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    lock (lockObject)
-                    {
-                        if (_instance == null)
-                            _instance = new EbestProvider();
-                    }
-                }
-
-                return _instance;
-            }
-        }
-
         private readonly string resFilePath = "\\Res";
-
-        public string Server { get; set; }
-
-        public int Port { get; set; }
-
-        private LoginInfo loginInfo;
 
         private CancellationTokenSource loginCheckerCancelSource = new CancellationTokenSource();
         private CancellationToken loginCheckerCancelToken;
@@ -68,7 +45,7 @@ namespace MTree.EbestProvider
         private XAQueryClass queryObj; 
         #endregion
 
-        private EbestProvider() : base(new object())
+        public EbestProvider() : base()
         {
             try
             {
@@ -96,7 +73,6 @@ namespace MTree.EbestProvider
                 #endregion
 
                 #region Login
-                loginInfo = new LoginInfo();
                 loginInfo.LoginState = LoginStateType.Disconnected;
                 loginInfo.UserId = Config.Ebest.UserId;
                 loginInfo.UserPw = Config.Ebest.UserPw;
@@ -556,6 +532,26 @@ namespace MTree.EbestProvider
             {
                 waitQuoting.Set();
             }
+        }
+
+        public void BiddingPriceUpdated(BiddingPrice biddingPrice)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CircuitBreakUpdated(CircuitBreak circuitBreak)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ConclusionUpdated(StockConclusion conclusion)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ConclusionUpdated(IndexConclusion conclusion)
+        {
+            throw new NotImplementedException();
         }
     }
 }

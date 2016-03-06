@@ -20,9 +20,13 @@ namespace MTree.EbestProvider
     /// </summary>
     public partial class MainWindow : Window
     {
+        private EbestProvider provider;
+
         public MainWindow()
         {
             InitializeComponent();
+
+            provider = new EbestProvider();
         }
     }
 }

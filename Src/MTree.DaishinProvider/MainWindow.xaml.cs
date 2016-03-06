@@ -20,9 +20,13 @@ namespace MTree.DaishinProvider
     /// </summary>
     public partial class MainWindow : Window
     {
+        private DaishinProvider provider;
+
         public MainWindow()
         {
             InitializeComponent();
+
+            provider = new DaishinProvider();
         }
     }
 }

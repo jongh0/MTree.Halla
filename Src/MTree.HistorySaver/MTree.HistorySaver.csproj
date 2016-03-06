@@ -84,7 +84,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="HistorySaverCallback.cs" />
+    <Compile Include="HistorySaver.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -122,6 +122,10 @@
     <ProjectReference Include="..\MTree.Configuration\MTree.Configuration.csproj">
       <Project>{9c52064a-188b-449a-89a1-de3a9dd3f766}</Project>
       <Name>MTree.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MTree.Consumer\MTree.Consumer.csproj">
+      <Project>{ed1a77ae-4393-45db-b89c-dc98f1678578}</Project>
+      <Name>MTree.Consumer</Name>
     </ProjectReference>
     <ProjectReference Include="..\MTree.DataStructure\MTree.DataStructure.csproj">
       <Project>{da1959a9-15fa-47aa-98ac-3844a723fea1}</Project>

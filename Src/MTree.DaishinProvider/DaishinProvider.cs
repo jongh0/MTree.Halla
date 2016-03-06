@@ -2,17 +2,20 @@
 using DSCBO1Lib;
 using MTree.DataStructure;
 using MTree.Provider;
+using MTree.RealTimeProvider;
 using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ServiceModel;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace MTree.DaishinProvider
 {
-    class DaishinProvider : BrokerageFirmProvider
+    [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
+    class DaishinProvider : BrokerageFirmProvider, IRealTimeProviderCallback
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -26,33 +29,13 @@ namespace MTree.DaishinProvider
             get { return QueryableCount > 0; }
         }
 
-        private static object lockObject = new object();
-
-        private static volatile DaishinProvider _instance;
-        static public DaishinProvider Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    lock (lockObject)
-                    {
-                        if (_instance == null)
-                            _instance = new DaishinProvider();
-                    }
-                }
-
-                return _instance;
-            }
-        }
-
         #region Daishin Specific
         private CpCybos sessionObj;
         private StockMst stockMstObj;
         private StockCur stockCurObj;
         #endregion
 
-        public DaishinProvider() : base(new object())
+        public DaishinProvider() : base()
         {
             try
             {
@@ -335,6 +318,26 @@ namespace MTree.DaishinProvider
             {
                 logger.Error(ex);
             }
+        }
+
+        public void BiddingPriceUpdated(BiddingPrice biddingPrice)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CircuitBreakUpdated(CircuitBreak circuitBreak)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ConclusionUpdated(StockConclusion conclusion)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ConclusionUpdated(IndexConclusion conclusion)
+        {
+            throw new NotImplementedException();
         }
     }
 }

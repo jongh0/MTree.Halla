@@ -42,6 +42,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Channels" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -114,6 +116,10 @@
     <ProjectReference Include="..\MTree.Provider\MTree.Provider.csproj">
       <Project>{891f9baa-d335-4a1b-8fa3-bb0e4d76410a}</Project>
       <Name>MTree.Provider</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MTree.RealTimeProvider\MTree.RealTimeProvider.csproj">
+      <Project>{c9620f6e-d254-45f4-81c1-f33b0855fadc}</Project>
+      <Name>MTree.RealTimeProvider</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
