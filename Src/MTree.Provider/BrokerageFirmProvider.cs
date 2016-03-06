@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MTree.Provider
 {
-    public class BrokerageFirmProvider : BaseProvider
+    public class BrokerageFirmProvider : ClientProvider
     {
         protected AutoResetEvent waitQuoting;
 
@@ -22,7 +22,7 @@ namespace MTree.Provider
         protected ConcurrentQueue<StockConclusion> stockConclusionQueue;
         protected ConcurrentQueue<IndexConclusion> indexConclusionQueue;
 
-        public BrokerageFirmProvider() : base()
+        public BrokerageFirmProvider(object implementation) : base(implementation)
         {
             waitQuoting = new AutoResetEvent(false);
 

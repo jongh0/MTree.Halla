@@ -68,7 +68,7 @@ namespace MTree.EbestProvider
         private XAQueryClass queryObj; 
         #endregion
 
-        private EbestProvider() : base()
+        private EbestProvider() : base(new object())
         {
             try
             {
