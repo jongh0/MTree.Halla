@@ -16,6 +16,7 @@ namespace TestConsole
 
         static void Main(string[] args)
         {
+            logger.Info("hohoooh");
             //TestDbSaving();
         }
 
