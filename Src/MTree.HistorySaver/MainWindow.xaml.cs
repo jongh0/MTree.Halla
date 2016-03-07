@@ -26,7 +26,10 @@ namespace MTree.HistorySaver
         {
             InitializeComponent();
 
-            Consumer = new HistorySaver();
+            Task.Run(() =>
+            {
+                Consumer = new HistorySaver();
+            });
         }
     }
 }
