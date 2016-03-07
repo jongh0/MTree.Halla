@@ -53,6 +53,7 @@
     <Compile Include="ConsumerClient.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Consumer.cd" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

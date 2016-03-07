@@ -19,6 +19,7 @@ namespace MTree.DbProvider
     public class MongoDbProvider
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static object lockObject = new object();
 
         private readonly string connectionString = Config.Default.MongoDbConnectionString;
         private readonly string chartDbString = "MTree_Chart";
@@ -28,15 +29,13 @@ namespace MTree.DbProvider
         private readonly string indexConclusionDbString = "MTree_IndexConclusion";
         private readonly string testDbString = "MTree_Test";
 
-        private IMongoClient client;
-        private IMongoDatabase chartDb;
-        private IMongoDatabase biddingPriceDb;
-        private IMongoDatabase stockMasterDb;
-        private IMongoDatabase stockConclusionDb;
-        private IMongoDatabase indexConclusionDb;
-        private IMongoDatabase testDb;
-
-        private static object lockObject = new object();
+        private IMongoClient Client { get; set; }
+        private IMongoDatabase ChartDb { get; set; }
+        private IMongoDatabase BiddingPriceDb { get; set; }
+        private IMongoDatabase StockMasterDb { get; set; }
+        private IMongoDatabase StockConclusionDb { get; set; }
+        private IMongoDatabase IndexConclusionDb { get; set; }
+        private IMongoDatabase TestDb { get; set; }
 
         private static volatile MongoDbProvider _intance;
         public static MongoDbProvider Instance
@@ -75,13 +74,13 @@ namespace MTree.DbProvider
         {
             try
             {
-                client = new MongoClient(connectionString);
-                chartDb = client.GetDatabase(chartDbString);
-                biddingPriceDb = client.GetDatabase(biddingPriceDbString);
-                stockMasterDb = client.GetDatabase(stockMasterDbString);
-                stockConclusionDb = client.GetDatabase(stockConclusionDbString);
-                indexConclusionDb = client.GetDatabase(indexConclusionDbString);
-                testDb = client.GetDatabase(testDbString);
+                Client = new MongoClient(connectionString);
+                ChartDb = Client.GetDatabase(chartDbString);
+                BiddingPriceDb = Client.GetDatabase(biddingPriceDbString);
+                StockMasterDb = Client.GetDatabase(stockMasterDbString);
+                StockConclusionDb = Client.GetDatabase(stockConclusionDbString);
+                IndexConclusionDb = Client.GetDatabase(indexConclusionDbString);
+                TestDb = Client.GetDatabase(testDbString);
 
                 logger.Info("MongoDb Connected");
             }
@@ -96,17 +95,17 @@ namespace MTree.DbProvider
             switch (type)
             {
                 case DbType.Chart:
-                    return chartDb;
+                    return ChartDb;
                 case DbType.BiddingPrice:
-                    return biddingPriceDb;
+                    return BiddingPriceDb;
                 case DbType.StockMaster:
-                    return stockMasterDb;
+                    return StockMasterDb;
                 case DbType.StockConclusion:
-                    return stockConclusionDb;
+                    return StockConclusionDb;
                 case DbType.IndexConclusion:
-                    return indexConclusionDb;
+                    return IndexConclusionDb;
                 default:
-                    return testDb;
+                    return TestDb;
             }
         }
     }

@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="MTree.Consumer.ConsumerBase">
+    <Position X="0.5" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>gQAAAEAAABAAAAAAgAAAAAAAAAAAgAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ConsumerBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MTree.Consumer.ConsumerImplement">
+    <Position X="3" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAECAAAAAACgAAAAAAAAAAAAABAAAAAAAAAAAA=</HashCode>
+      <FileName>ConsumerImplement.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MTree.Consumer.ConsumerClient">
+    <Position X="5.5" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAgAAAAAAAAAAAAgAAAAAAAAAABAAA=</HashCode>
+      <FileName>ConsumerClient.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Font Name="Malgun Gothic" Size="9" />
+</ClassDiagram>
