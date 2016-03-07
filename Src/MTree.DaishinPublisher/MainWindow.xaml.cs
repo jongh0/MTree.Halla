@@ -20,13 +20,13 @@ namespace MTree.DaishinPublisher
     /// </summary>
     public partial class MainWindow : Window
     {
-        private DaishinPublisher publisher;
+        private DaishinPublisher Publisher { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
 
-            publisher = new DaishinPublisher();
+            Publisher = new DaishinPublisher();
         }
     }
 }

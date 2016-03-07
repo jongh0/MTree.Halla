@@ -12,13 +12,13 @@ namespace MTree.KrxPublisher
 {
     public partial class Form1 : Form
     {
-        private KrxPublisher publisher;
+        private KrxPublisher Publisher { get; set; }
 
         public Form1()
         {
             InitializeComponent();
 
-            publisher = new KrxPublisher();
+            Publisher = new KrxPublisher();
         }
     }
 }

@@ -8,14 +8,14 @@ namespace MTree.RealTimeProvider
     /// </summary>
     public partial class MainWindow : Window
     {
-        ServiceHost host;
+        ServiceHost RealTimeHost { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
 
-            host = new ServiceHost(typeof(RealTimeProvider));
-            host.Open();
+            RealTimeHost = new ServiceHost(typeof(RealTimeProvider));
+            RealTimeHost.Open();
         }
     }
 }

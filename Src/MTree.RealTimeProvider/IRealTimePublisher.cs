@@ -10,6 +10,12 @@ namespace MTree.RealTimeProvider
         [OperationContract(IsOneWay = true)]
         void KeepConnection();
 
+        [OperationContract]
+        Guid RegisterPublisher();
+
+        [OperationContract(IsOneWay = true)]
+        void UnregisterPublisher(Guid clientId);
+
         [OperationContract(IsOneWay = true)]
         void PublishBiddingPrice(BiddingPrice biddingPrice);
 

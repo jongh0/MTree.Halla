@@ -12,6 +12,8 @@ namespace MTree.Publisher
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
+        protected Guid ClientId { get; set; } = Guid.Empty;
+
         protected InstanceContext CallbackInstance { get; set; }
         protected RealTimePublisherClient ServiceClient { get; set; }
 
@@ -35,6 +37,8 @@ namespace MTree.Publisher
                 ServiceClient = new RealTimePublisherClient(CallbackInstance, "RealTimePublisherConfig");
                 ServiceClient.Open();
 
+                ClientId = ServiceClient.RegisterPublisher();
+
                 logger.Info("ServiceClient opened");
             }
             catch (Exception ex)
@@ -47,8 +51,12 @@ namespace MTree.Publisher
         {
             try
             {
-                ServiceClient?.Close();
-                logger.Info("ServiceClient closed");
+                if (ServiceClient != null)
+                {
+                    ServiceClient.UnregisterPublisher(ClientId);
+                    ServiceClient.Close();
+                    logger.Info("ServiceClient closed");
+                }
             }
             catch (Exception ex)
             {

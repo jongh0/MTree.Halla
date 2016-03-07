@@ -12,6 +12,8 @@ namespace MTree.Consumer
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
+        protected Guid ClientId { get; set; } = Guid.Empty;
+
         protected InstanceContext CallbackInstance { get; set; }
         protected RealTimeConsumerClient ServiceClient { get; set; }
 
@@ -35,6 +37,8 @@ namespace MTree.Consumer
                 ServiceClient = new RealTimeConsumerClient(CallbackInstance, "RealTimeConsumerConfig");
                 ServiceClient.Open();
 
+                ClientId = ServiceClient.RegisterConsumer();
+
                 logger.Info("ServiceClient opened");
             }
             catch (Exception ex)
@@ -47,8 +51,12 @@ namespace MTree.Consumer
         {
             try
             {
-                ServiceClient?.Close();
-                logger.Info("ServiceClient closed");
+                if (ServiceClient != null)
+                {
+                    ServiceClient.UnregisterConsumer(ClientId);
+                    ServiceClient.Close();
+                    logger.Info("ServiceClient closed");
+                }
             }
             catch (Exception ex)
             {

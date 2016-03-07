@@ -19,6 +19,16 @@ namespace MTree.Publisher
             base.Channel.KeepConnection();
         }
 
+        public Guid RegisterPublisher()
+        {
+            return base.Channel.RegisterPublisher();
+        }
+
+        public void UnregisterPublisher(Guid clientId)
+        {
+            base.Channel.UnregisterPublisher(clientId);
+        }
+
         public void PublishBiddingPrice(BiddingPrice biddingPrice)
         {
             base.Channel.PublishBiddingPrice(biddingPrice);

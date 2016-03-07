@@ -20,13 +20,13 @@ namespace MTree.HistorySaver
     /// </summary>
     public partial class MainWindow : Window
     {
-        private HistorySaver historySaver;
+        private HistorySaver Consumer { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
 
-            historySaver = new HistorySaver();
+            Consumer = new HistorySaver();
         }
     }
 }

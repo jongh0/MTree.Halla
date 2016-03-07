@@ -18,5 +18,15 @@ namespace MTree.Consumer
         {
             base.Channel.KeepConnection();
         }
+
+        public Guid RegisterConsumer()
+        {
+            return base.Channel.RegisterConsumer();
+        }
+
+        public void UnregisterConsumer(Guid clientId)
+        {
+            base.Channel.UnregisterConsumer(clientId);
+        }
     }
 }
