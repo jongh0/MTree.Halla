@@ -10,9 +10,9 @@ using MTree.RealTimeProvider;
 
 namespace MTree.Publisher
 {
-    public partial class RealTimePublisherClient : DuplexClientBase<IRealTimePublisher>, IRealTimePublisher
+    public partial class PublisherClient : DuplexClientBase<IRealTimePublisher>, IRealTimePublisher
     {
-        public RealTimePublisherClient(InstanceContext callbackInstance, string endpointConfigurationName) : base(callbackInstance, endpointConfigurationName) { }
+        public PublisherClient(InstanceContext callbackInstance, string endpointConfigurationName) : base(callbackInstance, endpointConfigurationName) { }
 
         public void KeepConnection()
         {

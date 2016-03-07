@@ -47,12 +47,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BasePublisher.cs" />
-    <Compile Include="BrokerageFirmPublisher.cs" />
-    <Compile Include="ClientPublisher.cs" />
+    <Compile Include="PublisherBase.cs" />
+    <Compile Include="BrokerageFirmImplement.cs" />
+    <Compile Include="PublisherImplement.cs" />
     <Compile Include="LoginInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RealTimePublisherClient.cs" />
+    <Compile Include="PublisherClient.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MTree.Configuration\MTree.Configuration.csproj">

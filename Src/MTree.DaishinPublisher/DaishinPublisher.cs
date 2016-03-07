@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 namespace MTree.DaishinPublisher
 {
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
-    class DaishinPublisher : BrokerageFirmPublisher, IRealTimePublisherCallback
+    class DaishinPublisher : BrokerageFirmImplement, IRealTimePublisherCallback
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 

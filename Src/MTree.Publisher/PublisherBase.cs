@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace MTree.Publisher
 {
-    public class BasePublisher
+    public class PublisherBase
     {
         protected object LockObeject { get; } = new object();
 
         protected CancellationTokenSource QueueTaskCancelSource { get; } = new CancellationTokenSource();
         protected CancellationToken QueueTaskCancelToken { get; set; }
 
-        public BasePublisher()
+        public PublisherBase()
         {
             QueueTaskCancelToken = QueueTaskCancelSource.Token;
         }

@@ -13,7 +13,7 @@ using MTree.DataStructure;
 namespace MTree.KrxPublisher
 {
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
-    public class KrxPublisher : ClientPublisher, IRealTimePublisherCallback
+    public class KrxPublisher : PublisherImplement, IRealTimePublisherCallback
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 

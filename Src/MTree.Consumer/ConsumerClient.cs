@@ -10,9 +10,9 @@ using MTree.RealTimeProvider;
 
 namespace MTree.Consumer
 {
-    public partial class RealTimeConsumerClient : DuplexClientBase<IRealTimeConsumer>, IRealTimeConsumer
+    public partial class ConsumerClient : DuplexClientBase<IRealTimeConsumer>, IRealTimeConsumer
     {
-        public RealTimeConsumerClient(InstanceContext callbackInstance, string endpointConfigurationName) : base(callbackInstance, endpointConfigurationName) { }
+        public ConsumerClient(InstanceContext callbackInstance, string endpointConfigurationName) : base(callbackInstance, endpointConfigurationName) { }
 
         public void KeepConnection()
         {

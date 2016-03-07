@@ -15,17 +15,13 @@ using MTree.Utility;
 namespace MTree.HistorySaver
 {
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
-    public class HistorySaver : ClientConsumer, IRealTimePublisherCallback
+    public class HistorySaver : ConsumerImplement, IRealTimePublisherCallback
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         private IMongoCollection<BiddingPrice> BiddingPriceCollection { get; set; }
         private IMongoCollection<StockConclusion> StockConclusionCollection { get; set; }
         private IMongoCollection<IndexConclusion> IndexConclusionCollection { get; set; }
-
-        private ConcurrentQueue<BiddingPrice> BiddingPriceQueue { get; } = new ConcurrentQueue<BiddingPrice>();
-        private ConcurrentQueue<StockConclusion> StockConclusionQueue { get; } = new ConcurrentQueue<StockConclusion>();
-        private ConcurrentQueue<IndexConclusion> IndexConclusionQueue { get; } = new ConcurrentQueue<IndexConclusion>();
 
         public HistorySaver()
         {

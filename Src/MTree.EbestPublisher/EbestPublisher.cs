@@ -20,7 +20,7 @@ using MTree.RealTimeProvider;
 namespace MTree.EbestPublisher
 {
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
-    public class EbestPublisher : BrokerageFirmPublisher, IRealTimePublisherCallback
+    public class EbestPublisher : BrokerageFirmImplement, IRealTimePublisherCallback
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 

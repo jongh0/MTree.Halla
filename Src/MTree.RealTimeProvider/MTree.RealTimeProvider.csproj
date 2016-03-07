@@ -65,9 +65,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="IRealTimeConsumer.cs" />
-    <Compile Include="RealTimeConsumerImplement.cs" />
+    <Compile Include="RealTimeProviderConsumer.cs" />
     <Compile Include="RealTimeProvider.cs" />
-    <Compile Include="RealTimePubliserImplement.cs" />
+    <Compile Include="RealTimeProviderPublisher.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

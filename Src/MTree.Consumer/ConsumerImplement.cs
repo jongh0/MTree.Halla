@@ -8,16 +8,16 @@ using System.Threading.Tasks;
 
 namespace MTree.Consumer
 {
-    public class ClientConsumer : BaseConsumer
+    public class ConsumerImplement : ConsumerBase
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         protected Guid ClientId { get; set; } = Guid.Empty;
 
         protected InstanceContext CallbackInstance { get; set; }
-        protected RealTimeConsumerClient ServiceClient { get; set; }
+        protected ConsumerClient ServiceClient { get; set; }
 
-        public ClientConsumer() : base()
+        public ConsumerImplement() : base()
         {
             try
             {
@@ -34,7 +34,7 @@ namespace MTree.Consumer
         {
             try
             {
-                ServiceClient = new RealTimeConsumerClient(CallbackInstance, "RealTimeConsumerConfig");
+                ServiceClient = new ConsumerClient(CallbackInstance, "RealTimeConsumerConfig");
                 ServiceClient.Open();
 
                 ClientId = ServiceClient.RegisterConsumer();

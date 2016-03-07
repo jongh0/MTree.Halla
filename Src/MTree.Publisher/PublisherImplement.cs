@@ -8,16 +8,16 @@ using System.Threading.Tasks;
 
 namespace MTree.Publisher
 {
-    public class ClientPublisher : BasePublisher
+    public class PublisherImplement : PublisherBase
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         protected Guid ClientId { get; set; } = Guid.Empty;
 
         protected InstanceContext CallbackInstance { get; set; }
-        protected RealTimePublisherClient ServiceClient { get; set; }
+        protected PublisherClient ServiceClient { get; set; }
 
-        public ClientPublisher() : base()
+        public PublisherImplement() : base()
         {
             try
             {
@@ -34,7 +34,7 @@ namespace MTree.Publisher
         {
             try
             {
-                ServiceClient = new RealTimePublisherClient(CallbackInstance, "RealTimePublisherConfig");
+                ServiceClient = new PublisherClient(CallbackInstance, "RealTimePublisherConfig");
                 ServiceClient.Open();
 
                 ClientId = ServiceClient.RegisterPublisher();

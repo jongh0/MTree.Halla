@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace MTree.Publisher
 {
-    public class BrokerageFirmPublisher : ClientPublisher
+    public class BrokerageFirmImplement : PublisherImplement
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -30,7 +30,7 @@ namespace MTree.Publisher
         protected string Server { get; set; }
         protected int Port { get; set; }
 
-        public BrokerageFirmPublisher() : base()
+        public BrokerageFirmImplement() : base()
         {
         }
 
