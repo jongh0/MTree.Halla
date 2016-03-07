@@ -10,41 +10,37 @@ using MTree.DataStructure;
 using MTree.RealTimeProvider;
 using MTree.Configuration;
 using MTree.Consumer;
+using MTree.Utility;
 
 namespace MTree.HistorySaver
 {
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
-    public class HistorySaver : ClientConsumer, IRealTimeProviderCallback
+    public class HistorySaver : ClientConsumer, IRealTimePublisherCallback
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public CancellationTokenSource cancelSource = new CancellationTokenSource();
-        private CancellationToken cancelToken;
+        private IMongoCollection<BiddingPrice> BiddingPriceCollection { get; set; }
+        private IMongoCollection<StockConclusion> StockConclusionCollection { get; set; }
+        private IMongoCollection<IndexConclusion> IndexConclusionCollection { get; set; }
 
-        private IMongoCollection<BiddingPrice> biddingPriceCollection;
-        private IMongoCollection<StockConclusion> stockConclusionCollection;
-        private IMongoCollection<IndexConclusion> indexConclusionCollection;
-
-        private ConcurrentQueue<BiddingPrice> biddingPriceQueue = new ConcurrentQueue<BiddingPrice>();
-        private ConcurrentQueue<StockConclusion> stockConclusionQueue = new ConcurrentQueue<StockConclusion>();
-        private ConcurrentQueue<IndexConclusion> indexConclusionQueue = new ConcurrentQueue<IndexConclusion>();
+        private ConcurrentQueue<BiddingPrice> BiddingPriceQueue { get; } = new ConcurrentQueue<BiddingPrice>();
+        private ConcurrentQueue<StockConclusion> StockConclusionQueue { get; } = new ConcurrentQueue<StockConclusion>();
+        private ConcurrentQueue<IndexConclusion> IndexConclusionQueue { get; } = new ConcurrentQueue<IndexConclusion>();
 
         public HistorySaver()
         {
             try
             {
-                cancelToken = cancelSource.Token;
-
                 MongoDbProvider.Instance.Connect();
-                biddingPriceCollection = MongoDbProvider.Instance.GetDatabase(DbType.BiddingPrice).GetCollection<BiddingPrice>(Config.Default.MongoDbDateCollectionName);
-                stockConclusionCollection = MongoDbProvider.Instance.GetDatabase(DbType.StockConclusion).GetCollection<StockConclusion>(Config.Default.MongoDbDateCollectionName);
-                indexConclusionCollection = MongoDbProvider.Instance.GetDatabase(DbType.IndexConclusion).GetCollection<IndexConclusion>(Config.Default.MongoDbDateCollectionName);
+                BiddingPriceCollection = MongoDbProvider.Instance.GetDatabase(DbType.BiddingPrice).GetCollection<BiddingPrice>(Config.Default.MongoDbDateCollectionName);
+                StockConclusionCollection = MongoDbProvider.Instance.GetDatabase(DbType.StockConclusion).GetCollection<StockConclusion>(Config.Default.MongoDbDateCollectionName);
+                IndexConclusionCollection = MongoDbProvider.Instance.GetDatabase(DbType.IndexConclusion).GetCollection<IndexConclusion>(Config.Default.MongoDbDateCollectionName);
 
                 CreateIndex();
 
-                StartBiddingPriceQueueTask();
-                StartStockConclusionQueueTask();
-                StartIndexConclusionQueueTask();
+                GeneralTask.Run("HistorySaver.BiddingPriceQueue", QueueTaskCancelToken, ProcessBiddingPriceQueue);
+                GeneralTask.Run("HistorySaver.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
+                GeneralTask.Run("HistorySaver.IndexConclusionQueue", QueueTaskCancelToken, ProcessIndexConclusionQueue);
             }
             catch (Exception ex)
             {
@@ -57,13 +53,15 @@ namespace MTree.HistorySaver
             try
             {
                 var biddingKeys = Builders<BiddingPrice>.IndexKeys.Ascending(i => i.Code).Ascending(i => i.Time);
-                biddingPriceCollection.Indexes.CreateOneAsync(biddingKeys);
+                BiddingPriceCollection.Indexes.CreateOneAsync(biddingKeys);
 
                 var stockKeys = Builders<StockConclusion>.IndexKeys.Ascending(i => i.Code).Ascending(i => i.Time);
-                stockConclusionCollection.Indexes.CreateOneAsync(stockKeys);
+                StockConclusionCollection.Indexes.CreateOneAsync(stockKeys);
 
                 var indexKeys = Builders<IndexConclusion>.IndexKeys.Ascending(i => i.Code).Ascending(i => i.Time);
-                indexConclusionCollection.Indexes.CreateOneAsync(indexKeys);
+                IndexConclusionCollection.Indexes.CreateOneAsync(indexKeys);
+
+                logger.Info("Index created");
             }
             catch (Exception ex)
             {
@@ -71,119 +69,76 @@ namespace MTree.HistorySaver
             }
         }
 
-        private void StartBiddingPriceQueueTask()
+        public void StopQueueTask()
         {
-            Task.Run(() =>
+            QueueTaskCancelSource.Cancel();
+        }
+
+        private void ProcessBiddingPriceQueue()
+        {
+            try
             {
-                logger.Info("biddingPriceQueue task started");
-
-                while (true)
-                {
-                    try
-                    {
-                        cancelToken.ThrowIfCancellationRequested();
-
-                        BiddingPrice biddingPrice;
-                        if (biddingPriceQueue.TryDequeue(out biddingPrice) == true)
-                            biddingPriceCollection.InsertOne(biddingPrice);
-                        else
-                            Thread.Sleep(10);
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        break;
-                    }
-                    catch (Exception ex)
-                    {
-                        logger.Error(ex);
-                    }
-                }
-
-                logger.Info("biddingPriceQueue task stopped");
-            });
-        }
-
-        private void StartStockConclusionQueueTask()
-        {
-            Task.Run(() =>
+                BiddingPrice biddingPrice;
+                if (BiddingPriceQueue.TryDequeue(out biddingPrice) == true)
+                    BiddingPriceCollection.InsertOne(biddingPrice);
+                else
+                    Thread.Sleep(10);
+            }
+            catch (Exception ex)
             {
-                logger.Info("stockConclusionQueue task started");
-
-                while (true)
-                {
-                    try
-                    {
-                        cancelToken.ThrowIfCancellationRequested();
-
-                        StockConclusion conclusion;
-                        if (stockConclusionQueue.TryDequeue(out conclusion) == true)
-                            stockConclusionCollection.InsertOne(conclusion);
-                        else
-                            Thread.Sleep(10);
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        break;
-                    }
-                    catch (Exception ex)
-                    {
-                        logger.Error(ex);
-                    }
-                }
-
-                logger.Info("stockConclusionQueue task stopped");
-            });
+                logger.Error(ex);
+            }
         }
 
-        private void StartIndexConclusionQueueTask()
+        private void ProcessStockConclusionQueue()
         {
-            Task.Run(() =>
+            try
             {
-                logger.Info("indexConclusionQueue task started");
-
-                while (true)
-                {
-                    try
-                    {
-                        cancelToken.ThrowIfCancellationRequested();
-
-                        IndexConclusion conclusion;
-                        if (indexConclusionQueue.TryDequeue(out conclusion) == true)
-                            indexConclusionCollection.InsertOne(conclusion);
-                        else
-                            Thread.Sleep(10);
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        break;
-                    }
-                    catch (Exception ex)
-                    {
-                        logger.Error(ex);
-                    }
-                }
-
-                logger.Info("indexConclusionQueue task stopped");
-            });
+                StockConclusion conclusion;
+                if (StockConclusionQueue.TryDequeue(out conclusion) == true)
+                    StockConclusionCollection.InsertOne(conclusion);
+                else
+                    Thread.Sleep(10);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
         }
 
-        public void BiddingPriceUpdated(BiddingPrice biddingPrice)
+        private void ProcessIndexConclusionQueue()
         {
-            biddingPriceQueue.Enqueue(biddingPrice);
+            try
+            {
+                IndexConclusion conclusion;
+                if (IndexConclusionQueue.TryDequeue(out conclusion) == true)
+                    IndexConclusionCollection.InsertOne(conclusion);
+                else
+                    Thread.Sleep(10);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
         }
 
-        public void CircuitBreakUpdated(CircuitBreak circuitBreak)
+        public void ConsumeBiddingPrice(BiddingPrice biddingPrice)
+        {
+            BiddingPriceQueue.Enqueue(biddingPrice);
+        }
+
+        public void ConsumeCircuitBreak(CircuitBreak circuitBreak)
         {
         }
 
-        public void ConclusionUpdated(StockConclusion conclusion)
+        public void ConsumeStockConclusion(StockConclusion conclusion)
         {
-            stockConclusionQueue.Enqueue(conclusion);
+            StockConclusionQueue.Enqueue(conclusion);
         }
 
-        public void ConclusionUpdated(IndexConclusion conclusion)
+        public void ConsumeIndexConclusion(IndexConclusion conclusion)
         {
-            indexConclusionQueue.Enqueue(conclusion);
+            IndexConclusionQueue.Enqueue(conclusion);
         }
     }
 }

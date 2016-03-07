@@ -5,16 +5,16 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MTree.Consumer
+namespace MTree.Publisher
 {
-    public class BaseConsumer
+    public class BasePublisher
     {
-        protected object LockObject { get; } = new object();
+        protected object LockObeject { get; } = new object();
 
         protected CancellationTokenSource QueueTaskCancelSource { get; } = new CancellationTokenSource();
         protected CancellationToken QueueTaskCancelToken { get; set; }
 
-        public BaseConsumer()
+        public BasePublisher()
         {
             QueueTaskCancelToken = QueueTaskCancelSource.Token;
         }

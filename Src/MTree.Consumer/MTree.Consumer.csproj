@@ -50,6 +50,7 @@
     <Compile Include="BaseConsumer.cs" />
     <Compile Include="ClientConsumer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RealTimeConsumerClient.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

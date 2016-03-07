@@ -6,16 +6,16 @@ using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MTree.Consumer
+namespace MTree.Publisher
 {
-    public class ClientConsumer : BaseConsumer
+    public class ClientPublisher : BasePublisher
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         protected InstanceContext CallbackInstance { get; set; }
-        protected RealTimeConsumerClient ServiceClient { get; set; }
+        protected RealTimePublisherClient ServiceClient { get; set; }
 
-        public ClientConsumer() : base()
+        public ClientPublisher() : base()
         {
             try
             {
@@ -32,7 +32,7 @@ namespace MTree.Consumer
         {
             try
             {
-                ServiceClient = new RealTimeConsumerClient(CallbackInstance, "RealTimeConsumerConfig");
+                ServiceClient = new RealTimePublisherClient(CallbackInstance, "RealTimePublisherConfig");
                 ServiceClient.Open();
 
                 logger.Info("ServiceClient opened");

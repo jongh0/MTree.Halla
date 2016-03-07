@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{1CA59FEC-C68C-48F8-89CF-FF3B17870CAA}</ProjectGuid>
+    <ProjectGuid>{0DE033E7-A072-4450-B357-CA69165B9CA8}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MTree.HistorySaver</RootNamespace>
-    <AssemblyName>MTree.HistorySaver</AssemblyName>
+    <RootNamespace>MTree.DaishinPublisher</RootNamespace>
+    <AssemblyName>MTree.DaishinPublisher</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -25,7 +25,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -35,20 +34,19 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MongoDB.Bson, Version=2.2.3.3, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MongoDB.Bson.2.2.3\lib\net45\MongoDB.Bson.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Interop.CPSYSDIBLib">
+      <HintPath>..\packages\Daishin\Interop.CPSYSDIBLib.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
-    <Reference Include="MongoDB.Driver, Version=2.2.3.3, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MongoDB.Driver.2.2.3\lib\net45\MongoDB.Driver.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Interop.CPUTILLib">
+      <HintPath>..\packages\Daishin\Interop.CPUTILLib.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
-    <Reference Include="MongoDB.Driver.Core, Version=2.2.3.3, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MongoDB.Driver.Core.2.2.3\lib\net45\MongoDB.Driver.Core.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Interop.DSCBO1Lib">
+      <HintPath>..\packages\Daishin\Interop.DSCBO1Lib.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.2.3\lib\net45\NLog.dll</HintPath>
@@ -84,7 +82,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="HistorySaver.cs" />
+    <Compile Include="DaishinPublisher.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -119,29 +117,17 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MTree.Configuration\MTree.Configuration.csproj">
-      <Project>{9c52064a-188b-449a-89a1-de3a9dd3f766}</Project>
-      <Name>MTree.Configuration</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MTree.Consumer\MTree.Consumer.csproj">
-      <Project>{ed1a77ae-4393-45db-b89c-dc98f1678578}</Project>
-      <Name>MTree.Consumer</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MTree.DataStructure\MTree.DataStructure.csproj">
       <Project>{da1959a9-15fa-47aa-98ac-3844a723fea1}</Project>
       <Name>MTree.DataStructure</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MTree.DbProvider\MTree.DbProvider.csproj">
-      <Project>{57195e80-20a3-4fd0-83c8-92af91784dda}</Project>
-      <Name>MTree.DbProvider</Name>
+    <ProjectReference Include="..\MTree.Publisher\MTree.Publisher.csproj">
+      <Project>{891f9baa-d335-4a1b-8fa3-bb0e4d76410a}</Project>
+      <Name>MTree.Publisher</Name>
     </ProjectReference>
     <ProjectReference Include="..\MTree.RealTimeProvider\MTree.RealTimeProvider.csproj">
       <Project>{c9620f6e-d254-45f4-81c1-f33b0855fadc}</Project>
       <Name>MTree.RealTimeProvider</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MTree.Utility\MTree.Utility.csproj">
-      <Project>{d8291168-4d81-4acd-81c4-da122a249102}</Project>
-      <Name>MTree.Utility</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

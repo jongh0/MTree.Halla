@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D8291168-4D81-4ACD-81C4-DA122A249102}</ProjectGuid>
+    <ProjectGuid>{891F9BAA-D335-4A1B-8FA3-BB0E4D76410A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MTree.Utility</RootNamespace>
-    <AssemblyName>MTree.Utility</AssemblyName>
+    <RootNamespace>MTree.Publisher</RootNamespace>
+    <AssemblyName>MTree.Publisher</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -37,6 +37,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Channels" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -45,13 +47,32 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GeneralTask.cs" />
+    <Compile Include="BasePublisher.cs" />
+    <Compile Include="BrokerageFirmPublisher.cs" />
+    <Compile Include="ClientPublisher.cs" />
+    <Compile Include="LoginInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RealTimePublisherClient.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="NLog.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <ProjectReference Include="..\MTree.Configuration\MTree.Configuration.csproj">
+      <Project>{9c52064a-188b-449a-89a1-de3a9dd3f766}</Project>
+      <Name>MTree.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MTree.DataStructure\MTree.DataStructure.csproj">
+      <Project>{da1959a9-15fa-47aa-98ac-3844a723fea1}</Project>
+      <Name>MTree.DataStructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MTree.RealTimeProvider\MTree.RealTimeProvider.csproj">
+      <Project>{c9620f6e-d254-45f4-81c1-f33b0855fadc}</Project>
+      <Name>MTree.RealTimeProvider</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MTree.Utility\MTree.Utility.csproj">
+      <Project>{d8291168-4d81-4acd-81c4-da122a249102}</Project>
+      <Name>MTree.Utility</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

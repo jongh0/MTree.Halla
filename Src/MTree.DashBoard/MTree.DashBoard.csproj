@@ -101,7 +101,23 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MTree.Consumer\MTree.Consumer.csproj">
+      <Project>{ed1a77ae-4393-45db-b89c-dc98f1678578}</Project>
+      <Name>MTree.Consumer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MTree.DataStructure\MTree.DataStructure.csproj">
+      <Project>{da1959a9-15fa-47aa-98ac-3844a723fea1}</Project>
+      <Name>MTree.DataStructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MTree.RealTimeProvider\MTree.RealTimeProvider.csproj">
+      <Project>{c9620f6e-d254-45f4-81c1-f33b0855fadc}</Project>
+      <Name>MTree.RealTimeProvider</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
