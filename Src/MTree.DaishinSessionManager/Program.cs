@@ -60,12 +60,16 @@ namespace MTree.DaishinSessionManager
                 logger.Info("Application Started");
 
                 KillProcess("DaishinSessionManager", Process.GetCurrentProcess().Id);
+                KillProcess("CpStart"); // 키보드 보안 및 메모리 보안 프로그램 사용 체크 해제해야 함 (CpStart -> 설정)
                 KillProcess("DibServer");
 
                 LaunchStarter();
 
-                // 중복실행 방지 팝업 정리
-                CloseDuplicationPopup();
+                // 중복실행 방지 팝업 정리 
+                //CloseDuplicationPopup(); //=> CpStart Process Kill하면서 필요없는듯
+
+                // 보안 경고창 Close 
+                ClosePopup("대신증권 CYBOS FAMILY", "예(&Y)"); //=> 키보드 보안 및 메모리 보안 프로그램 사용 미체크 시 Popup뜸
 
                 // Find CYBOS Starter
                 var cybosStarterH = FindWindowAndRetry("CYBOS Starter");
@@ -94,6 +98,8 @@ namespace MTree.DaishinSessionManager
                 EnterCertPw(certPwH);
 
                 ClickLoginButton(cybosStarterH);
+
+                ClosePopup("인증서 만료 안내", "나중에 갱신");
             }
             catch (Exception ex)
             {
@@ -189,7 +195,7 @@ namespace MTree.DaishinSessionManager
         {
             try
             {
-                var ncStarterH = FindWindowAndRetry("ncStarter");
+                var ncStarterH = FindWindowAndRetry("ncStarter", 100);
                 if (ncStarterH != IntPtr.Zero)
                 {
                     var cancelButtonH = FindWindowExAndRetry(ncStarterH, "Button", "아니요(&N)");
@@ -197,6 +203,28 @@ namespace MTree.DaishinSessionManager
                     {
                         SendMessage(cancelButtonH, BM_CLICK, 0, 0);
                         logger.Info("Duplicated launcher popup closed");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
+        private static void ClosePopup(string title, string buttonName)
+        {
+            try
+            {
+                var certWindowH = FindWindowAndRetry(title);
+                if (certWindowH != IntPtr.Zero)
+                {
+                    logger.Info($"{title} popup handle found");
+                    var applyButtonH = FindWindowExAndRetry(certWindowH, "Button", buttonName);
+                    if (applyButtonH != IntPtr.Zero)
+                    {
+                        SendMessage(applyButtonH, BM_CLICK, 0, 0);
+                        logger.Info($"{buttonName} info popup closed");
                     }
                 }
             }
