@@ -11,9 +11,7 @@ namespace MTree.DataStructure
     [BsonDiscriminator(RootClass = true)]
     [BsonKnownTypes(typeof(BiddingPrice), 
                     typeof(CircuitBreak), 
-                    typeof(Conclusion), 
                     typeof(IndexConclusion), 
-                    typeof(IndexMaster), 
                     typeof(StockConclusion), 
                     typeof(StockMaster))]
     [Serializable]
