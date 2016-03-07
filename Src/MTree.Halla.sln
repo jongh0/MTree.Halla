@@ -47,6 +47,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Consumer", "Consumer", "{45
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Publisher", "Publisher", "{C10ED646-15B3-409D-93DB-2F958CB8182A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.DaishinPublisherTests", "MTree.DaishinPublisherTests\MTree.DaishinPublisherTests.csproj", "{28EFDCBB-09BC-4BC4-8A7F-B92B0B25E249}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -125,6 +127,10 @@ Global
 		{3CDB7297-2D84-44A5-A794-210B83D6098D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3CDB7297-2D84-44A5-A794-210B83D6098D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3CDB7297-2D84-44A5-A794-210B83D6098D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28EFDCBB-09BC-4BC4-8A7F-B92B0B25E249}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28EFDCBB-09BC-4BC4-8A7F-B92B0B25E249}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28EFDCBB-09BC-4BC4-8A7F-B92B0B25E249}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28EFDCBB-09BC-4BC4-8A7F-B92B0B25E249}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -143,5 +149,6 @@ Global
 		{891F9BAA-D335-4A1B-8FA3-BB0E4D76410A} = {C10ED646-15B3-409D-93DB-2F958CB8182A}
 		{0BD3F8F3-8B8C-4DE2-9934-8849A32CFC9F} = {C22A1011-FE40-49F1-AB42-3CBF4921ACBD}
 		{3CDB7297-2D84-44A5-A794-210B83D6098D} = {C22A1011-FE40-49F1-AB42-3CBF4921ACBD}
+		{28EFDCBB-09BC-4BC4-8A7F-B92B0B25E249} = {C10ED646-15B3-409D-93DB-2F958CB8182A}
 	EndGlobalSection
 EndGlobal
