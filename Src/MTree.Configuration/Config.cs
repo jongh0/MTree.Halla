@@ -11,32 +11,26 @@ namespace MTree.Configuration
 
         private static object lockObject = new object();
 
-        #region Default Configuration
-        private static readonly string defaultConfigFileName = "Config.Default.json";
-        private static DefaultConfiguration _default;
-        public static DefaultConfiguration Default
+        #region General Configuration
+        private static GeneralConfiguration _general;
+        public static GeneralConfiguration General
         {
             get
             {
-                if (_default == null)
+                if (_general == null)
                 {
                     lock (lockObject)
                     {
-                        if (_default == null)
-                        {
-                            LoadConfiguration(ref _default, defaultConfigFileName);
-                            SaveConfiguration(_default, defaultConfigFileName);
-                        }
+                        _general = new GeneralConfiguration();
                     }
                 }
 
-                return _default;
+                return _general;
             }
         }
         #endregion
 
         #region Ebest Configuration
-        private static readonly string ebestConfigFileName = "Config.Ebest.json";
         private static EbestConfiguration _ebest;
         public static EbestConfiguration Ebest
         {
@@ -48,8 +42,8 @@ namespace MTree.Configuration
                     {
                         if (_ebest == null)
                         {
-                            LoadConfiguration(ref _ebest, ebestConfigFileName);
-                            SaveConfiguration(_ebest, ebestConfigFileName);
+                            LoadConfiguration(ref _ebest, EbestConfiguration.FileName);
+                            SaveConfiguration(_ebest, EbestConfiguration.FileName);
                         }
                     }
                 }
@@ -60,7 +54,6 @@ namespace MTree.Configuration
         #endregion
 
         #region Daishin Configuration
-        private static readonly string daishinConfigFileName = "Config.Daishin.json";
         private static DaishinConfiguration _daishin;
         public static DaishinConfiguration Daishin
         {
@@ -72,13 +65,36 @@ namespace MTree.Configuration
                     {
                         if (_daishin == null)
                         {
-                            LoadConfiguration(ref _daishin, daishinConfigFileName);
-                            SaveConfiguration(_daishin, daishinConfigFileName);
+                            LoadConfiguration(ref _daishin, DaishinConfiguration.FileName);
+                            SaveConfiguration(_daishin, DaishinConfiguration.FileName);
                         }
                     }
                 }
 
                 return _daishin;
+            }
+        }
+        #endregion
+
+        #region Database Configuration
+        private static DatabaseConfiguration _database;
+        public static DatabaseConfiguration Database
+        {
+            get
+            {
+                if (_database == null)
+                {
+                    lock (lockObject)
+                    {
+                        if (_database == null)
+                        {
+                            LoadConfiguration(ref _database, DatabaseConfiguration.FileName);
+                            SaveConfiguration(_database, DatabaseConfiguration.FileName);
+                        }
+                    }
+                }
+
+                return _database;
             }
         }
         #endregion

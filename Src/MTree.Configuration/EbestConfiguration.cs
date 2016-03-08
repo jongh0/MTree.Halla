@@ -4,6 +4,8 @@ namespace MTree.Configuration
 {
     public class EbestConfiguration
     {
+        public static readonly string FileName = "Config.Ebest.json";
+
         public string UserId { get; set; }
 
         public string UserPw { get; set; }

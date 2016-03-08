@@ -3,7 +3,7 @@ using System;
 
 namespace MTree.Configuration
 {
-    public class DefaultConfiguration
+    public class GeneralConfiguration
     {
         [JsonIgnore]
         public string DateFormat { get; } = "yyyy-MM-dd";
@@ -13,10 +13,5 @@ namespace MTree.Configuration
 
         [JsonIgnore]
         public string DateTimeFormat { get; } = "yyyy-MM-dd HH:mm:ss.fff";
-
-        [JsonIgnore]
-        public string MongoDbDateCollectionName { get { return DateTime.Now.ToString("yyyyMMdd"); } }
-
-        public string MongoDbConnectionString { get; set; } = "mongodb://localhost";
     }
 }

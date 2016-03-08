@@ -51,7 +51,8 @@
   <ItemGroup>
     <Compile Include="Config.cs" />
     <Compile Include="DaishinConfiguration.cs" />
-    <Compile Include="DefaultConfiguration.cs" />
+    <Compile Include="DatabaseConfiguration.cs" />
+    <Compile Include="GeneralConfiguration.cs" />
     <Compile Include="EbestConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -59,7 +60,7 @@
     <None Include="Config.Daishin.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Config.Default.json">
+    <None Include="Config.Database.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Config.Ebest.json">

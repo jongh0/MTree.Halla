@@ -21,7 +21,7 @@ namespace MTree.DbProvider
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         private static object lockObject = new object();
 
-        private readonly string connectionString = Config.Default.MongoDbConnectionString;
+        private readonly string connectionString = Config.Database.ConnectionString;
         private readonly string chartDbString = "MTree_Chart";
         private readonly string biddingPriceDbString = "MTree_BiddingPrice";
         private readonly string stockMasterDbString = "MTree_StockMaster";
