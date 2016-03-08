@@ -14,9 +14,9 @@ namespace MTree.Consumer
     {
         public ConsumerClient(InstanceContext callbackInstance, string endpointConfigurationName) : base(callbackInstance, endpointConfigurationName) { }
 
-        public void KeepConnection()
+        public void NoOperation()
         {
-            base.Channel.KeepConnection();
+            base.Channel.NoOperation();
         }
 
         public void RequestSubscription(Guid clientId, Subscription subscription)
@@ -24,9 +24,9 @@ namespace MTree.Consumer
             base.Channel.RequestSubscription(clientId, subscription);
         }
 
-        public void RequestUnsubscription(Guid clientId)
+        public void RequestUnsubscriptionAll(Guid clientId)
         {
-            base.Channel.RequestUnsubscription(clientId);
+            base.Channel.RequestUnsubscriptionAll(clientId);
         }
 
         public void RequestUnsubscription(Guid clientId, SubscriptionType type)

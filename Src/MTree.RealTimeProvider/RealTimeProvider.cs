@@ -22,7 +22,7 @@ namespace MTree.RealTimeProvider
             GeneralTask.Run("RealTimeProvider.IndexConclusionQueue", QueueTaskCancelToken, ProcessIndexConclusionQueue);
         }
 
-        public void KeepConnection()
+        public void NoOperation()
         {
         }
 

@@ -317,5 +317,9 @@ namespace MTree.DaishinPublisher
                 logger.Error(ex);
             }
         }
+
+        public void NoOperation()
+        {
+        }
     }
 }

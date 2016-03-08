@@ -15,7 +15,7 @@ using MTree.Utility;
 namespace MTree.HistorySaver
 {
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
-    public class HistorySaver : ConsumerImplement, IRealTimePublisherCallback
+    public class HistorySaver : ConsumerImplement, IRealTimeConsumerCallback
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -135,6 +135,10 @@ namespace MTree.HistorySaver
         public void ConsumeIndexConclusion(IndexConclusion conclusion)
         {
             IndexConclusionQueue.Enqueue(conclusion);
+        }
+
+        public void NoOperation()
+        {
         }
     }
 }

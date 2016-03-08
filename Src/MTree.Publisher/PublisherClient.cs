@@ -14,9 +14,9 @@ namespace MTree.Publisher
     {
         public PublisherClient(InstanceContext callbackInstance, string endpointConfigurationName) : base(callbackInstance, endpointConfigurationName) { }
 
-        public void KeepConnection()
+        public void NoOperation()
         {
-            base.Channel.KeepConnection();
+            base.Channel.NoOperation();
         }
 
         public void RegisterPublisher(Guid clientId)

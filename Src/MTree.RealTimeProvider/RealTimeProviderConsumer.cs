@@ -45,7 +45,7 @@ namespace MTree.RealTimeProvider
             }
         }
 
-        public void RequestUnsubscription(Guid clientId)
+        public void RequestUnsubscriptionAll(Guid clientId)
         {
             RequestUnsubscription(clientId, SubscriptionType.BiddingPrice);
             RequestUnsubscription(clientId, SubscriptionType.StockConclusion);

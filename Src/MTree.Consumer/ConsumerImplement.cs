@@ -51,7 +51,7 @@ namespace MTree.Consumer
             {
                 if (ServiceClient != null)
                 {
-                    ServiceClient.RequestUnsubscription(ClientId);
+                    ServiceClient.RequestUnsubscriptionAll(ClientId);
                     ServiceClient.Close();
                     logger.Info("ServiceClient closed");
                 }

@@ -535,6 +535,9 @@ namespace MTree.EbestPublisher
                 WaitQuoting.Set();
             }
         }
-        
+
+        public void NoOperation()
+        {
+        }
     }
 }

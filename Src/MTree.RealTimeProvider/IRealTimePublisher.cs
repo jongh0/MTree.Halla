@@ -8,7 +8,7 @@ namespace MTree.RealTimeProvider
     public interface IRealTimePublisher
     {
         [OperationContract(IsOneWay = true)]
-        void KeepConnection();
+        void NoOperation();
 
         [OperationContract]
         void RegisterPublisher(Guid clientId);
@@ -31,5 +31,7 @@ namespace MTree.RealTimeProvider
 
     public interface IRealTimePublisherCallback
     {
+        [OperationContract(IsOneWay = true)]
+        void NoOperation();
     }
 }

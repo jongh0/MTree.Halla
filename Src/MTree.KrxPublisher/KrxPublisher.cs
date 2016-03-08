@@ -88,6 +88,10 @@ namespace MTree.KrxPublisher
             }
         }
         #endregion
-        
+
+        public void NoOperation()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
