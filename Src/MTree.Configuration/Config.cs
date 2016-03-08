@@ -85,7 +85,7 @@ namespace MTree.Configuration
                 if (fileExist == true)
                 {
                     config = JsonConvert.DeserializeObject<T>(File.ReadAllText(filePath));
-                    logger.Info($"{Path.GetFileName(filePath)} configuration loaded");
+                    logger.Info($"{Path.GetFileName(filePath)} loaded");
                 }
             }
             catch (Exception ex)
@@ -96,8 +96,7 @@ namespace MTree.Configuration
             if (config == null)
                 config = Activator.CreateInstance<T>();
 
-            if (fileExist == false)
-                SaveConfiguration(config, filePath);
+            SaveConfiguration(config, filePath);
         }
 
         private static void SaveConfiguration<T>(T config, string filePath)
@@ -110,7 +109,7 @@ namespace MTree.Configuration
                     serializer.NullValueHandling = NullValueHandling.Ignore;
                     serializer.Formatting = Formatting.Indented;
                     serializer.Serialize(stream, config);
-                    logger.Info($"{Path.GetFileName(filePath)} configuration saved");
+                    logger.Info($"{Path.GetFileName(filePath)} saved");
                 }
             }
             catch (Exception ex)
