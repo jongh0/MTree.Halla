@@ -81,7 +81,7 @@ namespace MTree.EbestPublisher
                 LoginInstance.PublisherType = BrokerageServerType.Real;
 
                 if (LoginInstance.PublisherType == BrokerageServerType.Real)
-                    Server = Config.Ebest.ServerAddress;
+                    Server = Config.Ebest.RealServerAddress;
                 else
                     Server = Config.Ebest.DemoServerAddress;
 

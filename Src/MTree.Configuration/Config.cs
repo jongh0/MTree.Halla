@@ -11,26 +11,11 @@ namespace MTree.Configuration
 
         private static object lockObject = new object();
 
-        #region General Configuration
-        private static GeneralConfiguration _general;
-        public static GeneralConfiguration General
-        {
-            get
-            {
-                if (_general == null)
-                {
-                    lock (lockObject)
-                    {
-                        _general = new GeneralConfiguration();
-                    }
-                }
-
-                return _general;
-            }
-        }
+        #region General
+        public static GeneralConfiguration General { get; } = new GeneralConfiguration();
         #endregion
 
-        #region Ebest Configuration
+        #region Ebest
         private static EbestConfiguration _ebest;
         public static EbestConfiguration Ebest
         {
@@ -41,10 +26,7 @@ namespace MTree.Configuration
                     lock (lockObject)
                     {
                         if (_ebest == null)
-                        {
                             LoadConfiguration(ref _ebest, EbestConfiguration.FileName);
-                            SaveConfiguration(_ebest, EbestConfiguration.FileName);
-                        }
                     }
                 }
 
@@ -53,7 +35,7 @@ namespace MTree.Configuration
         }
         #endregion
 
-        #region Daishin Configuration
+        #region Daishin
         private static DaishinConfiguration _daishin;
         public static DaishinConfiguration Daishin
         {
@@ -64,10 +46,7 @@ namespace MTree.Configuration
                     lock (lockObject)
                     {
                         if (_daishin == null)
-                        {
                             LoadConfiguration(ref _daishin, DaishinConfiguration.FileName);
-                            SaveConfiguration(_daishin, DaishinConfiguration.FileName);
-                        }
                     }
                 }
 
@@ -76,7 +55,7 @@ namespace MTree.Configuration
         }
         #endregion
 
-        #region Database Configuration
+        #region Database
         private static DatabaseConfiguration _database;
         public static DatabaseConfiguration Database
         {
@@ -87,10 +66,7 @@ namespace MTree.Configuration
                     lock (lockObject)
                     {
                         if (_database == null)
-                        {
                             LoadConfiguration(ref _database, DatabaseConfiguration.FileName);
-                            SaveConfiguration(_database, DatabaseConfiguration.FileName);
-                        }
                     }
                 }
 
@@ -99,12 +75,14 @@ namespace MTree.Configuration
         }
         #endregion
 
-        #region Load / Save Configuration
+        #region Load / Save
         private static void LoadConfiguration<T>(ref T config, string filePath)
         {
+            bool fileExist = File.Exists(filePath);
+
             try
             {
-                if (File.Exists(filePath) == true)
+                if (fileExist == true)
                 {
                     config = JsonConvert.DeserializeObject<T>(File.ReadAllText(filePath));
                     logger.Info($"{Path.GetFileName(filePath)} configuration loaded");
@@ -117,6 +95,9 @@ namespace MTree.Configuration
 
             if (config == null)
                 config = Activator.CreateInstance<T>();
+
+            if (fileExist == false)
+                SaveConfiguration(config, filePath);
         }
 
         private static void SaveConfiguration<T>(T config, string filePath)

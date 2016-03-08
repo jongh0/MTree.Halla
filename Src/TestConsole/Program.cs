@@ -16,6 +16,7 @@ namespace TestConsole
 
         static void Main(string[] args)
         {
+            Console.WriteLine(Config.General.DateFormat);
             Console.WriteLine(Config.Ebest.UserId);
             Console.WriteLine(Config.Daishin.UserId);
             Console.WriteLine(Config.Database.ConnectionString);

@@ -15,7 +15,7 @@ namespace MTree.Configuration
         public string AccountPw { get; set; }
 
         [JsonIgnore]
-        public string ServerAddress { get; } = "Hts.etrade.co.kr";
+        public string RealServerAddress { get; } = "Hts.etrade.co.kr";
 
         [JsonIgnore]
         public string DemoServerAddress { get; } = "demo.etrade.co.kr";
