@@ -1,4 +1,5 @@
 ﻿using MTree.DataStructure;
+using MTree.RealTimeProvider;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -9,20 +10,10 @@ using System.Threading.Tasks;
 
 namespace MTree.Consumer
 {
-    public class ConsumerBase
+    public class ConsumerBase : RealTimeBase
     {
-        protected object LockObject { get; } = new object();
-
-        protected ConcurrentQueue<BiddingPrice> BiddingPriceQueue { get; } = new ConcurrentQueue<BiddingPrice>();
-        protected ConcurrentQueue<StockConclusion> StockConclusionQueue { get; } = new ConcurrentQueue<StockConclusion>();
-        protected ConcurrentQueue<IndexConclusion> IndexConclusionQueue { get; } = new ConcurrentQueue<IndexConclusion>();
-
-        protected CancellationTokenSource QueueTaskCancelSource { get; } = new CancellationTokenSource();
-        protected CancellationToken QueueTaskCancelToken { get; set; }
-
-        public ConsumerBase()
+        public ConsumerBase() : base()
         {
-            QueueTaskCancelToken = QueueTaskCancelSource.Token;
         }
     }
 }

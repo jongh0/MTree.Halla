@@ -387,7 +387,7 @@ namespace MTree.EbestPublisher
         {
             logger.Info($"Start quoting, Code: {code}");
 
-            if (Monitor.TryEnter(LockObeject, 1000 * 10) == false)
+            if (Monitor.TryEnter(LockObject, 1000 * 10) == false)
             {
                 logger.Error($"Quoting failed, Code: {code}");
                 return false;
@@ -415,7 +415,7 @@ namespace MTree.EbestPublisher
             finally
             {
                 QuotingStockMaster = null;
-                Monitor.Exit(LockObeject);
+                Monitor.Exit(LockObject);
             }
 
             return (ret == 0);
@@ -425,7 +425,7 @@ namespace MTree.EbestPublisher
         {
             logger.Info($"Start quoting, Code: {code}");
 
-            if (Monitor.TryEnter(LockObeject, 1000 * 10) == false)
+            if (Monitor.TryEnter(LockObject, 1000 * 10) == false)
             {
                 logger.Error($"Quoting failed, Code: {code}");
                 return false;
@@ -453,7 +453,7 @@ namespace MTree.EbestPublisher
             finally
             {
                 QuotingIndexMaster = null;
-                Monitor.Exit(LockObeject);
+                Monitor.Exit(LockObject);
             }
 
             return (ret == 0);

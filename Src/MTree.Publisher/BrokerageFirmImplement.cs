@@ -23,10 +23,6 @@ namespace MTree.Publisher
 
         protected ConcurrentDictionary<string, IndexConclusion> PrevIndexConclusions { get; } = new ConcurrentDictionary<string, IndexConclusion>();
 
-        protected ConcurrentQueue<BiddingPrice> BiddingPriceQueue { get; } = new ConcurrentQueue<BiddingPrice>();
-        protected ConcurrentQueue<StockConclusion> StockConclusionQueue { get; } = new ConcurrentQueue<StockConclusion>();
-        protected ConcurrentQueue<IndexConclusion> IndexConclusionQueue { get; } = new ConcurrentQueue<IndexConclusion>();
-
         protected string Server { get; set; }
         protected int Port { get; set; }
 
@@ -49,11 +45,6 @@ namespace MTree.Publisher
             GeneralTask.Run("BrokerageFirmPublisher.IndexConclusionQueue", QueueTaskCancelToken, ProcessIndexConclusionQueue);
         }
 
-        protected void StopQueueTask()
-        {
-            QueueTaskCancelSource.Cancel();
-        }
-
         private void ProcessBiddingPriceQueue()
         {
             try
@@ -71,7 +62,7 @@ namespace MTree.Publisher
             }
         }
 
-        protected void ProcessStockConclusionQueue()
+        private void ProcessStockConclusionQueue()
         {
             try
             {
@@ -88,7 +79,7 @@ namespace MTree.Publisher
             }
         }
 
-        protected void ProcessIndexConclusionQueue()
+        private void ProcessIndexConclusionQueue()
         {
             try
             {

@@ -19,9 +19,9 @@ namespace MTree.Publisher
             base.Channel.KeepConnection();
         }
 
-        public Guid RegisterPublisher()
+        public void RegisterPublisher(Guid clientId)
         {
-            return base.Channel.RegisterPublisher();
+            base.Channel.RegisterPublisher(clientId);
         }
 
         public void UnregisterPublisher(Guid clientId)

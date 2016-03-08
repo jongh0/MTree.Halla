@@ -13,39 +13,42 @@ namespace MTree.RealTimeProvider
     {
         private ConcurrentDictionary<Guid, IRealTimePublisherCallback> PublisherClients { get; set; } = new ConcurrentDictionary<Guid, IRealTimePublisherCallback>();
 
-        public Guid RegisterPublisher()
+        public void RegisterPublisher(Guid clientId)
         {
             try
             {
-                var callback = OperationContext.Current.GetCallbackChannel<IRealTimePublisherCallback>();
-                var clientId = Guid.NewGuid();
+                if (PublisherClients.ContainsKey(clientId) == true)
+                {
+                    logger.Info($"{clientId} publisher already exist");
+                }
+                else
+                {
+                    var callback = OperationContext.Current.GetCallbackChannel<IRealTimePublisherCallback>();
+                    PublisherClients.TryAdd(clientId, callback);
 
-                PublisherClients.TryAdd(clientId, callback);
-                logger.Info($"{clientId} publisher registered");
-
-                return clientId;
+                    logger.Info($"{clientId} publisher registered");
+                }
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
             }
-
-            logger.Error($"Publisher register failed");
-            return Guid.Empty;
         }
 
         public void UnregisterPublisher(Guid clientId)
         {
             try
             {
-                if (clientId != null && 
-                    clientId != Guid.Empty &&
-                    PublisherClients.ContainsKey(clientId))
+                if (PublisherClients.ContainsKey(clientId) == true)
                 {
-                    IRealTimePublisherCallback callback;
-                    PublisherClients.TryRemove(clientId, out callback);
+                    IRealTimePublisherCallback temp;
+                    PublisherClients.TryRemove(clientId, out temp);
 
                     logger.Info($"{clientId} publisher unregistered");
+                }
+                else
+                {
+                    logger.Warn($"{clientId} publisher not exist");
                 }
             }
             catch (Exception ex)
@@ -56,22 +59,21 @@ namespace MTree.RealTimeProvider
 
         public void PublishBiddingPrice(BiddingPrice biddingPrice)
         {
-            throw new NotImplementedException();
+            BiddingPriceQueue.Enqueue(biddingPrice);
         }
 
         public void PublishCircuitBreak(CircuitBreak circuitBreak)
         {
-            throw new NotImplementedException();
         }
 
         public void PublishIndexConclusion(IndexConclusion conclusion)
         {
-            throw new NotImplementedException();
+            IndexConclusionQueue.Enqueue(conclusion);
         }
 
         public void PublishStockConclusion(StockConclusion conclusion)
         {
-            throw new NotImplementedException();
+            StockConclusionQueue.Enqueue(conclusion);
         }
     }
 }

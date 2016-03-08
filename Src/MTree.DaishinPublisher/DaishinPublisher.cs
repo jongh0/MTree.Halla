@@ -73,7 +73,7 @@ namespace MTree.DaishinPublisher
         {
             logger.Info($"Start quoting, Code: {code}");
 
-            if (Monitor.TryEnter(LockObeject, 1000 * 10) == false)
+            if (Monitor.TryEnter(LockObject, 1000 * 10) == false)
             {
                 logger.Error($"Quoting failed. Not able to lock object. Code: {code}");
                 return false;
@@ -109,7 +109,7 @@ namespace MTree.DaishinPublisher
             finally
             {
                 QuotingStockMaster = null;
-                Monitor.Exit(LockObeject);
+                Monitor.Exit(LockObject);
             }
 
             return (ret == 0);

@@ -12,7 +12,7 @@ namespace MTree.Publisher
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        protected Guid ClientId { get; set; } = Guid.Empty;
+        protected Guid ClientId { get; set; } = Guid.NewGuid();
 
         protected InstanceContext CallbackInstance { get; set; }
         protected PublisherClient ServiceClient { get; set; }
@@ -37,7 +37,7 @@ namespace MTree.Publisher
                 ServiceClient = new PublisherClient(CallbackInstance, "RealTimePublisherConfig");
                 ServiceClient.Open();
 
-                ClientId = ServiceClient.RegisterPublisher();
+                ServiceClient.RegisterPublisher(ClientId);
 
                 logger.Info("ServiceClient opened");
             }

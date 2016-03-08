@@ -11,7 +11,7 @@ namespace MTree.RealTimeProvider
         void KeepConnection();
 
         [OperationContract]
-        Guid RegisterPublisher();
+        void RegisterPublisher(Guid clientId);
 
         [OperationContract(IsOneWay = true)]
         void UnregisterPublisher(Guid clientId);

@@ -11,46 +11,86 @@ namespace MTree.RealTimeProvider
 {
     public partial class RealTimeProvider
     {
-        private ConcurrentDictionary<Guid, IRealTimeConsumerCallback> ConsumerClients { get; set; } = new ConcurrentDictionary<Guid, IRealTimeConsumerCallback>();
-
-        public Guid RegisterConsumer()
+        private ConcurrentDictionary<Guid, Subscription> BiddingPriceSubscriptions { get; set; } = new ConcurrentDictionary<Guid, Subscription>();
+        private ConcurrentDictionary<Guid, Subscription> StockConclusionSubscriptions { get; set; } = new ConcurrentDictionary<Guid, Subscription>();
+        private ConcurrentDictionary<Guid, Subscription> IndexConclusionSubscriptions { get; set; } = new ConcurrentDictionary<Guid, Subscription>();
+        
+        public void RequestSubscription(Guid clientId, Subscription subscription)
         {
             try
             {
-                var callback = OperationContext.Current.GetCallbackChannel<IRealTimeConsumerCallback>();
-                var clientId = Guid.NewGuid();
+                var subscriptionList = GetSubscriptionList(subscription.Type);
+                if (subscriptionList == null) return;
 
-                ConsumerClients.TryAdd(clientId, callback);
-                logger.Info($"{clientId} consumer registered");
-
-                return clientId;
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-            }
-
-            logger.Error($"Consumer register failed");
-            return Guid.Empty;
-        }
-
-        public void UnregisterConsumer(Guid clientId)
-        {
-            try
-            {
-                if (clientId != null &&
-                    clientId != Guid.Empty &&
-                    ConsumerClients.ContainsKey(clientId))
+                if (subscriptionList.ContainsKey(clientId) == true)
                 {
-                    IRealTimeConsumerCallback callback;
-                    ConsumerClients.TryRemove(clientId, out callback);
+                    Subscription currSubscription;
+                    if (subscriptionList.TryGetValue(clientId, out currSubscription) == true)
+                    {
+                        if (subscriptionList.TryUpdate(clientId, subscription, currSubscription) == true)
+                            logger.Info($"{clientId} / {subscription.Type} subscription updated");
+                    }
+                }
+                else
+                {
+                    subscription.Callback = OperationContext.Current.GetCallbackChannel<IRealTimeConsumerCallback>();
 
-                    logger.Info($"{clientId} consumer unregistered");
+                    if (subscriptionList.TryAdd(clientId, subscription) == true)
+                        logger.Info($"{clientId} / {subscription.Type} subscription added");
                 }
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
+            }
+        }
+
+        public void RequestUnsubscription(Guid clientId)
+        {
+            RequestUnsubscription(clientId, SubscriptionType.BiddingPrice);
+            RequestUnsubscription(clientId, SubscriptionType.StockConclusion);
+            RequestUnsubscription(clientId, SubscriptionType.IndexConclusion);
+        }
+
+        public void RequestUnsubscription(Guid clientId, SubscriptionType type)
+        {
+            try
+            {
+                var subscriptionList = GetSubscriptionList(type);
+                if (subscriptionList == null) return;
+
+                if (subscriptionList.ContainsKey(clientId) == true)
+                {
+                    Subscription temp;
+                    if (subscriptionList.TryRemove(clientId, out temp) == true)
+                    {
+                        temp.Callback = null;
+                        logger.Info($"{clientId} / {type} subscription removed");
+                    }
+                }
+                else
+                {
+                    logger.Info($"{clientId} / {type} subscription not exist");
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
+        private ConcurrentDictionary<Guid, Subscription> GetSubscriptionList(SubscriptionType type)
+        {
+            switch (type)
+            {
+                case SubscriptionType.BiddingPrice:
+                    return BiddingPriceSubscriptions;
+                case SubscriptionType.StockConclusion:
+                    return StockConclusionSubscriptions;
+                case SubscriptionType.IndexConclusion:
+                    return IndexConclusionSubscriptions;
+                default:
+                    return null;
             }
         }
     }

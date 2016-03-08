@@ -11,7 +11,7 @@ namespace MTree.Utility
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public static Task Run(string taskName, CancellationToken cancelToken, Action action, int interval = 0)
+        public static Task Run(string taskName, CancellationToken cancelToken, Action action)
         {
             var _taskName = taskName;
             var _cancelToken = cancelToken;
@@ -27,9 +27,6 @@ namespace MTree.Utility
                     {
                         _cancelToken.ThrowIfCancellationRequested();
                         _action();
-
-                        if (interval > 0)
-                            Thread.Sleep(interval);
                     }
                     catch (OperationCanceledException)
                     {
