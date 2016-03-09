@@ -16,11 +16,18 @@ namespace TestConsole
 
         static void Main(string[] args)
         {
-            Console.WriteLine(Config.General.DateFormat);
+            CreateConfiguraionFile(); // Configuration 파일들 없으면 자동 생성될 수 있도록
+
+
+
+            //TestDbSaving();
+        }
+
+        private static void CreateConfiguraionFile()
+        {
             Console.WriteLine(Config.Ebest.UserId);
             Console.WriteLine(Config.Daishin.UserId);
             Console.WriteLine(Config.Database.ConnectionString);
-            //TestDbSaving();
         }
 
         private static void TestDbSaving()
