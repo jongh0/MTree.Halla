@@ -1,14 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
-using System.Xml.Serialization;
-using System.Threading.Tasks;
 using MTree.DataStructure;
 using MTree.Configuration;
 using MTree.Publisher;
@@ -36,6 +27,8 @@ namespace MTree.EbestPublisher
 
         private CancellationTokenSource loginCheckerCancelSource = new CancellationTokenSource();
         private CancellationToken loginCheckerCancelToken;
+
+        public ManualResetEvent WaitLoginEvent { get; } = new ManualResetEvent(false);
 
         private bool isAnyDataReceived;
 
@@ -95,7 +88,7 @@ namespace MTree.EbestPublisher
 
                 Port = Config.Ebest.ServerPort;
 
-                //Login(); 
+                Login(); 
                 #endregion
             }
             catch (Exception ex)
@@ -145,20 +138,26 @@ namespace MTree.EbestPublisher
         #region XASession
         private void sessionObj_Event_Logout()
         {
+            logger.Info("Session logout");
+
             LoginInstance.LoginState = LoginStateType.LoggedOut;
             loginCheckerCancelSource.Cancel();
         }
 
         private void sessionObj_Event_Login(string szCode, string szMsg)
         {
-            logger.Info($"szCode: {szCode}, szMsg: {szMsg}");
+            logger.Info($"Session login, szCode: {szCode}, szMsg: {szMsg}");
+
             LoginInstance.LoginState = LoginStateType.LoggedIn;
+            WaitLoginEvent.Set();
 
             //Task.Run(() => { LoginStateChecker(); }, loginCheckerCancelToken);
         }
 
         private void sessionObj_Disconnect()
         {
+            logger.Info("Session disconnect");
+
             LoginInstance.LoginState = LoginStateType.Disconnected;
             loginCheckerCancelSource.Cancel();
         } 
@@ -220,13 +219,9 @@ namespace MTree.EbestPublisher
                         ret = sessionObj.Login(LoginInstance.UserId, LoginInstance.UserPw, LoginInstance.CertPw, (int)XA_SERVER_TYPE.XA_SIMUL_SERVER, true);
 
                     if (ret == true)
-                    {
-                        logger.Info("Login success");
-                    }
+                        logger.Info("Try login");
                     else
-                    {
-                        logger.Error("Login fail");
-                    }
+                        logger.Error("Login error");
                 }
                 else
                 {
@@ -239,6 +234,11 @@ namespace MTree.EbestPublisher
             }
 
             return ret;
+        }
+
+        public bool Waitlogin()
+        {
+            return WaitLoginEvent.WaitOne(10000);
         }
 
         public bool Logout()
@@ -412,7 +412,7 @@ namespace MTree.EbestPublisher
 
                 if (ret > 0)
                 {
-                    if (WaitQuoting.WaitOne(1000 * 10) == false)
+                    if (WaitQuotingEvent.WaitOne(1000 * 10) == false)
                         ret = -1;
                 }
             }
@@ -450,7 +450,7 @@ namespace MTree.EbestPublisher
 
                 if (ret > 0)
                 {
-                    if (WaitQuoting.WaitOne(1000 * 10) == false)
+                    if (WaitQuotingEvent.WaitOne(1000 * 10) == false)
                         ret = -1;
                 }
             }
@@ -511,7 +511,7 @@ namespace MTree.EbestPublisher
             }
             finally
             {
-                WaitQuoting.Set();
+                WaitQuotingEvent.Set();
             }
         }
 
@@ -540,7 +540,7 @@ namespace MTree.EbestPublisher
             }
             finally
             {
-                WaitQuoting.Set();
+                WaitQuotingEvent.Set();
             }
         }
 

@@ -3,6 +3,7 @@ using MTree.DaishinPublisher;
 using MTree.DataStructure;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,8 +19,10 @@ namespace MTree.DaishinPublisher.Tests
             string code = "000020";
             StockMaster master = new StockMaster();
             DaishinPublisher publisher = new DaishinPublisher();
-            //bool result = publisher.GetQuote(code, ref master);
-            //Assert.IsTrue(result);
+            int startTick = Environment.TickCount;
+            bool result = publisher.GetQuote(code, ref master);
+            Trace.WriteLine(">>>>>>>>>>>>>>> " + (Environment.TickCount - startTick));
+            Debugger.Break();
         }
 
         [TestMethod()]

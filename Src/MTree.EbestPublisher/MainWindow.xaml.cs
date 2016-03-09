@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,10 +21,26 @@ namespace MTree.EbestPublisher
     /// </summary>
     public partial class MainWindow : Window
     {
+        private EbestPublisher Publisher { get; set; }
+
         public MainWindow()
         {
             InitializeComponent();
-            
+
+            Publisher = new EbestPublisher();
+
+#if false
+            Task.Run(() =>
+            {
+                Publisher.Waitlogin();
+
+                DataStructure.StockMaster master = new DataStructure.StockMaster();
+                int startTick = Environment.TickCount;
+                Publisher.GetQuote("000020", ref master);
+                Trace.WriteLine(">>>>>>>>>>>>>>> " + (Environment.TickCount - startTick));
+                Debugger.Break();
+            });
+#endif
         }
     }
 }

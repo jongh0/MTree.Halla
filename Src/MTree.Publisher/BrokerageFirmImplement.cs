@@ -16,7 +16,7 @@ namespace MTree.Publisher
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         protected LoginInfo LoginInstance { get; } = new LoginInfo();
-        protected AutoResetEvent WaitQuoting { get; } = new AutoResetEvent(false);
+        protected AutoResetEvent WaitQuotingEvent { get; } = new AutoResetEvent(false);
 
         protected StockMaster QuotingStockMaster { get; set; }
         protected IndexMaster QuotingIndexMaster { get; set; }

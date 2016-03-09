@@ -94,7 +94,7 @@ namespace MTree.DaishinPublisher
 
                 if (ret == 0)
                 {
-                    if (WaitQuoting.WaitOne(1000 * 10) == false)
+                    if (WaitQuotingEvent.WaitOne(1000 * 10) == false)
                         ret = -1;
                 }
                 else
@@ -207,7 +207,7 @@ namespace MTree.DaishinPublisher
             }
             finally
             {
-                WaitQuoting.Set();
+                WaitQuotingEvent.Set();
             }
         }
 
