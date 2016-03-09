@@ -70,10 +70,17 @@ namespace MTree.RealTimeProvider
                 }
                 else
                 {
-                    contract.Callback = OperationContext.Current.GetCallbackChannel<IRealTimePublisherCallback>();
-                    PublishContracts.TryAdd(clientId, contract);
+                    if (contract.Type == PublishType.None)
+                    {
+                        logger.Info($"{clientId} / {contract.Type} wrong contract type");
+                    }
+                    else
+                    {
+                        contract.Callback = OperationContext.Current.GetCallbackChannel<IRealTimePublisherCallback>();
+                        PublishContracts.TryAdd(clientId, contract);
 
-                    logger.Info($"{clientId} contract registered");
+                        logger.Info($"{clientId} / {contract.Type} contract registered");
+                    }
                 }
             }
             catch (Exception ex)
@@ -91,7 +98,7 @@ namespace MTree.RealTimeProvider
                     PublishContract temp;
                     PublishContracts.TryRemove(clientId, out temp);
 
-                    logger.Info($"{clientId} contract unregistered");
+                    logger.Info($"{clientId} / {temp.Type} contract unregistered");
                 }
                 else
                 {

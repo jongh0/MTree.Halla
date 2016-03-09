@@ -22,11 +22,7 @@ namespace MTree.Consumer
             try
             {
                 CallbackInstance = new InstanceContext(this);
-                CallbackInstance.Opened += CallbackInstance_Opened;
-                CallbackInstance.Closed += CallbackInstance_Closed;
-                CallbackInstance.Faulted += CallbackInstance_Faulted;
-
-                OpenService();
+                OpenChannel();
             }
             catch (Exception ex)
             {
@@ -34,28 +30,15 @@ namespace MTree.Consumer
             }
         }
 
-        private void CallbackInstance_Faulted(object sender, EventArgs e)
-        {
-            logger.Error("Service faulted");
-        }
-
-        private void CallbackInstance_Closed(object sender, EventArgs e)
-        {
-            logger.Info("Service closed");
-        }
-
-        private void CallbackInstance_Opened(object sender, EventArgs e)
-        {
-            logger.Info("Service opened");
-        }
-
-        protected void OpenService()
+        protected void OpenChannel()
         {
             try
             {
-                logger.Info("Open service");
+                logger.Error($"Open {ProcessName} channel");
 
                 ServiceClient = new ConsumerClient(CallbackInstance, "RealTimeConsumerConfig");
+                ServiceClient.InnerChannel.Opened += InnerChannel_Opened;
+                ServiceClient.InnerChannel.Closed += InnerChannel_Closed;
                 ServiceClient.Open();
             }
             catch (Exception ex)
@@ -64,13 +47,23 @@ namespace MTree.Consumer
             }
         }
 
-        protected void CloseService()
+        private void InnerChannel_Closed(object sender, EventArgs e)
+        {
+            logger.Error($"{ProcessName} channel closed");
+        }
+
+        private void InnerChannel_Opened(object sender, EventArgs e)
+        {
+            logger.Error($"{ProcessName} channel opened");
+        }
+
+        protected void CloseChannel()
         {
             try
             {
                 if (ServiceClient != null)
                 {
-                    logger.Info("Close service");
+                    logger.Error($"Close {ProcessName} channel");
 
                     ServiceClient.UnregisterSubscribeContractAll(ClientId);
                     ServiceClient.Close();

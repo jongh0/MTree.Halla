@@ -22,11 +22,7 @@ namespace MTree.Publisher
             try
             {
                 CallbackInstance = new InstanceContext(this);
-                CallbackInstance.Opened += CallbackInstance_Opened;
-                CallbackInstance.Closed += CallbackInstance_Closed;
-                CallbackInstance.Faulted += CallbackInstance_Faulted;
-
-                OpenService();
+                OpenChannel();
             }
             catch (Exception ex)
             {
@@ -34,29 +30,41 @@ namespace MTree.Publisher
             }
         }
 
-        private void CallbackInstance_Faulted(object sender, EventArgs e)
-        {
-            logger.Error("Service faulted");
-        }
-
-        private void CallbackInstance_Closed(object sender, EventArgs e)
-        {
-            logger.Info("Service closed");
-        }
-
-        private void CallbackInstance_Opened(object sender, EventArgs e)
+        protected void OpenChannel()
         {
             try
             {
-                logger.Info("Service opened");
+                logger.Error($"Open {ProcessName} channel");
+
+                ServiceClient = new PublisherClient(CallbackInstance, "RealTimePublisherConfig");
+                ServiceClient.InnerChannel.Opened += InnerChannel_Opened;
+                ServiceClient.InnerChannel.Closed += InnerChannel_Closed;
+                ServiceClient.Open();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
+        private void InnerChannel_Closed(object sender, EventArgs e)
+        {
+            logger.Error($"{ProcessName} channel closed");
+        }
+
+        private void InnerChannel_Opened(object sender, EventArgs e)
+        {
+            try
+            {
+                logger.Error($"{ProcessName} channel opened");
 
                 var args = Environment.GetCommandLineArgs();
-                if (args?.Length > 0)
+                if (args?.Length > 1)
                 {
                     logger.Info($"Argument: {string.Join(" ", args)}");
 
                     var contract = new PublishContract();
-                    contract.Type = PublishContract.ConvertToType(args[0]);
+                    contract.Type = PublishContract.ConvertToType(args[1]);
 
                     ServiceClient.RegisterPublishContract(ClientId, contract);
                 }
@@ -71,28 +79,13 @@ namespace MTree.Publisher
             }
         }
 
-        protected void OpenService()
-        {
-            try
-            {
-                logger.Info("Open service");
-
-                ServiceClient = new PublisherClient(CallbackInstance, "RealTimePublisherConfig");
-                ServiceClient.Open();
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-            }
-        }
-
-        protected void CloseService()
+        protected void CloseChannel()
         {
             try
             {
                 if (ServiceClient != null)
                 {
-                    logger.Info("Close service");
+                    logger.Error($"Close {ProcessName} channel");
 
                     ServiceClient.UnregisterPublishContract(ClientId);
                     ServiceClient.Close();

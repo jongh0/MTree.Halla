@@ -18,7 +18,8 @@ namespace MTree.RealTimeProvider
         {
             InitializeComponent();
 
-            RealTimeHost = new ServiceHost(typeof(RealTimeProvider));
+            var instance = new RealTimeProvider();
+            RealTimeHost = new ServiceHost(instance);
             RealTimeHost.Opened += RealTimeHost_Opened;
             RealTimeHost.Closed += RealTimeHost_Closed;
             RealTimeHost.Faulted += RealTimeHost_Faulted;
@@ -27,27 +28,22 @@ namespace MTree.RealTimeProvider
 
         private void RealTimeHost_Faulted(object sender, System.EventArgs e)
         {
-            logger.Info("Service faulted");
+            logger.Info("RealTimeHost faulted");
         }
 
         private void RealTimeHost_Closed(object sender, System.EventArgs e)
         {
-            logger.Info("Service closed");
+            logger.Info("RealTimeHost closed");
         }
 
         private void RealTimeHost_Opened(object sender, System.EventArgs e)
         {
-            logger.Info("Service opened");
+            logger.Info("RealTimeHost opened");
 
 #if false // TODO : Launch를 먼저할지 요청이 있을 때 Launch를 할지 정해야 함
-            RealTimeProviderInstance.LaunchPublisher(PublishType.DaisinStockMaster);
-            RealTimeProviderInstance.LaunchPublisher(PublishType.DaishinStockConclusion);
-
-            RealTimeProviderInstance.LaunchPublisher(PublishType.EbestStockMaster);
-            RealTimeProviderInstance.LaunchPublisher(PublishType.EbestIndexMaster);
-            RealTimeProviderInstance.LaunchPublisher(PublishType.EbestIndexConclusion);
-
-            RealTimeProviderInstance.LaunchPublisher(PublishType.KrxStockMaster);
+            RealTimeProviderInstance.LaunchPublisher(PublishType.Daishin);
+            RealTimeProviderInstance.LaunchPublisher(PublishType.Ebest);
+            //RealTimeProviderInstance.LaunchPublisher(PublishType.Krx);
 #endif
         }
     }
