@@ -287,23 +287,23 @@ namespace MTree.DaishinPublisher
 
                 // 3 - (long) 시간
                 // 18 - (long) 시간 (초)
-                long time = (long)stockCurObj.GetHeaderValue(3);
-                long sec = (long)stockCurObj.GetHeaderValue(18);
-                conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 100), (int)(time % 100), (int)sec, now.Millisecond); // Daishin doesn't provide milisecond 
+                ///long time = Convert.ToInt64(stockCurObj.GetHeaderValue(3));
+                long sec = Convert.ToInt64(stockCurObj.GetHeaderValue(18));
+                conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(sec / 10000), (int)((sec / 100) % 100), (int)sec % 100, now.Millisecond); // Daishin doesn't provide milisecond 
 
                 // 13 - (long) 현재가
-                conclusion.Price = (float)stockCurObj.GetHeaderValue(13);
+                conclusion.Price = (float)Convert.ToDouble(stockCurObj.GetHeaderValue(13));
 
                 // 14 - (char)체결 상태
-                char type = (char)stockCurObj.GetHeaderValue(14);
+                char type = Convert.ToChar(stockCurObj.GetHeaderValue(14));
                 if (type == '1') conclusion.ConclusionType = ConclusionType.Buy;
                 else if (type == '2') conclusion.ConclusionType = ConclusionType.Sell;
 
                 // 17 - (long) 순간체결수량
-                conclusion.Amount = (long)stockCurObj.GetHeaderValue(17);
+                conclusion.Amount = Convert.ToInt64(stockCurObj.GetHeaderValue(17));
 
                 // 20 - (char) 장 구분 플래그
-                char typeTime = (char)stockCurObj.GetHeaderValue(20);
+                char typeTime = Convert.ToChar(stockCurObj.GetHeaderValue(20));
                 if (typeTime == '1') conclusion.MarketTimeType = MarketTimeType.BeforeExpect;
                 else if (typeTime == '2') conclusion.MarketTimeType = MarketTimeType.Normal;
                 else if (typeTime == '3') conclusion.MarketTimeType = MarketTimeType.BeforeOffTheClock;

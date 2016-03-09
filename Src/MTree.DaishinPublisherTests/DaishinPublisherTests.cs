@@ -21,5 +21,15 @@ namespace MTree.DaishinPublisher.Tests
             //bool result = publisher.GetQuote(code, ref master);
             //Assert.IsTrue(result);
         }
+
+        [TestMethod()]
+        public void SubscribeStockTest()
+        {
+            string code = "000020";
+            DaishinPublisher publisher = new DaishinPublisher();
+            bool result = publisher.SubscribeStock(code);
+            Assert.IsTrue(result);
+            while (true) ;
+        }
     }
 }

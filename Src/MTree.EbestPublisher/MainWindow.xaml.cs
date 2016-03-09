@@ -20,13 +20,10 @@ namespace MTree.EbestPublisher
     /// </summary>
     public partial class MainWindow : Window
     {
-        private EbestPublisher Publisher { get; set; }
-
         public MainWindow()
         {
             InitializeComponent();
-
-            Publisher = new EbestPublisher();
+            
         }
     }
 }

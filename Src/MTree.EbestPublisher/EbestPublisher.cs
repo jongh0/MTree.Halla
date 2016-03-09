@@ -42,7 +42,8 @@ namespace MTree.EbestPublisher
         #region Ebest Specific
         private XASessionClass sessionObj;
         private XARealClass realObj;
-        private XAQueryClass queryObj; 
+        private XAQueryClass indexQuotingObj;
+        private XAQueryClass stockQuotingObj;
         #endregion
 
         public EbestPublisher() : base()
@@ -66,10 +67,17 @@ namespace MTree.EbestPublisher
                 #endregion
 
                 #region XAQuery
-                queryObj = new XAQueryClass();
-                queryObj.ReceiveChartRealData += queryObj_ReceiveChartRealData;
-                queryObj.ReceiveData += queryObj_ReceiveData;
-                queryObj.ReceiveMessage += queryObj_ReceiveMessage;
+                indexQuotingObj = new XAQueryClass();
+                indexQuotingObj.ResFileName = resFilePath + "\\t1511.res";
+                indexQuotingObj.ReceiveChartRealData += queryObj_ReceiveChartRealData;
+                indexQuotingObj.ReceiveData += queryObj_ReceiveData;
+                indexQuotingObj.ReceiveMessage += queryObj_ReceiveMessage;
+
+                stockQuotingObj = new XAQueryClass();
+                stockQuotingObj.ResFileName = resFilePath + "\\t1102.res";
+                stockQuotingObj.ReceiveChartRealData += queryObj_ReceiveChartRealData;
+                stockQuotingObj.ReceiveData += queryObj_ReceiveData;
+                stockQuotingObj.ReceiveMessage += queryObj_ReceiveMessage;
                 #endregion
 
                 #region Login
@@ -87,7 +95,7 @@ namespace MTree.EbestPublisher
 
                 Port = Config.Ebest.ServerPort;
 
-                Login(); 
+                //Login(); 
                 #endregion
             }
             catch (Exception ex)
@@ -146,7 +154,7 @@ namespace MTree.EbestPublisher
             logger.Info($"szCode: {szCode}, szMsg: {szMsg}");
             LoginInstance.LoginState = LoginStateType.LoggedIn;
 
-            Task.Run(() => { LoginStateChecker(); }, loginCheckerCancelToken);
+            //Task.Run(() => { LoginStateChecker(); }, loginCheckerCancelToken);
         }
 
         private void sessionObj_Disconnect()
@@ -230,7 +238,7 @@ namespace MTree.EbestPublisher
                 logger.Error(ex);
             }
 
-            return false;
+            return ret;
         }
 
         public bool Logout()
@@ -398,9 +406,9 @@ namespace MTree.EbestPublisher
             try
             {
                 QuotingStockMaster = stockMaster;
-
-                queryObj.SetFieldData("t1102InBlock", "shcode", 0, code);
-                ret = queryObj.Request(false);
+                
+                stockQuotingObj.SetFieldData("t1102InBlock", "shcode", 0, code);
+                ret = stockQuotingObj.Request(false);
 
                 if (ret > 0)
                 {
@@ -437,8 +445,8 @@ namespace MTree.EbestPublisher
             {
                 QuotingIndexMaster = indexMaster;
 
-                queryObj.SetFieldData("t1511InBlock", "upcode", 0, code);
-                ret = queryObj.Request(false);
+                indexQuotingObj.SetFieldData("t1511InBlock", "upcode", 0, code);
+                ret = indexQuotingObj.Request(false);
 
                 if (ret > 0)
                 {
@@ -466,19 +474,19 @@ namespace MTree.EbestPublisher
                 if (QuotingStockMaster == null)
                     return;
 
-                string temp = queryObj.GetFieldData("t1102OutBlock", "price", 0);
+                string temp = stockQuotingObj.GetFieldData("t1102OutBlock", "price", 0);
                 if (temp == "") temp = "0";
                 //quotingStockMaster.LastSale = int.Parse(temp); // 현재가 // TODO : 필요한건가? Daishin에도 주석처리되어 있음
 
-                temp = queryObj.GetFieldData("t1102OutBlock", "jnilvolume", 0);
+                temp = stockQuotingObj.GetFieldData("t1102OutBlock", "jnilvolume", 0);
                 if (temp == "") temp = "0";
                 QuotingStockMaster.PreviousVolume = int.Parse(temp); //전일거래량
 
-                temp = queryObj.GetFieldData("t1102OutBlock", "abscnt", 0);
+                temp = stockQuotingObj.GetFieldData("t1102OutBlock", "abscnt", 0);
                 if (temp == "") temp = "0";
                 QuotingStockMaster.CirculatingVolume = int.Parse(temp);  //유통주식수
 
-                string valueAltered = queryObj.GetFieldData("t1102OutBlock", "info1", 0);
+                string valueAltered = stockQuotingObj.GetFieldData("t1102OutBlock", "info1", 0);
 
                 if (valueAltered == "권배락")
                     QuotingStockMaster.ValueAltered = ValueAlteredType.ExRightDividend;
@@ -514,15 +522,15 @@ namespace MTree.EbestPublisher
                 if (QuotingIndexMaster == null)
                     return;
 
-                string temp = queryObj.GetFieldData("t1511OutBlock", "jniljisu", 0);
+                string temp = indexQuotingObj.GetFieldData("t1511OutBlock", "jniljisu", 0);
                 if (temp == "") temp = "0";
                 QuotingIndexMaster.PreviousClosedPrice = Convert.ToDouble(temp); // 현재가
 
-                temp = queryObj.GetFieldData("t1511OutBlock", "jnilvolume", 0);
+                temp = indexQuotingObj.GetFieldData("t1511OutBlock", "jnilvolume", 0);
                 if (temp == "") temp = "0";
                 QuotingIndexMaster.PreviousVolume = Convert.ToInt64(temp); //전일거래량
 
-                temp = queryObj.GetFieldData("t1511OutBlock", "jnilvalue", 0);
+                temp = indexQuotingObj.GetFieldData("t1511OutBlock", "jnilvalue", 0);
                 if (temp == "") temp = "0";
                 QuotingIndexMaster.PreviousTradeCost = Convert.ToInt64(temp);  //전일거래대금
             }
