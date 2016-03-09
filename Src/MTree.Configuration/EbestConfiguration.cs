@@ -6,13 +6,13 @@ namespace MTree.Configuration
     {
         public static readonly string FileName = "Config.Ebest.json";
 
-        public string UserId { get; set; }
+        public string UserId { get; set; } = string.Empty;
 
-        public string UserPw { get; set; }
+        public string UserPw { get; set; } = string.Empty;
 
-        public string CertPw { get; set; }
+        public string CertPw { get; set; } = string.Empty;
 
-        public string AccountPw { get; set; }
+        public string AccountPw { get; set; } = string.Empty;
 
         [JsonIgnore]
         public string RealServerAddress { get; } = "Hts.etrade.co.kr";
