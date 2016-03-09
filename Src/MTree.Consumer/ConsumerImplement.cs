@@ -22,6 +22,10 @@ namespace MTree.Consumer
             try
             {
                 CallbackInstance = new InstanceContext(this);
+                CallbackInstance.Opened += CallbackInstance_Opened;
+                CallbackInstance.Closed += CallbackInstance_Closed;
+                CallbackInstance.Faulted += CallbackInstance_Faulted;
+
                 OpenService();
             }
             catch (Exception ex)
@@ -30,14 +34,29 @@ namespace MTree.Consumer
             }
         }
 
+        private void CallbackInstance_Faulted(object sender, EventArgs e)
+        {
+            logger.Error("Service faulted");
+        }
+
+        private void CallbackInstance_Closed(object sender, EventArgs e)
+        {
+            logger.Info("Service closed");
+        }
+
+        private void CallbackInstance_Opened(object sender, EventArgs e)
+        {
+            logger.Info("Service opened");
+        }
+
         protected void OpenService()
         {
             try
             {
+                logger.Info("Open service");
+
                 ServiceClient = new ConsumerClient(CallbackInstance, "RealTimeConsumerConfig");
                 ServiceClient.Open();
-
-                logger.Info("ServiceClient opened");
             }
             catch (Exception ex)
             {
@@ -51,9 +70,10 @@ namespace MTree.Consumer
             {
                 if (ServiceClient != null)
                 {
-                    ServiceClient.RequestUnsubscriptionAll(ClientId);
+                    logger.Info("Close service");
+
+                    ServiceClient.UnregisterSubscribeContractAll(ClientId);
                     ServiceClient.Close();
-                    logger.Info("ServiceClient closed");
                 }
             }
             catch (Exception ex)

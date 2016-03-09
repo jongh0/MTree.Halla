@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ServiceModel;
 using MTree.DataStructure;
+using System.Collections.Generic;
 
 namespace MTree.RealTimeProvider
 {
@@ -11,10 +12,10 @@ namespace MTree.RealTimeProvider
         void NoOperation();
 
         [OperationContract]
-        void RegisterPublisher(Guid clientId);
+        void RegisterPublishContract(Guid clientId, PublishContract contract);
 
         [OperationContract(IsOneWay = true)]
-        void UnregisterPublisher(Guid clientId);
+        void UnregisterPublishContract(Guid clientId);
 
         [OperationContract(IsOneWay = true)]
         void PublishBiddingPrice(BiddingPrice biddingPrice);
@@ -33,5 +34,7 @@ namespace MTree.RealTimeProvider
     {
         [OperationContract(IsOneWay = true)]
         void NoOperation();
+
+        List<string> GetStockCodeList();
     }
 }

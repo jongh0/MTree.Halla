@@ -8,10 +8,19 @@ using System.Threading.Tasks;
 
 namespace MTree.Publisher
 {
-    public class PublisherBase : RealTimeBase
+    public class PublisherBase : RealTimeBase, IRealTimePublisherCallback
     {
         public PublisherBase() : base()
         {
+        }
+
+        public virtual void NoOperation()
+        {
+        }
+
+        public virtual List<string> GetStockCodeList()
+        {
+            return new List<string>();
         }
     }
 }

@@ -33,9 +33,9 @@ namespace MTree.RealTimeProvider
                 BiddingPrice biddingPrice;
                 if (BiddingPriceQueue.TryDequeue(out biddingPrice) == true)
                 {
-                    foreach (var subscription in BiddingPriceSubscriptions)
+                    foreach (var subscription in BiddingPriceContracts)
                     {
-                        if (subscription.Value.Way == SubscriptionWay.All ||
+                        if (subscription.Value.Way == SubscribeWay.All ||
                             subscription.Value.ContainCode(biddingPrice.Code) == true)
                         {
                             subscription.Value.Callback.ConsumeBiddingPrice(biddingPrice);
@@ -60,9 +60,9 @@ namespace MTree.RealTimeProvider
                 StockConclusion conclusion;
                 if (StockConclusionQueue.TryDequeue(out conclusion) == true)
                 {
-                    foreach (var subscription in StockConclusionSubscriptions)
+                    foreach (var subscription in StockConclusionContracts)
                     {
-                        if (subscription.Value.Way == SubscriptionWay.All ||
+                        if (subscription.Value.Way == SubscribeWay.All ||
                             subscription.Value.ContainCode(conclusion.Code) == true)
                         {
                             subscription.Value.Callback.ConsumeStockConclusion(conclusion);
@@ -87,9 +87,9 @@ namespace MTree.RealTimeProvider
                 IndexConclusion conclusion;
                 if (IndexConclusionQueue.TryDequeue(out conclusion) == true)
                 {
-                    foreach (var subscription in IndexConclusionSubscriptions)
+                    foreach (var subscription in IndexConclusionContracts)
                     {
-                        if (subscription.Value.Way == SubscriptionWay.All ||
+                        if (subscription.Value.Way == SubscribeWay.All ||
                             subscription.Value.ContainCode(conclusion.Code) == true)
                         {
                             subscription.Value.Callback.ConsumeIndexConclusion(conclusion);

@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 namespace MTree.DaishinPublisher
 {
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
-    public class DaishinPublisher : BrokerageFirmImplement, IRealTimePublisherCallback
+    public class DaishinPublisher : BrokerageFirmImplement
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -150,13 +150,13 @@ namespace MTree.DaishinPublisher
                 var size = stockMstObj.GetHeaderValue(6).ToString();
 
                 // 8 - (long) 상한가
-                QuotingStockMaster.UpperLimit = Convert.ToInt32(stockMstObj.GetHeaderValue(8));
+                QuotingStockMaster.UpperLimit = (int)stockMstObj.GetHeaderValue(8);
 
                 // 9- (long) 하한가
-                QuotingStockMaster.LowerLimit = Convert.ToInt32(stockMstObj.GetHeaderValue(9));
+                QuotingStockMaster.LowerLimit = (int)stockMstObj.GetHeaderValue(9);
 
                 // 10 - (long) 전일종가
-                QuotingStockMaster.PreviousClosedPrice = Convert.ToInt32(stockMstObj.GetHeaderValue(10));
+                QuotingStockMaster.PreviousClosedPrice = (int)stockMstObj.GetHeaderValue(10);
 
                 // 11 - (long) 현재가
                 //currentQuotingkMaster.LastSale = (int)currentPriceQueryObj.GetHeaderValue(11);  
@@ -165,7 +165,7 @@ namespace MTree.DaishinPublisher
                 QuotingStockMaster.SettlementMonth = Convert.ToInt32(stockMstObj.GetHeaderValue(26));
 
                 // 27 - (long) basis price (기준가)
-                QuotingStockMaster.BasisPrice = Convert.ToInt32(stockMstObj.GetHeaderValue(27));
+                QuotingStockMaster.BasisPrice = (int)stockMstObj.GetHeaderValue(27);
 
                 // 31 - (decimal) 상장주식수 (단주)
                 QuotingStockMaster.ShareVolume = Convert.ToInt64(stockMstObj.GetHeaderValue(31));
@@ -178,9 +178,9 @@ namespace MTree.DaishinPublisher
 
                 // 39 - (decimal) 외국인 주문가능수량
                 QuotingStockMaster.ForeigneAvailableRemain = Convert.ToInt64(stockMstObj.GetHeaderValue(39));
-
+                
                 // 43 - (short) 매매 수량 단위 
-                QuotingStockMaster.QuantityUnit = Convert.ToInt32(stockMstObj.GetHeaderValue(43));
+                QuotingStockMaster.QuantityUnit = (int)stockMstObj.GetHeaderValue(43);
 
                 // 45 - (char) 소속 구분(코드)
                 var classificationCode = Convert.ToChar(stockMstObj.GetHeaderValue(45));
@@ -195,7 +195,7 @@ namespace MTree.DaishinPublisher
                 var kospi200 = (string)stockMstObj.GetHeaderValue(53);
 
                 // 54 - (short) 액면가
-                QuotingStockMaster.FaceValue = Convert.ToInt32(stockMstObj.GetHeaderValue(54));
+                QuotingStockMaster.FaceValue = (int)stockMstObj.GetHeaderValue(54);
 
                 // 69 -(char) 불성실 공시구분 => KRX로 이동
                 //if ((char)stockMstObj.GetHeaderValue(69) != '0')
@@ -318,8 +318,20 @@ namespace MTree.DaishinPublisher
             }
         }
 
-        public void NoOperation()
+        public override List<string> GetStockCodeList()
         {
+            var codeList = new List<string>();
+
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+
+            return codeList;
         }
     }
 }

@@ -22,7 +22,48 @@ namespace MTree.Publisher
             try
             {
                 CallbackInstance = new InstanceContext(this);
+                CallbackInstance.Opened += CallbackInstance_Opened;
+                CallbackInstance.Closed += CallbackInstance_Closed;
+                CallbackInstance.Faulted += CallbackInstance_Faulted;
+
                 OpenService();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
+        private void CallbackInstance_Faulted(object sender, EventArgs e)
+        {
+            logger.Error("Service faulted");
+        }
+
+        private void CallbackInstance_Closed(object sender, EventArgs e)
+        {
+            logger.Info("Service closed");
+        }
+
+        private void CallbackInstance_Opened(object sender, EventArgs e)
+        {
+            try
+            {
+                logger.Info("Service opened");
+
+                var args = Environment.GetCommandLineArgs();
+                if (args?.Length > 0)
+                {
+                    logger.Info($"Argument: {string.Join(" ", args)}");
+
+                    var contract = new PublishContract();
+                    contract.Type = PublishContract.ConvertToType(args[0]);
+
+                    ServiceClient.RegisterPublishContract(ClientId, contract);
+                }
+                else
+                {
+                    logger.Error("Wrong argument");
+                }
             }
             catch (Exception ex)
             {
@@ -34,12 +75,10 @@ namespace MTree.Publisher
         {
             try
             {
+                logger.Info("Open service");
+
                 ServiceClient = new PublisherClient(CallbackInstance, "RealTimePublisherConfig");
                 ServiceClient.Open();
-
-                ServiceClient.RegisterPublisher(ClientId);
-
-                logger.Info("ServiceClient opened");
             }
             catch (Exception ex)
             {
@@ -53,9 +92,10 @@ namespace MTree.Publisher
             {
                 if (ServiceClient != null)
                 {
-                    ServiceClient.UnregisterPublisher(ClientId);
+                    logger.Info("Close service");
+
+                    ServiceClient.UnregisterPublishContract(ClientId);
                     ServiceClient.Close();
-                    logger.Info("ServiceClient closed");
                 }
             }
             catch (Exception ex)

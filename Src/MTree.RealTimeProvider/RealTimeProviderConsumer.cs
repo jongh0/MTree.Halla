@@ -11,32 +11,27 @@ namespace MTree.RealTimeProvider
 {
     public partial class RealTimeProvider
     {
-        private ConcurrentDictionary<Guid, Subscription> BiddingPriceSubscriptions { get; set; } = new ConcurrentDictionary<Guid, Subscription>();
-        private ConcurrentDictionary<Guid, Subscription> StockConclusionSubscriptions { get; set; } = new ConcurrentDictionary<Guid, Subscription>();
-        private ConcurrentDictionary<Guid, Subscription> IndexConclusionSubscriptions { get; set; } = new ConcurrentDictionary<Guid, Subscription>();
+        private ConcurrentDictionary<Guid, SubscribeContract> BiddingPriceContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
+        private ConcurrentDictionary<Guid, SubscribeContract> StockConclusionContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
+        private ConcurrentDictionary<Guid, SubscribeContract> IndexConclusionContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
         
-        public void RequestSubscription(Guid clientId, Subscription subscription)
+        public void RegisterSubscribeContract(Guid clientId, SubscribeContract contract)
         {
             try
             {
-                var subscriptionList = GetSubscriptionList(subscription.Type);
-                if (subscriptionList == null) return;
+                var contractList = GetSubscriptionList(contract.Type);
+                if (contractList == null) return;
 
-                if (subscriptionList.ContainsKey(clientId) == true)
+                if (contractList.ContainsKey(clientId) == true)
                 {
-                    Subscription currSubscription;
-                    if (subscriptionList.TryGetValue(clientId, out currSubscription) == true)
-                    {
-                        if (subscriptionList.TryUpdate(clientId, subscription, currSubscription) == true)
-                            logger.Info($"{clientId} / {subscription.Type} subscription updated");
-                    }
+                    logger.Error($"{clientId} / {contract.Type} contract exist");
                 }
                 else
                 {
-                    subscription.Callback = OperationContext.Current.GetCallbackChannel<IRealTimeConsumerCallback>();
+                    contract.Callback = OperationContext.Current.GetCallbackChannel<IRealTimeConsumerCallback>();
 
-                    if (subscriptionList.TryAdd(clientId, subscription) == true)
-                        logger.Info($"{clientId} / {subscription.Type} subscription added");
+                    if (contractList.TryAdd(clientId, contract) == true)
+                        logger.Info($"{clientId} / {contract.Type} contract registered");
                 }
             }
             catch (Exception ex)
@@ -45,32 +40,32 @@ namespace MTree.RealTimeProvider
             }
         }
 
-        public void RequestUnsubscriptionAll(Guid clientId)
+        public void UnregisterSubscribeContractAll(Guid clientId)
         {
-            RequestUnsubscription(clientId, SubscriptionType.BiddingPrice);
-            RequestUnsubscription(clientId, SubscriptionType.StockConclusion);
-            RequestUnsubscription(clientId, SubscriptionType.IndexConclusion);
+            UnregisterSubscribeContract(clientId, SubscribeType.BiddingPrice);
+            UnregisterSubscribeContract(clientId, SubscribeType.StockConclusion);
+            UnregisterSubscribeContract(clientId, SubscribeType.IndexConclusion);
         }
 
-        public void RequestUnsubscription(Guid clientId, SubscriptionType type)
+        public void UnregisterSubscribeContract(Guid clientId, SubscribeType type)
         {
             try
             {
-                var subscriptionList = GetSubscriptionList(type);
-                if (subscriptionList == null) return;
+                var contractList = GetSubscriptionList(type);
+                if (contractList == null) return;
 
-                if (subscriptionList.ContainsKey(clientId) == true)
+                if (contractList.ContainsKey(clientId) == true)
                 {
-                    Subscription temp;
-                    if (subscriptionList.TryRemove(clientId, out temp) == true)
+                    SubscribeContract temp;
+                    if (contractList.TryRemove(clientId, out temp) == true)
                     {
                         temp.Callback = null;
-                        logger.Info($"{clientId} / {type} subscription removed");
+                        logger.Info($"{clientId} / {type} contract unregistered");
                     }
                 }
                 else
                 {
-                    logger.Info($"{clientId} / {type} subscription not exist");
+                    logger.Info($"{clientId} / {type} contract not exist");
                 }
             }
             catch (Exception ex)
@@ -79,16 +74,16 @@ namespace MTree.RealTimeProvider
             }
         }
 
-        private ConcurrentDictionary<Guid, Subscription> GetSubscriptionList(SubscriptionType type)
+        private ConcurrentDictionary<Guid, SubscribeContract> GetSubscriptionList(SubscribeType type)
         {
             switch (type)
             {
-                case SubscriptionType.BiddingPrice:
-                    return BiddingPriceSubscriptions;
-                case SubscriptionType.StockConclusion:
-                    return StockConclusionSubscriptions;
-                case SubscriptionType.IndexConclusion:
-                    return IndexConclusionSubscriptions;
+                case SubscribeType.BiddingPrice:
+                    return BiddingPriceContracts;
+                case SubscribeType.StockConclusion:
+                    return StockConclusionContracts;
+                case SubscribeType.IndexConclusion:
+                    return IndexConclusionContracts;
                 default:
                     return null;
             }

@@ -10,9 +10,29 @@ using System.Threading.Tasks;
 
 namespace MTree.Consumer
 {
-    public class ConsumerBase : RealTimeBase
+    public class ConsumerBase : RealTimeBase, IRealTimeConsumerCallback
     {
         public ConsumerBase() : base()
+        {
+        }
+
+        public virtual void NoOperation()
+        {
+        }
+
+        public virtual void ConsumeBiddingPrice(BiddingPrice biddingPrice)
+        {
+        }
+
+        public virtual void ConsumeCircuitBreak(CircuitBreak circuitBreak)
+        {
+        }
+
+        public virtual void ConsumeIndexConclusion(IndexConclusion conclusion)
+        {
+        }
+
+        public virtual void ConsumeStockConclusion(StockConclusion conclusion)
         {
         }
     }

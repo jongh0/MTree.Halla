@@ -7,6 +7,7 @@ using System.Threading;
 using System.Runtime.InteropServices;
 using System.IO;
 using MTree.Configuration;
+using MTree.Utility;
 
 namespace MTree.DaishinSessionManager
 {
@@ -59,9 +60,9 @@ namespace MTree.DaishinSessionManager
             {
                 logger.Info("Application Started");
 
-                KillProcess("DaishinSessionManager", Process.GetCurrentProcess().Id);
-                KillProcess("CpStart"); // 키보드 보안 및 메모리 보안 프로그램 사용 체크 해제해야 함 (CpStart -> 설정)
-                KillProcess("DibServer");
+                ProcessUtility.Kill("DaishinSessionManager", Process.GetCurrentProcess().Id);
+                ProcessUtility.Kill("CpStart"); // 키보드 보안 및 메모리 보안 프로그램 사용 체크 해제해야 함 (CpStart -> 설정)
+                ProcessUtility.Kill("DibServer");
 
                 LaunchStarter();
 
@@ -236,39 +237,7 @@ namespace MTree.DaishinSessionManager
 
         private static void LaunchStarter()
         {
-            try
-            {
-                var starterProcess = Process.Start("C:\\Daishin\\STARTER\\ncStarter.exe", "/prj:cp");
-                starterProcess.WaitForInputIdle();
-                logger.Info("ncStarter launched");
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-            }
-        }
-
-        private static void KillProcess(string processName, int excludeId = -1)
-        {
-            var processList = Process.GetProcessesByName(processName);
-            if (processList == null)
-                return;
-
-            foreach (var p in processList)
-            {
-                try
-                {
-                    if (p.Id != excludeId)
-                    {
-                        p.Kill();
-                        logger.Info($"{p.ProcessName}, {p.Id} process will be killed");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    logger.Error(ex);
-                }
-            }
+            ProcessUtility.Start("C:\\Daishin\\STARTER\\ncStarter.exe", "/prj:cp", true);
         }
 
         private static IntPtr FindWindowAndRetry(string windowName, int retryCount = 30, int interval = 100, bool setForeground = true)

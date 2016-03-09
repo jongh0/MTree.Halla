@@ -6,25 +6,25 @@ using System.Threading.Tasks;
 
 namespace MTree.RealTimeProvider
 {
-    public enum SubscriptionType
+    public enum SubscribeType
     {
         BiddingPrice,
         StockConclusion,
         IndexConclusion,
     }
 
-    public enum SubscriptionWay
+    public enum SubscribeWay
     {
         All,
         Partial,
     }
 
     [Serializable]
-    public class Subscription
+    public class SubscribeContract
     {
-        public SubscriptionType Type { get; set; }
+        public SubscribeType Type { get; set; }
 
-        public SubscriptionWay Way { get; set; } = SubscriptionWay.All;
+        public SubscribeWay Way { get; set; } = SubscribeWay.All;
 
         public HashSet<string> Codes { get; set; } = new HashSet<string>();
 

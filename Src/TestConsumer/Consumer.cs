@@ -13,13 +13,8 @@ using System.Threading;
 namespace TestConsumer
 {
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
-    public class Consumer : ConsumerImplement, IRealTimeConsumerCallback
+    public class Consumer : ConsumerImplement
     {
-        public Consumer()
-        {
-            GeneralTask.Run("Consumer.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
-        }
-
         private void ProcessStockConclusionQueue()
         {
             StockConclusion conclusion;
@@ -29,39 +24,26 @@ namespace TestConsumer
                 Thread.Sleep(10);
         }
 
-        public void ConsumeBiddingPrice(BiddingPrice biddingPrice)
-        {
-        }
-
-        public void ConsumeCircuitBreak(CircuitBreak circuitBreak)
-        {
-        }
-
-        public void ConsumeIndexConclusion(IndexConclusion conclusion)
-        {
-        }
-
-        public void ConsumeStockConclusion(StockConclusion conclusion)
+        public override void ConsumeStockConclusion(StockConclusion conclusion)
         {
             StockConclusionQueue.Enqueue(conclusion);
         }
 
-        public void NoOperation()
-        {
-        }
-
         public void StartConsume()
         {
-            var subscription = new Subscription();
-            subscription.Type = SubscriptionType.StockConclusion;
-            subscription.Way = SubscriptionWay.Partial;
+            GeneralTask.Run("Consumer.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
+
+            var subscription = new SubscribeContract();
+            subscription.Type = SubscribeType.StockConclusion;
+            subscription.Way = SubscribeWay.Partial;
             subscription.Codes.Add("000020");
-            ServiceClient.RequestSubscription(ClientId, subscription);
+            ServiceClient.RegisterSubscribeContract(ClientId, subscription);
         }
 
         public void StopConsume()
         {
-            ServiceClient.RequestUnsubscriptionAll(ClientId);
+            ServiceClient.UnregisterSubscribeContractAll(ClientId);
+            StopQueueTask();
         }
     }
 }

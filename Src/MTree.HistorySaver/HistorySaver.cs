@@ -15,7 +15,7 @@ using MTree.Utility;
 namespace MTree.HistorySaver
 {
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
-    public class HistorySaver : ConsumerImplement, IRealTimeConsumerCallback
+    public class HistorySaver : ConsumerImplement
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -118,27 +118,19 @@ namespace MTree.HistorySaver
             }
         }
 
-        public void ConsumeBiddingPrice(BiddingPrice biddingPrice)
+        public override void ConsumeBiddingPrice(BiddingPrice biddingPrice)
         {
             BiddingPriceQueue.Enqueue(biddingPrice);
         }
 
-        public void ConsumeCircuitBreak(CircuitBreak circuitBreak)
-        {
-        }
-
-        public void ConsumeStockConclusion(StockConclusion conclusion)
+        public override void ConsumeStockConclusion(StockConclusion conclusion)
         {
             StockConclusionQueue.Enqueue(conclusion);
         }
 
-        public void ConsumeIndexConclusion(IndexConclusion conclusion)
+        public override void ConsumeIndexConclusion(IndexConclusion conclusion)
         {
             IndexConclusionQueue.Enqueue(conclusion);
-        }
-
-        public void NoOperation()
-        {
         }
     }
 }

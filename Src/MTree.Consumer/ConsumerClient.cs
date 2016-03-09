@@ -19,19 +19,19 @@ namespace MTree.Consumer
             base.Channel.NoOperation();
         }
 
-        public void RequestSubscription(Guid clientId, Subscription subscription)
+        public void RegisterSubscribeContract(Guid clientId, SubscribeContract subscription)
         {
-            base.Channel.RequestSubscription(clientId, subscription);
+            base.Channel.RegisterSubscribeContract(clientId, subscription);
         }
 
-        public void RequestUnsubscriptionAll(Guid clientId)
+        public void UnregisterSubscribeContractAll(Guid clientId)
         {
-            base.Channel.RequestUnsubscriptionAll(clientId);
+            base.Channel.UnregisterSubscribeContractAll(clientId);
         }
 
-        public void RequestUnsubscription(Guid clientId, SubscriptionType type)
+        public void UnregisterSubscribeContract(Guid clientId, SubscribeType type)
         {
-            base.Channel.RequestUnsubscription(clientId, type);
+            base.Channel.UnregisterSubscribeContract(clientId, type);
         }
     }
 }
