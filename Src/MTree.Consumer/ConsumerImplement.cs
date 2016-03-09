@@ -34,7 +34,7 @@ namespace MTree.Consumer
         {
             try
             {
-                logger.Error($"Open {ProcessName} channel");
+                logger.Info($"Open {ProcessName} channel");
 
                 ServiceClient = new ConsumerClient(CallbackInstance, "RealTimeConsumerConfig");
                 ServiceClient.InnerChannel.Opened += InnerChannel_Opened;
@@ -49,12 +49,12 @@ namespace MTree.Consumer
 
         private void InnerChannel_Closed(object sender, EventArgs e)
         {
-            logger.Error($"{ProcessName} channel closed");
+            logger.Info($"{ProcessName} channel closed");
         }
 
         private void InnerChannel_Opened(object sender, EventArgs e)
         {
-            logger.Error($"{ProcessName} channel opened");
+            logger.Info($"{ProcessName} channel opened");
         }
 
         protected void CloseChannel()
@@ -63,7 +63,7 @@ namespace MTree.Consumer
             {
                 if (ServiceClient != null)
                 {
-                    logger.Error($"Close {ProcessName} channel");
+                    logger.Info($"Close {ProcessName} channel");
 
                     ServiceClient.UnregisterSubscribeContractAll(ClientId);
                     ServiceClient.Close();

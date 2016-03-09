@@ -34,7 +34,7 @@ namespace MTree.Publisher
         {
             try
             {
-                logger.Error($"Open {ProcessName} channel");
+                logger.Info($"Open {ProcessName} channel");
 
                 ServiceClient = new PublisherClient(CallbackInstance, "RealTimePublisherConfig");
                 ServiceClient.InnerChannel.Opened += InnerChannel_Opened;
@@ -49,14 +49,14 @@ namespace MTree.Publisher
 
         private void InnerChannel_Closed(object sender, EventArgs e)
         {
-            logger.Error($"{ProcessName} channel closed");
+            logger.Info($"{ProcessName} channel closed");
         }
 
         private void InnerChannel_Opened(object sender, EventArgs e)
         {
             try
             {
-                logger.Error($"{ProcessName} channel opened");
+                logger.Info($"{ProcessName} channel opened");
 
                 var args = Environment.GetCommandLineArgs();
                 if (args?.Length > 1)
@@ -85,7 +85,7 @@ namespace MTree.Publisher
             {
                 if (ServiceClient != null)
                 {
-                    logger.Error($"Close {ProcessName} channel");
+                    logger.Info($"Close {ProcessName} channel");
 
                     ServiceClient.UnregisterPublishContract(ClientId);
                     ServiceClient.Close();
