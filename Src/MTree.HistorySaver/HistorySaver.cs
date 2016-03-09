@@ -44,6 +44,12 @@ namespace MTree.HistorySaver
             }
         }
 
+        protected override void Initialize()
+        {
+            base.Initialize();
+            ProcessName = nameof(HistorySaver);
+        }
+
         private void CreateIndex()
         {
             try

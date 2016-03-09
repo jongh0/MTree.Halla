@@ -15,6 +15,12 @@ namespace TestConsumer
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
     public class Consumer : ConsumerImplement
     {
+        protected override void Initialize()
+        {
+            base.Initialize();
+            ProcessName = nameof(Consumer);
+        }
+
         private void ProcessStockConclusionQueue()
         {
             StockConclusion conclusion;

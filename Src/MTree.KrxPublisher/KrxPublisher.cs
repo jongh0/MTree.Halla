@@ -17,8 +17,10 @@ namespace MTree.KrxPublisher
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public KrxPublisher() : base()
+        protected override void Initialize()
         {
+            base.Initialize();
+            ProcessName = nameof(KrxPublisher);
         }
 
         #region 관리종목
@@ -88,10 +90,5 @@ namespace MTree.KrxPublisher
             }
         }
         #endregion
-
-        public void NoOperation()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

@@ -54,6 +54,12 @@ namespace MTree.DaishinPublisher
             }
         }
 
+        protected override void Initialize()
+        {
+            base.Initialize();
+            ProcessName = nameof(DaishinPublisher);
+        }
+
         private void sessionObj_OnDisconnect()
         {
             logger.Info("Disconnected");

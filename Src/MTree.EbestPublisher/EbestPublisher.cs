@@ -97,6 +97,12 @@ namespace MTree.EbestPublisher
             }
         }
 
+        protected override void Initialize()
+        {
+            base.Initialize();
+            ProcessName = nameof(EbestPublisher);
+        }
+
         #region XAQuery
         private void queryObj_ReceiveMessage(bool bIsSystemError, string nMessageCode, string szMessage)
         {

@@ -12,8 +12,10 @@ namespace TestPublisher
 {
     class Publisher : PublisherImplement, IRealTimePublisherCallback
     {
-        public void NoOperation()
+        protected override void Initialize()
         {
+            base.Initialize();
+            ProcessName = nameof(Publisher);
         }
 
         public void StartPublising()
