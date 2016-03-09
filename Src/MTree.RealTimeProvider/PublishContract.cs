@@ -9,12 +9,10 @@ namespace MTree.RealTimeProvider
     public enum PublishType
     {
         None,
-        DaisinStockMaster,
-        DaishinStockConclusion,
-        EbestStockMaster,
-        EbestIndexMaster,
-        EbestIndexConclusion,
-        KrxStockMaster,
+        Daishin,
+        Ebest,
+        Krx,
+        Naver,
     }
 
     [Serializable]

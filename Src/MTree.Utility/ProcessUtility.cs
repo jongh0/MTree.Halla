@@ -12,7 +12,7 @@ namespace MTree.Utility
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public static void Start(string filePath, string arguments, bool waitIdle = false)
+        public static void Start(string filePath, string arguments = "", bool waitIdle = false)
         {
             try
             {

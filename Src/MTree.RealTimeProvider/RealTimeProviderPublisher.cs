@@ -16,35 +16,25 @@ namespace MTree.RealTimeProvider
         private ConcurrentDictionary<Guid, PublishContract> PublishContracts { get; set; } = new ConcurrentDictionary<Guid, PublishContract>();
 
         #region Contract Property
-        private PublishContract DaisinStockMasterContract
+        private List<PublishContract> DaishinContract
         {
-            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == PublishType.DaisinStockMaster); }
+            get { return PublishContracts.Values.Where(c => c.Type == PublishType.Daishin).ToList(); }
         }
 
-        private PublishContract EbestStockMasterContract
+        private List<PublishContract> EbestContract
         {
-            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == PublishType.EbestStockMaster); }
+            get { return PublishContracts.Values.Where(c => c.Type == PublishType.Ebest).ToList(); }
         }
 
-        private PublishContract KrxStockMasterContract
+        private List<PublishContract> KrxContract
         {
-            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == PublishType.KrxStockMaster); }
+            get { return PublishContracts.Values.Where(c => c.Type == PublishType.Krx).ToList(); }
         }
 
-        private PublishContract EbestIndexMasterContract
+        private List<PublishContract> NaverContract
         {
-            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == PublishType.EbestIndexMaster); }
+            get { return PublishContracts.Values.Where(c => c.Type == PublishType.Naver).ToList(); }
         }
-
-        private List<PublishContract> DaishinStockConclusionContract
-        {
-            get { return PublishContracts.Values.Where(c => c.Type == PublishType.DaishinStockConclusion).ToList(); }
-        }
-
-        private List<PublishContract> EbestIndexConclusionContract
-        {
-            get { return PublishContracts.Values.Where(c => c.Type == PublishType.EbestIndexConclusion).ToList(); }
-        } 
         #endregion
 
         public void LaunchPublisher(PublishType type)
@@ -53,18 +43,13 @@ namespace MTree.RealTimeProvider
             {
                 switch (type)
                 {
-                    case PublishType.DaisinStockMaster:
-                    case PublishType.DaishinStockConclusion:
+                    case PublishType.Daishin:
                         ProcessUtility.Start("MTree.DaishinPublisher.exe", type.ToString());
                         break;
-
-                    case PublishType.EbestStockMaster:
-                    case PublishType.EbestIndexMaster:
-                    case PublishType.EbestIndexConclusion:
+                    case PublishType.Ebest:
                         ProcessUtility.Start("MTree.EbestPublisher.exe", type.ToString());
                         break;
-
-                    case PublishType.KrxStockMaster:
+                    case PublishType.Krx:
                         ProcessUtility.Start("MTree.KrxPublisher.exe", type.ToString());
                         break;
                 }
