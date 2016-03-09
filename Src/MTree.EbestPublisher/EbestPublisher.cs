@@ -236,7 +236,7 @@ namespace MTree.EbestPublisher
             return ret;
         }
 
-        public bool Waitlogin()
+        public bool WaitLogin()
         {
             return WaitLoginEvent.WaitOne(10000);
         }

@@ -32,7 +32,7 @@ namespace MTree.EbestPublisher
 #if false
             Task.Run(() =>
             {
-                Publisher.Waitlogin();
+                Publisher.WaitLogin();
 
                 DataStructure.StockMaster master = new DataStructure.StockMaster();
                 int startTick = Environment.TickCount;
