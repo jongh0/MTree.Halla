@@ -1,5 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<logicalClassDesignerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/ModelStore" xmlns:dm9="http://schemas.microsoft.com/VisualStudio/TeamArchitect/ComponentDesigner" xmlns:dm10="http://schemas.microsoft.com/VisualStudio/TeamArchitect/SequenceDesigner" dslVersion="1.0.0.0" Id="8fe0e9e8-9232-48c8-bed2-7e09b14f1cbd" name="MConsumer" linkedPackageId="b6c4f842-ffb9-4626-9238-cd017489e167" xmlns="http://schemas.microsoft.com/dsltools/LogicalClassDesigner">
+<logicalClassDesignerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/ModelStore" xmlns:dm9="http://schemas.microsoft.com/VisualStudio/TeamArchitect/ComponentDesigner" dslVersion="1.0.0.0" Id="8fe0e9e8-9232-48c8-bed2-7e09b14f1cbd" name="MConsumer" linkedPackageId="b6c4f842-ffb9-4626-9238-cd017489e167" xmlns="http://schemas.microsoft.com/dsltools/LogicalClassDesigner">
+  <ownedCommentsInternal>
+    <comment Id="b71d63ea-9323-4578-8887-627685434c58">
+      <elementDefinition Id="06c59bc4-78bc-44dd-a5d8-015f7481a676" />
+      <body>사용예
+
+if(실시간)
+	IConsumer consumer = new RealTimeConsumer()
+else if(DB)
+	IConsumer consumer = new DbConsumer()
+
+consumer.OnNewTransaactionReceived += OnReceived;
+</body>
+      <annotatedElements>
+        <interfaceMoniker Id="32b50d5f-2949-42a5-9973-0c7126be824b" LastKnownName="IConsumer" />
+      </annotatedElements>
+    </comment>
+  </ownedCommentsInternal>
   <packagedElements>
     <packageHasNamedElement>
       <referencedType Id="86ee128a-7078-4542-be83-b016b8f77c4d" name="TimeSpan" isAbstract="false" isLeaf="false" cachedFullName="TimeSpan">
@@ -1363,6 +1380,776 @@
     <packageHasNamedElement>
       <referencedType Id="c44a50a3-b41e-43a1-8f5d-70cd9ebf8b69" name="long" isAbstract="false" isLeaf="false" cachedFullName="long">
         <elementDefinition Id="22c13159-87be-48ce-95d6-80054feae2ba" />
+      </referencedType>
+    </packageHasNamedElement>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="2d996b69-56ba-4e71-93d3-911231ba0b48" name="RealTimeConsumerBase" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="34dfd86f-8829-462c-a088-242deb3c4e97" />
+        <suppliersInternal>
+          <interfaceRealization Id="b1c5fcf7-33d4-4261-b9ff-982998cc01d8">
+            <interfaceMoniker Id="db0957f6-024e-4a6a-8946-a4658e658a2b" LastKnownName="IRealTimeConsumerCallback" />
+            <elementDefinition Id="23cdf6f1-642f-44ec-8fe0-c5e8ccf16f6c" />
+          </interfaceRealization>
+        </suppliersInternal>
+        <generalsInternal>
+          <generalization Id="e71df743-2ab3-4847-bcc2-98fc82846513" isSubstitutable="false">
+            <classMoniker Id="94c3d3f4-cab9-4fa2-af9a-ba0334a39673" LastKnownName="RealTimeBase" />
+            <elementDefinition Id="a9aab385-f46e-43f5-8277-4e65893e74ac" />
+          </generalization>
+        </generalsInternal>
+        <ownedOperationsInternal>
+          <operation Id="f71b2928-0ac2-42c2-a3f1-05faa4f05b02" name="NoOperation" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="0af1e636-6fb6-4d17-8282-16db4ecb7d45" />
+          </operation>
+          <operation Id="6b24a4da-6332-42f4-bba2-a1fc34c35c8c" name="ConsumeBiddingPrice" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="52e63949-5f3f-4920-b3ae-cb42cadc9879" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="1b504cc2-7d8a-41e5-9335-1ed8a5573389" name="biddingPrice" direction="In" isUnique="false">
+                  <elementDefinition Id="2030e6ff-9f36-4c9a-a6d5-acb68ee613d4" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="cdcf812f-4f96-4e2c-9e48-42da6f04d843" LastKnownName="BiddingPrice" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="e2f4e95c-9775-4446-88df-228ca60479cb" name="ConsumeCircuitBreak" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="9ddf7c6c-618a-4162-bc03-3b7b02058f80" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="62a14b32-a520-4240-88e1-2eef99547966" name="circuitBreak" direction="In" isUnique="false">
+                  <elementDefinition Id="340d42e7-83d0-4454-89cb-a58e05885995" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="a4110320-ad0f-4be5-88bd-4f93605cc516" LastKnownName="CircuitBreak" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="3e99fbf5-a530-43c0-b611-be11ebb23523" name="ConsumeIndexConclusion" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="0aa8448a-c5c4-41e7-906e-5a223cbdda8d" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="7851e774-6875-4830-a176-2cfad77c868d" name="conclusion" direction="In" isUnique="false">
+                  <elementDefinition Id="9b15cf8c-2adc-4384-8dfc-b679aec0962b" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="689f6279-34a2-41fa-8701-f2bf18797c89" LastKnownName="IndexConclusion" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="32da85f9-2682-4caa-80d2-bfb638a7d5d9" name="ConsumeStockConclusion" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="ccf5bd8e-bbc7-41c2-a779-ea0733a8ed27" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="7598548d-0566-4898-82d3-389fc24eb56e" name="conclusion" direction="In" isUnique="false">
+                  <elementDefinition Id="8be7f8fc-adbc-45fb-bccd-047a3cd4fc1f" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="2c72e554-d9dd-4988-a0e4-f361f5f82157" LastKnownName="StockConclusion" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="323d09d7-8760-4ea9-9ca4-b530aae434c7" name="NoOperation();" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="aa6a9a76-2a5d-419d-a581-69223c95a0fd" />
+          </operation>
+        </ownedOperationsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <packageHasNamedElement>
+      <referencedType Id="cdcf812f-4f96-4e2c-9e48-42da6f04d843" name="BiddingPrice" isAbstract="false" isLeaf="false" cachedFullName="HallaModeling::BiddingPrice">
+        <elementDefinition Id="bdaef4b3-2ef3-4065-8703-8ffa54f2e035" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="a4110320-ad0f-4be5-88bd-4f93605cc516" name="CircuitBreak" isAbstract="false" isLeaf="false" cachedFullName="HallaModeling::CircuitBreak">
+        <elementDefinition Id="351b1060-94c3-4a44-9dba-db4e70678204" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="689f6279-34a2-41fa-8701-f2bf18797c89" name="IndexConclusion" isAbstract="false" isLeaf="false" cachedFullName="HallaModeling::IndexConclusion">
+        <elementDefinition Id="1537fe7e-f06f-4ee6-a69f-ab7fe403ad7a" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="2c72e554-d9dd-4988-a0e4-f361f5f82157" name="StockConclusion" isAbstract="false" isLeaf="false" cachedFullName="HallaModeling::StockConclusion">
+        <elementDefinition Id="5a06b83a-22fe-4c10-9bdf-ad856b88559f" />
+      </referencedType>
+    </packageHasNamedElement>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="d4db358f-5455-40c2-9400-1a02f087463a" name="RealTimeConsumerImplement" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="1f7611a7-25bb-4f4d-8748-06fcbfcba62c" />
+        <generalsInternal>
+          <generalization Id="13854c1a-5f58-4ea0-89b5-c2b91aeffa4f" isSubstitutable="false">
+            <classMoniker Id="2d996b69-56ba-4e71-93d3-911231ba0b48" LastKnownName="RealTimeConsumerBase" />
+            <elementDefinition Id="29bf3d90-fa6b-4fab-a7d5-1a3affa6585a" />
+          </generalization>
+        </generalsInternal>
+        <targetEnds>
+          <association Id="637014b1-53bc-476f-b4b8-2ecd64edd696" isDerived="false" sourceEndRoleName="ServiceClient" targetEndRoleName="" isLeaf="false" isAbstract="false">
+            <classMoniker Id="59bed8af-c873-40d7-bed3-ecb88fe8bc2f" LastKnownName="RealTimeConsumerClient" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="cab9ceea-e83e-4d80-a1fd-3ebb095a8536" name="ServiceClient" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="Composite" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="82152c57-5070-4636-914e-39c6de2071a7" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="b439e64a-21f5-461a-8e1f-2383f5d665b8" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="true">
+                  <elementDefinition Id="b0184f3d-afb5-4220-8c93-9159da59d345" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="3c0b5e6d-6b59-47c6-8ffc-2acbf4148873" />
+          </association>
+        </targetEnds>
+        <ownedAttributesInternal>
+          <property Id="6d3d5bc2-57a3-46ba-a271-bf379e2b1cd5" name="CallbackInstance" visibility="Protected" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="53be15a8-056e-45a0-ad20-85db95a4a8b4" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="4e08c98d-d47b-41c8-b4cf-f6bba1626043" LastKnownName="InstanceContext" />
+            </type_NamedElement>
+          </property>
+          <property Id="b26acc77-6fd3-48bd-9002-61e4a3f8640c" name="ClientId" visibility="Protected" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="b9d41ebd-21aa-444a-9876-4096e57beed9" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="70350f4b-d085-4418-99d6-7ec365b354db" LastKnownName="Guid" />
+            </type_NamedElement>
+          </property>
+        </ownedAttributesInternal>
+        <ownedOperationsInternal>
+          <operation Id="be79174b-9a6f-4abc-9cb2-2c2dbcc1d562" name="CallbackInstance_Faulted" visibility="Private" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="707d06e3-23da-47b9-bacc-6c9520d8ddde" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="0c22755b-75f3-4008-8c26-82c05be802e8" name="sender" direction="In" isUnique="false">
+                  <elementDefinition Id="fcdee610-d024-4262-a857-b040992031ed" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="35cfe705-5809-42c0-a4c9-a53627a9388f" LastKnownName="object" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="316d84e6-d54e-4d1b-b26b-88d204c2b6c8" name="e" direction="In" isUnique="false">
+                  <elementDefinition Id="bbfa14c3-82fa-441f-b92f-7f3e99621c95" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="ecd6d748-d4ae-45c5-9cea-5bf7be9f02f8" LastKnownName="EventArgs" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="a8c91979-e7d2-4d85-ad7f-2f576c9db242" name="CallbackInstance_Closed" visibility="Private" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="8151fa03-7e08-4282-b116-5cb6fcc640fb" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="2033d3fe-f532-4882-80dd-f8452679bc5b" name="sender" direction="In" isUnique="false">
+                  <elementDefinition Id="1e3c9dd8-05f2-476b-bc8e-2035d9a70f8d" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="35cfe705-5809-42c0-a4c9-a53627a9388f" LastKnownName="object" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="beefdde3-1315-49a6-98cc-9eefcff3063d" name="e" direction="In" isUnique="false">
+                  <elementDefinition Id="0165d302-f174-4975-871c-d8ada6e37cd3" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="ecd6d748-d4ae-45c5-9cea-5bf7be9f02f8" LastKnownName="EventArgs" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="12f8c106-acdd-4dff-9ceb-24ddbbe034a2" name="CallbackInstance_Opened" visibility="Private" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="6ffb2727-5b1a-4371-a32d-a3d916d71ba8" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="2e6f1c2f-9a53-4a8d-9d80-bcaf321a1a00" name="sender" direction="In" isUnique="false">
+                  <elementDefinition Id="1bb65d45-49b7-4668-b26f-b54d328ec9e8" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="35cfe705-5809-42c0-a4c9-a53627a9388f" LastKnownName="object" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="0a569b4c-7917-4436-8f2b-bc4d94b8d9c4" name="e" direction="In" isUnique="false">
+                  <elementDefinition Id="f20de3e8-e58b-4e1a-9edc-4222e674771f" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="ecd6d748-d4ae-45c5-9cea-5bf7be9f02f8" LastKnownName="EventArgs" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="b157058a-5e49-4c39-bae8-ef8352553f85" name="OpenService" visibility="Protected" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="4f956505-2fb3-42f1-8078-82d6b76b336f" />
+          </operation>
+          <operation Id="07287a4b-3ad9-4afe-8fb2-18f97a6338f8" name="CloseService" visibility="Protected" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="50c1d26c-15ed-44b4-b0c1-577b40249901" />
+          </operation>
+        </ownedOperationsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <packageHasNamedElement>
+      <referencedType Id="35cfe705-5809-42c0-a4c9-a53627a9388f" name="object" isAbstract="false" isLeaf="false" cachedFullName="object">
+        <elementDefinition Id="b6e2b870-4ad4-44ce-a76c-8c6d5693531c" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="ecd6d748-d4ae-45c5-9cea-5bf7be9f02f8" name="EventArgs" isAbstract="false" isLeaf="false" cachedFullName="EventArgs">
+        <elementDefinition Id="1462cc53-9f94-413e-a52a-17bd06dd5363" />
+      </referencedType>
+    </packageHasNamedElement>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="b65f3695-aebb-49c0-9755-652ddbdf75be" name="RealTimeConsumer" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="dd4ef00b-d319-4e30-b29a-d47af09d692f" />
+        <suppliersInternal>
+          <interfaceRealization Id="7b1edc5f-4b49-467c-ac28-9dbdddb99f16">
+            <interfaceMoniker Id="32b50d5f-2949-42a5-9973-0c7126be824b" LastKnownName="IConsumer" />
+            <elementDefinition Id="ebf4194e-87ea-43bf-a2a7-9b1922d19b7e" />
+          </interfaceRealization>
+        </suppliersInternal>
+        <generalsInternal>
+          <generalization Id="920c76b6-4463-4f51-9703-513f5e55dd77" isSubstitutable="false">
+            <classMoniker Id="d4db358f-5455-40c2-9400-1a02f087463a" LastKnownName="RealTimeConsumerImplement" />
+            <elementDefinition Id="593d501a-cf79-4ed1-ad51-1c546a9aa3cf" />
+          </generalization>
+        </generalsInternal>
+        <ownedOperationsInternal>
+          <operation Id="a7448a8e-f0fa-4eca-b675-903bdd8f14f0" name="ConsumeStockConclusion" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="4d9ca4fa-ff6b-4761-b26b-7742418a0e8c" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="2feb6529-4a48-4a6c-9945-7b9b9becde4c" name="conclusion" direction="In" isUnique="false">
+                  <elementDefinition Id="5fc05377-0e96-45b5-8f23-2161ccd07d88" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="2c72e554-d9dd-4988-a0e4-f361f5f82157" LastKnownName="StockConclusion" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="104a18bf-3cae-428f-951e-01fe652d120e" name="StopConsume" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="ff02f6fe-b800-4b46-8e8c-657dd125e305" />
+          </operation>
+          <operation Id="4a969632-207a-457c-8bdf-8f9a0683356e" name="StartConsume" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="f3753bd9-4a7c-44ff-8289-566747588d88" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="7d1eab12-bf42-48f4-a3a9-5e0b6288f12e" name="startDate = null" direction="In" isUnique="false">
+                  <elementDefinition Id="0dee6bd7-bc2d-4609-ad6d-24d6c4ae7361" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="d32d6422-c569-487c-9594-1c8c063bc584" LastKnownName="List&lt;string&gt;" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="d1d55c3b-a3a2-4777-abf1-eb7dfc14933c" name="endDate = null" direction="In" isUnique="false">
+                  <elementDefinition Id="b0badcda-9ca9-4293-ab5e-2f0e16218c21" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="f4334d77-bb07-45c6-9145-47dcad45870a" LastKnownName="DateTime?" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="b4633aea-6f58-47b6-8554-891dbfe53dda" name="endDate = null" direction="In" isUnique="false">
+                  <elementDefinition Id="744f2953-a544-4a1f-bf22-515e81548000" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="f4334d77-bb07-45c6-9145-47dcad45870a" LastKnownName="DateTime?" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+        </ownedOperationsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="9ed9b85a-7669-4915-82e7-f243fdf0bf78" name="HistorySaver" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="f1418b5a-b586-4897-9f97-ba0db0f403ac" />
+        <generalsInternal>
+          <generalization Id="0a29a326-61ef-4f6a-a500-b3197ef3150f" isSubstitutable="false">
+            <classMoniker Id="d4db358f-5455-40c2-9400-1a02f087463a" LastKnownName="RealTimeConsumerImplement" />
+            <elementDefinition Id="c58f7859-fba4-4b37-a767-5adacb6e9300" />
+          </generalization>
+        </generalsInternal>
+        <ownedOperationsInternal>
+          <operation Id="48d12db7-4182-4cb7-837c-c9e15a92dda9" name="CreateIndex" visibility="Private" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="2aa39aaa-ea35-4a11-9540-bba4075adf0d" />
+          </operation>
+          <operation Id="f2a4de8f-22bc-4d64-8ec1-728298a695e1" name="StopQueueTask" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="521f6412-5ac6-44c1-806c-cdabfba07b52" />
+          </operation>
+          <operation Id="043b0900-21e8-4a86-a010-156adda62d8f" name="ProcessBiddingPriceQueue" visibility="Private" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="86498791-003d-444f-8e77-c8266308313c" />
+          </operation>
+          <operation Id="3d73ca52-b905-481f-b09d-ca68074463f4" name="ProcessStockConclusionQueue" visibility="Private" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="0777e944-9d1b-4eab-a7bf-a1f83b026caa" />
+          </operation>
+          <operation Id="629700d4-f66a-4776-8178-fb6d9d7f216a" name="ProcessIndexConclusionQueue" visibility="Private" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="02b3e9f5-8d88-452f-b7f1-c9a4b816069d" />
+          </operation>
+          <operation Id="00b3a2db-99a0-400a-8481-981ac5a36359" name="ConsumeBiddingPrice" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="cb48da97-be2e-457b-a1fd-3ae119ab9c74" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="77386c92-1df8-43b5-be01-0c96199c6899" name="biddingPrice" direction="In" isUnique="false">
+                  <elementDefinition Id="d8bfef79-d126-4e83-a7ef-b58221ad9514" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="cdcf812f-4f96-4e2c-9e48-42da6f04d843" LastKnownName="BiddingPrice" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="b35f615e-c4ed-4fe2-bdff-8575ab14556c" name="ConsumeStockConclusion" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="8eb974c0-da5f-46cc-ab7e-f68cf826ea93" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="3ffb7c20-8e3e-4035-810c-e44d16779be6" name="conclusion" direction="In" isUnique="false">
+                  <elementDefinition Id="82758e55-30a6-4fbe-bdfb-769921a8e38a" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="2c72e554-d9dd-4988-a0e4-f361f5f82157" LastKnownName="StockConclusion" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="08dd79a4-2246-453b-871f-407e0ac2f580" name="ConsumeIndexConclusion" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="360befa1-3842-4ca2-bb65-b16f9047ab6a" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="3a614985-b60b-4a83-8402-a0a40366aac0" name="conclusion" direction="In" isUnique="false">
+                  <elementDefinition Id="bf19479a-d621-4b80-b6f6-d33d280a294f" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="689f6279-34a2-41fa-8701-f2bf18797c89" LastKnownName="IndexConclusion" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+        </ownedOperationsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="94c3d3f4-cab9-4fa2-af9a-ba0334a39673" name="RealTimeBase" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="2d0ed3c9-00af-4626-8ef6-c708c56c760d" />
+        <ownedAttributesInternal>
+          <property Id="2c1c0d02-2d12-437f-a431-4ef102e3c924" name="LockObject" visibility="Protected" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="14aee997-14b7-4268-ad38-f0d7682eed22" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="1f93f2c4-853e-4fbc-bc10-cb431f1e3f05" LastKnownName="object" />
+            </type_NamedElement>
+          </property>
+          <property Id="48217d9c-ce1b-4dc0-ae96-b678724f8522" name="BiddingPriceQueue" visibility="Protected" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="994bb11f-fe31-4d26-9fe3-51e1a35d443d" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="f21266da-96f6-4fd4-b021-66c25bf2c15c" LastKnownName="ConcurrentQueue&lt;BiddingPrice&gt;" />
+            </type_NamedElement>
+          </property>
+          <property Id="e2a20b39-5086-44d5-9a97-0b820a52e08f" name="StockConclusionQueue" visibility="Protected" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="86e29313-3a23-4a42-956c-ceea6b53fb77" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="8544ca7c-ac49-406a-a3bb-4b1057850236" LastKnownName="ConcurrentQueue&lt;StockConclusion&gt;" />
+            </type_NamedElement>
+          </property>
+          <property Id="74d9e1eb-3937-411c-a919-6ff35699b7a6" name="IndexConclusionQueue" visibility="Protected" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="2295a57d-00bb-4062-8454-1598faa83317" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="c90d7d29-8707-4e6e-866c-f5099429cf80" LastKnownName="ConcurrentQueue&lt;IndexConclusion&gt;" />
+            </type_NamedElement>
+          </property>
+          <property Id="b8989ade-404a-4b4b-ab4b-128de4102822" name="QueueTaskCancelSource" visibility="Protected" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="1acb9282-e816-416f-86f9-a0a6724a9c92" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="7952b313-d9a4-4a40-9ba8-ab97b483adcb" LastKnownName="CancellationTokenSource" />
+            </type_NamedElement>
+          </property>
+          <property Id="db2701a7-d8e0-4baf-8c5d-785814b2eddd" name="QueueTaskCancelToken" visibility="Protected" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="04bdbeb3-0fbe-4e52-a457-17358908193f" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="fe0b6ef0-0dac-4515-9b13-cab6ead2dafe" LastKnownName="CancellationToken" />
+            </type_NamedElement>
+          </property>
+        </ownedAttributesInternal>
+        <ownedOperationsInternal>
+          <operation Id="ee91f461-541e-48de-bbd3-1a2e4d2f6a36" name="StopQueueTask" visibility="Protected" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="555a5293-c2c5-481e-a744-1add45744b5b" />
+          </operation>
+        </ownedOperationsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <packageHasNamedElement>
+      <referencedType Id="1f93f2c4-853e-4fbc-bc10-cb431f1e3f05" name="object" isAbstract="false" isLeaf="false" cachedFullName="object">
+        <elementDefinition Id="b6e2b870-4ad4-44ce-a76c-8c6d5693531c" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="f21266da-96f6-4fd4-b021-66c25bf2c15c" name="ConcurrentQueue&lt;BiddingPrice&gt;" isAbstract="false" isLeaf="false" cachedFullName="ConcurrentQueue&lt;BiddingPrice&gt;">
+        <elementDefinition Id="30028f90-701b-439e-9687-ba6af48880c9" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="8544ca7c-ac49-406a-a3bb-4b1057850236" name="ConcurrentQueue&lt;StockConclusion&gt;" isAbstract="false" isLeaf="false" cachedFullName="ConcurrentQueue&lt;StockConclusion&gt;">
+        <elementDefinition Id="7e11b366-9d48-4823-8535-75d3d19d0d57" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="c90d7d29-8707-4e6e-866c-f5099429cf80" name="ConcurrentQueue&lt;IndexConclusion&gt;" isAbstract="false" isLeaf="false" cachedFullName="ConcurrentQueue&lt;IndexConclusion&gt;">
+        <elementDefinition Id="f9fe0e18-ec97-4d90-a791-a55a83faf391" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="7952b313-d9a4-4a40-9ba8-ab97b483adcb" name="CancellationTokenSource" isAbstract="false" isLeaf="false" cachedFullName="CancellationTokenSource">
+        <elementDefinition Id="86daa53d-6812-47cf-a044-9da65e41454c" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="fe0b6ef0-0dac-4515-9b13-cab6ead2dafe" name="CancellationToken" isAbstract="false" isLeaf="false" cachedFullName="CancellationToken">
+        <elementDefinition Id="803bf9b0-ecf9-4a8b-b59f-71df6412a8b6" />
+      </referencedType>
+    </packageHasNamedElement>
+    <logicalClassDesignerModelHasTypes>
+      <Interface Id="db0957f6-024e-4a6a-8946-a4658e658a2b" name="IRealTimeConsumerCallback" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="53836d58-9ddf-467c-a55d-c7334f385897" />
+        <ownedOperations>
+          <operation Id="a8f2cba2-4db6-407c-8e0e-0d8e627f5a22" name="NoOperation();" isLeaf="false" isStatic="false" isAbstract="true" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="8fecf44b-d2d1-4fe0-9e9c-e07700eedb70" />
+          </operation>
+          <operation Id="fac6ba61-cf18-4c6a-9d6f-a1be7011853c" name="ConsumeBiddingPrice" isLeaf="false" isStatic="false" isAbstract="true" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="38b759ea-f2b2-47c0-af7c-eeba3dcba1a5" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="666a4bf4-899f-496e-b8ac-dcbf69e16430" name="biddingPrice" direction="In" isUnique="false">
+                  <elementDefinition Id="1ef0c3f0-036b-4b78-9358-dbb6bc3f1b96" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="cdcf812f-4f96-4e2c-9e48-42da6f04d843" LastKnownName="BiddingPrice" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="588cb611-c6ee-40e1-aa39-288db8308c47" name="ConsumeCircuitBreak" isLeaf="false" isStatic="false" isAbstract="true" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="15f8255d-5396-4bd6-a0fd-2778deb4ea60" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="60c78233-9b6a-4db2-a2c3-784f80268f60" name="circuitBreak" direction="In" isUnique="false">
+                  <elementDefinition Id="ef41da1f-257d-43c8-80b9-0ede22397dc0" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="a4110320-ad0f-4be5-88bd-4f93605cc516" LastKnownName="CircuitBreak" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="e5ea5fc5-7187-4fd0-a4a7-a56540921f3b" name="ConsumeStockConclusion" isLeaf="false" isStatic="false" isAbstract="true" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="69bcb6ce-d062-4e44-8033-46dc4b259264" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="a8b01fcb-38de-4470-a98c-68bd469bc8e0" name="conclusion" direction="In" isUnique="false">
+                  <elementDefinition Id="de27fc3b-934d-4289-bf83-10ac2ce3bed3" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="2c72e554-d9dd-4988-a0e4-f361f5f82157" LastKnownName="StockConclusion" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="f62b622c-ceee-4d09-bb3c-486115c1131c" name="ConsumeIndexConclusion" isLeaf="false" isStatic="false" isAbstract="true" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="4275132f-4992-4746-81d2-2306cc522a13" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="302d5f2e-3066-4f58-a9ca-5c173fc2be31" name="conclusion" direction="In" isUnique="false">
+                  <elementDefinition Id="1af116d2-cf19-4256-b6ad-d2fa0ee91d93" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="689f6279-34a2-41fa-8701-f2bf18797c89" LastKnownName="IndexConclusion" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+        </ownedOperations>
+      </Interface>
+    </logicalClassDesignerModelHasTypes>
+    <packageHasNamedElement>
+      <referencedType Id="4e08c98d-d47b-41c8-b4cf-f6bba1626043" name="InstanceContext" isAbstract="false" isLeaf="false" cachedFullName="InstanceContext">
+        <elementDefinition Id="140bf0f0-eed8-49ca-8d0b-0b4fe7e4c1c0" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="70350f4b-d085-4418-99d6-7ec365b354db" name="Guid" isAbstract="false" isLeaf="false" cachedFullName="Guid">
+        <elementDefinition Id="9a6a1064-394f-4b41-9ffc-43a94861f59c" />
+      </referencedType>
+    </packageHasNamedElement>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="59bed8af-c873-40d7-bed3-ecb88fe8bc2f" name="RealTimeConsumerClient" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="806897db-94a8-4de7-b4dc-15af0a1852e9" />
+        <suppliersInternal>
+          <interfaceRealization Id="f623a829-0c53-4590-9d16-4ac22ca837db">
+            <interfaceMoniker Id="67e6cb9a-7b38-4781-b7c7-98cdd7d91ce6" LastKnownName="IRealTimeConsumer" />
+            <elementDefinition Id="f708e5da-df47-4681-9bb4-89956be7f09d" />
+          </interfaceRealization>
+        </suppliersInternal>
+        <ownedOperationsInternal>
+          <operation Id="634100c5-3d55-4b89-a2d9-5301b971579c" name="NoOperation" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="11b8fbff-31b3-4daa-a6aa-147872429238" />
+          </operation>
+          <operation Id="990a7705-ce70-4483-a08c-99ff43316082" name="RegisterSubscribeContract" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="47cc464a-dffe-4913-b54d-f34c88683a10" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="5b03e712-1bc7-4ee6-883a-95a01c578a55" name="clientId" direction="In" isUnique="false">
+                  <elementDefinition Id="19b4a9e8-88f5-4047-ae4b-107ce362888d" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="70350f4b-d085-4418-99d6-7ec365b354db" LastKnownName="Guid" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="6dff91a1-a95b-43a1-b9af-e3c62fa119a8" name="subscription" direction="In" isUnique="false">
+                  <elementDefinition Id="2e468a86-423c-43f1-8a08-bad23ad7e5f2" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="318ad276-692f-4bb2-a6b3-b0ad68113f09" LastKnownName="SubscribeContract" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="981fa27b-45e1-4651-94f2-2b522dab7ce1" name="UnregisterSubscribeContractAll" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="f90a014b-3c82-4931-9a62-bee0272e5c91" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="98729299-b31b-4fd1-8804-4ff4f7db4c51" name="clientId" direction="In" isUnique="false">
+                  <elementDefinition Id="1a396e71-9815-4ddc-ae65-bfe7e6cf4e7a" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="70350f4b-d085-4418-99d6-7ec365b354db" LastKnownName="Guid" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="728da9f3-5abc-474a-af0f-5e1ee4750d75" name="UnregisterSubscribeContract" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="c7a9c207-d9ff-48e5-b25c-657585f49675" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="483ae204-344e-413c-b813-a12f555c4008" name="clientId" direction="In" isUnique="false">
+                  <elementDefinition Id="0d6338a2-f6aa-4edd-b765-2f7e04324b11" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="70350f4b-d085-4418-99d6-7ec365b354db" LastKnownName="Guid" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="0db081ae-5e4f-4cb8-8160-c4621290d788" name="type" direction="In" isUnique="false">
+                  <elementDefinition Id="d114c9a6-0d80-4040-a322-433ebd44d4de" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="94b43754-ee74-4fda-8d7e-2e7c616a092a" LastKnownName="SubscribeType" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+        </ownedOperationsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <packageHasNamedElement>
+      <referencedType Id="318ad276-692f-4bb2-a6b3-b0ad68113f09" name="SubscribeContract" isAbstract="false" isLeaf="false" cachedFullName="SubscribeContract">
+        <elementDefinition Id="680da7c9-6581-42f3-b036-71425fa4e0c0" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="94b43754-ee74-4fda-8d7e-2e7c616a092a" name="SubscribeType" isAbstract="false" isLeaf="false" cachedFullName="SubscribeType">
+        <elementDefinition Id="2e092a1e-7eb7-4f75-8c95-bdba3ddb51d3" />
+      </referencedType>
+    </packageHasNamedElement>
+    <logicalClassDesignerModelHasTypes>
+      <Interface Id="67e6cb9a-7b38-4781-b7c7-98cdd7d91ce6" name="IRealTimeConsumer" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="0d3efaf4-6f2d-4800-8749-8a4ddda52204" />
+        <ownedOperations>
+          <operation Id="e24bbfba-4ab9-4afa-a86e-d6a830efed71" name="NoOperation" isLeaf="false" isStatic="false" isAbstract="true" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="6ddc2b1d-e8f5-4c19-b60a-bf5e38d91891" />
+          </operation>
+          <operation Id="5ce25920-ed07-458d-9c5a-065a688f1811" name="RegisterSubscribeContract" isLeaf="false" isStatic="false" isAbstract="true" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="fa919032-3a3f-4498-9a9a-873062ebdf58" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="30b25ea4-368c-440a-a8e1-ac993f4b4d33" name="clientId" direction="In" isUnique="false">
+                  <elementDefinition Id="48587106-cdea-4bbd-a101-2d31f472d0ef" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="e013993b-d0a6-4a07-8006-0a8f30cc2664" LastKnownName="Guid" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="26f12138-77eb-49d1-b447-c04a13136729" name="subscription" direction="In" isUnique="false">
+                  <elementDefinition Id="0a9d80ae-db01-4213-b1e7-edcf5baf9bb1" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="ea44e8c1-4596-4ffa-b75c-5e0e786f5a4b" LastKnownName="SubscribeContract" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="d935abf1-9183-4a3d-9c40-746466009045" name="UnregisterSubscribeContract" isLeaf="false" isStatic="false" isAbstract="true" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="06e19568-e32d-43de-bd85-94761b1d7235" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="16bde757-46f3-4737-8c0d-8677883da539" name="clientId" direction="In" isUnique="false">
+                  <elementDefinition Id="8d5db1e9-289a-4a2b-a85a-3db4109b9b70" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="e013993b-d0a6-4a07-8006-0a8f30cc2664" LastKnownName="Guid" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="add09f14-fc34-464c-82dc-c47f9eb18afb" name="type" direction="In" isUnique="false">
+                  <elementDefinition Id="5dfb71ae-da3b-4371-92e9-8dc8ad62b409" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="d0a29773-fa39-4ad0-8ae0-9d2a5d0718f6" LastKnownName="SubscribeType" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="73f318f1-a540-440f-9fbc-91d3467fbb81" name="UnregisterSubscribeContractAll" isLeaf="false" isStatic="false" isAbstract="true" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="8ab5bbb2-789e-49d9-978a-7824d8788bf0" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="ffff0a6b-c218-4abb-8ca1-dfd83de07af1" name="clientId" direction="In" isUnique="false">
+                  <elementDefinition Id="a368e9a7-452e-4eb7-8706-95e72d071449" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="e013993b-d0a6-4a07-8006-0a8f30cc2664" LastKnownName="Guid" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+        </ownedOperations>
+      </Interface>
+    </logicalClassDesignerModelHasTypes>
+    <packageHasNamedElement>
+      <referencedType Id="e013993b-d0a6-4a07-8006-0a8f30cc2664" name="Guid" isAbstract="false" isLeaf="false" cachedFullName="Guid">
+        <elementDefinition Id="9a6a1064-394f-4b41-9ffc-43a94861f59c" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="ea44e8c1-4596-4ffa-b75c-5e0e786f5a4b" name="SubscribeContract" isAbstract="false" isLeaf="false" cachedFullName="SubscribeContract">
+        <elementDefinition Id="680da7c9-6581-42f3-b036-71425fa4e0c0" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="d0a29773-fa39-4ad0-8ae0-9d2a5d0718f6" name="SubscribeType" isAbstract="false" isLeaf="false" cachedFullName="SubscribeType">
+        <elementDefinition Id="2e092a1e-7eb7-4f75-8c95-bdba3ddb51d3" />
+      </referencedType>
+    </packageHasNamedElement>
+    <logicalClassDesignerModelHasTypes>
+      <Interface Id="32b50d5f-2949-42a5-9973-0c7126be824b" name="IConsumer" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="5e6d803f-2922-4d8c-ae52-7c0706fdacc1" />
+        <ownedAttributes>
+          <property Id="05a83920-a862-4052-9575-101ddcf4736a" name="OnNewTransaactionReceived(newTransaction" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="08da1a58-0cdb-42d2-b60e-d76b1cf2dc48" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="fe9af0a9-1ffb-447f-b18c-eaed3bc741c5" LastKnownName="Subscribable)" />
+            </type_NamedElement>
+          </property>
+        </ownedAttributes>
+        <ownedOperations>
+          <operation Id="b4c7e161-b087-4765-be84-6e6d191b0d26" name="StartConsume" isLeaf="false" isStatic="false" isAbstract="true" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="478aed79-7581-4039-aa26-b3769e3f193f" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="cff3e992-c77b-45ce-a15d-24fbb4e51240" name="codes" direction="In" isUnique="false">
+                  <elementDefinition Id="c53aa693-df18-4c3a-bb24-0dd4b1f0dae4" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="d32d6422-c569-487c-9594-1c8c063bc584" LastKnownName="List&lt;string&gt;" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="0e7b2c70-eac5-4b2e-b07e-bec95bfba7c0" name="startDate = null" direction="In" isUnique="false">
+                  <elementDefinition Id="280908ac-f00f-4ab5-950d-06af77f49c5d" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="f4334d77-bb07-45c6-9145-47dcad45870a" LastKnownName="DateTime?" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="62ddfd13-6ed6-4d70-a895-7d9ecd2db4c7" name="endDate = null" direction="In" isUnique="false">
+                  <elementDefinition Id="7923c698-2513-4c90-9654-0984023de1dc" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="f4334d77-bb07-45c6-9145-47dcad45870a" LastKnownName="DateTime?" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="ed40dee7-2a9a-48b7-b74d-32706fe04064" name="StopConsume" isLeaf="false" isStatic="false" isAbstract="true" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="af36cb24-18e5-4c6d-9fad-58bf14b1b8c3" />
+          </operation>
+        </ownedOperations>
+      </Interface>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="4ec1195e-e917-4f9b-ab38-902168b94ea2" name="DbConsumer" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="910411e2-4e57-45f2-a08b-72b90f8d30f8" />
+        <suppliersInternal>
+          <interfaceRealization Id="9bb7b263-8b66-468f-9a7e-ba9e3d78be33">
+            <interfaceMoniker Id="32b50d5f-2949-42a5-9973-0c7126be824b" LastKnownName="IConsumer" />
+            <elementDefinition Id="df6e3e89-b9ff-4c88-b994-eb382e6cb006" />
+          </interfaceRealization>
+        </suppliersInternal>
+        <ownedOperationsInternal>
+          <operation Id="7ded6e0d-d7b9-473d-931e-9947a44d3c90" name="StartConsume" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="4e018476-3f6d-42e0-9559-57bdd919275c" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="132abb7b-4bb5-4aab-9e63-e7156a64420c" name="startDate = null" direction="In" isUnique="false">
+                  <elementDefinition Id="077b4977-0ed5-4b13-ba96-b9b24e3557f5" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="d32d6422-c569-487c-9594-1c8c063bc584" LastKnownName="List&lt;string&gt;" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="7262441c-75a0-4590-9c39-1e809bd2de0a" name="endDate = null" direction="In" isUnique="false">
+                  <elementDefinition Id="a421bf92-29f7-4544-a262-ccdd34f4928f" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="f4334d77-bb07-45c6-9145-47dcad45870a" LastKnownName="DateTime?" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="7916bd32-d4d8-494a-9fb9-43b13beb49f1" name="endDate = null" direction="In" isUnique="false">
+                  <elementDefinition Id="2c0c7835-10aa-433f-bf62-35d368fe8302" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="f4334d77-bb07-45c6-9145-47dcad45870a" LastKnownName="DateTime?" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="b3642da2-acdf-4322-882b-173df58328a2" name="StopConsume" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="91067530-cdd1-4ac7-9796-5437f8930fbd" />
+          </operation>
+        </ownedOperationsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <packageHasNamedElement>
+      <referencedType Id="f4334d77-bb07-45c6-9145-47dcad45870a" name="DateTime?" isAbstract="false" isLeaf="false" cachedFullName="DateTime?">
+        <elementDefinition Id="d2719b89-461b-40c1-a7d8-2922665f2740" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="d32d6422-c569-487c-9594-1c8c063bc584" name="List&lt;string&gt;" isAbstract="false" isLeaf="false" cachedFullName="List&lt;string&gt;">
+        <elementDefinition Id="f0b68960-4402-4e99-9388-b6b27aaaea20" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="fe9af0a9-1ffb-447f-b18c-eaed3bc741c5" name="Subscribable)" isAbstract="false" isLeaf="false" cachedFullName="Subscribable)">
+        <elementDefinition Id="16129a5d-7da9-4b2a-867c-597138269758" />
       </referencedType>
     </packageHasNamedElement>
   </packagedElements>
