@@ -12,13 +12,14 @@ namespace MTree.Utility
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public static void Start(string filePath, string arguments = "", bool waitIdle = false)
+        public static void Start(string filePath, string arguments = "", ProcessWindowStyle windowStyle = ProcessWindowStyle.Normal, bool waitIdle = false)
         {
             try
             {
                 var process = new Process();
                 process.StartInfo.FileName = filePath;
                 process.StartInfo.Arguments = arguments;
+                process.StartInfo.WindowStyle = windowStyle;
                 process.Start();
 
                 if (waitIdle == true)

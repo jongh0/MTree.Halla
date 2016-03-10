@@ -10,14 +10,8 @@ using System.Threading.Tasks;
 
 namespace TestPublisher
 {
-    class Publisher : PublisherImplement, IRealTimePublisherCallback
+    class Publisher : PublisherBase
     {
-        protected override void Initialize()
-        {
-            base.Initialize();
-            ProcessName = nameof(Publisher);
-        }
-
         public void StartPublising()
         {
             Task.Run(() =>

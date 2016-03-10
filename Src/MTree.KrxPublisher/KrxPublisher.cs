@@ -13,15 +13,9 @@ using MTree.DataStructure;
 namespace MTree.KrxPublisher
 {
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
-    public class KrxPublisher : PublisherImplement, IRealTimePublisherCallback
+    public class KrxPublisher : PublisherBase
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-
-        protected override void Initialize()
-        {
-            base.Initialize();
-            ProcessName = nameof(KrxPublisher);
-        }
 
         #region 관리종목
         public void Collect040301()

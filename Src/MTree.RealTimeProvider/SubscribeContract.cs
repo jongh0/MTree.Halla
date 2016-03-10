@@ -13,7 +13,7 @@ namespace MTree.RealTimeProvider
         IndexConclusion,
     }
 
-    public enum SubscribeWay
+    public enum SubscribeScope
     {
         All,
         Partial,
@@ -24,7 +24,7 @@ namespace MTree.RealTimeProvider
     {
         public SubscribeType Type { get; set; }
 
-        public SubscribeWay Way { get; set; } = SubscribeWay.All;
+        public SubscribeScope Scope { get; set; } = SubscribeScope.All;
 
         public HashSet<string> Codes { get; set; } = new HashSet<string>();
 

@@ -237,7 +237,7 @@ namespace MTree.DaishinSessionManager
 
         private static void LaunchStarter()
         {
-            ProcessUtility.Start("C:\\Daishin\\STARTER\\ncStarter.exe", "/prj:cp", true);
+            ProcessUtility.Start("C:\\Daishin\\STARTER\\ncStarter.exe", "/prj:cp", waitIdle: true);
         }
 
         private static IntPtr FindWindowAndRetry(string windowName, int retryCount = 30, int interval = 100, bool setForeground = true)

@@ -13,14 +13,8 @@ using System.Threading;
 namespace TestConsumer
 {
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
-    public class Consumer : ConsumerImplement
+    public class Consumer : ConsumerBase
     {
-        protected override void Initialize()
-        {
-            base.Initialize();
-            ProcessName = nameof(Consumer);
-        }
-
         private void ProcessStockConclusionQueue()
         {
             StockConclusion conclusion;
@@ -41,7 +35,7 @@ namespace TestConsumer
 
             var subscription = new SubscribeContract();
             subscription.Type = SubscribeType.StockConclusion;
-            subscription.Way = SubscribeWay.Partial;
+            subscription.Scope = SubscribeScope.Partial;
             subscription.Codes.Add("000020");
             ServiceClient.RegisterSubscribeContract(ClientId, subscription);
         }

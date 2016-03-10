@@ -1,39 +1,78 @@
-﻿using MTree.DataStructure;
-using MTree.RealTimeProvider;
+﻿using MTree.RealTimeProvider;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.ServiceModel;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace MTree.Consumer
 {
-    public class ConsumerBase : RealTimeBase, IRealTimeConsumerCallback
+    public class ConsumerBase : ConsumerCallback
     {
-        public ConsumerBase() : base()
+        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
+        protected Guid ClientId { get; set; } = Guid.NewGuid();
+
+        protected InstanceContext CallbackInstance { get; set; }
+        protected ConsumerClient ServiceClient { get; set; }
+
+        public ConsumerBase()
         {
+            try
+            {
+                CallbackInstance = new InstanceContext(this);
+                OpenChannel();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
         }
 
-        public virtual void NoOperation()
+        protected void OpenChannel()
         {
+            try
+            {
+                logger.Info($"Open {GetType().Name} channel");
+
+                ServiceClient = new ConsumerClient(CallbackInstance, "RealTimeConsumerConfig");
+                ServiceClient.InnerChannel.Opened += InnerChannel_Opened;
+                ServiceClient.InnerChannel.Closed += InnerChannel_Closed;
+                ServiceClient.Open();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
         }
 
-        public virtual void ConsumeBiddingPrice(BiddingPrice biddingPrice)
+        private void InnerChannel_Closed(object sender, EventArgs e)
         {
+            logger.Info($"{GetType().Name} channel closed");
         }
 
-        public virtual void ConsumeCircuitBreak(CircuitBreak circuitBreak)
+        private void InnerChannel_Opened(object sender, EventArgs e)
         {
+            logger.Info($"{GetType().Name} channel opened");
         }
 
-        public virtual void ConsumeIndexConclusion(IndexConclusion conclusion)
+        protected void CloseChannel()
         {
-        }
+            try
+            {
+                if (ServiceClient != null)
+                {
+                    logger.Info($"Close {GetType().Name} channel");
 
-        public virtual void ConsumeStockConclusion(StockConclusion conclusion)
-        {
+                    ServiceClient.UnregisterSubscribeContractAll(ClientId);
+                    ServiceClient.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
         }
     }
 }

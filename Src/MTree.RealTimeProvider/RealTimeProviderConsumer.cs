@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MTree.RealTimeProvider
@@ -86,6 +87,99 @@ namespace MTree.RealTimeProvider
                     return IndexConclusionContracts;
                 default:
                     return null;
+            }
+        }
+
+        private void ProcessBiddingPriceQueue()
+        {
+            try
+            {
+                BiddingPrice biddingPrice;
+                if (BiddingPriceQueue.TryDequeue(out biddingPrice) == true)
+                {
+                    foreach (var subscription in BiddingPriceContracts)
+                    {
+                        if (subscription.Value.Scope == SubscribeScope.All ||
+                            subscription.Value.ContainCode(biddingPrice.Code) == true)
+                        {
+                            subscription.Value.Callback.ConsumeBiddingPrice(biddingPrice);
+                        }
+                    }
+                }
+                else
+                {
+                    Thread.Sleep(10);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
+        private void ProcessStockConclusionQueue()
+        {
+            try
+            {
+                StockConclusion conclusion;
+                if (StockConclusionQueue.TryDequeue(out conclusion) == true)
+                {
+                    foreach (var subscription in StockConclusionContracts)
+                    {
+                        if (subscription.Value.Scope == SubscribeScope.All ||
+                            subscription.Value.ContainCode(conclusion.Code) == true)
+                        {
+                            subscription.Value.Callback.ConsumeStockConclusion(conclusion);
+                        }
+                    }
+                }
+                else
+                {
+                    Thread.Sleep(10);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
+        private void ProcessIndexConclusionQueue()
+        {
+            try
+            {
+                IndexConclusion conclusion;
+                if (IndexConclusionQueue.TryDequeue(out conclusion) == true)
+                {
+                    foreach (var subscription in IndexConclusionContracts)
+                    {
+                        if (subscription.Value.Scope == SubscribeScope.All ||
+                            subscription.Value.ContainCode(conclusion.Code) == true)
+                        {
+                            subscription.Value.Callback.ConsumeIndexConclusion(conclusion);
+                        }
+                    }
+                }
+                else
+                {
+                    Thread.Sleep(10);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
+        private void ProcessCircuitBreak(CircuitBreak circuitBreak)
+        {
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
             }
         }
     }

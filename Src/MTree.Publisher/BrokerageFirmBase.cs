@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace MTree.Publisher
 {
-    public class BrokerageFirmImplement : PublisherImplement
+    public class BrokerageFirmBase : PublisherBase
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -23,10 +23,7 @@ namespace MTree.Publisher
 
         protected ConcurrentDictionary<string, IndexConclusion> PrevIndexConclusions { get; } = new ConcurrentDictionary<string, IndexConclusion>();
 
-        protected string Server { get; set; }
-        protected int Port { get; set; }
-
-        public BrokerageFirmImplement() : base()
+        public BrokerageFirmBase() : base()
         {
         }
 

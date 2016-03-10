@@ -11,9 +11,11 @@ using MTree.RealTimeProvider;
 namespace MTree.EbestPublisher
 {
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
-    public class EbestPublisher : BrokerageFirmImplement, IRealTimePublisherCallback
+    public class EbestPublisher : BrokerageFirmBase
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
+        protected object LockObject { get; } = new object();
 
         private const int maxQueryableCount = 200;
         private int queryableCount = 0;
@@ -74,19 +76,13 @@ namespace MTree.EbestPublisher
                 #endregion
 
                 #region Login
-                LoginInstance.LoginState = LoginStateType.Disconnected;
                 LoginInstance.UserId = Config.Ebest.UserId;
                 LoginInstance.UserPw = Config.Ebest.UserPw;
                 LoginInstance.CertPw = Config.Ebest.CertPw;
                 LoginInstance.AccountPw = Config.Ebest.AccountPw;
-                LoginInstance.PublisherType = BrokerageServerType.Real;
-
-                if (LoginInstance.PublisherType == BrokerageServerType.Real)
-                    Server = Config.Ebest.RealServerAddress;
-                else
-                    Server = Config.Ebest.DemoServerAddress;
-
-                Port = Config.Ebest.ServerPort;
+                LoginInstance.Server = Config.Ebest.Server;
+                LoginInstance.ServerAddress = Config.Ebest.ServerAddress;
+                LoginInstance.ServerPort = Config.Ebest.ServerPort;
 
                 Login(); 
                 #endregion
@@ -95,12 +91,6 @@ namespace MTree.EbestPublisher
             {
                 logger.Error(ex);
             }
-        }
-
-        protected override void Initialize()
-        {
-            base.Initialize();
-            ProcessName = nameof(EbestPublisher);
         }
 
         #region XAQuery
@@ -144,28 +134,28 @@ namespace MTree.EbestPublisher
         #region XASession
         private void sessionObj_Event_Logout()
         {
-            logger.Info("Session logout");
-
-            LoginInstance.LoginState = LoginStateType.LoggedOut;
+            LoginInstance.State = StateType.Logout;
             loginCheckerCancelSource.Cancel();
+
+            logger.Info(LoginInstance.ToString());
         }
 
         private void sessionObj_Event_Login(string szCode, string szMsg)
         {
-            logger.Info($"Session login, szCode: {szCode}, szMsg: {szMsg}");
-
-            LoginInstance.LoginState = LoginStateType.LoggedIn;
+            LoginInstance.State = StateType.Login;
             WaitLoginEvent.Set();
+
+            logger.Info($"{LoginInstance.ToString()}\nszCode: {szCode}, szMsg: {szMsg}");
 
             //Task.Run(() => { LoginStateChecker(); }, loginCheckerCancelToken);
         }
 
         private void sessionObj_Disconnect()
         {
-            logger.Info("Session disconnect");
-
-            LoginInstance.LoginState = LoginStateType.Disconnected;
+            LoginInstance.State = StateType.Disconnect;
             loginCheckerCancelSource.Cancel();
+
+            logger.Info(LoginInstance.ToString());
         } 
         #endregion
 
@@ -173,7 +163,7 @@ namespace MTree.EbestPublisher
         {
             logger.Info("LoginStateChecker started");
 
-            while (LoginInstance.LoginState == LoginStateType.LoggedIn)
+            while (LoginInstance.State == StateType.Login)
             {
                 try
                 {
@@ -215,11 +205,11 @@ namespace MTree.EbestPublisher
 
             try
             {
-                if (sessionObj.ConnectServer(Server, Port) == true)
+                if (sessionObj.ConnectServer(LoginInstance.ServerAddress, LoginInstance.ServerPort) == true)
                 {
                     logger.Info("Server connected");
 
-                    if (LoginInstance.PublisherType == BrokerageServerType.Real)
+                    if (LoginInstance.Server == ServerType.Real)
                         ret = sessionObj.Login(LoginInstance.UserId, LoginInstance.UserPw, LoginInstance.CertPw, (int)XA_SERVER_TYPE.XA_REAL_SERVER, true);
                     else
                         ret = sessionObj.Login(LoginInstance.UserId, LoginInstance.UserPw, LoginInstance.CertPw, (int)XA_SERVER_TYPE.XA_SIMUL_SERVER, true);
@@ -254,7 +244,7 @@ namespace MTree.EbestPublisher
                 if (sessionObj.IsConnected() == false)
                     return false;
 
-                if (LoginInstance.LoginState != LoginStateType.LoggedIn)
+                if (LoginInstance.State != StateType.Login)
                     return false;
 
                 sessionObj.Logout();
@@ -279,6 +269,12 @@ namespace MTree.EbestPublisher
                 return false;
             }
 
+            if (WaitLoginEvent.WaitOne(10000) == false)
+            {
+                logger.Error("Not loggedin state");
+                return false;
+            }
+
             try
             {
                 realObj.SetFieldData("InBlock", "upcode", code);
@@ -298,6 +294,12 @@ namespace MTree.EbestPublisher
 
         public bool UnsubscribeIndex(string code)
         {
+            if (WaitLoginEvent.WaitOne(10000) == false)
+            {
+                logger.Error("Not loggedin state");
+                return false;
+            }
+
             try
             {
                 realObj.SetFieldData("InBlock", "upcode", code);
@@ -399,13 +401,19 @@ namespace MTree.EbestPublisher
 
         public bool GetQuote(string code, ref StockMaster stockMaster)
         {
-            logger.Info($"Start quoting, Code: {code}");
-
             if (Monitor.TryEnter(LockObject, 1000 * 10) == false)
             {
-                logger.Error($"Quoting failed, Code: {code}");
+                logger.Error($"Quoting failed, Code: {code}, Can't obtaion lock object");
                 return false;
             }
+
+            if (WaitLoginEvent.WaitOne(10000) == false)
+            {
+                logger.Error($"Quoting failed, Code: {code}, Not loggedin state");
+                return false;
+            }
+
+            logger.Info($"Start quoting, Code: {code}");
 
             int ret = -1;
 
@@ -418,8 +426,19 @@ namespace MTree.EbestPublisher
 
                 if (ret > 0)
                 {
-                    if (WaitQuotingEvent.WaitOne(1000 * 10) == false)
+                    if (WaitQuotingEvent.WaitOne(1000 * 10) == true)
+                    {
+                        logger.Info($"Quoting done. Code: {code}");
+                    }
+                    else
+                    {
+                        logger.Error($"Quoting timeout. Code: {code}");
                         ret = -1;
+                    }
+                }
+                else
+                {
+                    logger.Error($"Quoting request failed. Code: {code}, Quoting result: {ret}");
                 }
             }
             catch (Exception ex)
@@ -437,13 +456,19 @@ namespace MTree.EbestPublisher
 
         public bool GetQuote(string code, ref IndexMaster indexMaster)
         {
-            logger.Info($"Start quoting, Code: {code}");
-
             if (Monitor.TryEnter(LockObject, 1000 * 10) == false)
             {
-                logger.Error($"Quoting failed, Code: {code}");
+                logger.Error($"Quoting failed, Code: {code}, Can't obtaion lock object");
                 return false;
             }
+
+            if (WaitLoginEvent.WaitOne(10000) == false)
+            {
+                logger.Error($"Quoting failed, Code: {code}, Not loggedin state");
+                return false;
+            }
+
+            logger.Info($"Start quoting, Code: {code}");
 
             int ret = -1;
 
@@ -456,8 +481,19 @@ namespace MTree.EbestPublisher
 
                 if (ret > 0)
                 {
-                    if (WaitQuotingEvent.WaitOne(1000 * 10) == false)
+                    if (WaitQuotingEvent.WaitOne(1000 * 10) == true)
+                    {
+                        logger.Info($"Quoting done. Code: {code}");
+                    }
+                    else
+                    {
+                        logger.Error($"Quoting timeout. Code: {code}");
                         ret = -1;
+                    }
+                }
+                else
+                {
+                    logger.Error($"Quoting request failed. Code: {code}, Quoting result: {ret}");
                 }
             }
             catch (Exception ex)
@@ -548,10 +584,6 @@ namespace MTree.EbestPublisher
             {
                 WaitQuotingEvent.Set();
             }
-        }
-
-        public void NoOperation()
-        {
         }
     }
 }

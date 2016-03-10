@@ -15,7 +15,7 @@ using MTree.Utility;
 namespace MTree.HistorySaver
 {
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
-    public class HistorySaver : ConsumerImplement
+    public class HistorySaver : ConsumerBase
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -44,12 +44,6 @@ namespace MTree.HistorySaver
             }
         }
 
-        protected override void Initialize()
-        {
-            base.Initialize();
-            ProcessName = nameof(HistorySaver);
-        }
-
         private void CreateIndex()
         {
             try
@@ -69,11 +63,6 @@ namespace MTree.HistorySaver
             {
                 logger.Error(ex);
             }
-        }
-
-        public void StopQueueTask()
-        {
-            QueueTaskCancelSource.Cancel();
         }
 
         private void ProcessBiddingPriceQueue()

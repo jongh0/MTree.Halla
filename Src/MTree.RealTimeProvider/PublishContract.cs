@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MTree.RealTimeProvider
 {
-    public enum PublishType
+    public enum PublisherType
     {
         None,
         Daishin,
@@ -18,16 +18,16 @@ namespace MTree.RealTimeProvider
     [Serializable]
     public class PublishContract
     {
-        public static PublishType ConvertToType(string value)
+        public static PublisherType ConvertToType(string value)
         {
-            PublishType type;
+            PublisherType type;
             if (Enum.TryParse(value, out type) == true)
                 return type;
             else
-                return PublishType.None;
+                return PublisherType.None;
         }
 
-        public PublishType Type { get; set; }
+        public PublisherType Type { get; set; }
 
         public IRealTimePublisherCallback Callback { get; set; } = null;
     }

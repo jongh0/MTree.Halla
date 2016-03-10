@@ -47,8 +47,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConsumerCallback.cs" />
     <Compile Include="ConsumerBase.cs" />
-    <Compile Include="ConsumerImplement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ConsumerClient.cs" />
   </ItemGroup>

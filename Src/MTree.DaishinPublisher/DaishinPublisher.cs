@@ -15,9 +15,11 @@ using System.Threading.Tasks;
 namespace MTree.DaishinPublisher
 {
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
-    public class DaishinPublisher : BrokerageFirmImplement
+    public class DaishinPublisher : BrokerageFirmBase
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
+        protected object LockObject { get; } = new object();
 
         public int QueryableCount
         {
@@ -54,12 +56,6 @@ namespace MTree.DaishinPublisher
             }
         }
 
-        protected override void Initialize()
-        {
-            base.Initialize();
-            ProcessName = nameof(DaishinPublisher);
-        }
-
         private void sessionObj_OnDisconnect()
         {
             logger.Info("Disconnected");
@@ -77,13 +73,13 @@ namespace MTree.DaishinPublisher
 
         public bool GetQuote(string code, ref StockMaster stockMaster)
         {
-            logger.Info($"Start quoting, Code: {code}");
-
             if (Monitor.TryEnter(LockObject, 1000 * 10) == false)
             {
-                logger.Error($"Quoting failed. Not able to lock object. Code: {code}");
+                logger.Error($"Quoting failed, Code: {code}, Can't obtaion lock object");
                 return false;
             }
+
+            logger.Info($"Start quoting, Code: {code}");
 
             int ret = -1;
 
@@ -100,8 +96,15 @@ namespace MTree.DaishinPublisher
 
                 if (ret == 0)
                 {
-                    if (WaitQuotingEvent.WaitOne(1000 * 10) == false)
+                    if (WaitQuotingEvent.WaitOne(1000 * 10) == true)
+                    {
+                        logger.Info($"Quoting done. Code: {code}");
+                    }
+                    else
+                    {
+                        logger.Error($"Quoting timeout. Code: {code}");
                         ret = -1;
+                    }
                 }
                 else
                 {
@@ -136,7 +139,7 @@ namespace MTree.DaishinPublisher
 
                 if (QuotingStockMaster.Code != code)
                 {
-                    logger.Warn($"{QuotingStockMaster.Code} != {code}");
+                    logger.Warn($"Different quoting code, {QuotingStockMaster.Code} != {code}");
                     return;
                 }
 

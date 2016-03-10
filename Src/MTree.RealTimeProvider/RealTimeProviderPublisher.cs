@@ -18,39 +18,41 @@ namespace MTree.RealTimeProvider
         #region Contract Property
         private List<PublishContract> DaishinContract
         {
-            get { return PublishContracts.Values.Where(c => c.Type == PublishType.Daishin).ToList(); }
+            get { return PublishContracts.Values.Where(c => c.Type == PublisherType.Daishin).ToList(); }
         }
 
         private List<PublishContract> EbestContract
         {
-            get { return PublishContracts.Values.Where(c => c.Type == PublishType.Ebest).ToList(); }
+            get { return PublishContracts.Values.Where(c => c.Type == PublisherType.Ebest).ToList(); }
         }
 
         private List<PublishContract> KrxContract
         {
-            get { return PublishContracts.Values.Where(c => c.Type == PublishType.Krx).ToList(); }
+            get { return PublishContracts.Values.Where(c => c.Type == PublisherType.Krx).ToList(); }
         }
 
         private List<PublishContract> NaverContract
         {
-            get { return PublishContracts.Values.Where(c => c.Type == PublishType.Naver).ToList(); }
+            get { return PublishContracts.Values.Where(c => c.Type == PublisherType.Naver).ToList(); }
         }
         #endregion
 
-        public void LaunchPublisher(PublishType type)
+        public void LaunchPublisher(PublisherType type)
         {
             try
             {
+                var windowStyle = ProcessWindowStyle.Minimized;
+
                 switch (type)
                 {
-                    case PublishType.Daishin:
-                        ProcessUtility.Start("MTree.DaishinPublisher.exe", type.ToString());
+                    case PublisherType.Daishin:
+                        ProcessUtility.Start("MTree.DaishinPublisher.exe", type.ToString(), windowStyle);
                         break;
-                    case PublishType.Ebest:
-                        ProcessUtility.Start("MTree.EbestPublisher.exe", type.ToString());
+                    case PublisherType.Ebest:
+                        ProcessUtility.Start("MTree.EbestPublisher.exe", type.ToString(), windowStyle);
                         break;
-                    case PublishType.Krx:
-                        ProcessUtility.Start("MTree.KrxPublisher.exe", type.ToString());
+                    case PublisherType.Krx:
+                        ProcessUtility.Start("MTree.KrxPublisher.exe", type.ToString(), windowStyle);
                         break;
                 }
             }
@@ -70,7 +72,7 @@ namespace MTree.RealTimeProvider
                 }
                 else
                 {
-                    if (contract.Type == PublishType.None)
+                    if (contract.Type == PublisherType.None)
                     {
                         logger.Info($"{clientId} / {contract.Type} wrong contract type");
                     }
