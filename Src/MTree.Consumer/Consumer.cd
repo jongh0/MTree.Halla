@@ -3,22 +3,23 @@
   <Class Name="MTree.Consumer.ConsumerBase">
     <Position X="0.5" Y="0.5" Width="4.25" />
     <TypeIdentifier>
-      <HashCode>gQAAAEAAABAAAAAAgAAAAAAAAAAAgAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAICAACAAAAAACgAAAAAgAABAAAAAAAAAAEAAAAAA=</HashCode>
       <FileName>ConsumerBase.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="MTree.Consumer.ConsumerImplement">
-    <Position X="5.25" Y="0.5" Width="2.75" />
-    <TypeIdentifier>
-      <HashCode>AAAAIAAECAAAAAACgAAAAAAAAAAAAABAAAAAAAAAAAA=</HashCode>
-      <FileName>ConsumerImplement.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="MTree.Consumer.ConsumerClient">
     <Position X="8.5" Y="0.5" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAgAAAAAAAAAAAAgAAAAAAAAAABAAA=</HashCode>
+      <HashCode>BAAAAIAAAAAQAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ConsumerClient.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MTree.Consumer.ConsumerCallback">
+    <Position X="5.5" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAACAAAAAAAAAAAAAAAQEAAAAAAAAAQAAAAAAAAAA=</HashCode>
+      <FileName>ConsumerCallback.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>

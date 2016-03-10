@@ -1,32 +1,33 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
-  <Class Name="MTree.Publisher.BrokerageFirmImplement">
-    <Position X="8.75" Y="0.5" Width="4.75" />
-    <TypeIdentifier>
-      <HashCode>jAAIAEAAAAgAAgQCEAAAAAEACAAAgAAAgEAAAgAgAAA=</HashCode>
-      <FileName>BrokerageFirmImplement.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="MTree.Publisher.PublisherBase">
-    <Position X="1" Y="0.5" Width="4" />
+    <Position X="6" Y="0.5" Width="2.75" />
     <TypeIdentifier>
-      <HashCode>AQAAAAAAAAAAAAAAgAAAAAAAIAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAICAACAAAAAACgAAAAAgAABAAAAAAAAAAEAAAAAA=</HashCode>
       <FileName>PublisherBase.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="MTree.Publisher.PublisherClient">
-    <Position X="1.5" Y="3.5" Width="2.5" />
+    <Position X="12.25" Y="0.5" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AAAQAAAAAIAAAAAAAAAAAAAAAAAAoAAAIAAEAAgAAAA=</HashCode>
+      <HashCode>BAAAAAAAAIAAAAEAAAAAAAAAAAAAAAAAIAAEAAgAAAA=</HashCode>
       <FileName>PublisherClient.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="MTree.Publisher.PublisherImplement">
-    <Position X="5.5" Y="0.5" Width="2.75" />
+  <Class Name="MTree.Publisher.PublisherCallback">
+    <Position X="9.25" Y="0.5" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AAAAIAAECAAAAAACgAAAAAAAAAAAAABAAAAAAAAAAAA=</HashCode>
-      <FileName>PublisherImplement.cs</FileName>
+      <HashCode>BAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>PublisherCallback.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MTree.Publisher.BrokerageFirmBase">
+    <Position X="0.75" Y="0.5" Width="4.75" />
+    <TypeIdentifier>
+      <HashCode>DAAIAAAAAAAAAgQCEAAQAAAAAAAAgAAAgEAAAAAgAAA=</HashCode>
+      <FileName>BrokerageFirmBase.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Malgun Gothic" Size="9" />
