@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MTree.Publisher
@@ -37,8 +38,8 @@ namespace MTree.Publisher
                 logger.Info($"Open {GetType().Name} channel");
 
                 ServiceClient = new PublisherClient(CallbackInstance, "RealTimePublisherConfig");
-                ServiceClient.InnerChannel.Opened += InnerChannel_Opened;
-                ServiceClient.InnerChannel.Closed += InnerChannel_Closed;
+                ServiceClient.InnerChannel.Opened += ServiceClient_Opened;
+                ServiceClient.InnerChannel.Closed += ServiceClient_Closed;
                 ServiceClient.Open();
             }
             catch (Exception ex)
@@ -47,31 +48,36 @@ namespace MTree.Publisher
             }
         }
 
-        private void InnerChannel_Closed(object sender, EventArgs e)
+        private void ServiceClient_Closed(object sender, EventArgs e)
         {
             logger.Info($"{GetType().Name} channel closed");
         }
 
-        private void InnerChannel_Opened(object sender, EventArgs e)
+        private void ServiceClient_Opened(object sender, EventArgs e)
         {
             try
             {
                 logger.Info($"{GetType().Name} channel opened");
 
-                var args = Environment.GetCommandLineArgs();
-                if (args?.Length > 1)
+                Task.Run(() =>
                 {
-                    logger.Info($"Argument: {string.Join(" ", args)}");
+                    Thread.Sleep(1000);
 
-                    var contract = new PublishContract();
-                    contract.Type = PublishContract.ConvertToType(args[1]);
+                    var args = Environment.GetCommandLineArgs();
+                    if (args?.Length > 1)
+                    {
+                        logger.Info($"Argument: {string.Join(" ", args)}");
 
-                    ServiceClient.RegisterPublishContract(ClientId, contract);
-                }
-                else
-                {
-                    logger.Error("Wrong argument");
-                }
+                        var contract = new PublishContract();
+                        contract.Type = PublishContract.ConvertToType(args[1]);
+
+                        ServiceClient.RegisterPublishContract(ClientId, contract);
+                    }
+                    else
+                    {
+                        logger.Error("Wrong argument");
+                    }
+                });
             }
             catch (Exception ex)
             {

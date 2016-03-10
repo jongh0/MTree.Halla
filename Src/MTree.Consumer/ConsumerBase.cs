@@ -37,8 +37,8 @@ namespace MTree.Consumer
                 logger.Info($"Open {GetType().Name} channel");
 
                 ServiceClient = new ConsumerClient(CallbackInstance, "RealTimeConsumerConfig");
-                ServiceClient.InnerChannel.Opened += InnerChannel_Opened;
-                ServiceClient.InnerChannel.Closed += InnerChannel_Closed;
+                ServiceClient.InnerChannel.Opened += ServiceClient_Opened;
+                ServiceClient.InnerChannel.Closed += ServiceClient_Closed;
                 ServiceClient.Open();
             }
             catch (Exception ex)
@@ -47,12 +47,12 @@ namespace MTree.Consumer
             }
         }
 
-        private void InnerChannel_Closed(object sender, EventArgs e)
+        private void ServiceClient_Closed(object sender, EventArgs e)
         {
             logger.Info($"{GetType().Name} channel closed");
         }
 
-        private void InnerChannel_Opened(object sender, EventArgs e)
+        private void ServiceClient_Opened(object sender, EventArgs e)
         {
             logger.Info($"{GetType().Name} channel opened");
         }

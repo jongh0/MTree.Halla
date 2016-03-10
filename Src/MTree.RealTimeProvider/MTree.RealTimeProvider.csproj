@@ -70,6 +70,7 @@
     <Compile Include="RealTimeProviderConsumer.cs" />
     <Compile Include="RealTimeProvider.cs" />
     <Compile Include="RealTimeProviderPublisher.cs" />
+    <Compile Include="StockMastering.cs" />
     <Compile Include="SubscribeContract.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -10,6 +10,7 @@ namespace MTree.RealTimeProvider
     {
         None,
         Daishin,
+        DaishinMaster,
         Ebest,
         Krx,
         Naver,
@@ -30,5 +31,7 @@ namespace MTree.RealTimeProvider
         public PublisherType Type { get; set; }
 
         public IRealTimePublisherCallback Callback { get; set; } = null;
+
+        public bool NowOperating { get; set; } = false;
     }
 }

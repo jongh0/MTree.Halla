@@ -98,17 +98,17 @@ namespace MTree.DaishinPublisher
                 {
                     if (WaitQuotingEvent.WaitOne(1000 * 10) == true)
                     {
-                        logger.Info($"Quoting done. Code: {code}");
+                        logger.Info($"Quoting done. Code: {code.Substring(1)}");
                     }
                     else
                     {
-                        logger.Error($"Quoting timeout. Code: {code}");
+                        logger.Error($"Quoting timeout. Code: {code.Substring(1)}");
                         ret = -1;
                     }
                 }
                 else
                 {
-                    logger.Error($"Quoting request failed. Code: {code}, Quoting result: {ret}");
+                    logger.Error($"Quoting request failed. Code: {code.Substring(1)}, Quoting result: {ret}");
                 }
             }
             catch (Exception ex)
@@ -333,7 +333,16 @@ namespace MTree.DaishinPublisher
 
             try
             {
+                var stockCode = new CpStockCodeClass();
+                int codeCount = stockCode.GetCount();
 
+                for (int i = 0; i < 20; i++)
+                {
+                    string code = stockCode.GetData(0, (short)i).ToString().Substring(1);
+                    codeList.Add(code);
+                }
+
+                logger.Info($"Stock code list query done, Count: {codeList.Count}");
             }
             catch (Exception ex)
             {
@@ -341,6 +350,23 @@ namespace MTree.DaishinPublisher
             }
 
             return codeList;
+        }
+
+        public override StockMaster GetStockMaster(string code)
+        {
+            var stockMaster = new StockMaster();
+            stockMaster.Code = code;
+
+            try
+            {
+                GetQuote(code, ref stockMaster);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+
+            return stockMaster;
         }
     }
 }

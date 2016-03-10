@@ -35,6 +35,10 @@ namespace MTree.RealTimeProvider
         [OperationContract(IsOneWay = true)]
         void NoOperation();
 
+        [OperationContract]
         List<string> GetStockCodeList();
+
+        [OperationContract]
+        StockMaster GetStockMaster(string code);
     }
 }

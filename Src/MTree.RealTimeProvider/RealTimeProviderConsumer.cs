@@ -25,14 +25,14 @@ namespace MTree.RealTimeProvider
 
                 if (contractList.ContainsKey(clientId) == true)
                 {
-                    logger.Error($"{clientId} / {contract.Type} contract exist");
+                    logger.Error($"{contract.Type} contract exist / {clientId}");
                 }
                 else
                 {
                     contract.Callback = OperationContext.Current.GetCallbackChannel<IRealTimeConsumerCallback>();
 
                     if (contractList.TryAdd(clientId, contract) == true)
-                        logger.Info($"{clientId} / {contract.Type} contract registered");
+                        logger.Info($"{contract.Type} contract registered / {clientId}");
                 }
             }
             catch (Exception ex)

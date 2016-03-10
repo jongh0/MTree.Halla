@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.ServiceModel;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MTree.RealTimeProvider
@@ -16,17 +17,27 @@ namespace MTree.RealTimeProvider
         private ConcurrentDictionary<Guid, PublishContract> PublishContracts { get; set; } = new ConcurrentDictionary<Guid, PublishContract>();
 
         #region Contract Property
-        private List<PublishContract> DaishinContract
+        private List<PublishContract> DaishinContracts
         {
-            get { return PublishContracts.Values.Where(c => c.Type == PublisherType.Daishin).ToList(); }
+            get { return PublishContracts.Values.Where(c => c.Type == PublisherType.Daishin || c.Type == PublisherType.DaishinMaster).ToList(); }
         }
 
-        private List<PublishContract> EbestContract
+        private PublishContract DaishinContractForMastering
+        {
+            get { return PublishContracts.Values.FirstOrDefault(c => (c.Type == PublisherType.Daishin || c.Type == PublisherType.DaishinMaster) && c.NowOperating == false); }
+        }
+
+        private List<PublishContract> EbestContracts
         {
             get { return PublishContracts.Values.Where(c => c.Type == PublisherType.Ebest).ToList(); }
         }
 
-        private List<PublishContract> KrxContract
+        private PublishContract EbestContractForMastering
+        {
+            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == PublisherType.Ebest && c.NowOperating == false); }
+        }
+
+        private List<PublishContract> KrxContracts
         {
             get { return PublishContracts.Values.Where(c => c.Type == PublisherType.Krx).ToList(); }
         }
@@ -37,7 +48,7 @@ namespace MTree.RealTimeProvider
         }
         #endregion
 
-        public void LaunchPublisher(PublisherType type)
+        public void LaunchPublisher(PublisherType type, bool mastering = false)
         {
             try
             {
@@ -46,11 +57,14 @@ namespace MTree.RealTimeProvider
                 switch (type)
                 {
                     case PublisherType.Daishin:
+                    case PublisherType.DaishinMaster:
                         ProcessUtility.Start("MTree.DaishinPublisher.exe", type.ToString(), windowStyle);
                         break;
+
                     case PublisherType.Ebest:
                         ProcessUtility.Start("MTree.EbestPublisher.exe", type.ToString(), windowStyle);
                         break;
+
                     case PublisherType.Krx:
                         ProcessUtility.Start("MTree.KrxPublisher.exe", type.ToString(), windowStyle);
                         break;
@@ -68,20 +82,35 @@ namespace MTree.RealTimeProvider
             {
                 if (PublishContracts.ContainsKey(clientId) == true)
                 {
-                    logger.Error($"{clientId} / {contract.Type} contract exist");
+                    logger.Error($"{contract.Type} contract exist / {clientId}");
                 }
                 else
                 {
                     if (contract.Type == PublisherType.None)
                     {
-                        logger.Info($"{clientId} / {contract.Type} wrong contract type");
+                        logger.Info($"{contract.Type} wrong contract type / {clientId}");
                     }
                     else
                     {
                         contract.Callback = OperationContext.Current.GetCallbackChannel<IRealTimePublisherCallback>();
                         PublishContracts.TryAdd(clientId, contract);
 
-                        logger.Info($"{clientId} / {contract.Type} contract registered");
+                        logger.Info($"{contract.Type} contract registered / {clientId}");
+
+                        if (contract.Type == PublisherType.DaishinMaster)
+                        {
+                            StockCodeList = contract.Callback.GetStockCodeList();
+
+                            if (StockCodeList != null)
+                            {
+                                logger.Info($"Stock code list count: {StockCodeList.Count}");
+                                StartStockMastering();
+                            }
+                            else
+                            {
+                                logger.Error("Stock code list gathering failed");
+                            }
+                        }
                     }
                 }
             }
@@ -111,6 +140,88 @@ namespace MTree.RealTimeProvider
             {
                 logger.Error(ex);
             }
+        }
+
+        private void StartStockMastering()
+        {
+            Task.Run(() =>
+            {
+                foreach (var code in StockCodeList)
+                {
+                    var mastering = new StockMastering();
+                    mastering.Stock = new StockMaster();
+                    mastering.Stock.Code = code;
+
+                    StockMasteringList.Add(mastering);
+                }
+
+                var masteringTasks = new List<Task>();
+
+                masteringTasks.Add(Task.Run(() =>
+                {
+                    while (true)
+                    {
+                        if (DaishinContracts.Count >= 3)
+                            break;
+
+                        Thread.Sleep(1000);
+                    }
+
+                    var daishinTasks = new List<Task>();
+
+                    foreach (var mastering in StockMasteringList)
+                    {
+                        PublishContract contract = null;
+
+                        while (true)
+                        {
+                            contract = DaishinContractForMastering;
+                            if (contract != null)
+                            {
+                                contract.NowOperating = true;
+                                break;
+                            }
+                            else
+                            {
+                                Thread.Sleep(100);
+                            }
+                        }
+
+                        daishinTasks.Add(Task.Run(() => GetStockMaster(mastering, contract)));
+                    }
+
+                    Task.WaitAll(daishinTasks.ToArray());
+                }));
+
+                Task.WaitAll(masteringTasks.ToArray());
+
+                logger.Info("Stock mastering done");
+                Debugger.Break();
+            });
+        }
+
+        private void GetStockMaster(StockMastering mastering, PublishContract contract)
+        {
+            try
+            {
+                var stockMaster = contract.Callback.GetStockMaster(mastering.Stock.Code);
+
+                mastering.Stock.Name = stockMaster.Name;
+                mastering.DaishinDone = true;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+            finally
+            {
+                contract.NowOperating = false;
+            }
+        }
+
+        private void StartStockSubscribing()
+        {
+
         }
 
         public void PublishBiddingPrice(BiddingPrice biddingPrice)

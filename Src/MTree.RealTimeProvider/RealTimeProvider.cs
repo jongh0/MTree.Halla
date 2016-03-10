@@ -15,6 +15,9 @@ namespace MTree.RealTimeProvider
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
+        private List<string> StockCodeList { get; set; } = null;
+        private List<StockMastering> StockMasteringList { get; set; } = new List<StockMastering>();
+
         public RealTimeProvider()
         {
             GeneralTask.Run("RealTimeProvider.BiddingPriceQueue", QueueTaskCancelToken, ProcessBiddingPriceQueue);

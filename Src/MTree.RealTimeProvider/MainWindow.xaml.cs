@@ -1,5 +1,7 @@
 ﻿using System.Windows;
 using System.ServiceModel;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace MTree.RealTimeProvider
 {
@@ -41,9 +43,17 @@ namespace MTree.RealTimeProvider
             logger.Info("RealTimeHost opened");
 
 #if false // TODO : Launch를 먼저할지 요청이 있을 때 Launch를 할지 정해야 함
-            RealTimeProviderInstance.LaunchPublisher(PublisherType.Daishin);
-            RealTimeProviderInstance.LaunchPublisher(PublisherType.Ebest);
-            //RealTimeProviderInstance.LaunchPublisher(PublishType.Krx);
+            Task.Run(() =>
+            {
+                RealTimeProviderInstance.LaunchPublisher(PublisherType.DaishinMaster);
+
+                for (int i = 0; i < 5; i++)
+                {
+                    RealTimeProviderInstance.LaunchPublisher(PublisherType.Daishin);
+                    //RealTimeProviderInstance.LaunchPublisher(PublisherType.Ebest);
+                }
+                //RealTimeProviderInstance.LaunchPublisher(PublishType.Krx);
+            });
 #endif
         }
     }

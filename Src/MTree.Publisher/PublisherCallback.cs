@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using MTree.DataStructure;
 
 namespace MTree.Publisher
 {
@@ -17,6 +18,11 @@ namespace MTree.Publisher
         public virtual List<string> GetStockCodeList()
         {
             return new List<string>();
+        }
+
+        public virtual StockMaster GetStockMaster(string code)
+        {
+            return new StockMaster();
         }
     }
 }
