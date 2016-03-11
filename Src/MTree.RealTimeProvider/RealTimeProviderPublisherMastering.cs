@@ -35,6 +35,7 @@ namespace MTree.RealTimeProvider
                     mastering.Stock = new StockMaster();
                     mastering.Stock.Code = code.Key;
                     mastering.Stock.Name = code.Value;
+                    mastering.Stock.Time = DateTime.Now;
 
                     StockMasteringList.Add(mastering);
                 }
