@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MTree.Consumer
@@ -47,16 +48,6 @@ namespace MTree.Consumer
             }
         }
 
-        private void ServiceClient_Closed(object sender, EventArgs e)
-        {
-            logger.Info($"{GetType().Name} channel closed");
-        }
-
-        private void ServiceClient_Opened(object sender, EventArgs e)
-        {
-            logger.Info($"{GetType().Name} channel opened");
-        }
-
         protected void CloseChannel()
         {
             try
@@ -68,6 +59,37 @@ namespace MTree.Consumer
                     ServiceClient.UnregisterSubscribeContractAll(ClientId);
                     ServiceClient.Close();
                 }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
+        protected virtual void ServiceClient_Opened(object sender, EventArgs e)
+        {
+            logger.Info($"{GetType().Name} channel opened");
+        }
+
+        protected virtual void ServiceClient_Closed(object sender, EventArgs e)
+        {
+            logger.Info($"{GetType().Name} channel closed");
+        }
+
+        public override void CloseClient()
+        {
+            try
+            {
+                logger.Info($"{GetType().Name} process will be closed");
+
+                StopQueueTask();
+                CloseChannel();
+
+                Task.Run(() =>
+                {
+                    Thread.Sleep(1000);
+                    Environment.Exit(0);
+                });
             }
             catch (Exception ex)
             {

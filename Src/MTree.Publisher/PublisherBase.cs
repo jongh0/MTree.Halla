@@ -48,12 +48,25 @@ namespace MTree.Publisher
             }
         }
 
-        private void ServiceClient_Closed(object sender, EventArgs e)
+        protected void CloseChannel()
         {
-            logger.Info($"{GetType().Name} channel closed");
+            try
+            {
+                if (ServiceClient != null)
+                {
+                    logger.Info($"Close {GetType().Name} channel");
+
+                    ServiceClient.UnregisterPublishContract(ClientId);
+                    ServiceClient.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
         }
 
-        private void ServiceClient_Opened(object sender, EventArgs e)
+        protected virtual void ServiceClient_Opened(object sender, EventArgs e)
         {
             try
             {
@@ -85,17 +98,25 @@ namespace MTree.Publisher
             }
         }
 
-        protected void CloseChannel()
+        protected virtual void ServiceClient_Closed(object sender, EventArgs e)
+        {
+            logger.Info($"{GetType().Name} channel closed");
+        }
+
+        public override void CloseClient()
         {
             try
             {
-                if (ServiceClient != null)
-                {
-                    logger.Info($"Close {GetType().Name} channel");
+                logger.Info($"{GetType().Name} process will be closed");
 
-                    ServiceClient.UnregisterPublishContract(ClientId);
-                    ServiceClient.Close();
-                }
+                StopQueueTask();
+                CloseChannel();
+
+                Task.Run(() =>
+                {
+                    Thread.Sleep(1000);
+                    Environment.Exit(0);
+                });
             }
             catch (Exception ex)
             {

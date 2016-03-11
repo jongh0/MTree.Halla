@@ -84,5 +84,22 @@ namespace MTree.KrxPublisher
             }
         }
         #endregion
+
+        public override StockMaster GetStockMaster(string code)
+        {
+            var stockMaster = new StockMaster();
+
+            try
+            {
+                // 여기다 채우면 됨
+                stockMaster.Code = code;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+
+            return stockMaster;
+        }
     }
 }

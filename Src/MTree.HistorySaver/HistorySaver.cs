@@ -2,12 +2,8 @@
 using System.ServiceModel;
 using MongoDB.Driver;
 using MTree.DbProvider;
-using MongoDB.Bson;
-using System.Collections.Concurrent;
-using System.Threading.Tasks;
 using System.Threading;
 using MTree.DataStructure;
-using MTree.RealTimeProvider;
 using MTree.Configuration;
 using MTree.Consumer;
 using MTree.Utility;
@@ -22,6 +18,7 @@ namespace MTree.HistorySaver
         private IMongoCollection<BiddingPrice> BiddingPriceCollection { get; set; }
         private IMongoCollection<StockConclusion> StockConclusionCollection { get; set; }
         private IMongoCollection<IndexConclusion> IndexConclusionCollection { get; set; }
+        private IMongoCollection<CircuitBreak> CircuitBreakCollection { get; set; }
 
         public HistorySaver()
         {
@@ -31,6 +28,7 @@ namespace MTree.HistorySaver
                 BiddingPriceCollection = MongoDbProvider.Instance.GetDatabase(DbType.BiddingPrice).GetCollection<BiddingPrice>(Config.Database.TodayCollectionName);
                 StockConclusionCollection = MongoDbProvider.Instance.GetDatabase(DbType.StockConclusion).GetCollection<StockConclusion>(Config.Database.TodayCollectionName);
                 IndexConclusionCollection = MongoDbProvider.Instance.GetDatabase(DbType.IndexConclusion).GetCollection<IndexConclusion>(Config.Database.TodayCollectionName);
+                CircuitBreakCollection = MongoDbProvider.Instance.GetDatabase(DbType.CircuitBreak).GetCollection<CircuitBreak>(nameof(CircuitBreak)); // TODO : circuit break collection name 정해야함
 
                 CreateIndex();
 
@@ -48,14 +46,17 @@ namespace MTree.HistorySaver
         {
             try
             {
-                var biddingKeys = Builders<BiddingPrice>.IndexKeys.Ascending(i => i.Code).Ascending(i => i.Time);
-                BiddingPriceCollection.Indexes.CreateOneAsync(biddingKeys);
+                var biddingPriceKeys = Builders<BiddingPrice>.IndexKeys.Ascending(i => i.Code).Ascending(i => i.Time);
+                BiddingPriceCollection.Indexes.CreateOneAsync(biddingPriceKeys);
 
-                var stockKeys = Builders<StockConclusion>.IndexKeys.Ascending(i => i.Code).Ascending(i => i.Time);
-                StockConclusionCollection.Indexes.CreateOneAsync(stockKeys);
+                var stockConclusionKeys = Builders<StockConclusion>.IndexKeys.Ascending(i => i.Code).Ascending(i => i.Time);
+                StockConclusionCollection.Indexes.CreateOneAsync(stockConclusionKeys);
 
-                var indexKeys = Builders<IndexConclusion>.IndexKeys.Ascending(i => i.Code).Ascending(i => i.Time);
-                IndexConclusionCollection.Indexes.CreateOneAsync(indexKeys);
+                var indexConclusionKeys = Builders<IndexConclusion>.IndexKeys.Ascending(i => i.Code).Ascending(i => i.Time);
+                IndexConclusionCollection.Indexes.CreateOneAsync(indexConclusionKeys);
+
+                var circuitBreakKeys = Builders<CircuitBreak>.IndexKeys.Ascending(i => i.Code).Ascending(i => i.Time);
+                CircuitBreakCollection.Indexes.CreateOneAsync(circuitBreakKeys);
 
                 logger.Info("Index created");
             }
@@ -126,6 +127,11 @@ namespace MTree.HistorySaver
         public override void ConsumeIndexConclusion(IndexConclusion conclusion)
         {
             IndexConclusionQueue.Enqueue(conclusion);
+        }
+
+        public override void ConsumeCircuitBreak(CircuitBreak circuitBreak)
+        {
+            CircuitBreakCollection.InsertOneAsync(circuitBreak);
         }
     }
 }

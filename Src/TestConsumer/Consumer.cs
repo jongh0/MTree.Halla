@@ -42,8 +42,8 @@ namespace TestConsumer
 
         public void StopConsume()
         {
-            ServiceClient.UnregisterSubscribeContractAll(ClientId);
             StopQueueTask();
+            CloseChannel();
         }
     }
 }

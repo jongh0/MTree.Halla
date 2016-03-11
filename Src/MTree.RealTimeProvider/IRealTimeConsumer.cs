@@ -26,6 +26,9 @@ namespace MTree.RealTimeProvider
         void NoOperation();
 
         [OperationContract(IsOneWay = true)]
+        void CloseClient();
+
+        [OperationContract(IsOneWay = true)]
         void ConsumeBiddingPrice(BiddingPrice biddingPrice);
 
         [OperationContract(IsOneWay = true)]

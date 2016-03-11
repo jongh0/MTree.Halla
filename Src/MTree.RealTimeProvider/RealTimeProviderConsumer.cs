@@ -12,6 +12,7 @@ namespace MTree.RealTimeProvider
 {
     public partial class RealTimeProvider
     {
+        private ConcurrentDictionary<Guid, SubscribeContract> ConsumerContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
         private ConcurrentDictionary<Guid, SubscribeContract> BiddingPriceContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
         private ConcurrentDictionary<Guid, SubscribeContract> StockConclusionContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
         private ConcurrentDictionary<Guid, SubscribeContract> IndexConclusionContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
@@ -20,6 +21,13 @@ namespace MTree.RealTimeProvider
         {
             try
             {
+                contract.Callback = OperationContext.Current.GetCallbackChannel<IRealTimeConsumerCallback>();
+
+                // 모든 Contract 저장
+                if (ConsumerContracts.ContainsKey(clientId) == false)
+                    ConsumerContracts.TryAdd(clientId, contract);
+
+                // 타입별 Contract 저장
                 var contractList = GetSubscriptionList(contract.Type);
                 if (contractList == null) return;
 
@@ -29,8 +37,6 @@ namespace MTree.RealTimeProvider
                 }
                 else
                 {
-                    contract.Callback = OperationContext.Current.GetCallbackChannel<IRealTimeConsumerCallback>();
-
                     if (contractList.TryAdd(clientId, contract) == true)
                         logger.Info($"{contract.Type} contract registered / {clientId}");
                 }
@@ -68,6 +74,18 @@ namespace MTree.RealTimeProvider
                 {
                     logger.Info($"{clientId} / {type} contract not exist");
                 }
+
+                if (BiddingPriceContracts.ContainsKey(clientId) == false &&
+                    StockConclusionContracts.ContainsKey(clientId) == false &&
+                    IndexConclusionContracts.ContainsKey(clientId) == false)
+                {
+                    SubscribeContract temp;
+                    if (ConsumerContracts.TryRemove(clientId, out temp) == true)
+                    {
+                        temp.Callback = null;
+                        logger.Info($"{clientId} / {type} contract unregistered");
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -97,12 +115,19 @@ namespace MTree.RealTimeProvider
                 BiddingPrice biddingPrice;
                 if (BiddingPriceQueue.TryDequeue(out biddingPrice) == true)
                 {
-                    foreach (var subscription in BiddingPriceContracts)
+                    foreach (var contract in BiddingPriceContracts)
                     {
-                        if (subscription.Value.Scope == SubscribeScope.All ||
-                            subscription.Value.ContainCode(biddingPrice.Code) == true)
+                        if (contract.Value.Scope == SubscribeScope.All ||
+                            contract.Value.ContainCode(biddingPrice.Code) == true)
                         {
-                            subscription.Value.Callback.ConsumeBiddingPrice(biddingPrice);
+                            try
+                            {
+                                contract.Value.Callback.ConsumeBiddingPrice(biddingPrice);
+                            }
+                            catch (Exception ex)
+                            {
+                                logger.Error(ex);
+                            }
                         }
                     }
                 }
@@ -124,12 +149,19 @@ namespace MTree.RealTimeProvider
                 StockConclusion conclusion;
                 if (StockConclusionQueue.TryDequeue(out conclusion) == true)
                 {
-                    foreach (var subscription in StockConclusionContracts)
+                    foreach (var contract in StockConclusionContracts)
                     {
-                        if (subscription.Value.Scope == SubscribeScope.All ||
-                            subscription.Value.ContainCode(conclusion.Code) == true)
+                        if (contract.Value.Scope == SubscribeScope.All ||
+                            contract.Value.ContainCode(conclusion.Code) == true)
                         {
-                            subscription.Value.Callback.ConsumeStockConclusion(conclusion);
+                            try
+                            {
+                                contract.Value.Callback.ConsumeStockConclusion(conclusion);
+                            }
+                            catch (Exception ex)
+                            {
+                                logger.Error(ex);
+                            }
                         }
                     }
                 }
@@ -151,12 +183,19 @@ namespace MTree.RealTimeProvider
                 IndexConclusion conclusion;
                 if (IndexConclusionQueue.TryDequeue(out conclusion) == true)
                 {
-                    foreach (var subscription in IndexConclusionContracts)
+                    foreach (var contract in IndexConclusionContracts)
                     {
-                        if (subscription.Value.Scope == SubscribeScope.All ||
-                            subscription.Value.ContainCode(conclusion.Code) == true)
+                        if (contract.Value.Scope == SubscribeScope.All ||
+                            contract.Value.ContainCode(conclusion.Code) == true)
                         {
-                            subscription.Value.Callback.ConsumeIndexConclusion(conclusion);
+                            try
+                            {
+                                contract.Value.Callback.ConsumeIndexConclusion(conclusion);
+                            }
+                            catch (Exception ex)
+                            {
+                                logger.Error(ex);
+                            }
                         }
                     }
                 }
@@ -173,13 +212,16 @@ namespace MTree.RealTimeProvider
 
         private void ProcessCircuitBreak(CircuitBreak circuitBreak)
         {
-            try
+            foreach (var contract in ConsumerContracts)
             {
-
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
+                try
+                {
+                    contract.Value.Callback.ConsumeCircuitBreak(circuitBreak);
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex);
+                }
             }
         }
     }

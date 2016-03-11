@@ -12,7 +12,11 @@ namespace MTree.Consumer
 {
     public class ConsumerCallback : RealTimeBase, IRealTimeConsumerCallback
     {
-        public virtual void NoOperation()
+        public void NoOperation()
+        {
+        }
+
+        public virtual void CloseClient()
         {
         }
 

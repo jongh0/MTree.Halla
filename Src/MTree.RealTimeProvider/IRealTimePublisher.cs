@@ -35,10 +35,28 @@ namespace MTree.RealTimeProvider
         [OperationContract(IsOneWay = true)]
         void NoOperation();
 
+        [OperationContract(IsOneWay = true)]
+        void CloseClient();
+
         [OperationContract]
         List<string> GetStockCodeList();
 
         [OperationContract]
         StockMaster GetStockMaster(string code);
+
+        [OperationContract]
+        bool IsSubscribable();
+
+        [OperationContract]
+        bool SubscribeStock(string code);
+
+        [OperationContract]
+        bool UnsubscribeStock(string code);
+
+        [OperationContract]
+        bool SubscribeIndex(string code);
+
+        [OperationContract]
+        bool UnsubscribeIndex(string code);
     }
 }

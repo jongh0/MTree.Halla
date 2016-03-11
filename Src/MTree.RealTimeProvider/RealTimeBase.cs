@@ -28,7 +28,7 @@ namespace MTree.RealTimeProvider
         protected void StopQueueTask()
         {
             QueueTaskCancelSource.Cancel();
-            logger.Info($"{GetType().Name} queue task canceled");
+            logger.Info($"{GetType().Name} queue task stopped");
         }
     }
 }

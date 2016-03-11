@@ -19,17 +19,7 @@ namespace MTree.DaishinPublisher
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        protected object LockObject { get; } = new object();
-
-        public int QueryableCount
-        {
-            get { return sessionObj.GetLimitRemainCount(LIMIT_TYPE.LT_SUBSCRIBE); }
-        }
-
-        public bool IsQueryable
-        {
-            get { return QueryableCount > 0; }
-        }
+        protected object lockObject = new object();
 
         #region Daishin Specific
         private CpCybos sessionObj;
@@ -73,7 +63,7 @@ namespace MTree.DaishinPublisher
 
         public bool GetQuote(string code, ref StockMaster stockMaster)
         {
-            if (Monitor.TryEnter(LockObject, 1000 * 10) == false)
+            if (Monitor.TryEnter(lockObject, 1000 * 10) == false)
             {
                 logger.Error($"Quoting failed, Code: {code}, Can't obtaion lock object");
                 return false;
@@ -118,7 +108,7 @@ namespace MTree.DaishinPublisher
             finally
             {
                 QuotingStockMaster = null;
-                Monitor.Exit(LockObject);
+                Monitor.Exit(lockObject);
             }
 
             return (ret == 0);
@@ -220,7 +210,7 @@ namespace MTree.DaishinPublisher
             }
         }
 
-        public bool SubscribeStock(string code)
+        public override bool SubscribeStock(string code)
         {
             int status = 1;
 
@@ -251,7 +241,7 @@ namespace MTree.DaishinPublisher
             return (status == 0);
         }
 
-        public bool UnsubscribeStock(string code)
+        public override bool UnsubscribeStock(string code)
         {
             int status = 1;
 
@@ -355,11 +345,11 @@ namespace MTree.DaishinPublisher
         public override StockMaster GetStockMaster(string code)
         {
             var stockMaster = new StockMaster();
-            stockMaster.Code = code;
 
             try
             {
                 GetQuote(code, ref stockMaster);
+                stockMaster.Code = code;
             }
             catch (Exception ex)
             {
@@ -367,6 +357,11 @@ namespace MTree.DaishinPublisher
             }
 
             return stockMaster;
+        }
+
+        public override bool IsSubscribable()
+        {
+            return sessionObj.GetLimitRemainCount(LIMIT_TYPE.LT_SUBSCRIBE) > 0;
         }
     }
 }

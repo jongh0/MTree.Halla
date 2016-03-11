@@ -15,15 +15,10 @@ namespace MTree.EbestPublisher
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        protected object LockObject { get; } = new object();
+        protected object lockObject = new object();
 
-        private const int maxQueryableCount = 200;
-        private int queryableCount = 0;
-
-        public bool IsQueryable
-        {
-            get { return (queryableCount < maxQueryableCount); }
-        }
+        private const int maxSubscribeCount = 200;
+        private int subscribeCount = 0;
 
         private readonly string resFilePath = "\\Res";
 
@@ -156,9 +151,10 @@ namespace MTree.EbestPublisher
             loginCheckerCancelSource.Cancel();
 
             logger.Info(LoginInstance.ToString());
-        } 
+        }
         #endregion
 
+        #region Login / Logout
         private void LoginStateChecker()
         {
             logger.Info("LoginStateChecker started");
@@ -234,7 +230,7 @@ namespace MTree.EbestPublisher
 
         public bool WaitLogin()
         {
-            return WaitLoginEvent.WaitOne(10000);
+            return WaitLoginEvent.WaitOne(5000);
         }
 
         public bool Logout()
@@ -259,16 +255,11 @@ namespace MTree.EbestPublisher
             }
 
             return true;
-        }
+        } 
+        #endregion
 
-        public bool SubscribeIndex(string code)
+        public override bool SubscribeIndex(string code)
         {
-            if (IsQueryable == false)
-            {
-                logger.Error($"Not subscribable, Code: {code}");
-                return false;
-            }
-
             if (WaitLoginEvent.WaitOne(10000) == false)
             {
                 logger.Error("Not loggedin state");
@@ -280,7 +271,7 @@ namespace MTree.EbestPublisher
                 realObj.SetFieldData("InBlock", "upcode", code);
                 realObj.AdviseRealData();
 
-                queryableCount++;
+                subscribeCount++;
                 logger.Info($"Subscribe success, Code: {code}");
                 return true;
             }
@@ -292,7 +283,7 @@ namespace MTree.EbestPublisher
             return false;
         }
 
-        public bool UnsubscribeIndex(string code)
+        public override bool UnsubscribeIndex(string code)
         {
             if (WaitLoginEvent.WaitOne(10000) == false)
             {
@@ -305,7 +296,7 @@ namespace MTree.EbestPublisher
                 realObj.SetFieldData("InBlock", "upcode", code);
                 realObj.UnadviseRealData();
 
-                queryableCount--;
+                subscribeCount--;
                 logger.Info($"Unsubscribe success, Code: {code}");
                 return true;
             }
@@ -401,7 +392,7 @@ namespace MTree.EbestPublisher
 
         public bool GetQuote(string code, ref StockMaster stockMaster)
         {
-            if (Monitor.TryEnter(LockObject, 1000 * 10) == false)
+            if (Monitor.TryEnter(lockObject, 1000 * 10) == false)
             {
                 logger.Error($"Quoting failed, Code: {code}, Can't obtaion lock object");
                 return false;
@@ -448,7 +439,7 @@ namespace MTree.EbestPublisher
             finally
             {
                 QuotingStockMaster = null;
-                Monitor.Exit(LockObject);
+                Monitor.Exit(lockObject);
             }
 
             return (ret == 0);
@@ -456,7 +447,7 @@ namespace MTree.EbestPublisher
 
         public bool GetQuote(string code, ref IndexMaster indexMaster)
         {
-            if (Monitor.TryEnter(LockObject, 1000 * 10) == false)
+            if (Monitor.TryEnter(lockObject, 1000 * 10) == false)
             {
                 logger.Error($"Quoting failed, Code: {code}, Can't obtaion lock object");
                 return false;
@@ -503,7 +494,7 @@ namespace MTree.EbestPublisher
             finally
             {
                 QuotingIndexMaster = null;
-                Monitor.Exit(LockObject);
+                Monitor.Exit(lockObject);
             }
 
             return (ret == 0);
@@ -518,7 +509,6 @@ namespace MTree.EbestPublisher
 
                 string temp = stockQuotingObj.GetFieldData("t1102OutBlock", "price", 0);
                 if (temp == "") temp = "0";
-                //quotingStockMaster.LastSale = int.Parse(temp); // 현재가 // TODO : 필요한건가? Daishin에도 주석처리되어 있음
 
                 temp = stockQuotingObj.GetFieldData("t1102OutBlock", "jnilvolume", 0);
                 if (temp == "") temp = "0";
@@ -584,6 +574,42 @@ namespace MTree.EbestPublisher
             {
                 WaitQuotingEvent.Set();
             }
+        }
+
+        public override StockMaster GetStockMaster(string code)
+        {
+            var stockMaster = new StockMaster();
+
+            try
+            {
+                GetQuote(code, ref stockMaster);
+                stockMaster.Code = code;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+
+            return stockMaster;
+        }
+
+        protected override void ServiceClient_Opened(object sender, EventArgs e)
+        {
+            // Login이 완료된 후에 Publisher contract 등록
+            WaitLogin(); 
+            base.ServiceClient_Opened(sender, e);
+        }
+
+        public override void CloseClient()
+        {
+            // Logout한 이후 Process 종료시킨다
+            Logout();
+            base.CloseClient();
+        }
+
+        public override bool IsSubscribable()
+        {
+            return subscribeCount < maxSubscribeCount;
         }
     }
 }

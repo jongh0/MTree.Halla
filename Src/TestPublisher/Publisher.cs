@@ -35,7 +35,8 @@ namespace TestPublisher
 
         public void StopPublishing()
         {
-            QueueTaskCancelSource.Cancel();
+            StopQueueTask();
+            CloseChannel();
         }
     }
 }

@@ -13,6 +13,7 @@ namespace MTree.DbProvider
         StockMaster,
         StockConclusion,
         IndexConclusion,
+        CircuitBreak,
         Test,
     }
 
@@ -27,6 +28,7 @@ namespace MTree.DbProvider
         private readonly string stockMasterDbString = "MTree_StockMaster";
         private readonly string stockConclusionDbString = "MTree_StockConclusion";
         private readonly string indexConclusionDbString = "MTree_IndexConclusion";
+        private readonly string circuitBreakDbString = "MTree_CircuitBreak";
         private readonly string testDbString = "MTree_Test";
 
         private IMongoClient Client { get; set; }
@@ -35,6 +37,7 @@ namespace MTree.DbProvider
         private IMongoDatabase StockMasterDb { get; set; }
         private IMongoDatabase StockConclusionDb { get; set; }
         private IMongoDatabase IndexConclusionDb { get; set; }
+        private IMongoDatabase CircuitBreakDb { get; set; }
         private IMongoDatabase TestDb { get; set; }
 
         private static volatile MongoDbProvider _intance;
@@ -80,6 +83,7 @@ namespace MTree.DbProvider
                 StockMasterDb = Client.GetDatabase(stockMasterDbString);
                 StockConclusionDb = Client.GetDatabase(stockConclusionDbString);
                 IndexConclusionDb = Client.GetDatabase(indexConclusionDbString);
+                CircuitBreakDb = Client.GetDatabase(circuitBreakDbString);
                 TestDb = Client.GetDatabase(testDbString);
 
                 logger.Info("MongoDb Connected");
@@ -104,6 +108,8 @@ namespace MTree.DbProvider
                     return StockConclusionDb;
                 case DbType.IndexConclusion:
                     return IndexConclusionDb;
+                case DbType.CircuitBreak:
+                    return CircuitBreakDb;
                 default:
                     return TestDb;
             }
