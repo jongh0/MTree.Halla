@@ -13,9 +13,10 @@ namespace MTree.RealTimeProvider.Tests
             var instance = new RealTimeProvider();
             ServiceHost RealTimeHost = new ServiceHost(instance);
             RealTimeHost.Open();
+            instance.LaunchPublisher(PublisherType.DaishinMaster);
             for (int i = 0; i < 5; i++)
             {
-                instance.LaunchPublisher(PublisherType.DaishinMaster);
+                instance.LaunchPublisher(PublisherType.Daishin);
                 Thread.Sleep(1000);
             }
 
