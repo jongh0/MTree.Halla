@@ -511,14 +511,26 @@ namespace MTree.EbestPublisher
                     return;
 
                 string temp = stockQuotingObj.GetFieldData("t1102OutBlock", "price", 0);
-                if (temp == "") temp = "0";
+                if (temp == "")
+                {
+                    logger.Error("price is null");
+                    temp = "0";
+                }
 
                 temp = stockQuotingObj.GetFieldData("t1102OutBlock", "jnilvolume", 0);
-                if (temp == "") temp = "0";
+                if (temp == "")
+                {
+                    logger.Error("previous volume is null");
+                    temp = "0";
+                }
                 QuotingStockMaster.PreviousVolume = int.Parse(temp); //전일거래량
 
                 temp = stockQuotingObj.GetFieldData("t1102OutBlock", "abscnt", 0);
-                if (temp == "") temp = "0";
+                if (temp == "")
+                {
+                    logger.Error("Circulating volume is null");
+                    temp = "0";
+                }
                 QuotingStockMaster.CirculatingVolume = int.Parse(temp);  //유통주식수
 
                 string valueAltered = stockQuotingObj.GetFieldData("t1102OutBlock", "info1", 0);
@@ -539,6 +551,8 @@ namespace MTree.EbestPublisher
                     QuotingStockMaster.ValueAltered = ValueAlteredType.Divestiture;
                 else if (valueAltered == "감자")
                     QuotingStockMaster.ValueAltered = ValueAlteredType.CapitalReduction;
+                else
+                    logger.Error("ValueAltered type is invalid");
             }
             catch (Exception ex)
             {

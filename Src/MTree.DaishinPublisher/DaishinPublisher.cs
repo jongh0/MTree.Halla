@@ -35,12 +35,14 @@ namespace MTree.DaishinPublisher
             {
                 sessionObj = new CpCybos();
                 sessionObj.OnDisconnect += sessionObj_OnDisconnect;
-
+                
                 stockMstObj = new StockMst();
                 stockMstObj.Received += stockMstObj_Received;
 
                 stockCurObj = new StockCur();
                 stockCurObj.Received += stockCurObj_Received;
+
+                
             }
             catch (Exception ex)
             {
@@ -296,12 +298,10 @@ namespace MTree.DaishinPublisher
                 string code = stockCurObj.GetHeaderValue(0).ToString();
                 if (code.Length != 0)
                     conclusion.Code = code.Substring(1); // Remove prefix
-
-                // 3 - (long) 시간
+                
                 // 18 - (long) 시간 (초)
-                ///long time = Convert.ToInt64(stockCurObj.GetHeaderValue(3));
-                long sec = Convert.ToInt64(stockCurObj.GetHeaderValue(18));
-                conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(sec / 10000), (int)((sec / 100) % 100), (int)sec % 100, now.Millisecond); // Daishin doesn't provide milisecond 
+                long time = Convert.ToInt64(stockCurObj.GetHeaderValue(18));
+                conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100, now.Millisecond); // Daishin doesn't provide milisecond 
 
                 // 13 - (long) 현재가
                 conclusion.Price = (float)Convert.ToDouble(stockCurObj.GetHeaderValue(13));
@@ -336,14 +336,17 @@ namespace MTree.DaishinPublisher
 
             try
             {
-                var stockCode = new CpStockCodeClass();
-                int codeCount = stockCode.GetCount();
+                var codeMgr = new CpCodeMgrClass();
 
-                for (int i = 0; i < codeCount; i++)
+                List<object> objList = new List<object>();
+                objList.AddRange((object[])codeMgr.GetStockListByMarket(CPE_MARKET_KIND.CPC_MARKET_KOSPI));
+                objList.AddRange((object[])codeMgr.GetStockListByMarket(CPE_MARKET_KIND.CPC_MARKET_KOSDAQ));
+                objList.AddRange((object[])codeMgr.GetStockListByMarket(CPE_MARKET_KIND.CPC_MARKET_FREEBOARD));
+                objList.AddRange((object[])codeMgr.GetStockListByMarket(CPE_MARKET_KIND.CPC_MARKET_KRX));
+
+                foreach (string code in objList)
                 {
-                    string code = stockCode.GetData(0, (short)i).ToString().Substring(1);
-                    string name = stockCode.GetData(1, (short)i).ToString();
-                    codeList.Add(code, name);
+                    codeList.Add(code.Substring(1), codeMgr.CodeToName(code));
                 }
 
                 logger.Info($"Stock code list query done, Count: {codeList.Count}");

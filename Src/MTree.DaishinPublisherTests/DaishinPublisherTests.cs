@@ -34,5 +34,18 @@ namespace MTree.DaishinPublisher.Tests
             Assert.IsTrue(result);
             while (true) ;
         }
+
+        [TestMethod()]
+        public void GetStockCodeListTest()
+        {
+            int cnt = 0;
+            DaishinPublisher publisher = new DaishinPublisher();
+            foreach (string code in publisher.GetStockCodeList().Keys)
+            {
+                Console.WriteLine($"{cnt++}, {code}");
+
+            }
+            Assert.IsTrue(cnt > 0);
+        }
     }
 }
