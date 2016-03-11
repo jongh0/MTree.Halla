@@ -33,12 +33,14 @@ namespace MTree.DaishinPublisher
             {
                 sessionObj = new CpCybos();
                 sessionObj.OnDisconnect += sessionObj_OnDisconnect;
-
+                
                 stockMstObj = new StockMst();
                 stockMstObj.Received += stockMstObj_Received;
 
                 stockCurObj = new StockCur();
                 stockCurObj.Received += stockCurObj_Received;
+
+                
             }
             catch (Exception ex)
             {
@@ -319,17 +321,20 @@ namespace MTree.DaishinPublisher
 
         public override List<string> GetStockCodeList()
         {
+            List<object> objList = new List<object>();
             var codeList = new List<string>();
 
             try
             {
-                var stockCode = new CpStockCodeClass();
-                int codeCount = stockCode.GetCount();
+                var stockCode = new CpCodeMgrClass();
+                objList.AddRange((object[])stockCode.GetStockListByMarket(CPE_MARKET_KIND.CPC_MARKET_KOSPI));
+                objList.AddRange((object[])stockCode.GetStockListByMarket(CPE_MARKET_KIND.CPC_MARKET_KOSDAQ));
+                objList.AddRange((object[])stockCode.GetStockListByMarket(CPE_MARKET_KIND.CPC_MARKET_FREEBOARD));
+                objList.AddRange((object[])stockCode.GetStockListByMarket(CPE_MARKET_KIND.CPC_MARKET_KRX));
 
-                for (int i = 0; i < 20; i++)
+                foreach (String obj in objList)
                 {
-                    string code = stockCode.GetData(0, (short)i).ToString().Substring(1);
-                    codeList.Add(code);
+                    codeList.Add(obj.Substring(1));
                 }
 
                 logger.Info($"Stock code list query done, Count: {codeList.Count}");
