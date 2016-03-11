@@ -35,6 +35,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>app.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Interop.XA_DATASETLib">
       <HintPath>..\packages\Ebest\Interop.XA_DATASETLib.dll</HintPath>
@@ -130,6 +133,9 @@
       <Project>{c9620f6e-d254-45f4-81c1-f33b0855fadc}</Project>
       <Name>MTree.RealTimeProvider</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="app.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
