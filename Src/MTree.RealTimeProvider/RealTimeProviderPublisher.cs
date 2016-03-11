@@ -20,100 +20,71 @@ namespace MTree.RealTimeProvider
         #region Daishin
         private List<PublishContract> DaishinContracts
         {
-            get { return PublishContracts.Values.Where(c => c.Type == PublisherType.Daishin).ToList(); }
+            get { return PublishContracts.Values.Where(c => c.Type == ProcessType.Daishin).ToList(); }
         }
 
         private PublishContract DaishinContractForMastering
         {
-            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == PublisherType.Daishin && c.NowOperating == false); }
+            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == ProcessType.Daishin && c.NowOperating == false); }
         }
         #endregion
 
         #region Ebest
         private List<PublishContract> EbestContracts
         {
-            get { return PublishContracts.Values.Where(c => c.Type == PublisherType.Ebest).ToList(); }
+            get { return PublishContracts.Values.Where(c => c.Type == ProcessType.Ebest).ToList(); }
         }
 
         private PublishContract EbestContractForMastering
         {
-            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == PublisherType.Ebest && c.NowOperating == false); }
+            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == ProcessType.Ebest && c.NowOperating == false); }
         }
         #endregion
 
         #region Krx
         private List<PublishContract> KrxContracts
         {
-            get { return PublishContracts.Values.Where(c => c.Type == PublisherType.Krx).ToList(); }
+            get { return PublishContracts.Values.Where(c => c.Type == ProcessType.Krx).ToList(); }
         }
 
         private PublishContract KrxContractForMastering
         {
-            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == PublisherType.Krx && c.NowOperating == false); }
+            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == ProcessType.Krx && c.NowOperating == false); }
         }
         #endregion
 
         #region Naver
         private List<PublishContract> NaverContracts
         {
-            get { return PublishContracts.Values.Where(c => c.Type == PublisherType.Naver).ToList(); }
+            get { return PublishContracts.Values.Where(c => c.Type == ProcessType.Naver).ToList(); }
         }
 
         private PublishContract NaverContractForMastering
         {
-            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == PublisherType.Naver && c.NowOperating == false); }
+            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == ProcessType.Naver && c.NowOperating == false); }
         }
         #endregion
         #endregion
-
-        public void LaunchPublisher(PublisherType type)
-        {
-            try
-            {
-                var windowStyle = ProcessWindowStyle.Minimized;
-
-                switch (type)
-                {
-                    case PublisherType.Daishin:
-                    case PublisherType.DaishinMaster:
-                        ProcessUtility.Start("MTree.DaishinPublisher.exe", type.ToString(), windowStyle);
-                        break;
-
-                    case PublisherType.Ebest:
-                        ProcessUtility.Start("MTree.EbestPublisher.exe", type.ToString(), windowStyle);
-                        break;
-
-                    case PublisherType.Krx:
-                        ProcessUtility.Start("MTree.KrxPublisher.exe", type.ToString(), windowStyle);
-                        break;
-
-                    case PublisherType.Naver:
-                        ProcessUtility.Start("MTree.NaverPublisher.exe", type.ToString(), windowStyle);
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-            }
-        }
 
         private void LaunchPublisherAll()
         {
             try
             {
+                // Daishin popup stopper
+                ProcessUtility.Start(ProcessType.DaishinPopupStopper);
+
                 // Daishin
                 int daishinProcessCount = StockCodeList.Count / 200 + 1; // TODO : BiddingPrice 때문에 더 띄워야하나?
-                daishinProcessCount = 3;
+                //daishinProcessCount = 3;
 
                 for (int i = 0; i < daishinProcessCount; i++)
-                    LaunchPublisher(PublisherType.Daishin);
+                    ProcessUtility.Start(ProcessType.Daishin);
 
                 // Ebest
                 int ebestProcessCount = 3;
 
                 for (int i = 0; i < ebestProcessCount; i++)
-                    LaunchPublisher(PublisherType.Ebest);
+                    ProcessUtility.Start(ProcessType.Ebest);
 
                 // Krx
 
@@ -131,24 +102,25 @@ namespace MTree.RealTimeProvider
             {
                 if (PublishContracts.ContainsKey(clientId) == true)
                 {
-                    logger.Error($"{contract.Type} contract exist / {clientId}");
+                    logger.Error($"{contract.ToString()} contract exist / {clientId}");
                 }
                 else
                 {
-                    if (contract.Type == PublisherType.None)
+                    if (contract.Type == ProcessType.None)
                     {
-                        logger.Info($"{contract.Type} wrong contract type / {clientId}");
+                        logger.Info($"{contract.ToString()} wrong contract type / {clientId}");
                     }
                     else
                     {
-                        bool isDaishinMaster = contract.Type == PublisherType.DaishinMaster;
-                        if (contract.Type == PublisherType.DaishinMaster)
-                            contract.Type = PublisherType.Daishin;
+                        bool isDaishinMaster = contract.Type == ProcessType.DaishinMaster;
+                        if (contract.Type == ProcessType.DaishinMaster)
+                            contract.Type = ProcessType.Daishin;
 
+                        contract.Id = PublishContract.IdNumbering++;
                         contract.Callback = OperationContext.Current.GetCallbackChannel<IRealTimePublisherCallback>();
                         PublishContracts.TryAdd(clientId, contract);
 
-                        logger.Info($"{contract.Type} contract registered / {clientId}");
+                        logger.Info($"{contract.ToString()} contract registered / {clientId}");
 
                         if (isDaishinMaster)
                         {
@@ -157,7 +129,7 @@ namespace MTree.RealTimeProvider
                             if (StockCodeList != null)
                             {
                                 logger.Info($"Stock code list count: {StockCodeList.Count}");
-                                StartStockMastering();
+                                Task.Run(() => StartStockMastering());
                             }
                             else
                             {
@@ -198,35 +170,41 @@ namespace MTree.RealTimeProvider
         private void DistributeSubscribeCode()
         {
             // TODO : index code 나눠주는 코드 추가해야함
-            Task.Run(() =>
+            logger.Info("Subscribe code distribution, Start");
+
+            int index = 0;
+
+            foreach (var contract in DaishinContracts)
             {
-                logger.Info("Subscribe code distribution, Start");
-
-                int index = 0;
-
-                foreach (var contract in DaishinContracts)
+                while (true)
                 {
                     try
                     {
-                        if (contract.Callback.IsSubscribable() == true)
+                        if (StockCodeList.Count > index && 
+                            contract.Callback.IsSubscribable() == true)
                         {
-                            if (contract.Callback.SubscribeStock(StockCodeList[index]) == true)
+                            if (contract.Callback.SubscribeStock(StockCodeList.Keys.ElementAt(index)) == true)
                                 index++;
+                        }
+                        else
+                        {
+                            break;
                         }
                     }
                     catch (Exception ex)
                     {
                         logger.Error(ex);
+                        break;
                     }
                 }
+            }
 
-                if (StockCodeList.Count == index)
-                    logger.Info("Subscribe code distribution, Done");
-                else
-                    logger.Error("Subscribe code distribution, Fail");
+            if (StockCodeList.Count == index)
+                logger.Info("Subscribe code distribution, Done");
+            else
+                logger.Error("Subscribe code distribution, Fail");
 
-                Debugger.Break(); // 테스트 용도
-            });
+            Debugger.Break(); // 테스트 용도
         }
 
         public void PublishBiddingPrice(BiddingPrice biddingPrice)

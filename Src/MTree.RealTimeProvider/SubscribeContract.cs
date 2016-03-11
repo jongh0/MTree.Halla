@@ -30,6 +30,11 @@ namespace MTree.RealTimeProvider
 
         public IRealTimeConsumerCallback Callback { get; set; } = null;
 
+        public override string ToString()
+        {
+            return $"{Type}/{Scope}";
+        }
+
         public bool ContainCode(string code)
         {
             return Codes.Contains(code);

@@ -14,45 +14,48 @@ namespace MTree.RealTimeProvider
 {
     public partial class RealTimeProvider
     {
+        private object masteringLock = new object();
+        private object daishinMasteringLock = new object();
+        private object ebestMasteringLock = new object();
+
         private void StartStockMastering()
         {
             logger.Info("Stock mastering started");
 
-            Task.Run(() =>
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
+            try
             {
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
+                LaunchPublisherAll();
 
-                try
+                foreach (var code in StockCodeList)
                 {
-                    foreach (var code in StockCodeList)
-                    {
-                        var mastering = new StockMastering();
-                        mastering.Stock = new StockMaster();
-                        mastering.Stock.Code = code;
+                    var mastering = new StockMastering();
+                    mastering.Stock = new StockMaster();
+                    mastering.Stock.Code = code.Key;
+                    mastering.Stock.Name = code.Value;
 
-                        StockMasteringList.Add(mastering);
-                    }
-
-                    var masteringTask = new List<Task>();
-                    masteringTask.Add(Task.Run(() => StartDaishinStockMastering()));
-                    masteringTask.Add(Task.Run(() => StartEbestStockMatering()));
-
-                    Task.WaitAll(masteringTask.ToArray());
+                    StockMasteringList.Add(mastering);
                 }
-                catch (Exception ex)
-                {
-                    logger.Error(ex);
-                }
-                finally
-                {
-                    sw.Stop();
-                    logger.Info($"Stock mastering done, Elapsed time: {sw.Elapsed.ToString("hh:mm:ss")}");
-                    Debugger.Break(); // 테스트 용도
 
-                    DistributeSubscribeCode();
-                }
-            });
+                var masteringTask = new List<Task>();
+                masteringTask.Add(Task.Run(() => StartDaishinStockMastering()));
+                masteringTask.Add(Task.Run(() => StartEbestStockMatering()));
+
+                Task.WaitAll(masteringTask.ToArray());
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+            finally
+            {
+                sw.Stop();
+                logger.Info($"Stock mastering done, Elapsed time: {sw.Elapsed.ToString()}");
+
+                Task.Run(() => DistributeSubscribeCode());
+            }
         }
 
         private void StartDaishinStockMastering()
@@ -66,15 +69,7 @@ namespace MTree.RealTimeProvider
             {
                 while (true)
                 {
-                    if (DaishinContracts.Count >= 3) break;
-                    Thread.Sleep(1000);
-                }
-
-                logger.Info("Daishin stock mastering, contract count enough");
-
-                while (true)
-                {
-                    lock (StockMasteringList)
+                    lock (masteringLock)
                     {
                         if (StockMasteringList.Count(m => m.DaishinState != MasteringStateType.Finished) == 0)
                             break;
@@ -82,7 +77,7 @@ namespace MTree.RealTimeProvider
 
                     StockMastering mastering = null;
 
-                    lock (StockMasteringList)
+                    lock (masteringLock)
                     {
                         mastering = StockMasteringList.FirstOrDefault(m => m.DaishinState == MasteringStateType.Ready);
                         if (mastering != null)
@@ -95,7 +90,7 @@ namespace MTree.RealTimeProvider
 
                         while (true)
                         {
-                            lock (DaishinContractForMastering)
+                            lock (daishinMasteringLock)
                             {
                                 contract = DaishinContractForMastering;
                                 if (contract != null)
@@ -123,7 +118,7 @@ namespace MTree.RealTimeProvider
             finally
             {
                 sw.Stop();
-                logger.Info($"Daishin stock mastering done, Elapsed time: {sw.Elapsed.ToString("hh:mm:ss")}");
+                logger.Info($"Daishin stock mastering done, Elapsed time: {sw.Elapsed.ToString()}");
             }
         }
 
@@ -138,15 +133,7 @@ namespace MTree.RealTimeProvider
             {
                 while (true)
                 {
-                    if (EbestContracts.Count >= 1) break;
-                    Thread.Sleep(1000);
-                }
-
-                logger.Info("Ebest stock mastering, contract count enough");
-
-                while (true)
-                {
-                    lock (StockMasteringList)
+                    lock (masteringLock)
                     {
                         if (StockMasteringList.Count(m => m.EbestState != MasteringStateType.Finished) == 0)
                             break;
@@ -154,11 +141,11 @@ namespace MTree.RealTimeProvider
 
                     StockMastering mastering = null;
 
-                    lock (StockMasteringList)
+                    lock (masteringLock)
                     {
                         mastering = StockMasteringList.FirstOrDefault(m => m.EbestState == MasteringStateType.Ready);
                         if (mastering != null)
-                            mastering.DaishinState = MasteringStateType.Running;
+                            mastering.EbestState = MasteringStateType.Running;
                     }
 
                     if (mastering != null)
@@ -167,7 +154,7 @@ namespace MTree.RealTimeProvider
 
                         while (true)
                         {
-                            lock (EbestContractForMastering)
+                            lock (ebestMasteringLock)
                             {
                                 contract = EbestContractForMastering;
                                 if (contract != null)
@@ -195,7 +182,7 @@ namespace MTree.RealTimeProvider
             finally
             {
                 sw.Stop();
-                logger.Info($"Ebest stock mastering done, Elapsed time: {sw.Elapsed.ToString("hh:mm:ss")}");
+                logger.Info($"Ebest stock mastering done, Elapsed time: {sw.Elapsed.ToString()}");
             }
         }
 
@@ -205,9 +192,9 @@ namespace MTree.RealTimeProvider
             {
                 var master = contract.Callback.GetStockMaster(mastering.Stock.Code);
 
-                if (contract.Type == PublisherType.Daishin)
+                if (contract.Type == ProcessType.Daishin)
                     CopyStockMasterFromDaishin(mastering, master);
-                else if (contract.Type == PublisherType.Ebest)
+                else if (contract.Type == ProcessType.Ebest)
                     CopyStockMasterFromEbest(mastering, master);
             }
             catch (Exception ex)
@@ -216,14 +203,14 @@ namespace MTree.RealTimeProvider
             }
             finally
             {
-                if (contract.Type == PublisherType.Daishin)
+                if (contract.Type == ProcessType.Daishin)
                 {
-                    lock (DaishinContractForMastering)
+                    lock (daishinMasteringLock)
                         contract.NowOperating = false;
                 }
-                else if (contract.Type == PublisherType.Ebest)
+                else if (contract.Type == ProcessType.Ebest)
                 {
-                    lock (EbestContractForMastering)
+                    lock (ebestMasteringLock)
                         contract.NowOperating = false;
                 }
             }
@@ -241,7 +228,7 @@ namespace MTree.RealTimeProvider
 
                     if (source.Code != dest.Code)
                     {
-                        logger.Warn($"Daishin stock mastering, Code not matched, {source.Code} != {dest.Code}");
+                        logger.Error($"Daishin stock mastering, Code not matched, {source.Code} != {dest.Code}");
                         return;
                     }
 
@@ -268,7 +255,7 @@ namespace MTree.RealTimeProvider
             }
             finally
             {
-                lock (StockMasteringList)
+                lock (masteringLock)
                     mastering.DaishinState = state;
             }
         }
@@ -285,7 +272,7 @@ namespace MTree.RealTimeProvider
 
                     if (source.Code != dest.Code)
                     {
-                        logger.Warn($"Ebest stock mastering, Code not matched, {source.Code} != {dest.Code}");
+                        logger.Error($"Ebest stock mastering, Code not matched, {source.Code} != {dest.Code}");
                         return;
                     }
 
@@ -302,7 +289,7 @@ namespace MTree.RealTimeProvider
             }
             finally
             {
-                lock (StockMasteringList)
+                lock (masteringLock)
                     mastering.EbestState = state;
             }
         }

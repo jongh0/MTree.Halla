@@ -21,6 +21,8 @@ namespace MTree.DaishinPublisher
 
         protected object lockObject = new object();
 
+        private int LastQuoteTick { get; set; } = Environment.TickCount;
+
         #region Daishin Specific
         private CpCybos sessionObj;
         private StockMst stockMstObj;
@@ -75,6 +77,8 @@ namespace MTree.DaishinPublisher
 
             try
             {
+                WaitQuotingLimit();
+
                 stockMaster.Code = code;
                 if (code[0] != 'A')
                     code = "A" + code;
@@ -118,6 +122,14 @@ namespace MTree.DaishinPublisher
         {
             try
             {
+                var value0 = stockMstObj.GetHeaderValue(0);
+                if (value0 == null || value0.ToString().Length == 0)
+                {
+                    if (QuotingStockMaster == null)
+                        QuotingStockMaster.Code = string.Empty;
+                    return;
+                }
+
                 // 0 - (string) 종목 코드
                 string code = stockMstObj.GetHeaderValue(0).ToString().Substring(1);
 
@@ -202,6 +214,7 @@ namespace MTree.DaishinPublisher
             }
             catch (Exception ex)
             {
+                QuotingStockMaster.Code = string.Empty;
                 logger.Error(ex);
             }
             finally
@@ -235,7 +248,7 @@ namespace MTree.DaishinPublisher
             finally
             {
                 string msg = stockCurObj.GetDibMsg1();
-                logger.Log(status == 0 ? LogLevel.Info : LogLevel.Error, $"Code: {code}, Status: {status}, Msg: {msg}");
+                logger.Log(status == 0 ? LogLevel.Info : LogLevel.Error, $"Subscribe stock, Code: {code}, Status: {status}, Msg: {msg}");
             }
 
             return (status == 0);
@@ -265,8 +278,8 @@ namespace MTree.DaishinPublisher
             }
             finally
             {
-                string msg = stockCurObj.GetDibMsg1();
-                logger.Log(status == 0 ? LogLevel.Info : LogLevel.Error, $"Code: {code}, Status: {status}, Msg: {msg}");
+                if (status != 0)
+                    logger.Error($"Unsubscribe stock, Code: {code}, Status: {status}, Msg: {stockCurObj.GetDibMsg1()}");
             }
 
             return (status == 0);
@@ -317,19 +330,20 @@ namespace MTree.DaishinPublisher
             }
         }
 
-        public override List<string> GetStockCodeList()
+        public override Dictionary<string, string> GetStockCodeList()
         {
-            var codeList = new List<string>();
+            var codeList = new Dictionary<string, string>();
 
             try
             {
                 var stockCode = new CpStockCodeClass();
                 int codeCount = stockCode.GetCount();
 
-                for (int i = 0; i < 20; i++)
+                for (int i = 0; i < codeCount; i++)
                 {
                     string code = stockCode.GetData(0, (short)i).ToString().Substring(1);
-                    codeList.Add(code);
+                    string name = stockCode.GetData(1, (short)i).ToString();
+                    codeList.Add(code, name);
                 }
 
                 logger.Info($"Stock code list query done, Count: {codeList.Count}");
@@ -362,6 +376,19 @@ namespace MTree.DaishinPublisher
         public override bool IsSubscribable()
         {
             return sessionObj.GetLimitRemainCount(LIMIT_TYPE.LT_SUBSCRIBE) > 0;
+        }
+
+        private void WaitQuotingLimit()
+        {
+            int ms = 250 - (Environment.TickCount - LastQuoteTick);
+            
+            if (ms > 0)
+            {
+                logger.Info($"Wait quoting limit, ms: {ms}");
+                Thread.Sleep(ms);
+            }
+
+            LastQuoteTick = Environment.TickCount;
         }
     }
 }

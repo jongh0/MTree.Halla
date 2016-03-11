@@ -8,9 +8,61 @@ using System.Threading.Tasks;
 
 namespace MTree.Utility
 {
+    public enum ProcessType
+    {
+        None,
+        Daishin,
+        DaishinMaster,
+        DaishinPopupStopper,
+        Ebest,
+        Krx,
+        Naver,
+        HistorySaver,
+    }
+
     public class ProcessUtility
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
+        public static void Start(ProcessType type, bool waitIdle = false)
+        {
+            try
+            {
+                var windowStyle = ProcessWindowStyle.Minimized;
+
+                switch (type)
+                {
+                    case ProcessType.Daishin:
+                    case ProcessType.DaishinMaster:
+                        Start("MTree.DaishinPublisher.exe", type.ToString(), windowStyle: windowStyle, waitIdle: waitIdle);
+                        break;
+
+                    case ProcessType.Ebest:
+                        Start("MTree.EbestPublisher.exe", type.ToString(), windowStyle: windowStyle, waitIdle: waitIdle);
+                        break;
+
+                    case ProcessType.Krx:
+                        Start("MTree.KrxPublisher.exe", type.ToString(), windowStyle: windowStyle, waitIdle: waitIdle);
+                        break;
+
+                    case ProcessType.Naver:
+                        Start("MTree.NaverPublisher.exe", type.ToString(), windowStyle: windowStyle, waitIdle: waitIdle);
+                        break;
+
+                    case ProcessType.DaishinPopupStopper:
+                        Start("MTree.DaishinPopupStopper.exe", windowStyle: windowStyle, waitIdle: waitIdle);
+                        break;
+
+                    case ProcessType.HistorySaver:
+                        Start("MTree.HistorySaver.exe", windowStyle: windowStyle, waitIdle: waitIdle);
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
 
         public static void Start(string filePath, string arguments = "", ProcessWindowStyle windowStyle = ProcessWindowStyle.Normal, bool waitIdle = false)
         {
