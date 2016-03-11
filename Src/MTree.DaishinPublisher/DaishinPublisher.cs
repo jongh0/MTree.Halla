@@ -285,12 +285,10 @@ namespace MTree.DaishinPublisher
                 string code = stockCurObj.GetHeaderValue(0).ToString();
                 if (code.Length != 0)
                     conclusion.Code = code.Substring(1); // Remove prefix
-
-                // 3 - (long) 시간
+                
                 // 18 - (long) 시간 (초)
-                ///long time = Convert.ToInt64(stockCurObj.GetHeaderValue(3));
-                long sec = Convert.ToInt64(stockCurObj.GetHeaderValue(18));
-                conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(sec / 10000), (int)((sec / 100) % 100), (int)sec % 100, now.Millisecond); // Daishin doesn't provide milisecond 
+                long time = Convert.ToInt64(stockCurObj.GetHeaderValue(18));
+                conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100, now.Millisecond); // Daishin doesn't provide milisecond 
 
                 // 13 - (long) 현재가
                 conclusion.Price = (float)Convert.ToDouble(stockCurObj.GetHeaderValue(13));
