@@ -66,13 +66,15 @@ namespace MTree.DaishinPopupStopper
             {
                 while (true)
                 {
+                    bool popupClosed = false;
+
                     try
                     {
                         cancelToken.ThrowIfCancellationRequested();
-                        CheckDibPopup();
+                        popupClosed = CheckDibPopup();
 
                         cancelToken.ThrowIfCancellationRequested();
-                        CheckInvestorInfoPopup();
+                        popupClosed = CheckInvestorInfoPopup();
                     }
                     catch (OperationCanceledException)
                     {
@@ -84,7 +86,8 @@ namespace MTree.DaishinPopupStopper
                         logger.Error(ex);
                     }
 
-                    Thread.Sleep(500);
+                    if (popupClosed == false)
+                        Thread.Sleep(500);
                 }
             }, cancelToken);
 
@@ -92,7 +95,7 @@ namespace MTree.DaishinPopupStopper
             logger.Info("Application finished");
         }
 
-        private static void CheckDibPopup()
+        private static bool CheckDibPopup()
         {
             try
             {
@@ -102,14 +105,16 @@ namespace MTree.DaishinPopupStopper
 
                 if (windowH != IntPtr.Zero)
                 {
-                    logger.Info($"CPDIB/CPSYSDIB popup found");
-                    SetForegroundWindow(windowH);
+                    //logger.Info($"CPDIB/CPSYSDIB popup found");
+                    //SetForegroundWindow(windowH);
 
                     IntPtr buttonH = FindWindowEx(windowH, IntPtr.Zero, "Button", "확인");
                     if (buttonH != IntPtr.Zero)
                     {
-                        logger.Info($"Confirm button clicked");
+                        //logger.Info($"Confirm button clicked");
                         SendMessage(buttonH, BM_CLICK, 0, 0);
+
+                        return true;
                     }
                 }
             }
@@ -117,9 +122,11 @@ namespace MTree.DaishinPopupStopper
             {
                 logger.Error(ex);
             }
+
+            return false;
         }
 
-        private static void CheckInvestorInfoPopup()
+        private static bool CheckInvestorInfoPopup()
         {
             try
             {
@@ -128,7 +135,7 @@ namespace MTree.DaishinPopupStopper
                 if (windowH != IntPtr.Zero)
                 {
                     logger.Info($"투자자정보 popup found");
-                    SetForegroundWindow(windowH);
+                    //SetForegroundWindow(windowH);
 
                     IntPtr buttonH = FindWindowEx(windowH, IntPtr.Zero, "Button", "오늘은 더 묻지 않음");
                     if (buttonH != IntPtr.Zero)
@@ -142,6 +149,8 @@ namespace MTree.DaishinPopupStopper
                     {
                         logger.Info($"No button clicked");
                         SendMessage(buttonH, BM_CLICK, 0, 0);
+
+                        return true;
                     }
                 }
             }
@@ -149,6 +158,8 @@ namespace MTree.DaishinPopupStopper
             {
                 logger.Error(ex);
             }
+
+            return false;
         }
 
         private static void Console_CancelKeyPress(object sender, ConsoleCancelEventArgs e)
