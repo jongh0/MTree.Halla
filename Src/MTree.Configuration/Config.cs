@@ -87,16 +87,18 @@ namespace MTree.Configuration
                     config = JsonConvert.DeserializeObject<T>(File.ReadAllText(filePath));
                     logger.Info($"{Path.GetFileName(filePath)} loaded");
                 }
+                else
+                {
+                    if (config == null)
+                        config = Activator.CreateInstance<T>();
+
+                    SaveConfiguration(config, filePath);
+                }
             }
             catch (Exception ex)
             {
                 Trace.WriteLine(ex);
             }
-
-            if (config == null)
-                config = Activator.CreateInstance<T>();
-
-            SaveConfiguration(config, filePath);
         }
 
         private static void SaveConfiguration<T>(T config, string filePath)
