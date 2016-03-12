@@ -26,7 +26,7 @@ namespace MTree.EbestPublisher
         private CancellationTokenSource loginCheckerCancelSource = new CancellationTokenSource();
         private CancellationToken loginCheckerCancelToken;
 
-        public ManualResetEvent WaitLoginEvent { get; } = new ManualResetEvent(false);
+        private ManualResetEvent waitLoginEvent { get; } = new ManualResetEvent(false);
 
         private bool isAnyDataReceived;
 
@@ -142,9 +142,9 @@ namespace MTree.EbestPublisher
         private void sessionObj_Event_Login(string szCode, string szMsg)
         {
             LoginInstance.State = StateType.Login;
-            WaitLoginEvent.Set();
+            waitLoginEvent.Set();
 
-            logger.Info($"{LoginInstance.ToString()}\nszCode: {szCode}, szMsg: {szMsg}");
+            logger.Info($"{LoginInstance.ToString()}nszCode: {szCode}, szMsg: {szMsg}");
 
             //Task.Run(() => { LoginStateChecker(); }, loginCheckerCancelToken);
         }
@@ -234,7 +234,7 @@ namespace MTree.EbestPublisher
 
         public bool WaitLogin()
         {
-            return WaitLoginEvent.WaitOne(5000);
+            return waitLoginEvent.WaitOne(5000);
         }
 
         public bool Logout()
@@ -264,7 +264,7 @@ namespace MTree.EbestPublisher
 
         public override bool SubscribeIndex(string code)
         {
-            if (WaitLoginEvent.WaitOne(10000) == false)
+            if (waitLoginEvent.WaitOne(10000) == false)
             {
                 logger.Error("Not loggedin state");
                 return false;
@@ -290,7 +290,7 @@ namespace MTree.EbestPublisher
 
         public override bool UnsubscribeIndex(string code)
         {
-            if (WaitLoginEvent.WaitOne(10000) == false)
+            if (waitLoginEvent.WaitOne(10000) == false)
             {
                 logger.Error("Not loggedin state");
                 return false;
@@ -404,7 +404,7 @@ namespace MTree.EbestPublisher
                 return false;
             }
 
-            if (WaitLoginEvent.WaitOne(10000) == false)
+            if (waitLoginEvent.WaitOne(10000) == false)
             {
                 logger.Error($"Quoting failed, Code: {code}, Not loggedin state");
                 return false;
@@ -459,7 +459,7 @@ namespace MTree.EbestPublisher
                 return false;
             }
 
-            if (WaitLoginEvent.WaitOne(10000) == false)
+            if (waitLoginEvent.WaitOne(10000) == false)
             {
                 logger.Error($"Quoting failed, Code: {code}, Not loggedin state");
                 return false;
@@ -527,7 +527,7 @@ namespace MTree.EbestPublisher
                     logger.Error("previous volume is null");
                     temp = "0";
                 }
-                QuotingStockMaster.PreviousVolume = int.Parse(temp); //전일거래량
+                //QuotingStockMaster.PreviousVolume = int.Parse(temp); //전일거래량 => Daishin에서 조회
 
                 temp = stockQuotingObj.GetFieldData("t1102OutBlock", "abscnt", 0);
                 if (temp == "")

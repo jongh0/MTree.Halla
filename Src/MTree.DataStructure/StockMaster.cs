@@ -110,7 +110,7 @@ namespace MTree.DataStructure
         public int LowerLimit { get; set; }
 
         /// <summary>
-        /// 전일종가
+        /// 전일종가(Daishin)
         /// </summary>
         [BsonElement("PCP")]
         public float PreviousClosedPrice { get; set; }

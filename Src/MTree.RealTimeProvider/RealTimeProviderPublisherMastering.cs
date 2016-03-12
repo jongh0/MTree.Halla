@@ -277,7 +277,7 @@ namespace MTree.RealTimeProvider
                         return;
                     }
 
-                    dest.PreviousVolume = source.PreviousVolume;
+                    //dest.PreviousVolume = source.PreviousVolume; // => Daishin에서 조회
                     dest.CirculatingVolume = source.CirculatingVolume;
                     dest.ValueAltered = source.ValueAltered;
 
