@@ -27,7 +27,7 @@ namespace MTree.RealTimeProvider
 
             try
             {
-                LaunchPublisherAll();
+                LaunchClientProcess();
 
                 foreach (var code in StockCodeList)
                 {
@@ -55,7 +55,43 @@ namespace MTree.RealTimeProvider
                 sw.Stop();
                 logger.Info($"Stock mastering done, Elapsed time: {sw.Elapsed.ToString()}");
 
-                Task.Run(() => DistributeSubscribeCode());
+                Task.Run(() => StartStockMasterPublishing());
+                Task.Run(() => StartSubscribeCodeDistributing());
+            }
+        }
+
+        private void StartStockMasterPublishing()
+        {
+            logger.Info("Stock master publishing started");
+
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
+            try
+            {
+                foreach (var mastering in StockMasteringList)
+                {
+                    foreach (var contract in StockMasterContracts)
+                    {
+                        try
+                        {
+                            contract.Value.Callback.ConsumeStockMaster(mastering.Stock);
+                        }
+                        catch (Exception ex)
+                        {
+                            logger.Error(ex);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+            finally
+            {
+                sw.Stop();
+                logger.Info($"Stock master publishing done, Elapsed time: {sw.Elapsed.ToString()}");
             }
         }
 

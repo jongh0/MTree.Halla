@@ -249,8 +249,10 @@ namespace MTree.DaishinPublisher
             }
             finally
             {
-                string msg = stockCurObj.GetDibMsg1();
-                logger.Log(status == 0 ? LogLevel.Info : LogLevel.Error, $"Subscribe stock, Code: {code}, Status: {status}, Msg: {msg}");
+                if (status == 0)
+                    logger.Trace($"Subscribe stock, Code: {code}");
+                else
+                    logger.Error($"Subscribe stock error, Code: {code}, Status: {status}, Msg: {stockCurObj.GetDibMsg1()}");
             }
 
             return (status == 0);
@@ -280,8 +282,10 @@ namespace MTree.DaishinPublisher
             }
             finally
             {
-                if (status != 0)
-                    logger.Error($"Unsubscribe stock, Code: {code}, Status: {status}, Msg: {stockCurObj.GetDibMsg1()}");
+                if (status == 0)
+                    logger.Trace($"Unsubscribe stock, Code: {code}");
+                else
+                    logger.Error($"Unsubscribe stock error, Code: {code}, Status: {status}, Msg: {stockCurObj.GetDibMsg1()}");
             }
 
             return (status == 0);

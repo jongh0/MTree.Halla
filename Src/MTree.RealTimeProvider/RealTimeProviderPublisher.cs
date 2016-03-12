@@ -66,10 +66,13 @@ namespace MTree.RealTimeProvider
         #endregion
         #endregion
 
-        private void LaunchPublisherAll()
+        private void LaunchClientProcess()
         {
             try
             {
+                // HistorySaver
+                ProcessUtility.Start(ProcessType.HistorySaver);
+
                 // Daishin popup stopper
                 ProcessUtility.Start(ProcessType.DaishinPopupStopper);
 
@@ -167,8 +170,9 @@ namespace MTree.RealTimeProvider
             }
         }
 
-        private void DistributeSubscribeCode()
+        private void StartSubscribeCodeDistributing()
         {
+            // TODO : bidding price code 나눠줘야함
             // TODO : index code 나눠주는 코드 추가해야함
             logger.Info("Subscribe code distribution, Start");
 
@@ -203,8 +207,6 @@ namespace MTree.RealTimeProvider
                 logger.Info("Subscribe code distribution, Done");
             else
                 logger.Error("Subscribe code distribution, Fail");
-
-            Debugger.Break(); // 테스트 용도
         }
 
         public void PublishBiddingPrice(BiddingPrice biddingPrice)

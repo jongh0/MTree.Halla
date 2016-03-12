@@ -35,5 +35,9 @@ namespace MTree.Consumer
         public virtual void ConsumeStockConclusion(StockConclusion conclusion)
         {
         }
+
+        public virtual void ConsumeStockMaster(StockMaster stockMaster)
+        {
+        }
     }
 }

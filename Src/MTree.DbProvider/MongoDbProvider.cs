@@ -100,16 +100,22 @@ namespace MTree.DbProvider
             {
                 case DbType.Chart:
                     return ChartDb;
+
                 case DbType.BiddingPrice:
                     return BiddingPriceDb;
+
                 case DbType.StockMaster:
                     return StockMasterDb;
+
                 case DbType.StockConclusion:
                     return StockConclusionDb;
+
                 case DbType.IndexConclusion:
                     return IndexConclusionDb;
+
                 case DbType.CircuitBreak:
                     return CircuitBreakDb;
+
                 default:
                     return TestDb;
             }

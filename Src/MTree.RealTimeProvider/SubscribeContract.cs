@@ -8,6 +8,7 @@ namespace MTree.RealTimeProvider
 {
     public enum SubscribeType
     {
+        StockMaster,
         BiddingPrice,
         StockConclusion,
         IndexConclusion,
@@ -29,6 +30,28 @@ namespace MTree.RealTimeProvider
         public HashSet<string> Codes { get; set; } = new HashSet<string>();
 
         public IRealTimeConsumerCallback Callback { get; set; } = null;
+
+        public SubscribeContract()
+        {
+        }
+
+        public SubscribeContract(SubscribeType type)
+        {
+            Type = type;
+        }
+
+        public SubscribeContract(SubscribeType type, SubscribeScope scope)
+        {
+            Type = type;
+            Scope = scope;
+        }
+
+        public SubscribeContract(SubscribeType type, SubscribeScope scope, HashSet<string> codes)
+        {
+            Type = type;
+            Scope = scope;
+            Codes = codes;
+        }
 
         public override string ToString()
         {

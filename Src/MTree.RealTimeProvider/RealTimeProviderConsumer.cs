@@ -13,6 +13,7 @@ namespace MTree.RealTimeProvider
     public partial class RealTimeProvider
     {
         private ConcurrentDictionary<Guid, SubscribeContract> ConsumerContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
+        private ConcurrentDictionary<Guid, SubscribeContract> StockMasterContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
         private ConcurrentDictionary<Guid, SubscribeContract> BiddingPriceContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
         private ConcurrentDictionary<Guid, SubscribeContract> StockConclusionContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
         private ConcurrentDictionary<Guid, SubscribeContract> IndexConclusionContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
@@ -97,12 +98,18 @@ namespace MTree.RealTimeProvider
         {
             switch (type)
             {
+                case SubscribeType.StockMaster:
+                    return StockMasterContracts;
+
                 case SubscribeType.BiddingPrice:
                     return BiddingPriceContracts;
+
                 case SubscribeType.StockConclusion:
                     return StockConclusionContracts;
+
                 case SubscribeType.IndexConclusion:
                     return IndexConclusionContracts;
+
                 default:
                     return null;
             }
@@ -217,6 +224,21 @@ namespace MTree.RealTimeProvider
                 try
                 {
                     contract.Value.Callback.ConsumeCircuitBreak(circuitBreak);
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex);
+                }
+            }
+        }
+
+        private void ProcessStockMaster(StockMaster stockMaster)
+        {
+            foreach (var contract in StockMasterContracts)
+            {
+                try
+                {
+                    contract.Value.Callback.ConsumeStockMaster(stockMaster);
                 }
                 catch (Exception ex)
                 {
