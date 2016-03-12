@@ -206,7 +206,7 @@ namespace MTree.DataStructure
         public Warning CallingAttention { get; set; }
 
         /// <summary>
-        /// Overheated(KRX) // TODO : KRX 맞음?
+        /// 정리매매(KRX)
         /// </summary>
         [BsonElement("CT")]
         public Warning CleaningTrade { get; set; }
