@@ -28,6 +28,8 @@ namespace MTree.EbestPublisher
 
         private ManualResetEvent waitLoginEvent { get; } = new ManualResetEvent(false);
 
+        private int StockQuoteInterval { get; set; } = 0;
+
         private bool isAnyDataReceived;
 
         #region Ebest Specific
@@ -141,6 +143,8 @@ namespace MTree.EbestPublisher
 
         private void sessionObj_Event_Login(string szCode, string szMsg)
         {
+            StockQuoteInterval = 1000 / stockQuotingObj.GetTRCountPerSec("t1102");
+
             LoginInstance.State = StateType.Login;
             waitLoginEvent.Set();
 
@@ -417,7 +421,9 @@ namespace MTree.EbestPublisher
             try
             {
                 QuotingStockMaster = stockMaster;
-                
+
+                WaitQuotingLimit();
+
                 stockQuotingObj.SetFieldData("t1102InBlock", "shcode", 0, code);
                 ret = stockQuotingObj.Request(false);
 
@@ -641,6 +647,12 @@ namespace MTree.EbestPublisher
         public override bool IsSubscribable()
         {
             return subscribeCount < maxSubscribeCount;
+        }
+
+        private void WaitQuotingLimit()
+        { 
+            if (StockQuoteInterval > 0)
+                Thread.Sleep(StockQuoteInterval);
         }
     }
 }
