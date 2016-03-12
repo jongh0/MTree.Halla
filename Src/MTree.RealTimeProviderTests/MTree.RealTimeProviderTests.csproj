@@ -60,6 +60,10 @@
       <Project>{C9620F6E-D254-45F4-81C1-F33B0855FADC}</Project>
       <Name>MTree.RealTimeProvider</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MTree.Utility\MTree.Utility.csproj">
+      <Project>{d8291168-4d81-4acd-81c4-da122a249102}</Project>
+      <Name>MTree.Utility</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

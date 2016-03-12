@@ -40,7 +40,7 @@ namespace MTree.DaishinPublisher.Tests
         {
             int cnt = 0;
             DaishinPublisher publisher = new DaishinPublisher();
-            foreach (string code in publisher.GetStockCodeList())
+            foreach (string code in publisher.GetStockCodeList().Keys)
             {
                 Console.WriteLine($"{cnt++}, {code}");
 

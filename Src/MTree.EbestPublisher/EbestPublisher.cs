@@ -91,7 +91,8 @@ namespace MTree.EbestPublisher
         #region XAQuery
         private void queryObj_ReceiveMessage(bool bIsSystemError, string nMessageCode, string szMessage)
         {
-            logger.Info($"bIsSystemError: {bIsSystemError}, nMessageCode: {nMessageCode}, szMessage: {szMessage}");
+            if (bIsSystemError == true)
+                logger.Error($"bIsSystemError: {bIsSystemError}, nMessageCode: {nMessageCode}, szMessage: {szMessage}");
         }
 
         private void queryObj_ReceiveData(string szTrCode)
@@ -272,7 +273,7 @@ namespace MTree.EbestPublisher
                 realObj.AdviseRealData();
 
                 subscribeCount++;
-                logger.Info($"Subscribe success, Code: {code}");
+                logger.Info($"Subscribe index success, Code: {code}");
                 return true;
             }
             catch (Exception ex)
@@ -280,6 +281,7 @@ namespace MTree.EbestPublisher
                 logger.Error(ex);
             }
 
+            logger.Error($"Subscribe index fail, Code: {code}");
             return false;
         }
 
@@ -297,7 +299,7 @@ namespace MTree.EbestPublisher
                 realObj.UnadviseRealData();
 
                 subscribeCount--;
-                logger.Info($"Unsubscribe success, Code: {code}");
+                logger.Info($"Unsubscribe index success, Code: {code}");
                 return true;
             }
             catch (Exception ex)
@@ -305,6 +307,7 @@ namespace MTree.EbestPublisher
                 logger.Error(ex);
             }
 
+            logger.Error($"Unsubscribe index fail, Code: {code}");
             return false;
         }
 
@@ -553,6 +556,7 @@ namespace MTree.EbestPublisher
             }
             catch (Exception ex)
             {
+                QuotingStockMaster.Code = string.Empty;
                 logger.Error(ex);
             }
             finally
@@ -582,6 +586,7 @@ namespace MTree.EbestPublisher
             }
             catch (Exception ex)
             {
+                QuotingIndexMaster.Code = string.Empty;
                 logger.Error(ex);
             }
             finally

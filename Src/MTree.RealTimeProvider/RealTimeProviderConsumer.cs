@@ -33,12 +33,12 @@ namespace MTree.RealTimeProvider
 
                 if (contractList.ContainsKey(clientId) == true)
                 {
-                    logger.Error($"{contract.Type} contract exist / {clientId}");
+                    logger.Error($"{contract.ToString()} contract exist / {clientId}");
                 }
                 else
                 {
                     if (contractList.TryAdd(clientId, contract) == true)
-                        logger.Info($"{contract.Type} contract registered / {clientId}");
+                        logger.Info($"{contract.ToString()} contract registered / {clientId}");
                 }
             }
             catch (Exception ex)

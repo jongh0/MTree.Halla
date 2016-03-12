@@ -2,6 +2,7 @@
 using System.ServiceModel;
 using System.Threading;
 using System.Threading.Tasks;
+using MTree.Utility;
 
 namespace MTree.RealTimeProvider
 {
@@ -42,7 +43,7 @@ namespace MTree.RealTimeProvider
         {
             logger.Info("RealTimeHost opened");
 
-            RealTimeProviderInstance.LaunchPublisher(PublisherType.DaishinMaster);
+            ProcessUtility.Start(ProcessType.DaishinMaster);
         }
     }
 }

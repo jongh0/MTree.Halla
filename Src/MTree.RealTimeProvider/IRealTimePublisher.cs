@@ -39,7 +39,7 @@ namespace MTree.RealTimeProvider
         void CloseClient();
 
         [OperationContract]
-        List<string> GetStockCodeList();
+        Dictionary<string, string> GetStockCodeList();
 
         [OperationContract]
         StockMaster GetStockMaster(string code);

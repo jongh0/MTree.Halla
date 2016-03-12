@@ -19,9 +19,9 @@ namespace MTree.Publisher
         {
         }
 
-        public virtual List<string> GetStockCodeList()
+        public virtual Dictionary<string, string> GetStockCodeList()
         {
-            return new List<string>();
+            return new Dictionary<string, string>();
         }
 
         public virtual StockMaster GetStockMaster(string code)
