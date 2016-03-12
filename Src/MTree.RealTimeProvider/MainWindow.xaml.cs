@@ -17,6 +17,15 @@ namespace MTree.RealTimeProvider
 
         RealTimeProvider RealTimeProviderInstance { get { return (RealTimeHost.SingletonInstance as RealTimeProvider); } }
 
+        /// <summary>
+        /// MainWindow 실행
+        /// Service Host 등록
+        /// DaishinMaster Process 실행
+        /// DaishinMaster가 Publisher로 등록되면 Stock Code List 획득
+        /// HistorySaver, Daishin, Ebest Process 실행
+        /// Stock Mastering 수행
+        /// HistorySaver 통해서 Db에 저장
+        /// </summary>
         public MainWindow()
         {
             InitializeComponent();
