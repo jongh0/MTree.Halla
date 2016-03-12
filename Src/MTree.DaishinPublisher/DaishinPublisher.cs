@@ -346,7 +346,9 @@ namespace MTree.DaishinPublisher
 
                 foreach (string code in objList)
                 {
-                    //if (code[0] == 'Q')
+                    // TODO: KOSPI, KOSDAQ, ETF, ETN, ELW 구분
+                    // 대신의 경우 Q이면 ETN
+                    //if (code[0] == 'Q') 
                     {
                         codeList.Add(code.Substring(1), codeMgr.CodeToName(code));
                     }
