@@ -105,13 +105,13 @@ namespace MTree.DaishinPopupStopper
 
                 if (windowH != IntPtr.Zero)
                 {
-                    //logger.Info($"CPDIB/CPSYSDIB popup found");
+                    logger.Trace($"CPDIB/CPSYSDIB popup found");
                     //SetForegroundWindow(windowH);
 
                     IntPtr buttonH = FindWindowEx(windowH, IntPtr.Zero, "Button", "확인");
                     if (buttonH != IntPtr.Zero)
                     {
-                        //logger.Info($"Confirm button clicked");
+                        logger.Trace($"Confirm button clicked");
                         SendMessage(buttonH, BM_CLICK, 0, 0);
 
                         return true;

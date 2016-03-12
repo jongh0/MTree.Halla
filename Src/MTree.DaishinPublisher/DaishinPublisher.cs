@@ -392,7 +392,7 @@ namespace MTree.DaishinPublisher
             
             if (ms > 0)
             {
-                logger.Info($"Wait quoting limit, ms: {ms}");
+                logger.Trace($"Wait quoting limit, ms: {ms}");
                 Thread.Sleep(ms);
             }
 
