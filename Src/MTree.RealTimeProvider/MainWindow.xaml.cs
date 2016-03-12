@@ -25,6 +25,7 @@ namespace MTree.RealTimeProvider
         /// HistorySaver, Daishin, Ebest Process 실행
         /// Stock Mastering 수행
         /// HistorySaver 통해서 Db에 저장
+        /// Daishin Process에 Stock Subscribe Code 분배
         /// </summary>
         public MainWindow()
         {
