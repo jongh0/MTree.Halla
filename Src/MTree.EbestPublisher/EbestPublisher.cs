@@ -16,6 +16,7 @@ namespace MTree.EbestPublisher
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         protected object lockObject = new object();
+        private bool requestResult = false;
 
         private const int maxSubscribeCount = 200;
         private int subscribeCount = 0;
@@ -93,6 +94,8 @@ namespace MTree.EbestPublisher
         {
             if (bIsSystemError == true)
                 logger.Error($"bIsSystemError: {bIsSystemError}, nMessageCode: {nMessageCode}, szMessage: {szMessage}");
+
+            requestResult = false;
         }
 
         private void queryObj_ReceiveData(string szTrCode)
@@ -212,7 +215,7 @@ namespace MTree.EbestPublisher
                         ret = sessionObj.Login(LoginInstance.UserId, LoginInstance.UserPw, LoginInstance.CertPw, (int)XA_SERVER_TYPE.XA_SIMUL_SERVER, true);
 
                     if (ret == true)
-                        logger.Info("Try login");
+                        logger.Info($"Try login with id:{LoginInstance.UserId}");
                     else
                         logger.Error("Login error");
                 }
@@ -408,7 +411,7 @@ namespace MTree.EbestPublisher
             }
 
             logger.Info($"Start quoting, Code: {code}");
-
+            requestResult = false;
             int ret = -1;
 
             try
@@ -445,7 +448,7 @@ namespace MTree.EbestPublisher
                 Monitor.Exit(lockObject);
             }
 
-            return (ret == 0);
+            return (ret > 0 && requestResult == true);
         }
 
         public bool GetQuote(string code, ref IndexMaster indexMaster)
@@ -464,6 +467,7 @@ namespace MTree.EbestPublisher
 
             logger.Info($"Start quoting, Code: {code}");
 
+            requestResult = false;
             int ret = -1;
 
             try
@@ -500,7 +504,7 @@ namespace MTree.EbestPublisher
                 Monitor.Exit(lockObject);
             }
 
-            return (ret == 0);
+            return (ret > 0 && requestResult == true);
         }
 
         private void StockMasterReceived()
@@ -531,7 +535,7 @@ namespace MTree.EbestPublisher
                     logger.Error("Circulating volume is null");
                     temp = "0";
                 }
-                QuotingStockMaster.CirculatingVolume = int.Parse(temp);  //유통주식수
+                QuotingStockMaster.CirculatingVolume = int.Parse(temp) * 1000;  //유통주식수
 
                 string valueAltered = stockQuotingObj.GetFieldData("t1102OutBlock", "info1", 0);
 
@@ -552,10 +556,13 @@ namespace MTree.EbestPublisher
                 else if (valueAltered == "감자")
                     QuotingStockMaster.ValueAltered = ValueAlteredType.CapitalReduction;
                 else
-                    logger.Error("ValueAltered type is invalid");
+                    QuotingStockMaster.ValueAltered = ValueAlteredType.None;
+
+                requestResult = true;
             }
             catch (Exception ex)
             {
+                requestResult = false;
                 QuotingStockMaster.Code = string.Empty;
                 logger.Error(ex);
             }
@@ -583,9 +590,12 @@ namespace MTree.EbestPublisher
                 temp = indexQuotingObj.GetFieldData("t1511OutBlock", "jnilvalue", 0);
                 if (temp == "") temp = "0";
                 QuotingIndexMaster.PreviousTradeCost = Convert.ToInt64(temp);  //전일거래대금
+
+                requestResult = true;
             }
             catch (Exception ex)
             {
+                requestResult = false;
                 QuotingIndexMaster.Code = string.Empty;
                 logger.Error(ex);
             }
@@ -601,8 +611,10 @@ namespace MTree.EbestPublisher
 
             try
             {
-                GetQuote(code, ref stockMaster);
-                stockMaster.Code = code;
+                if (GetQuote(code, ref stockMaster))
+                {
+                    stockMaster.Code = code;
+                }
             }
             catch (Exception ex)
             {

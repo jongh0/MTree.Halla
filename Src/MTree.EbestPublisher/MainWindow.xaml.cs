@@ -35,9 +35,12 @@ namespace MTree.EbestPublisher
                 Publisher.WaitLogin();
 
                 DataStructure.StockMaster master = new DataStructure.StockMaster();
-                int startTick = Environment.TickCount;
-                Publisher.GetQuote("000020", ref master);
-                Trace.WriteLine(">>>>>>>>>>>>>>> " + (Environment.TickCount - startTick));
+                //for (int i = 0; i < 100; i++)
+                {
+                    int startTick = Environment.TickCount;
+                    bool result = Publisher.GetQuote("000020", ref master);
+                    Trace.WriteLine(result + ">>>>>>>>>>>>>>> " + (Environment.TickCount - startTick));
+                }
                 Debugger.Break();
             });
 #endif

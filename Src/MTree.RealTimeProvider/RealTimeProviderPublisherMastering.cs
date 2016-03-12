@@ -192,7 +192,7 @@ namespace MTree.RealTimeProvider
             try
             {
                 var master = contract.Callback.GetStockMaster(mastering.Stock.Code);
-
+                
                 if (contract.Type == ProcessType.Daishin)
                     CopyStockMasterFromDaishin(mastering, master);
                 else if (contract.Type == ProcessType.Ebest)

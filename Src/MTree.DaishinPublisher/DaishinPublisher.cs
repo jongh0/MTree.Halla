@@ -346,7 +346,10 @@ namespace MTree.DaishinPublisher
 
                 foreach (string code in objList)
                 {
-                    codeList.Add(code.Substring(1), codeMgr.CodeToName(code));
+                    //if (code[0] == 'Q')
+                    {
+                        codeList.Add(code.Substring(1), codeMgr.CodeToName(code));
+                    }
                 }
 
                 logger.Info($"Stock code list query done, Count: {codeList.Count}");
