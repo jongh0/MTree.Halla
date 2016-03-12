@@ -18,12 +18,12 @@ namespace MTree.KiwoomPublisher
 
         private AxKHOpenAPILib.AxKHOpenAPI kiwoomObj;
 
-        protected object lockObject = new object();
+        private object lockObject = new object();
         private bool requestResult = false;
 
         private int _scrNum = 5000;
 
-        private ManualResetEvent waitLoginEvent { get; } = new ManualResetEvent(false);
+        private ManualResetEvent waitLoginEvent = new ManualResetEvent(false);
 
         public KiwoomPublisher(AxKHOpenAPILib.AxKHOpenAPI axKHOpenAPI) : base()
         {

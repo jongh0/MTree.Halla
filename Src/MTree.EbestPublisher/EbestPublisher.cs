@@ -15,7 +15,7 @@ namespace MTree.EbestPublisher
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        protected object lockObject = new object();
+        private object lockObject = new object();
         private bool requestResult = false;
 
         private const int maxSubscribeCount = 200;
@@ -26,7 +26,7 @@ namespace MTree.EbestPublisher
         private CancellationTokenSource loginCheckerCancelSource = new CancellationTokenSource();
         private CancellationToken loginCheckerCancelToken;
 
-        private ManualResetEvent waitLoginEvent { get; } = new ManualResetEvent(false);
+        private ManualResetEvent waitLoginEvent = new ManualResetEvent(false);
 
         private int StockQuoteInterval { get; set; } = 0;
 

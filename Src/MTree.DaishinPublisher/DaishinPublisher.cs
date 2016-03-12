@@ -19,7 +19,7 @@ namespace MTree.DaishinPublisher
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        protected object lockObject = new object();
+        private object lockObject = new object();
 
         private int LastQuoteTick { get; set; } = Environment.TickCount;
 
