@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -23,9 +24,13 @@ namespace MTree.KiwoomPublisher
             Task.Run(() => {
                 for (int i = 0; i < 100; i++)
                 {
-                    System.Threading.Thread.Sleep(1000);
-                    StockMaster master = new StockMaster();
-                    kiwoomPublisher.GetQuote("000087", ref master);
+                    System.Threading.Thread.Sleep(100);
+
+                    StockMaster master = kiwoomPublisher.GetStockMaster("000087");
+                    if (master.Code != "000087")
+                    {
+                        Debugger.Break();
+                    }   
                 }
             });
 #endif

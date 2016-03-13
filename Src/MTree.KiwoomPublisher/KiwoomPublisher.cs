@@ -272,11 +272,13 @@ namespace MTree.KiwoomPublisher
                 else
                 {
                     logger.Error($"Quoting request failed. Code: {code}, Quoting result: {ret}. Message:{GetErrorMessage(ret)}");
+                    requestResult = false;
                 }
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
+                requestResult = false;
             }
             finally
             {
@@ -284,7 +286,7 @@ namespace MTree.KiwoomPublisher
                 Monitor.Exit(lockObject);
             }
 
-            return (ret > 0 && requestResult == true);
+            return (ret == 0 && requestResult == true);
         }
 
         private void OnReceiveTrData(object sender, AxKHOpenAPILib._DKHOpenAPIEvents_OnReceiveTrDataEvent e)
@@ -299,6 +301,7 @@ namespace MTree.KiwoomPublisher
                     {
                         logger.Error("Multiple response received for single request");
                         WaitQuotingEvent.Set();
+                        requestResult = false;
                         return;
                     }
                     string rxCode = kiwoomObj.CommGetData(e.sTrCode, "", e.sRQName, 0, "종목코드").Trim();
@@ -324,6 +327,7 @@ namespace MTree.KiwoomPublisher
                     {
                         QuotingStockMaster.EV = Convert.ToDouble(ev);
                     }
+                    requestResult = true;
                 }
                 catch (Exception ex)
                 {
@@ -336,7 +340,6 @@ namespace MTree.KiwoomPublisher
                     WaitQuotingEvent.Set();
                 }
             }
-
         }
 
         public override StockMaster GetStockMaster(string code)
@@ -348,6 +351,10 @@ namespace MTree.KiwoomPublisher
                 if (GetQuote(code, ref stockMaster))
                 {
                     stockMaster.Code = code;
+                }
+                else
+                {
+                    stockMaster.Code = "";
                 }
             }
             catch (Exception ex)

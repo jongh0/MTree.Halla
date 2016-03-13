@@ -302,12 +302,15 @@ namespace MTree.RealTimeProvider
                 else if (contract.Type == ProcessType.Kiwoon)
                     CopyStockMasterFromKiwoom(mastering, master);
 
+#if false
                 if (mastering.KiwoomState == MasteringStateType.Finished && 
                     mastering.EbestState == MasteringStateType.Finished && 
                     mastering.DaishinState == MasteringStateType.Finished)
                 {
                     logger.Info(mastering.Stock.ToString());
                 }
+#endif
+
             }
             catch (Exception ex)
             {

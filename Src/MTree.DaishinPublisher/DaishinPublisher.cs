@@ -181,7 +181,7 @@ namespace MTree.DaishinPublisher
 
                 // 27 - (long) basis price (기준가)
                 QuotingStockMaster.BasisPrice = (int)stockMstObj.GetHeaderValue(27);
-
+                
                 // 31 - (decimal) 상장주식수 (단주)
                 QuotingStockMaster.ShareVolume = Convert.ToInt64(stockMstObj.GetHeaderValue(31));
 

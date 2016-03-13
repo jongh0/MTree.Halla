@@ -16,7 +16,7 @@ namespace MTree.DaishinPublisher.Tests
         [TestMethod()]
         public void GetQuoteTest()
         {
-            string code = "000020";
+            string code = "000040";
             StockMaster master = new StockMaster();
             DaishinPublisher publisher = new DaishinPublisher();
             int startTick = Environment.TickCount;
