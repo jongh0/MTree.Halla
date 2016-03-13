@@ -306,7 +306,7 @@ namespace MTree.RealTimeProvider
                     mastering.EbestState == MasteringStateType.Finished && 
                     mastering.DaishinState == MasteringStateType.Finished)
                 {
-                    logger.Trace(mastering.Stock.ToString());
+                    logger.Info(mastering.Stock.ToString());
                 }
             }
             catch (Exception ex)

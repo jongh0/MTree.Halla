@@ -314,10 +314,16 @@ namespace MTree.KiwoomPublisher
                     QuotingStockMaster.EPS= Convert.ToDouble(kiwoomObj.CommGetData(e.sTrCode, "", e.sRQName, 0, "EPS").Trim());
                     QuotingStockMaster.PBR = Convert.ToDouble(kiwoomObj.CommGetData(e.sTrCode, "", e.sRQName, 0, "PBR").Trim());
                     QuotingStockMaster.BPS = Convert.ToDouble(kiwoomObj.CommGetData(e.sTrCode, "", e.sRQName, 0, "BPS").Trim());
-                    QuotingStockMaster.ROE = Convert.ToDouble(kiwoomObj.CommGetData(e.sTrCode, "", e.sRQName, 0, "ROE").Trim());
-                    QuotingStockMaster.EV = Convert.ToDouble(kiwoomObj.CommGetData(e.sTrCode, "", e.sRQName, 0, "EV").Trim());
-
-                    Debugger.Break();
+                    string roe = kiwoomObj.CommGetData(e.sTrCode, "", e.sRQName, 0, "ROE").Trim();
+                    if (roe != string.Empty)
+                    {
+                        QuotingStockMaster.ROE = Convert.ToDouble(roe);
+                    }
+                    string ev = kiwoomObj.CommGetData(e.sTrCode, "", e.sRQName, 0, "EV").Trim();
+                    if (ev != string.Empty)
+                    {
+                        QuotingStockMaster.EV = Convert.ToDouble(ev);
+                    }
                 }
                 catch (Exception ex)
                 {

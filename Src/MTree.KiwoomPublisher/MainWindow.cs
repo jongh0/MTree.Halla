@@ -21,9 +21,12 @@ namespace MTree.KiwoomPublisher
             kiwoomPublisher = new KiwoomPublisher(axKHOpenAPI);
 #if false
             Task.Run(() => {
-                System.Threading.Thread.Sleep(1000);
-                StockMaster master = new StockMaster();
-                kiwoomPublisher.GetQuote("000087", ref master);
+                for (int i = 0; i < 100; i++)
+                {
+                    System.Threading.Thread.Sleep(1000);
+                    StockMaster master = new StockMaster();
+                    kiwoomPublisher.GetQuote("000087", ref master);
+                }
             });
 #endif
         }
