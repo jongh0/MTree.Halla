@@ -19,7 +19,7 @@ namespace MTree.KiwoomPublisher
             InitializeComponent();
 
             kiwoomPublisher = new KiwoomPublisher(axKHOpenAPI);
-#if true
+#if false
             Task.Run(() => {
                 System.Threading.Thread.Sleep(1000);
                 StockMaster master = new StockMaster();

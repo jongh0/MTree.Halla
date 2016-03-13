@@ -41,6 +41,18 @@ namespace MTree.RealTimeProvider
         }
         #endregion
 
+        #region Kiwoom
+        private List<PublishContract> KiwoomContracts
+        {
+            get { return PublishContracts.Values.Where(c => c.Type == ProcessType.Kiwoon).ToList(); }
+        }
+
+        private PublishContract KiwoomContractForMastering
+        {
+            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == ProcessType.Kiwoon && c.NowOperating == false); }
+        }
+        #endregion
+
         #region Krx
         private List<PublishContract> KrxContracts
         {
@@ -72,6 +84,9 @@ namespace MTree.RealTimeProvider
             {
                 // HistorySaver
                 ProcessUtility.Start(ProcessType.HistorySaver);
+
+                // Kiwoom
+                ProcessUtility.Start(ProcessType.Kiwoon);
 
                 // Daishin popup stopper
                 ProcessUtility.Start(ProcessType.DaishinPopupStopper);

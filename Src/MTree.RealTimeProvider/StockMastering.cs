@@ -18,6 +18,7 @@ namespace MTree.RealTimeProvider
     {
         public MasteringStateType DaishinState { get; set; } = MasteringStateType.Ready;
         public MasteringStateType EbestState { get; set; } = MasteringStateType.Ready;
+        public MasteringStateType KiwoomState { get; set; } = MasteringStateType.Ready;
         public MasteringStateType KrxState { get; set; } = MasteringStateType.Ready;
         public MasteringStateType NaverState { get; set; } = MasteringStateType.Ready;
 

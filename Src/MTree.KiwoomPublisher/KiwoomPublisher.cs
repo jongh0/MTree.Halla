@@ -241,7 +241,6 @@ namespace MTree.KiwoomPublisher
                     QuotingStockMaster.ROE = Convert.ToDouble(kiwoomObj.CommGetData(e.sTrCode, "", e.sRQName, 0, "ROE").Trim());
                     QuotingStockMaster.EV = Convert.ToDouble(kiwoomObj.CommGetData(e.sTrCode, "", e.sRQName, 0, "EV").Trim());
 
-                    Debugger.Break();
                 }
                 catch (Exception ex)
                 {

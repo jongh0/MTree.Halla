@@ -17,6 +17,7 @@ namespace MTree.RealTimeProvider
         private object masteringLock = new object();
         private object daishinMasteringLock = new object();
         private object ebestMasteringLock = new object();
+        private object kiwoomMasteringLock = new object();
 
         private void StartStockMastering()
         {
@@ -41,6 +42,7 @@ namespace MTree.RealTimeProvider
                 }
 
                 var masteringTask = new List<Task>();
+                masteringTask.Add(Task.Run(() => StartKiwoomStockMastering()));
                 masteringTask.Add(Task.Run(() => StartDaishinStockMastering()));
                 masteringTask.Add(Task.Run(() => StartEbestStockMatering()));
 
@@ -223,6 +225,70 @@ namespace MTree.RealTimeProvider
             }
         }
 
+        private void StartKiwoomStockMastering()
+        {
+            logger.Info("Kiwoom stock mastering started");
+
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
+            try
+            {
+                while (true)
+                {
+                    lock (masteringLock)
+                    {
+                        if (StockMasteringList.Count(m => m.KiwoomState != MasteringStateType.Finished) == 0)
+                            break;
+                    }
+
+                    StockMastering mastering = null;
+
+                    lock (masteringLock)
+                    {
+                        mastering = StockMasteringList.FirstOrDefault(m => m.KiwoomState == MasteringStateType.Ready);
+                        if (mastering != null)
+                            mastering.KiwoomState = MasteringStateType.Running;
+                    }
+
+                    if (mastering != null)
+                    {
+                        PublishContract contract = null;
+
+                        while (true)
+                        {
+                            lock (kiwoomMasteringLock)
+                            {
+                                contract = KiwoomContractForMastering;
+                                if (contract != null)
+                                {
+                                    contract.NowOperating = true;
+                                    break;
+                                }
+                            }
+
+                            Thread.Sleep(100);
+                        }
+
+                        Task.Run(() => GetStockMaster(mastering, contract));
+                    }
+                    else
+                    {
+                        Thread.Sleep(100);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+            finally
+            {
+                sw.Stop();
+                logger.Info($"Kiwoom stock mastering done, Elapsed time: {sw.Elapsed.ToString()}");
+            }
+        }
+
         private void GetStockMaster(StockMastering mastering, PublishContract contract)
         {
             try
@@ -233,6 +299,15 @@ namespace MTree.RealTimeProvider
                     CopyStockMasterFromDaishin(mastering, master);
                 else if (contract.Type == ProcessType.Ebest)
                     CopyStockMasterFromEbest(mastering, master);
+                else if (contract.Type == ProcessType.Kiwoon)
+                    CopyStockMasterFromKiwoom(mastering, master);
+
+                if (mastering.KiwoomState == MasteringStateType.Finished && 
+                    mastering.EbestState == MasteringStateType.Finished && 
+                    mastering.DaishinState == MasteringStateType.Finished)
+                {
+                    logger.Trace(mastering.Stock.ToString());
+                }
             }
             catch (Exception ex)
             {
@@ -250,6 +325,12 @@ namespace MTree.RealTimeProvider
                     lock (ebestMasteringLock)
                         contract.NowOperating = false;
                 }
+                else if (contract.Type == ProcessType.Kiwoon)
+                {
+                    lock (kiwoomMasteringLock)
+                        contract.NowOperating = false;
+                }
+
             }
         }
 
@@ -283,6 +364,11 @@ namespace MTree.RealTimeProvider
                     dest.PreviousVolume = source.PreviousVolume;
                     dest.FaceValue = source.FaceValue;
 
+                    if (dest.BasisPrice != 0 && dest.PBR != 0 && dest.ShareVolume != 0)
+                    {
+                        dest.Asset = (dest.BasisPrice / dest.PBR) * dest.ShareVolume;
+                        dest.NetIncome = (dest.BasisPrice / dest.PBR) * dest.ShareVolume;
+                    }
                     state = MasteringStateType.Finished;
                 }
             }
@@ -328,6 +414,49 @@ namespace MTree.RealTimeProvider
             {
                 lock (masteringLock)
                     mastering.EbestState = state;
+            }
+        }
+
+        private void CopyStockMasterFromKiwoom(StockMastering mastering, StockMaster source)
+        {
+            var state = MasteringStateType.Ready;
+
+            try
+            {
+                if (source != null)
+                {
+                    StockMaster dest = mastering.Stock;
+
+                    if (source.Code != dest.Code)
+                    {
+                        logger.Error($"Kiwoom stock mastering, Code not matched, {source.Code} != {dest.Code}");
+                        return;
+                    }
+
+                    dest.PER = source.PER;
+                    dest.EPS = source.EPS;
+                    dest.PBR = source.PBR;
+                    dest.BPS = source.BPS;
+                    dest.ROE = source.ROE;
+                    dest.EV = source.EV;
+
+                    if (dest.BasisPrice != 0 && dest.PBR != 0 && dest.ShareVolume != 0)
+                    {
+                        dest.Asset = (dest.BasisPrice / dest.PBR) * dest.ShareVolume;
+                        dest.NetIncome = (dest.BasisPrice / dest.PBR) * dest.ShareVolume;
+                    }
+
+                    state = MasteringStateType.Finished;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+            finally
+            {
+                lock (masteringLock)
+                    mastering.KiwoomState = state;
             }
         }
     }
