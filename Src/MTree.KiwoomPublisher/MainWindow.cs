@@ -15,6 +15,7 @@ namespace MTree.KiwoomPublisher
     public partial class MainWindow : Form
     {
         KiwoomPublisher kiwoomPublisher;
+
         public MainWindow()
         {
             InitializeComponent();

@@ -21,37 +21,37 @@ namespace MTree.Publisher
 
         public virtual Dictionary<string, string> GetStockCodeList()
         {
-            return new Dictionary<string, string>();
+            return null;
         }
 
         public virtual StockMaster GetStockMaster(string code)
         {
-            return new StockMaster();
+            return null;
         }
 
         public virtual bool IsSubscribable()
         {
-            return true;
+            return false;
         }
 
         public virtual bool SubscribeStock(string code)
         {
-            return true;
+            return false;
         }
 
         public virtual bool UnsubscribeStock(string code)
         {
-            return true;
+            return false;
         }
 
         public virtual bool SubscribeIndex(string code)
         {
-            return true;
+            return false;
         }
 
         public virtual bool UnsubscribeIndex(string code)
         {
-            return true;
+            return false;
         }
     }
 }
