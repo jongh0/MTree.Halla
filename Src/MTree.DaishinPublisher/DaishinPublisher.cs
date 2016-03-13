@@ -27,6 +27,7 @@ namespace MTree.DaishinPublisher
         private CpCybos sessionObj;
         private StockMst stockMstObj;
         private StockCur stockCurObj;
+        private StockJpbid biddingObj;
         #endregion
 
         public DaishinPublisher() : base()
@@ -42,7 +43,8 @@ namespace MTree.DaishinPublisher
                 stockCurObj = new StockCur();
                 stockCurObj.Received += stockCurObj_Received;
 
-                
+                biddingObj = new StockJpbid();
+                biddingObj.Received += BiddingSubscribeObj_Received;
             }
             catch (Exception ex)
             {
@@ -331,6 +333,118 @@ namespace MTree.DaishinPublisher
             catch (Exception ex)
             {
                 logger.Error(ex);
+            }
+        }
+
+        public bool SubscribeBidding(String code)
+        {
+            try
+            {
+                biddingObj.SetInputValue(0, "A" + code); // Add Prefix
+                biddingObj.Subscribe();
+            }
+            catch (Exception ex)
+            {
+                logger.Error($"Fail to start bidding subscribe for {code}. Error code:{biddingObj.GetDibStatus()}({biddingObj.GetDibMsg1()})");
+                logger.Error(ex.Message);
+            }
+            int subscribeRet = biddingObj.GetDibStatus();
+            if (subscribeRet == 0)
+            {
+                logger.Info($"Success to start bidding subscribe for {code}");
+            }
+            else
+            {
+                logger.Error($"Fail to start bidding subscribe for {code}. Error code:{subscribeRet}({biddingObj.GetDibMsg1()})");
+            }
+            return (subscribeRet == 0) ? true : false;
+        }
+        public bool UnsubscribeBidding(String code)
+        {
+            biddingObj.SetInputValue(0, "A" + code); // Add Prefix
+
+            try
+            {
+                biddingObj.Unsubscribe();
+            }
+            catch (Exception ex)
+            {
+                logger.Error($"Fail to start bidding unsubscribe for {code}. Error code:{biddingObj.GetDibStatus()}({biddingObj.GetDibMsg1()})");
+                logger.Error(ex.Message);
+            }
+
+            int subscribeRet = biddingObj.GetDibStatus();
+            if (subscribeRet == 0)
+            {
+                logger.Info($"Success to start bidding unsubscribe for {code}");
+            }
+            else
+            {
+                logger.Error($"Fail to start bidding unsubscribe for {code}. Error code:{subscribeRet}({biddingObj.GetDibMsg1()})");
+            }
+            return (subscribeRet == 0) ? true : false;
+        }
+        private void BiddingSubscribeObj_Received()
+        {
+            try
+            {
+                DateTime now = DateTime.Now;
+                BiddingPrice biddingList = new BiddingPrice();
+                biddingList.Bids = new List<BiddingPriceEntity>();
+                biddingList.Offers = new List<BiddingPriceEntity>();
+
+                string code = Convert.ToString(biddingObj.GetHeaderValue(0));
+                long time = Convert.ToInt64(biddingObj.GetHeaderValue(1));
+
+                if (code.Length != 0)
+                {
+                    biddingList.Code = code.Substring(1);// Remove Profix
+                }
+                biddingList.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 100), (int)(time % 100), now.Second, now.Millisecond); // Daishin doesn't provide second 
+                
+                // 1~5
+                int startIdx = 3;
+                int biddingCnt = 5;
+                for (int i = startIdx; i < startIdx + 4 * biddingCnt;)
+                {
+                    BiddingPriceEntity offerEntity = new BiddingPriceEntity();  // Sell
+                    BiddingPriceEntity bidEntity = new BiddingPriceEntity();    // Buy
+
+                    offerEntity.Index = (i - startIdx) / 4;
+                    bidEntity.Index = (i - startIdx) / 4;
+                    offerEntity.Price = (Int32)biddingObj.GetHeaderValue(i++);
+                    bidEntity.Price = (Int32)biddingObj.GetHeaderValue(i++);
+                    offerEntity.Amount = (Int32)biddingObj.GetHeaderValue(i++);
+                    bidEntity.Amount = (Int32)biddingObj.GetHeaderValue(i++);
+
+                    biddingList.Bids.Add(bidEntity);
+                    biddingList.Offers.Add(offerEntity);
+                }
+
+                // 6~10
+                startIdx = 27;
+                biddingCnt = 5;
+                for (int i = startIdx; i < startIdx + 4 * biddingCnt;)
+                {
+                    BiddingPriceEntity offerEntity = new BiddingPriceEntity();  // Sell
+                    BiddingPriceEntity bidEntity = new BiddingPriceEntity();    // Buy
+
+                    offerEntity.Index = (i - startIdx) / 4 + 5;
+                    bidEntity.Index = (i - startIdx) / 4 + 5;
+                    offerEntity.Price = (Int32)biddingObj.GetHeaderValue(i++);
+                    bidEntity.Price = (Int32)biddingObj.GetHeaderValue(i++);
+                    offerEntity.Amount = (Int32)biddingObj.GetHeaderValue(i++);
+                    bidEntity.Amount = (Int32)biddingObj.GetHeaderValue(i++);
+
+                    biddingList.Bids.Add(bidEntity);
+                    biddingList.Offers.Add(offerEntity);
+                }
+
+                //TODO: Send data to realtime provider
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex.Message);
             }
         }
 
