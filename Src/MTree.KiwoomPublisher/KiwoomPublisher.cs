@@ -12,6 +12,24 @@ using System.Threading.Tasks;
 
 namespace MTree.KiwoomPublisher
 {
+    enum KOAErrorCode
+    {
+        OP_ERR_NONE = 0,     //"정상처리"
+        OP_ERR_LOGIN = -100,  //"사용자정보교환에 실패하였습니다. 잠시후 다시 시작하여 주십시오."
+        OP_ERR_CONNECT = -101,  //"서버 접속 실패"
+        OP_ERR_VERSION = -102,  //"버전처리가 실패하였습니다.
+        OP_ERR_SISE_OVERFLOW = -200,  //”시세조회 과부하”
+        OP_ERR_RQ_STRUCT_FAIL = -201,  //”REQUEST_INPUT_st Failed”
+        OP_ERR_RQ_STRING_FAIL = -202,  //”요청 전문 작성 실패”
+        OP_ERR_ORD_WRONG_INPUT = -300,  //”주문 입력값 오류”
+        OP_ERR_ORD_WRONG_ACCNO = -301,  //”계좌비밀번호를 입력하십시오.”
+        OP_ERR_OTHER_ACC_USE = -302,  //”타인계좌는 사용할 수 없습니다.
+        OP_ERR_MIS_2BILL_EXC = -303,  //”주문가격이 20억원을 초과합니다.”
+        OP_ERR_MIS_5BILL_EXC = -304,  //”주문가격은 50억원을 초과할 수 없습니다.”
+        OP_ERR_MIS_1PER_EXC = -305,  //”주문수량이 총발행주수의 1%를 초과합니다.”
+        OP_ERR_MID_3PER_EXC = -306,  //”주문수량은 총발행주수의 3%를 초과할 수 없습니다.”
+    }
+
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
     public class KiwoomPublisher : BrokerageFirmBase
     {
@@ -27,6 +45,7 @@ namespace MTree.KiwoomPublisher
         
         const int BM_CLICK = 0X00F5;
         #endregion
+
 
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -106,7 +125,7 @@ namespace MTree.KiwoomPublisher
             }
             else
             {
-                logger.Error($"Login fail, return code: {e.nErrCode}");
+                logger.Error($"Login fail, return code: {e.nErrCode}. Message:{GetErrorMessage(e.nErrCode)}");
             }
 
             waitLoginEvent.Set();
@@ -153,6 +172,63 @@ namespace MTree.KiwoomPublisher
             return _scrNum.ToString();
         }
 
+        private string GetErrorMessage(int errorCode)
+        {
+            string errorMessage = "";
+            
+            switch ((KOAErrorCode)errorCode)
+            {
+
+                case KOAErrorCode.OP_ERR_NONE:
+                    errorMessage = "정상처리";
+                    break;
+                case KOAErrorCode.OP_ERR_LOGIN:
+                    errorMessage = "사용자정보교환에 실패하였습니다. 잠시 후 다시 시작하여 주십시오.";
+                    break;
+                case KOAErrorCode.OP_ERR_CONNECT:
+                    errorMessage = "서버 접속 실패";
+                    break;
+                case KOAErrorCode.OP_ERR_VERSION:
+                    errorMessage = "버전처리가 실패하였습니다";
+                    break;
+                case KOAErrorCode.OP_ERR_SISE_OVERFLOW:
+                    errorMessage = "시세조회 과부하";
+                    break;
+                case KOAErrorCode.OP_ERR_RQ_STRUCT_FAIL:
+                    errorMessage = "REQUEST_INPUT_st Failed";
+                    break;
+                case KOAErrorCode.OP_ERR_RQ_STRING_FAIL:
+                    errorMessage = "요청 전문 작성 실패";
+                    break;
+                case KOAErrorCode.OP_ERR_ORD_WRONG_INPUT:
+                    errorMessage = "주문 입력값 오류";
+                    break;
+                case KOAErrorCode.OP_ERR_ORD_WRONG_ACCNO:
+                    errorMessage = "계좌비밀번호를 입력하십시오.";
+                    break;
+                case KOAErrorCode.OP_ERR_OTHER_ACC_USE:
+                    errorMessage = "타인계좌는 사용할 수 없습니다.";
+                    break;
+                case KOAErrorCode.OP_ERR_MIS_2BILL_EXC:
+                    errorMessage = "주문가격이 20억원을 초과합니다.";
+                    break;
+                case KOAErrorCode.OP_ERR_MIS_5BILL_EXC:
+                    errorMessage = "주문가격은 50억원을 초과할 수 없습니다.";
+                    break;
+                case KOAErrorCode.OP_ERR_MIS_1PER_EXC:
+                    errorMessage = "주문수량이 총발행주수의 1%를 초과합니다.";
+                    break;
+                case KOAErrorCode.OP_ERR_MID_3PER_EXC:
+                    errorMessage = "주문수량은 총발행주수의 3%를 초과할 수 없습니다";
+                    break;
+                default:
+                    errorMessage = "알려지지 않은 오류입니다.";
+                    break;
+            }
+
+            return errorMessage;
+        }
+
         public bool GetQuote(string code, ref StockMaster stockMaster)
         {
             if (Monitor.TryEnter(lockObject, 1000 * 10) == false)
@@ -195,7 +271,7 @@ namespace MTree.KiwoomPublisher
                 }
                 else
                 {
-                    logger.Error($"Quoting request failed. Code: {code}, Quoting result: {ret}");
+                    logger.Error($"Quoting request failed. Code: {code}, Quoting result: {ret}. Message:{GetErrorMessage(ret)}");
                 }
             }
             catch (Exception ex)
@@ -241,6 +317,7 @@ namespace MTree.KiwoomPublisher
                     QuotingStockMaster.ROE = Convert.ToDouble(kiwoomObj.CommGetData(e.sTrCode, "", e.sRQName, 0, "ROE").Trim());
                     QuotingStockMaster.EV = Convert.ToDouble(kiwoomObj.CommGetData(e.sTrCode, "", e.sRQName, 0, "EV").Trim());
 
+                    Debugger.Break();
                 }
                 catch (Exception ex)
                 {
@@ -254,6 +331,25 @@ namespace MTree.KiwoomPublisher
                 }
             }
 
+        }
+
+        public override StockMaster GetStockMaster(string code)
+        {
+            var stockMaster = new StockMaster();
+
+            try
+            {
+                if (GetQuote(code, ref stockMaster))
+                {
+                    stockMaster.Code = code;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+
+            return stockMaster;
         }
 
         protected override void ServiceClient_Opened(object sender, EventArgs e)

@@ -23,7 +23,7 @@ namespace MTree.KiwoomPublisher
             Task.Run(() => {
                 System.Threading.Thread.Sleep(1000);
                 StockMaster master = new StockMaster();
-                kiwoomPublisher.GetQuote("000020", ref master);
+                kiwoomPublisher.GetQuote("000087", ref master);
             });
 #endif
         }
