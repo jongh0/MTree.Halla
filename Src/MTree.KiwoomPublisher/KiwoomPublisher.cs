@@ -331,11 +331,8 @@ namespace MTree.KiwoomPublisher
                     string ev = kiwoomObj.CommGetData(e.sTrCode, "", e.sRQName, 0, "EV").Trim();
                     if (ev != string.Empty)
                         QuotingStockMaster.EV = Convert.ToDouble(ev);
-<<<<<<< HEAD
-                    }
+
                     requestResult = true;
-=======
->>>>>>> origin/master
                 }
                 catch (Exception ex)
                 {
@@ -358,14 +355,10 @@ namespace MTree.KiwoomPublisher
             {
                 if (GetQuote(code, ref stockMaster) == true)
                     stockMaster.Code = code;
-<<<<<<< HEAD
-                }
                 else
                 {
                     stockMaster.Code = "";
                 }
-=======
->>>>>>> origin/master
             }
             catch (Exception ex)
             {
@@ -388,7 +381,6 @@ namespace MTree.KiwoomPublisher
             Logout();
             base.CloseClient();
         }
-<<<<<<< HEAD
 
         public override bool IsSubscribable()
         {
@@ -400,7 +392,5 @@ namespace MTree.KiwoomPublisher
             if (StockQuoteInterval > 0)
                 Thread.Sleep(StockQuoteInterval);
         }
-=======
->>>>>>> origin/master
     }
 }
