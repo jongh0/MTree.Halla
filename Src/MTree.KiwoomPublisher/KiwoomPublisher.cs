@@ -58,8 +58,12 @@ namespace MTree.KiwoomPublisher
 
         private ManualResetEvent waitLoginEvent = new ManualResetEvent(false);
 
+        private int StockQuoteInterval { get; set; } = 0;
+
         public KiwoomPublisher(AxKHOpenAPILib.AxKHOpenAPI axKHOpenAPI) : base()
         {
+            StockQuoteInterval = 1000 / 5;
+
             kiwoomObj = axKHOpenAPI;
             kiwoomObj.OnEventConnect += OnEventConnect;
             kiwoomObj.OnReceiveTrData += OnReceiveTrData;
@@ -249,6 +253,8 @@ namespace MTree.KiwoomPublisher
 
             try
             {
+                WaitQuotingLimit();
+
                 QuotingStockMaster = stockMaster;
                 QuotingStockMaster.Code = code;
 
@@ -382,6 +388,12 @@ namespace MTree.KiwoomPublisher
         public override bool IsSubscribable()
         {
             return false;
+        }
+
+        private void WaitQuotingLimit()
+        {
+            if (StockQuoteInterval > 0)
+                Thread.Sleep(StockQuoteInterval);
         }
     }
 }
