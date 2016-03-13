@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.ServiceModel;
 using System.Text;
 using System.Threading;
@@ -14,6 +15,19 @@ namespace MTree.KiwoomPublisher
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
     public class KiwoomPublisher : BrokerageFirmBase
     {
+        #region Dll Import
+        [DllImport("user32.dll")]
+        public static extern IntPtr FindWindow(string strClassName, string strWindowName);  //1. 찾고자하는 클래스이름, 2.캡션값
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr FindWindowEx(IntPtr hWnd1, IntPtr hWnd2, string Ipsz1, string Ipsz2);    //1.바로위의 부모값을 주고 2. 0이나 null 3,4.클래스명과 캡션명을 
+        
+        [DllImport("user32.dll")]
+        private static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
+        
+        const int BM_CLICK = 0X00F5;
+        #endregion
+
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         private AxKHOpenAPILib.AxKHOpenAPI kiwoomObj;
@@ -96,7 +110,35 @@ namespace MTree.KiwoomPublisher
             }
 
             waitLoginEvent.Set();
+            ClosePopup();
+        }
 
+        private bool ClosePopup()
+        {
+            try
+            {
+                IntPtr windowH = FindWindow(null, "khopenapi");
+
+                if (windowH != IntPtr.Zero)
+                {
+                    logger.Info($"khopenapi popup found");
+
+                    IntPtr buttonH = FindWindowEx(windowH, IntPtr.Zero, "Button", "확인");
+                    if (buttonH != IntPtr.Zero)
+                    {
+                        logger.Info($"확인 button clicked");
+                        SendMessage(buttonH, BM_CLICK, 0, 0);
+
+                        return true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                return false;
+            }
+            return false;
         }
         #endregion
 
@@ -169,7 +211,6 @@ namespace MTree.KiwoomPublisher
             return (ret > 0 && requestResult == true);
         }
 
-
         private void OnReceiveTrData(object sender, AxKHOpenAPILib._DKHOpenAPIEvents_OnReceiveTrDataEvent e)
         {
             // OPT1001 : 주식기본정보
@@ -192,20 +233,15 @@ namespace MTree.KiwoomPublisher
                         WaitQuotingEvent.Set();
                         return;
                     }
-                    QuotingStockMaster.Asset = Convert.ToInt64(kiwoomObj.CommGetData(e.sTrCode, "", e.sRQName, 0, "자본금").Trim());
-                    QuotingStockMaster.ShareVolume = Convert.ToInt64(kiwoomObj.CommGetData(e.sTrCode, "", e.sRQName, 0, "상장주식").Trim());
 
-                    //double BPS { get { return Asset / ShareVolume; } }
-                    //double PBR { get { return BasisPrice / BPS; } }
-                    //double EPS { get { return NetIncome / ShareVolume; } }
-                    //double PER { get { return BasisPrice / EPS; } }
-
-                    double bps = Convert.ToDouble(kiwoomObj.CommGetData(e.sTrCode, "", e.sRQName, 0, "BPS").Trim());
-                    double pbr = Convert.ToDouble(kiwoomObj.CommGetData(e.sTrCode, "", e.sRQName, 0, "PBR").Trim());
+                    QuotingStockMaster.PER = Convert.ToDouble(kiwoomObj.CommGetData(e.sTrCode, "", e.sRQName, 0, "PER").Trim());
+                    QuotingStockMaster.EPS= Convert.ToDouble(kiwoomObj.CommGetData(e.sTrCode, "", e.sRQName, 0, "EPS").Trim());
+                    QuotingStockMaster.PBR = Convert.ToDouble(kiwoomObj.CommGetData(e.sTrCode, "", e.sRQName, 0, "PBR").Trim());
+                    QuotingStockMaster.BPS = Convert.ToDouble(kiwoomObj.CommGetData(e.sTrCode, "", e.sRQName, 0, "BPS").Trim());
+                    QuotingStockMaster.ROE = Convert.ToDouble(kiwoomObj.CommGetData(e.sTrCode, "", e.sRQName, 0, "ROE").Trim());
+                    QuotingStockMaster.EV = Convert.ToDouble(kiwoomObj.CommGetData(e.sTrCode, "", e.sRQName, 0, "EV").Trim());
 
                     Debugger.Break();
-                    //logger.Trace(kiwoomObj.CommGetData(e.sTrCode, "", e.sRQName, i, "등락율"));
-                    //logger.Trace(kiwoomObj.CommGetData(e.sTrCode, "", e.sRQName, i, "거래량"));
                 }
                 catch (Exception ex)
                 {
@@ -220,6 +256,7 @@ namespace MTree.KiwoomPublisher
             }
 
         }
+
         protected override void ServiceClient_Opened(object sender, EventArgs e)
         {
             // Login이 완료된 후에 Publisher contract 등록

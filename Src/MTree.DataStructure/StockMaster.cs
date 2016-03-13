@@ -218,39 +218,45 @@ namespace MTree.DataStructure
         public Warning Overheated { get; set; }
 
         /// <summary>
-        /// 자산(Naver)
-        /// </summary>
+        /// 자산(Kiwoom & Daishin)
+        /// </summary>        
         public double Asset { get; set; }
 
         /// <summary>
-        /// Bookvalue Per Share
+        /// Bookvalue Per Share (Kiwoom)
         /// </summary>
-        [BsonIgnore]
-        public double BPS { get { return Asset / ShareVolume; } }
+        public double BPS { get; set; }
 
         /// <summary>
-        /// Price Earning Ratio 
+        /// Price Earning Ratio (Kiwoom)
         /// </summary>
-        [BsonIgnore]
-        public double PBR { get { return BasisPrice / BPS; } }
+        public double PBR { get; set; }
 
         /// <summary>
-        /// 당기순이익(Naver)
+        /// 당기순이익(Kiwoom & Daishin)
         /// </summary>
         [BsonElement("NI")]
         public double NetIncome { get; set; }
 
         /// <summary>
-        /// Earning Per Share
+        /// Earning Per Share (Kiwoom)
         /// </summary>
-        [BsonIgnore]
-        public double EPS { get { return NetIncome / ShareVolume; } }
+        public double EPS { get; set; }
 
         /// <summary>
-        /// Price Earning Ratio
+        /// Price Earning Ratio (Kiwoom)
         /// </summary>
-        [BsonIgnore]
-        public double PER { get { return BasisPrice / EPS; } }
+        public double PER { get; set; }
+
+        /// <summary>
+        /// Return On Equity (Kiwoom)
+        /// </summary>
+        public double ROE { get; set; }
+
+        /// <summary>
+        /// Enterprise Value (Kiwoom)
+        /// </summary>
+        public double EV { get; set; }
 
         /// <summary>
         /// 락(Ebest)
