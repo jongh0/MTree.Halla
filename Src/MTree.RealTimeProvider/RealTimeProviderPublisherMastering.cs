@@ -311,6 +311,7 @@ namespace MTree.RealTimeProvider
             }
             catch (Exception ex)
             {
+                logger.Error($"Stock mastering error, {contract.ToString()}");
                 logger.Error(ex);
             }
             finally
@@ -330,7 +331,6 @@ namespace MTree.RealTimeProvider
                     lock (kiwoomMasteringLock)
                         contract.NowOperating = false;
                 }
-
             }
         }
 
@@ -365,13 +365,10 @@ namespace MTree.RealTimeProvider
                     dest.FaceValue = source.FaceValue;
 
                     if (dest.BasisPrice != 0 && dest.PBR != 0 && dest.ShareVolume != 0)
-                    {
                         dest.Asset = (dest.BasisPrice / dest.PBR) * dest.ShareVolume;
-                    }
+
                     if (dest.BasisPrice != 0 && dest.PER != 0 && dest.ShareVolume != 0)
-                    {
                         dest.NetIncome = (dest.BasisPrice / dest.PER) * dest.ShareVolume;
-                    }
 
                     state = MasteringStateType.Finished;
                 }
@@ -445,13 +442,10 @@ namespace MTree.RealTimeProvider
                     dest.EV = source.EV;
 
                     if (dest.BasisPrice != 0 && dest.PBR != 0 && dest.ShareVolume != 0)
-                    {
                         dest.Asset = (dest.BasisPrice / dest.PBR) * dest.ShareVolume;
-                    }
+
                     if (dest.BasisPrice != 0 && dest.PER != 0 && dest.ShareVolume != 0)
-                    {
                         dest.NetIncome = (dest.BasisPrice / dest.PER) * dest.ShareVolume;
-                    }
 
                     state = MasteringStateType.Finished;
                 }

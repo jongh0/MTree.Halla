@@ -7,5 +7,7 @@
         public string TimeFormat { get; } = "HH:mm:ss.fff";
 
         public string DateTimeFormat { get; } = "yyyy-MM-dd HH:mm:ss.fff";
+
+        public bool OfflineMode { get; } = false;
     }
 }

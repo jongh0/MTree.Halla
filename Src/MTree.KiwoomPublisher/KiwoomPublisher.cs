@@ -256,7 +256,6 @@ namespace MTree.KiwoomPublisher
 
                 ret = kiwoomObj.CommRqData("주식기본정보", "OPT10001", 0, GetScrNum());
                 
-
                 if (ret == 0)
                 {
                     if (WaitQuotingEvent.WaitOne(1000 * 10) == true)
@@ -301,6 +300,7 @@ namespace MTree.KiwoomPublisher
                         WaitQuotingEvent.Set();
                         return;
                     }
+
                     string rxCode = kiwoomObj.CommGetData(e.sTrCode, "", e.sRQName, 0, "종목코드").Trim();
                     if (QuotingStockMaster.Code != rxCode)
                     {
@@ -314,16 +314,14 @@ namespace MTree.KiwoomPublisher
                     QuotingStockMaster.EPS= Convert.ToDouble(kiwoomObj.CommGetData(e.sTrCode, "", e.sRQName, 0, "EPS").Trim());
                     QuotingStockMaster.PBR = Convert.ToDouble(kiwoomObj.CommGetData(e.sTrCode, "", e.sRQName, 0, "PBR").Trim());
                     QuotingStockMaster.BPS = Convert.ToDouble(kiwoomObj.CommGetData(e.sTrCode, "", e.sRQName, 0, "BPS").Trim());
+
                     string roe = kiwoomObj.CommGetData(e.sTrCode, "", e.sRQName, 0, "ROE").Trim();
                     if (roe != string.Empty)
-                    {
                         QuotingStockMaster.ROE = Convert.ToDouble(roe);
-                    }
+
                     string ev = kiwoomObj.CommGetData(e.sTrCode, "", e.sRQName, 0, "EV").Trim();
                     if (ev != string.Empty)
-                    {
                         QuotingStockMaster.EV = Convert.ToDouble(ev);
-                    }
                 }
                 catch (Exception ex)
                 {
@@ -336,7 +334,6 @@ namespace MTree.KiwoomPublisher
                     WaitQuotingEvent.Set();
                 }
             }
-
         }
 
         public override StockMaster GetStockMaster(string code)
@@ -345,10 +342,8 @@ namespace MTree.KiwoomPublisher
 
             try
             {
-                if (GetQuote(code, ref stockMaster))
-                {
+                if (GetQuote(code, ref stockMaster) == true)
                     stockMaster.Code = code;
-                }
             }
             catch (Exception ex)
             {
@@ -370,11 +365,6 @@ namespace MTree.KiwoomPublisher
             // Logout한 이후 Process 종료시킨다
             Logout();
             base.CloseClient();
-        }
-
-        public override bool IsSubscribable()
-        {
-            return false;
         }
     }
 }
