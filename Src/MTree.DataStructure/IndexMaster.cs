@@ -10,6 +10,7 @@ namespace MTree.DataStructure
     [Serializable]
     public class IndexMaster : Subscribable
     {
+        [BsonElement("N")]
         public string Name { get; set; }
 
         [BsonElement("PCP")]

@@ -52,6 +52,7 @@ namespace MTree.DataStructure
         /// <summary>
         /// 종목명(Daishin)
         /// </summary>
+        [BsonElement("N")]
         public string Name { get; set; }
 
         /// <summary>

@@ -10,10 +10,13 @@ namespace MTree.DataStructure
     [Serializable]
     public class IndexConclusion : Conclusion
     {
+        [BsonElement("I")]
         public double Index { get; set; }
 
+        [BsonElement("Vo")]
         public double Volume { get; set; }
 
+        [BsonElement("Va")]
         public double Value { get; set; }
 
         [BsonElement("ULIC")]

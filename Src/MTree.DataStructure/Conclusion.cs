@@ -21,11 +21,13 @@ namespace MTree.DataStructure
     [Serializable]
     public class Conclusion : Subscribable
     {
+        [BsonElement("A")]
         public long Amount { get; set; }
 
         [BsonElement("MTT")]
         public MarketTimeType MarketTimeType { get; set; }
 
+        [BsonElement("P")]
         public float Price { get; set; }
 
         public override string ToString()

@@ -13,6 +13,7 @@ namespace MTree.DataStructure
         /// <summary>
         /// 지정유무
         /// </summary>
+        [BsonElement("ID")]
         public bool IsDesignated { get; set; }
 
         /// <summary>
@@ -37,7 +38,7 @@ namespace MTree.DataStructure
 
         public override string ToString()
         {
-            return $"{IsDesignated}, {Disclosure}, {Start}, {End}, {Reason}";
+            return $"{IsDesignated}/{Disclosure}/{Start}/{End}/{Reason}";
         }
     }
 }

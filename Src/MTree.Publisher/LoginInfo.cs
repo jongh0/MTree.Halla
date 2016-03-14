@@ -39,7 +39,7 @@ namespace MTree.Publisher
 
         public override string ToString()
         {
-            return $"{State}, {Firm}, {Server}, {Id}";
+            return $"{State}/{Firm}/{ServerAddress}/{ServerPort}/{UserId}/{Id}";
         }
     }
 }

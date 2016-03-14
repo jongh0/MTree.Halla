@@ -10,15 +10,18 @@ namespace MTree.DataStructure
     [Serializable]
     public class BiddingPriceEntity
     {
+        [BsonElement("I")]
         public int Index { get; set; }
 
+        [BsonElement("P")]
         public float Price { get; set; }
 
+        [BsonElement("A")]
         public long Amount { get; set; }
 
         public override string ToString()
         {
-            return $"{Index}, {Price}, {Amount}";
+            return $"{Index}/{Price}/{Amount}";
         }
     }
 }

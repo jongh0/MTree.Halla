@@ -10,20 +10,16 @@ namespace MTree.DataStructure
     [Serializable]
     public class BiddingPrice : Subscribable
     {
+        [BsonElement("Bs")]
         public List<BiddingPriceEntity> Bids { get; set; }
 
+        [BsonElement("Os")]
         public List<BiddingPriceEntity> Offers { get; set; }
-
-        public BiddingPrice()
-        {
-            // TODO : 생성해주는게 맞나?
-            //Bids = new List<BiddingPriceEntity>();
-            //Offers = new List<BiddingPriceEntity>();
-        }
 
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
+
             try
             {
                 sb.Append(base.ToString());
