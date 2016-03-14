@@ -92,15 +92,12 @@ namespace MTree.RealTimeProvider
                 ProcessUtility.Start(ProcessType.DaishinPopupStopper);
 
                 // Daishin
-                int daishinProcessCount = StockCodeList.Count / 200 + 1; // TODO : BiddingPrice 때문에 더 띄워야하나?
-                //daishinProcessCount = 3;
-
+                int daishinProcessCount = StockCodeList.Count * 2 / 200;
                 for (int i = 0; i < daishinProcessCount; i++)
                     ProcessUtility.Start(ProcessType.Daishin);
 
                 // Ebest
                 int ebestProcessCount = 3;
-
                 for (int i = 0; i < ebestProcessCount; i++)
                     ProcessUtility.Start(ProcessType.Ebest);
 
