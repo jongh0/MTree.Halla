@@ -58,12 +58,10 @@ namespace MTree.KiwoomPublisher
 
         private ManualResetEvent waitLoginEvent = new ManualResetEvent(false);
 
-        private int StockQuoteInterval { get; set; } = 0;
+        private int StockQuoteInterval { get; set; } = 1000 / 5;
 
         public KiwoomPublisher(AxKHOpenAPILib.AxKHOpenAPI axKHOpenAPI) : base()
         {
-            StockQuoteInterval = 1000 / 5;
-
             kiwoomObj = axKHOpenAPI;
             kiwoomObj.OnEventConnect += OnEventConnect;
             kiwoomObj.OnReceiveTrData += OnReceiveTrData;
@@ -79,28 +77,22 @@ namespace MTree.KiwoomPublisher
 
         public bool Login()
         {
-            bool ret = false;
-
-            waitLoginEvent.Reset();
             try
             {
                 if (kiwoomObj.CommConnect() == 0)
                 {
                     logger.Info("Login window open success");
-                    ret = true;
+                    return true;
                 }
-                else
-                {
-                    logger.Error("Login window open fail");
-                }
+
+                logger.Error("Login window open fail");
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
-                return false;
             }
 
-            return ret;
+            return false;
         }
 
         public bool Logout()
@@ -110,30 +102,41 @@ namespace MTree.KiwoomPublisher
                 kiwoomObj.CommTerminate();
                 LoginInstance.State = StateType.Logout;
                 logger.Info("Logout success");
+                return true;
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
-                return false;
             }
 
-            return true;
+            return false;
         }
 
         private void OnEventConnect(object sender, AxKHOpenAPILib._DKHOpenAPIEvents_OnEventConnectEvent e)
         {
-            if (e.nErrCode == 0)
+            try
             {
-                logger.Info("Login sucess");
-                LoginInstance.State = StateType.Login;
+                if (e.nErrCode == 0)
+                {
+                    logger.Info("Login sucess");
+                    LoginInstance.State = StateType.Login;
+                }
+                else
+                {
+                    logger.Error($"Login fail, return code: {e.nErrCode}. Message:{GetErrorMessage(e.nErrCode)}");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                logger.Error($"Login fail, return code: {e.nErrCode}. Message:{GetErrorMessage(e.nErrCode)}");
+                logger.Error(ex);
             }
+            finally
+            {
+                ClosePopup();
 
-            waitLoginEvent.Set();
-            ClosePopup();
+                Thread.Sleep(5000); // Login이 바로되지 않아서..
+                waitLoginEvent.Set();
+            }
         }
 
         private bool ClosePopup()
