@@ -17,7 +17,7 @@ namespace MTree.DataStructure
 
     public enum MarketType
     {
-        UNKNOWN,
+        Unknown,
         INDEX,
         KOSPI,
         KOSDAQ,
@@ -43,7 +43,7 @@ namespace MTree.DataStructure
         public string Code { get; set; }
 
         [BsonElement("M")]
-        public MarketType Market { get; set; } = MarketType.UNKNOWN;
+        public MarketType Market { get; set; } = MarketType.Unknown;
 
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime Time { get; set; }

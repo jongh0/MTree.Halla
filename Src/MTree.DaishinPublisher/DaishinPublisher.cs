@@ -45,6 +45,8 @@ namespace MTree.DaishinPublisher
 
                 biddingObj = new StockJpbid();
                 biddingObj.Received += biddingObj_Received;
+
+                GetStockCodeList();
             }
             catch (Exception ex)
             {
@@ -478,17 +480,13 @@ namespace MTree.DaishinPublisher
                 objList.AddRange((object[])codeMgr.GetStockListByMarket(CPE_MARKET_KIND.CPC_MARKET_FREEBOARD));
                 objList.AddRange((object[])codeMgr.GetStockListByMarket(CPE_MARKET_KIND.CPC_MARKET_KRX));
 
-                foreach (string code in objList)
+                foreach (string fullCode in objList)
                 {
                     var codeEntity = new CodeEntity();
-                    codeEntity.Code = code.Substring(1);
-                    codeEntity.Name = codeMgr.CodeToName(code);
-                    codeEntity.Market = MarketType.KOSPI; // TODO : Market type 지정
+                    codeEntity.Code = fullCode.Substring(1);
+                    codeEntity.Name = codeMgr.CodeToName(fullCode);
+                    codeEntity.Market = CodeEntity.ConvertToMarketType(fullCode);
                     codeList.Add(codeEntity.Code, codeEntity);
-
-                    // TODO: KOSPI, KOSDAQ, ETF, ETN, ELW 구분
-                    // 대신의 경우 Q이면 ETN
-                    //if (code[0] == 'Q') 
                 }
 
                 logger.Info($"Stock code list query done, Count: {codeList.Count}");

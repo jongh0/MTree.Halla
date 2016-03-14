@@ -13,7 +13,7 @@ namespace MTree.DataStructure
 
         public string Name { get; set; }
 
-        public MarketType Market { get; set; } = MarketType.UNKNOWN;
+        public MarketType Market { get; set; } = MarketType.Unknown;
 
         public override string ToString()
         {
@@ -24,10 +24,25 @@ namespace MTree.DataStructure
         {
             switch (entity.Market)
             {
-                case MarketType.KOSPI:
-                    return "A" + entity.Code;
+                case MarketType.ELW:
+                    return "J" + entity.Code;
+                case MarketType.ETN:
+                    return "Q" + entity.Code;
                 default:
-                    return entity.Code;
+                    return "A" + entity.Code;
+            }
+        }
+
+        public static MarketType ConvertToMarketType(string fullCode)
+        {
+            switch (fullCode[0])
+            {
+                case 'J':
+                    return MarketType.ELW;
+                case 'Q':
+                    return MarketType.ETN;
+                default:
+                    return MarketType.KOSPI;
             }
         }
     }
