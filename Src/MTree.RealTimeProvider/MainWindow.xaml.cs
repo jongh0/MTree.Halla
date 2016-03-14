@@ -3,6 +3,7 @@ using System.ServiceModel;
 using System.Threading;
 using System.Threading.Tasks;
 using MTree.Utility;
+using MTree.Configuration;
 
 namespace MTree.RealTimeProvider
 {
@@ -53,7 +54,8 @@ namespace MTree.RealTimeProvider
         {
             logger.Info("RealTimeHost opened");
 
-            ProcessUtility.Start(ProcessType.DaishinMaster);
+            if (Config.General.OfflineMode == false)
+                ProcessUtility.Start(ProcessType.DaishinMaster);
         }
     }
 }
