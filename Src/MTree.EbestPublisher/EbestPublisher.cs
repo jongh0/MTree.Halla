@@ -16,7 +16,6 @@ namespace MTree.EbestPublisher
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         private object lockObject = new object();
-        private bool requestResult = false;
 
         private const int maxSubscribeCount = 200;
         private int subscribeCount = 0;
@@ -102,8 +101,6 @@ namespace MTree.EbestPublisher
         {
             if (bIsSystemError == true)
                 logger.Error($"bIsSystemError: {bIsSystemError}, nMessageCode: {nMessageCode}, szMessage: {szMessage}");
-
-            requestResult = false;
         }
 
         private void queryObj_ReceiveData(string szTrCode)
@@ -435,22 +432,27 @@ namespace MTree.EbestPublisher
 
         private void VolatilityInterruptionReceived(string szTrCode)
         {
-            CircuitBreak cb = new CircuitBreak();
-            cb.Code = viSubscribingObj.GetFieldData("OutBlock", "shcode");
-            cb.CircuitBreakState = (CircuitBreakType)Convert.ToInt32(viSubscribingObj.GetFieldData("OutBlock", "vi_gubun"));
-            if (cb.CircuitBreakState == CircuitBreakType.StaticInvoke)
+            try
             {
-                cb.BasePrice = Convert.ToInt64(viSubscribingObj.GetFieldData("OutBlock", "svi_recprice"));
+                CircuitBreak circuitBreak = new CircuitBreak();
+                circuitBreak.Code = viSubscribingObj.GetFieldData("OutBlock", "shcode");
+                circuitBreak.CircuitBreakState = (CircuitBreakType)Convert.ToInt32(viSubscribingObj.GetFieldData("OutBlock", "vi_gubun"));
+
+                if (circuitBreak.CircuitBreakState == CircuitBreakType.StaticInvoke)
+                    circuitBreak.BasePrice = Convert.ToSingle(viSubscribingObj.GetFieldData("OutBlock", "svi_recprice"));
+                else if (circuitBreak.CircuitBreakState == CircuitBreakType.DynamicInvoke)
+                    circuitBreak.BasePrice = Convert.ToSingle(viSubscribingObj.GetFieldData("OutBlock", "dvi_recprice"));
+                else
+                    circuitBreak.BasePrice = 0;
+
+                circuitBreak.InvokePrice = Convert.ToSingle(viSubscribingObj.GetFieldData("OutBlock", "vi_trgprice"));
+
+                ServiceClient.PublishCircuitBreak(circuitBreak);
             }
-            else if (cb.CircuitBreakState == CircuitBreakType.DynamicInvoke)
+            catch (Exception ex)
             {
-                cb.BasePrice = Convert.ToInt64(viSubscribingObj.GetFieldData("OutBlock", "dvi_recprice"));
+                logger.Error(ex);
             }
-            else
-            {
-                cb.BasePrice = 0;
-            }
-            cb.InvokePrice = Convert.ToInt64(viSubscribingObj.GetFieldData("OutBlock", "vi_trgprice"));
         }
 
         public bool GetQuote(string code, ref StockMaster stockMaster)
@@ -468,33 +470,31 @@ namespace MTree.EbestPublisher
             }
 
             logger.Info($"Start quoting, Code: {code}");
-            requestResult = false;
+
             int ret = -1;
 
             try
             {
-                QuotingStockMaster = stockMaster;
-
                 WaitQuotingLimit();
+                QuotingStockMaster = stockMaster;
 
                 stockQuotingObj.SetFieldData("t1102InBlock", "shcode", 0, code);
                 ret = stockQuotingObj.Request(false);
 
                 if (ret > 0)
                 {
-                    if (WaitQuotingEvent.WaitOne(1000 * 10) == true)
+                    if (WaitQuotingEvent.WaitOne(1000 * 10) == true &&
+                        QuotingStockMaster.Code != string.Empty)
                     {
                         logger.Info($"Quoting done. Code: {code}");
+                        return true;
                     }
-                    else
-                    {
-                        logger.Error($"Quoting timeout. Code: {code}");
-                        ret = -1;
-                    }
+
+                    logger.Error($"Quoting timeout. Code: {code}");
                 }
                 else
                 {
-                    logger.Error($"Quoting request failed. Code: {code}, Quoting result: {ret}");
+                    logger.Error($"Quoting request failed. Code: {code}, result: {ret}");
                 }
             }
             catch (Exception ex)
@@ -507,7 +507,7 @@ namespace MTree.EbestPublisher
                 Monitor.Exit(lockObject);
             }
 
-            return (ret > 0 && requestResult == true);
+            return false;
         }
 
         public bool GetQuote(string code, ref IndexMaster indexMaster)
@@ -526,11 +526,11 @@ namespace MTree.EbestPublisher
 
             logger.Info($"Start quoting, Code: {code}");
 
-            requestResult = false;
             int ret = -1;
 
             try
             {
+                WaitQuotingLimit();
                 QuotingIndexMaster = indexMaster;
 
                 indexQuotingObj.SetFieldData("t1511InBlock", "upcode", 0, code);
@@ -538,15 +538,14 @@ namespace MTree.EbestPublisher
 
                 if (ret > 0)
                 {
-                    if (WaitQuotingEvent.WaitOne(1000 * 10) == true)
+                    if (WaitQuotingEvent.WaitOne(1000 * 10) == true &&
+                        QuotingIndexMaster.Code != string.Empty)
                     {
                         logger.Info($"Quoting done. Code: {code}");
+                        return true;
                     }
-                    else
-                    {
-                        logger.Error($"Quoting timeout. Code: {code}");
-                        ret = -1;
-                    }
+
+                    logger.Error($"Quoting timeout. Code: {code}");
                 }
                 else
                 {
@@ -563,7 +562,7 @@ namespace MTree.EbestPublisher
                 Monitor.Exit(lockObject);
             }
 
-            return (ret > 0 && requestResult == true);
+            return false;
         }
 
         private void StockMasterReceived()
@@ -586,7 +585,6 @@ namespace MTree.EbestPublisher
                     logger.Error("previous volume is null");
                     temp = "0";
                 }
-                //QuotingStockMaster.PreviousVolume = int.Parse(temp); //전일거래량 => Daishin에서 조회
 
                 temp = stockQuotingObj.GetFieldData("t1102OutBlock", "abscnt", 0);
                 if (temp == "")
@@ -594,6 +592,7 @@ namespace MTree.EbestPublisher
                     logger.Error("Circulating volume is null");
                     temp = "0";
                 }
+
                 QuotingStockMaster.CirculatingVolume = int.Parse(temp) * 1000;  //유통주식수
 
                 string valueAltered = stockQuotingObj.GetFieldData("t1102OutBlock", "info1", 0);
@@ -616,12 +615,9 @@ namespace MTree.EbestPublisher
                     QuotingStockMaster.ValueAltered = ValueAlteredType.CapitalReduction;
                 else
                     QuotingStockMaster.ValueAltered = ValueAlteredType.None;
-
-                requestResult = true;
             }
             catch (Exception ex)
             {
-                requestResult = false;
                 QuotingStockMaster.Code = string.Empty;
                 logger.Error(ex);
             }
@@ -649,12 +645,9 @@ namespace MTree.EbestPublisher
                 temp = indexQuotingObj.GetFieldData("t1511OutBlock", "jnilvalue", 0);
                 if (temp == "") temp = "0";
                 QuotingIndexMaster.PreviousTradeCost = Convert.ToInt64(temp);  //전일거래대금
-
-                requestResult = true;
             }
             catch (Exception ex)
             {
-                requestResult = false;
                 QuotingIndexMaster.Code = string.Empty;
                 logger.Error(ex);
             }
@@ -667,18 +660,10 @@ namespace MTree.EbestPublisher
         public override StockMaster GetStockMaster(string code)
         {
             var stockMaster = new StockMaster();
+            stockMaster.Code = code;
 
-            try
-            {
-                if (GetQuote(code, ref stockMaster))
-                {
-                    stockMaster.Code = code;
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-            }
+            if (GetQuote(code, ref stockMaster) == false)
+                stockMaster.Code = string.Empty;
 
             return stockMaster;
         }

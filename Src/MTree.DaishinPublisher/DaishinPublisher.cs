@@ -45,8 +45,6 @@ namespace MTree.DaishinPublisher
 
                 biddingObj = new StockJpbid();
                 biddingObj.Received += biddingObj_Received;
-
-                GetStockCodeList();
             }
             catch (Exception ex)
             {
@@ -79,15 +77,11 @@ namespace MTree.DaishinPublisher
 
             logger.Info($"Start quoting, Code: {code}");
 
-            int ret = -1;
+            short ret = -1;
 
             try
             {
                 WaitQuotingLimit();
-
-                stockMaster.Code = code;
-                if (code[0] != 'A')
-                    code = "A" + code;
 
                 QuotingStockMaster = stockMaster;
 
@@ -96,19 +90,18 @@ namespace MTree.DaishinPublisher
 
                 if (ret == 0)
                 {
-                    if (WaitQuotingEvent.WaitOne(1000 * 10) == true)
+                    if (WaitQuotingEvent.WaitOne(1000 * 10) == true && 
+                        QuotingStockMaster.Code != string.Empty)
                     {
-                        logger.Info($"Quoting done. Code: {code.Substring(1)}");
+                        logger.Info($"Quoting done. Code: {code}");
+                        return true;
                     }
-                    else
-                    {
-                        logger.Error($"Quoting timeout. Code: {code.Substring(1)}");
-                        ret = -1;
-                    }
+
+                    logger.Error($"Quoting failed. Code: {code}");
                 }
                 else
                 {
-                    logger.Error($"Quoting request failed. Code: {code.Substring(1)}, Quoting result: {ret}");
+                    logger.Error($"Quoting request failed. Code: {code}, result: {ret}");
                 }
             }
             catch (Exception ex)
@@ -121,35 +114,18 @@ namespace MTree.DaishinPublisher
                 Monitor.Exit(lockObject);
             }
 
-            return (ret == 0);
+            return false;
         }
 
         private void StockMasterReceived()
         {
             try
             {
-                var value0 = stockMstObj.GetHeaderValue(0);
-                if (value0 == null || value0.ToString().Length == 0)
-                {
-                    if (QuotingStockMaster == null)
-                        QuotingStockMaster.Code = string.Empty;
+                if (QuotingStockMaster == null)
                     return;
-                }
 
                 // 0 - (string) 종목 코드
                 string code = stockMstObj.GetHeaderValue(0).ToString().Substring(1);
-
-                if (QuotingStockMaster == null)
-                {
-                    logger.Error($"Current quoting master is not assigned. Received Code: {code}");
-                    return;
-                }
-
-                if (QuotingStockMaster.Code != code)
-                {
-                    logger.Warn($"Different quoting code, {QuotingStockMaster.Code} != {code}");
-                    return;
-                }
 
                 // 1 - (string) 종목 명
                 QuotingStockMaster.Name = stockMstObj.GetHeaderValue(1).ToString();
@@ -231,7 +207,7 @@ namespace MTree.DaishinPublisher
 
         public override bool SubscribeStock(string code)
         {
-            int status = 1;
+            short status = 1;
 
             try
             {
@@ -264,7 +240,7 @@ namespace MTree.DaishinPublisher
 
         public override bool UnsubscribeStock(string code)
         {
-            int status = 1;
+            short status = 1;
 
             try
             {
@@ -340,7 +316,7 @@ namespace MTree.DaishinPublisher
 
         public override bool SubscribeBidding(string code)
         {
-            int status = 1;
+            short status = 1;
 
             try
             {
@@ -373,7 +349,7 @@ namespace MTree.DaishinPublisher
 
         public override bool UnsubscribeBidding(string code)
         {
-            int status = 1;
+            short status = 1;
 
             try
             {
@@ -502,16 +478,12 @@ namespace MTree.DaishinPublisher
         public override StockMaster GetStockMaster(string code)
         {
             var stockMaster = new StockMaster();
+            stockMaster.Code = code;
 
-            try
-            {
-                GetQuote(code, ref stockMaster);
-                stockMaster.Code = code;
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-            }
+            if (GetQuote(code, ref stockMaster) == true)
+                stockMaster.Code = CodeEntity.RemovePrefix(code);
+            else
+                stockMaster.Code = string.Empty;
 
             return stockMaster;
         }
