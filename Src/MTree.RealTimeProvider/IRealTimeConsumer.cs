@@ -11,20 +11,17 @@ namespace MTree.RealTimeProvider
         void NoOperation();
 
         [OperationContract(IsOneWay = true)]
-        void RegisterSubscribeContract(Guid clientId, SubscribeContract contract);
+        void RegisterContract(Guid clientId, SubscribeContract contract);
 
         [OperationContract(IsOneWay = true)]
-        void UnregisterSubscribeContractAll(Guid clientId);
+        void UnregisterContractAll(Guid clientId);
 
         [OperationContract(IsOneWay = true)]
-        void UnregisterSubscribeContract(Guid clientId, SubscribeType type);
+        void UnregisterContract(Guid clientId, SubscribeType type);
     }
 
     public interface IRealTimeConsumerCallback
     {
-        [OperationContract(IsOneWay = true)]
-        void NoOperation();
-
         [OperationContract(IsOneWay = true)]
         void CloseClient();
 

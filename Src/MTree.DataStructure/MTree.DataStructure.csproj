@@ -60,6 +60,7 @@
     <Compile Include="BiddingPrice.cs" />
     <Compile Include="BiddingPriceEntity.cs" />
     <Compile Include="CircuitBreak.cs" />
+    <Compile Include="CodeEntity.cs" />
     <Compile Include="Conclusion.cs" />
     <Compile Include="IndexConclusion.cs" />
     <Compile Include="IndexMaster.cs" />

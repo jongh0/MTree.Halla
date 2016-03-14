@@ -15,8 +15,11 @@ namespace MTree.RealTimeProvider
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private Dictionary<string, string> StockCodeList { get; set; } = null;
-        private List<StockMastering> StockMasteringList { get; set; } = new List<StockMastering>();
+        private Dictionary<string, CodeEntity> StockCodeList { get; set; } = null;
+        private List<StockMastering> StockMasteringList { get; } = new List<StockMastering>();
+
+        private Dictionary<string, CodeEntity> IndexCodeList { get; set; } = null;
+        private List<IndexMastering> IndexMasteringList { get; } = new List<IndexMastering>();
 
         public RealTimeProvider()
         {

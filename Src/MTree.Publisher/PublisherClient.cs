@@ -19,14 +19,14 @@ namespace MTree.Publisher
             base.Channel.NoOperation();
         }
 
-        public void RegisterPublishContract(Guid clientId, PublishContract contract)
+        public void RegisterContract(Guid clientId, PublishContract contract)
         {
-            base.Channel.RegisterPublishContract(clientId, contract);
+            base.Channel.RegisterContract(clientId, contract);
         }
 
-        public void UnregisterPublishContract(Guid clientId)
+        public void UnregisterContract(Guid clientId)
         {
-            base.Channel.UnregisterPublishContract(clientId);
+            base.Channel.UnregisterContract(clientId);
         }
 
         public void PublishBiddingPrice(BiddingPrice biddingPrice)

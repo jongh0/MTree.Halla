@@ -74,10 +74,10 @@ namespace MTree.HistorySaver
         {
             base.ServiceClient_Opened(sender, e);
 
-            ServiceClient.RegisterSubscribeContract(ClientId, new SubscribeContract(SubscribeType.StockMaster));
-            ServiceClient.RegisterSubscribeContract(ClientId, new SubscribeContract(SubscribeType.BiddingPrice, SubscribeScope.All));
-            ServiceClient.RegisterSubscribeContract(ClientId, new SubscribeContract(SubscribeType.StockConclusion, SubscribeScope.All));
-            ServiceClient.RegisterSubscribeContract(ClientId, new SubscribeContract(SubscribeType.IndexConclusion, SubscribeScope.All));
+            ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeType.StockMaster));
+            ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeType.BiddingPrice, SubscribeScope.All));
+            ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeType.StockConclusion, SubscribeScope.All));
+            ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeType.IndexConclusion, SubscribeScope.All));
         }
 
         private void ProcessBiddingPriceQueue()

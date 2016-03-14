@@ -12,10 +12,10 @@ namespace MTree.RealTimeProvider
         void NoOperation();
 
         [OperationContract]
-        void RegisterPublishContract(Guid clientId, PublishContract contract);
+        void RegisterContract(Guid clientId, PublishContract contract);
 
         [OperationContract(IsOneWay = true)]
-        void UnregisterPublishContract(Guid clientId);
+        void UnregisterContract(Guid clientId);
 
         [OperationContract(IsOneWay = true)]
         void PublishBiddingPrice(BiddingPrice biddingPrice);
@@ -33,13 +33,10 @@ namespace MTree.RealTimeProvider
     public interface IRealTimePublisherCallback
     {
         [OperationContract(IsOneWay = true)]
-        void NoOperation();
-
-        [OperationContract(IsOneWay = true)]
         void CloseClient();
 
         [OperationContract]
-        Dictionary<string, string> GetStockCodeList();
+        Dictionary<string, CodeEntity> GetStockCodeList();
 
         [OperationContract]
         StockMaster GetStockMaster(string code);
@@ -58,5 +55,11 @@ namespace MTree.RealTimeProvider
 
         [OperationContract]
         bool UnsubscribeIndex(string code);
+
+        [OperationContract]
+        bool SubscribeBidding(string code);
+
+        [OperationContract]
+        bool UnsubscribeBidding(string code);
     }
 }

@@ -67,6 +67,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="IndexMastering.cs" />
     <Compile Include="IRealTimeConsumer.cs" />
     <Compile Include="PublishContract.cs" />
     <Compile Include="RealTimeBase.cs" />

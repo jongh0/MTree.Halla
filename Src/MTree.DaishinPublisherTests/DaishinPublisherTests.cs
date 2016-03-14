@@ -40,7 +40,7 @@ namespace MTree.DaishinPublisher.Tests
         {
             int cnt = 0;
             DaishinPublisher publisher = new DaishinPublisher();
-            Dictionary<string, string> list = publisher.GetStockCodeList();
+            Dictionary<string, CodeEntity> list = publisher.GetStockCodeList();
             Assert.IsTrue(cnt > 0);
         }
     }

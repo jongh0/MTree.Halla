@@ -30,12 +30,11 @@ namespace MTree.RealTimeProvider
             {
                 LaunchClientProcess();
 
-                foreach (var code in StockCodeList)
+                foreach (var codeEntity in StockCodeList.Values)
                 {
                     var mastering = new StockMastering();
-                    mastering.Stock = new StockMaster();
-                    mastering.Stock.Code = code.Key;
-                    mastering.Stock.Name = code.Value;
+                    mastering.Stock.Code = codeEntity.Code;
+                    mastering.Stock.Name = codeEntity.Name;
                     mastering.Stock.Time = DateTime.Now;
 
                     StockMasteringList.Add(mastering);
@@ -58,7 +57,7 @@ namespace MTree.RealTimeProvider
                 logger.Info($"Stock mastering done, Elapsed time: {sw.Elapsed.ToString()}");
 
                 Task.Run(() => StartStockMasterPublishing());
-                Task.Run(() => StartSubscribeCodeDistributing());
+                Task.Run(() => StartCodeDistributing());
             }
         }
 
@@ -293,14 +292,22 @@ namespace MTree.RealTimeProvider
         {
             try
             {
-                var master = contract.Callback.GetStockMaster(mastering.Stock.Code);
-                
+                var codeEntity = StockCodeList[mastering.Stock.Code];
+                var code = codeEntity.Code;
+
+                if (contract.Type == ProcessType.Daishin)
+                    code = CodeEntity.ConvertToDaishinCode(codeEntity);
+
+                StockMaster master = contract.Callback.GetStockMaster(code);
+
                 if (contract.Type == ProcessType.Daishin)
                     CopyStockMasterFromDaishin(mastering, master);
                 else if (contract.Type == ProcessType.Ebest)
                     CopyStockMasterFromEbest(mastering, master);
                 else if (contract.Type == ProcessType.Kiwoon)
                     CopyStockMasterFromKiwoom(mastering, master);
+                else
+                    logger.Warn("Wrong contract type for stock mastering");
 
 #if false
                 if (mastering.KiwoomState == MasteringStateType.Finished && 
@@ -310,7 +317,6 @@ namespace MTree.RealTimeProvider
                     logger.Info(mastering.Stock.ToString());
                 }
 #endif
-
             }
             catch (Exception ex)
             {

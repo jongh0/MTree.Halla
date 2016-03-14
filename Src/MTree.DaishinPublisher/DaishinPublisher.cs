@@ -44,7 +44,7 @@ namespace MTree.DaishinPublisher
                 stockCurObj.Received += stockCurObj_Received;
 
                 biddingObj = new StockJpbid();
-                biddingObj.Received += BiddingSubscribeObj_Received;
+                biddingObj.Received += biddingObj_Received;
             }
             catch (Exception ex)
             {
@@ -233,7 +233,7 @@ namespace MTree.DaishinPublisher
 
             try
             {
-                stockCurObj.SetInputValue(0, "A" + code); // Add Prefix
+                stockCurObj.SetInputValue(0, code);
                 stockCurObj.Subscribe();
 
                 while (true)
@@ -266,7 +266,7 @@ namespace MTree.DaishinPublisher
 
             try
             {
-                stockCurObj.SetInputValue(0, "A" + code); // Add Prefix
+                stockCurObj.SetInputValue(0, code);
                 stockCurObj.Unsubscribe();
 
                 while (true)
@@ -336,71 +336,89 @@ namespace MTree.DaishinPublisher
             }
         }
 
-        public bool SubscribeBidding(String code)
+        public override bool SubscribeBidding(string code)
         {
+            int status = 1;
+
             try
             {
-                biddingObj.SetInputValue(0, "A" + code); // Add Prefix
+                biddingObj.SetInputValue(0, code);
                 biddingObj.Subscribe();
+
+                while (true)
+                {
+                    status = biddingObj.GetDibStatus();
+                    if (status != 1) // 1 - 수신대기
+                        break;
+
+                    Thread.Sleep(10);
+                }
             }
             catch (Exception ex)
             {
-                logger.Error($"Fail to start bidding subscribe for {code}. Error code:{biddingObj.GetDibStatus()}({biddingObj.GetDibMsg1()})");
-                logger.Error(ex.Message);
+                logger.Error(ex);
             }
-            int subscribeRet = biddingObj.GetDibStatus();
-            if (subscribeRet == 0)
+            finally
             {
-                logger.Info($"Success to start bidding subscribe for {code}");
+                if (status == 0)
+                    logger.Trace($"Subscribe bidding, Code: {code}");
+                else
+                    logger.Error($"Subscribe bidding error, Code: {code}, Status: {status}, Msg: {biddingObj.GetDibMsg1()}");
             }
-            else
-            {
-                logger.Error($"Fail to start bidding subscribe for {code}. Error code:{subscribeRet}({biddingObj.GetDibMsg1()})");
-            }
-            return (subscribeRet == 0) ? true : false;
+
+            return (status == 0);
         }
-        public bool UnsubscribeBidding(String code)
+
+        public override bool UnsubscribeBidding(string code)
         {
-            biddingObj.SetInputValue(0, "A" + code); // Add Prefix
+            int status = 1;
 
             try
             {
+                biddingObj.SetInputValue(0, code);
                 biddingObj.Unsubscribe();
+
+                while (true)
+                {
+                    status = biddingObj.GetDibStatus();
+                    if (status != 1) // 1 - 수신대기
+                        break;
+
+                    Thread.Sleep(10);
+                }
             }
             catch (Exception ex)
             {
-                logger.Error($"Fail to start bidding unsubscribe for {code}. Error code:{biddingObj.GetDibStatus()}({biddingObj.GetDibMsg1()})");
-                logger.Error(ex.Message);
+                logger.Error(ex);
+            }
+            finally
+            {
+                if (status == 0)
+                    logger.Trace($"Unsubscribe bidding, Code: {code}");
+                else
+                    logger.Error($"Unsubscribe bidding error, Code: {code}, Status: {status}, Msg: {biddingObj.GetDibMsg1()}");
             }
 
-            int subscribeRet = biddingObj.GetDibStatus();
-            if (subscribeRet == 0)
-            {
-                logger.Info($"Success to start bidding unsubscribe for {code}");
-            }
-            else
-            {
-                logger.Error($"Fail to start bidding unsubscribe for {code}. Error code:{subscribeRet}({biddingObj.GetDibMsg1()})");
-            }
-            return (subscribeRet == 0) ? true : false;
+            return (status == 0);
         }
-        private void BiddingSubscribeObj_Received()
+
+        private void biddingObj_Received()
         {
             try
             {
                 DateTime now = DateTime.Now;
-                BiddingPrice biddingList = new BiddingPrice();
-                biddingList.Bids = new List<BiddingPriceEntity>();
-                biddingList.Offers = new List<BiddingPriceEntity>();
+
+                BiddingPrice biddingPrice = new BiddingPrice();
+                biddingPrice.Bids = new List<BiddingPriceEntity>();
+                biddingPrice.Offers = new List<BiddingPriceEntity>();
 
                 string code = Convert.ToString(biddingObj.GetHeaderValue(0));
                 long time = Convert.ToInt64(biddingObj.GetHeaderValue(1));
 
                 if (code.Length != 0)
-                {
-                    biddingList.Code = code.Substring(1);// Remove Profix
-                }
-                biddingList.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 100), (int)(time % 100), now.Second, now.Millisecond); // Daishin doesn't provide second 
+                    biddingPrice.Code = code.Substring(1); // Remove Profix
+
+                biddingPrice.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 100), (int)(time % 100), now.Second, now.Millisecond); // Daishin doesn't provide second 
                 
                 // 1~5
                 int startIdx = 3;
@@ -408,17 +426,16 @@ namespace MTree.DaishinPublisher
                 for (int i = startIdx; i < startIdx + 4 * biddingCnt;)
                 {
                     BiddingPriceEntity offerEntity = new BiddingPriceEntity();  // Sell
-                    BiddingPriceEntity bidEntity = new BiddingPriceEntity();    // Buy
-
                     offerEntity.Index = (i - startIdx) / 4;
-                    bidEntity.Index = (i - startIdx) / 4;
-                    offerEntity.Price = (Int32)biddingObj.GetHeaderValue(i++);
-                    bidEntity.Price = (Int32)biddingObj.GetHeaderValue(i++);
-                    offerEntity.Amount = (Int32)biddingObj.GetHeaderValue(i++);
-                    bidEntity.Amount = (Int32)biddingObj.GetHeaderValue(i++);
+                    offerEntity.Price = Convert.ToSingle(biddingObj.GetHeaderValue(i++));
+                    offerEntity.Amount = Convert.ToInt64(biddingObj.GetHeaderValue(i++));
+                    biddingPrice.Offers.Add(offerEntity);
 
-                    biddingList.Bids.Add(bidEntity);
-                    biddingList.Offers.Add(offerEntity);
+                    BiddingPriceEntity bidEntity = new BiddingPriceEntity();    // Buy
+                    bidEntity.Index = (i - startIdx) / 4;
+                    bidEntity.Price = Convert.ToSingle(biddingObj.GetHeaderValue(i++));
+                    bidEntity.Amount = Convert.ToInt64(biddingObj.GetHeaderValue(i++));
+                    biddingPrice.Bids.Add(bidEntity);
                 }
 
                 // 6~10
@@ -427,20 +444,19 @@ namespace MTree.DaishinPublisher
                 for (int i = startIdx; i < startIdx + 4 * biddingCnt;)
                 {
                     BiddingPriceEntity offerEntity = new BiddingPriceEntity();  // Sell
-                    BiddingPriceEntity bidEntity = new BiddingPriceEntity();    // Buy
-
                     offerEntity.Index = (i - startIdx) / 4 + 5;
-                    bidEntity.Index = (i - startIdx) / 4 + 5;
-                    offerEntity.Price = (Int32)biddingObj.GetHeaderValue(i++);
-                    bidEntity.Price = (Int32)biddingObj.GetHeaderValue(i++);
-                    offerEntity.Amount = (Int32)biddingObj.GetHeaderValue(i++);
-                    bidEntity.Amount = (Int32)biddingObj.GetHeaderValue(i++);
+                    offerEntity.Price = Convert.ToSingle(biddingObj.GetHeaderValue(i++));
+                    offerEntity.Amount = Convert.ToInt64(biddingObj.GetHeaderValue(i++));
+                    biddingPrice.Offers.Add(offerEntity);
 
-                    biddingList.Bids.Add(bidEntity);
-                    biddingList.Offers.Add(offerEntity);
+                    BiddingPriceEntity bidEntity = new BiddingPriceEntity();    // Buy
+                    bidEntity.Index = (i - startIdx) / 4 + 5;
+                    bidEntity.Price = Convert.ToSingle(biddingObj.GetHeaderValue(i++));
+                    bidEntity.Amount = Convert.ToInt64(biddingObj.GetHeaderValue(i++));
+                    biddingPrice.Bids.Add(bidEntity);
                 }
 
-                //TODO: Send data to realtime provider
+                BiddingPriceQueue.Enqueue(biddingPrice);
             }
             catch (Exception ex)
             {
@@ -448,9 +464,9 @@ namespace MTree.DaishinPublisher
             }
         }
 
-        public override Dictionary<string, string> GetStockCodeList()
+        public override Dictionary<string, CodeEntity> GetStockCodeList()
         {
-            var codeList = new Dictionary<string, string>();
+            var codeList = new Dictionary<string, CodeEntity>();
 
             try
             {
@@ -464,12 +480,15 @@ namespace MTree.DaishinPublisher
 
                 foreach (string code in objList)
                 {
+                    var codeEntity = new CodeEntity();
+                    codeEntity.Code = code.Substring(1);
+                    codeEntity.Name = codeMgr.CodeToName(code);
+                    codeEntity.Market = MarketType.KOSPI; // TODO : Market type 지정
+                    codeList.Add(codeEntity.Code, codeEntity);
+
                     // TODO: KOSPI, KOSDAQ, ETF, ETN, ELW 구분
                     // 대신의 경우 Q이면 ETN
                     //if (code[0] == 'Q') 
-                    {
-                        codeList.Add(code.Substring(1), codeMgr.CodeToName(code));
-                    }
                 }
 
                 logger.Info($"Stock code list query done, Count: {codeList.Count}");

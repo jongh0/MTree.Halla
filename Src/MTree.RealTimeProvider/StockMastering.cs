@@ -7,13 +7,6 @@ using System.Threading.Tasks;
 
 namespace MTree.RealTimeProvider
 {
-    public enum MasteringStateType
-    {
-        Ready,
-        Running,
-        Finished,
-    }
-
     public class StockMastering
     {
         public MasteringStateType DaishinState { get; set; } = MasteringStateType.Ready;
@@ -22,6 +15,6 @@ namespace MTree.RealTimeProvider
         public MasteringStateType KrxState { get; set; } = MasteringStateType.Ready;
         public MasteringStateType NaverState { get; set; } = MasteringStateType.Ready;
 
-        public StockMaster Stock { get; set; } = new StockMaster();
+        public StockMaster Stock { get; } = new StockMaster();
     }
 }

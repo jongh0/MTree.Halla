@@ -11,15 +11,11 @@ namespace MTree.Publisher
 {
     public class PublisherCallback : RealTimeBase, IRealTimePublisherCallback
     {
-        public void NoOperation()
-        {
-        }
-
         public virtual void CloseClient()
         {
         }
 
-        public virtual Dictionary<string, string> GetStockCodeList()
+        public virtual Dictionary<string, CodeEntity> GetStockCodeList()
         {
             return null;
         }
@@ -50,6 +46,16 @@ namespace MTree.Publisher
         }
 
         public virtual bool UnsubscribeIndex(string code)
+        {
+            return false;
+        }
+
+        public virtual bool SubscribeBidding(string code)
+        {
+            return false;
+        }
+
+        public virtual bool UnsubscribeBidding(string code)
         {
             return false;
         }

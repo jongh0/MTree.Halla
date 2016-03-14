@@ -37,7 +37,7 @@ namespace TestConsumer
             subscription.Type = SubscribeType.StockConclusion;
             subscription.Scope = SubscribeScope.Partial;
             subscription.Codes.Add("000020");
-            ServiceClient.RegisterSubscribeContract(ClientId, subscription);
+            ServiceClient.RegisterContract(ClientId, subscription);
         }
 
         public void StopConsume()

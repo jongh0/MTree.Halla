@@ -114,7 +114,7 @@ namespace MTree.RealTimeProvider
             }
         }
 
-        public void RegisterPublishContract(Guid clientId, PublishContract contract)
+        public void RegisterContract(Guid clientId, PublishContract contract)
         {
             try
             {
@@ -163,7 +163,7 @@ namespace MTree.RealTimeProvider
             }
         }
 
-        public void UnregisterPublishContract(Guid clientId)
+        public void UnregisterContract(Guid clientId)
         {
             try
             {
@@ -185,11 +185,16 @@ namespace MTree.RealTimeProvider
             }
         }
 
-        private void StartSubscribeCodeDistributing()
+        private void StartCodeDistributing()
         {
-            // TODO : bidding price code 나눠줘야함
-            // TODO : index code 나눠주는 코드 추가해야함
-            logger.Info("Subscribe code distribution, Start");
+            DistributeStockCode();
+            DistributeIndexCode();
+            DistributeBiddingCode();
+        }
+
+        private void DistributeBiddingCode()
+        {
+            logger.Info("Bidding code distribution, Start");
 
             int index = 0;
 
@@ -199,10 +204,16 @@ namespace MTree.RealTimeProvider
                 {
                     try
                     {
-                        if (StockCodeList.Count > index && 
+                        if (StockCodeList.Count > index &&
                             contract.Callback.IsSubscribable() == true)
                         {
-                            if (contract.Callback.SubscribeStock(StockCodeList.Keys.ElementAt(index)) == true)
+                            var codeEntity = StockCodeList.Values.ElementAt(index);
+                            var code = codeEntity.Code;
+
+                            if (contract.Type == ProcessType.Daishin)
+                                code = CodeEntity.ConvertToDaishinCode(codeEntity);
+
+                            if (contract.Callback.SubscribeBidding(code) == true)
                                 index++;
                         }
                         else
@@ -219,9 +230,57 @@ namespace MTree.RealTimeProvider
             }
 
             if (StockCodeList.Count == index)
-                logger.Info("Subscribe code distribution, Done");
+                logger.Info("Bidding code distribution, Done");
             else
-                logger.Error("Subscribe code distribution, Fail");
+                logger.Error("Bidding code distribution, Fail");
+        }
+
+        private void DistributeStockCode()
+        {
+            logger.Info("Stock code distribution, Start");
+
+            int index = 0;
+
+            foreach (var contract in DaishinContracts)
+            {
+                while (true)
+                {
+                    try
+                    {
+                        if (StockCodeList.Count > index &&
+                            contract.Callback.IsSubscribable() == true)
+                        {
+                            var codeEntity = StockCodeList.Values.ElementAt(index);
+                            var code = codeEntity.Code;
+
+                            if (contract.Type == ProcessType.Daishin)
+                                code = CodeEntity.ConvertToDaishinCode(codeEntity);
+
+                            if (contract.Callback.SubscribeStock(code) == true)
+                                index++;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error(ex);
+                        break;
+                    }
+                }
+            }
+
+            if (StockCodeList.Count == index)
+                logger.Info("Stock code distribution, Done");
+            else
+                logger.Error("Stock code distribution, Fail");
+        }
+
+        private void DistributeIndexCode()
+        {
+            logger.Info("Index code distribution, Start");
         }
 
         public void PublishBiddingPrice(BiddingPrice biddingPrice)
@@ -231,7 +290,7 @@ namespace MTree.RealTimeProvider
 
         public void PublishCircuitBreak(CircuitBreak circuitBreak)
         {
-            logger.Info($"Circuit break!!!!!, {circuitBreak.ToString()}");
+            logger.Warn($"Circuit break!!!!!, {circuitBreak.ToString()}");
             ProcessCircuitBreak(circuitBreak);
         }
 

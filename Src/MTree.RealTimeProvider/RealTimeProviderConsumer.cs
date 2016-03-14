@@ -18,7 +18,7 @@ namespace MTree.RealTimeProvider
         private ConcurrentDictionary<Guid, SubscribeContract> StockConclusionContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
         private ConcurrentDictionary<Guid, SubscribeContract> IndexConclusionContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
         
-        public void RegisterSubscribeContract(Guid clientId, SubscribeContract contract)
+        public void RegisterContract(Guid clientId, SubscribeContract contract)
         {
             try
             {
@@ -48,14 +48,14 @@ namespace MTree.RealTimeProvider
             }
         }
 
-        public void UnregisterSubscribeContractAll(Guid clientId)
+        public void UnregisterContractAll(Guid clientId)
         {
-            UnregisterSubscribeContract(clientId, SubscribeType.BiddingPrice);
-            UnregisterSubscribeContract(clientId, SubscribeType.StockConclusion);
-            UnregisterSubscribeContract(clientId, SubscribeType.IndexConclusion);
+            UnregisterContract(clientId, SubscribeType.BiddingPrice);
+            UnregisterContract(clientId, SubscribeType.StockConclusion);
+            UnregisterContract(clientId, SubscribeType.IndexConclusion);
         }
 
-        public void UnregisterSubscribeContract(Guid clientId, SubscribeType type)
+        public void UnregisterContract(Guid clientId, SubscribeType type)
         {
             try
             {
