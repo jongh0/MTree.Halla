@@ -18,7 +18,7 @@ namespace MTree.Consumer
         protected InstanceContext CallbackInstance { get; set; }
         protected ConsumerClient ServiceClient { get; set; }
 
-        private System.Timers.Timer KeepConnectionTimer { get; } = new System.Timers.Timer(1000 * 60);
+        private System.Timers.Timer KeepConnectionTimer { get; } = new System.Timers.Timer(1000 * 60 * 5);
 
         public ConsumerBase()
         {
