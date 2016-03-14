@@ -151,7 +151,6 @@ namespace MTree.KiwoomPublisher
                     {
                         logger.Info($"확인 button clicked");
                         SendMessage(buttonH, BM_CLICK, 0, 0);
-
                         return true;
                     }
                 }
@@ -159,8 +158,8 @@ namespace MTree.KiwoomPublisher
             catch (Exception ex)
             {
                 logger.Error(ex);
-                return false;
             }
+
             return false;
         }
         #endregion

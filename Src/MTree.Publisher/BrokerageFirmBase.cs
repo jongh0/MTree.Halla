@@ -29,17 +29,17 @@ namespace MTree.Publisher
 
         protected void StartBiddingPriceQueueTask()
         {
-            GeneralTask.Run("BrokerageFirmPublisher.BiddingPriceQueue", QueueTaskCancelToken, ProcessBiddingPriceQueue);
+            GeneralTask.Run($"{GetType().Name}.BiddingPriceQueue", QueueTaskCancelToken, ProcessBiddingPriceQueue);
         }
 
         protected void StartStockConclusionQueueTask()
         {
-            GeneralTask.Run("BrokerageFirmPublisher.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
+            GeneralTask.Run($"{GetType().Name}.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
         }
 
         protected void StartIndexConclusionQueueTask()
         {
-            GeneralTask.Run("BrokerageFirmPublisher.IndexConclusionQueue", QueueTaskCancelToken, ProcessIndexConclusionQueue);
+            GeneralTask.Run($"{GetType().Name}.IndexConclusionQueue", QueueTaskCancelToken, ProcessIndexConclusionQueue);
         }
 
         private void ProcessBiddingPriceQueue()

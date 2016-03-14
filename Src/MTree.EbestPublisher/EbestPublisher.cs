@@ -7,6 +7,7 @@ using XA_SESSIONLib;
 using XA_DATASETLib;
 using System.ServiceModel;
 using MTree.RealTimeProvider;
+using MTree.Utility;
 
 namespace MTree.EbestPublisher
 {
@@ -87,8 +88,10 @@ namespace MTree.EbestPublisher
                 LoginInstance.ServerAddress = Config.Ebest.ServerAddress;
                 LoginInstance.ServerPort = Config.Ebest.ServerPort;
 
-                Login(); 
+                Login();
                 #endregion
+
+                StartIndexConclusionQueueTask();
             }
             catch (Exception ex)
             {

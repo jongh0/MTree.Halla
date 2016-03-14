@@ -3,6 +3,7 @@ using DSCBO1Lib;
 using MTree.DataStructure;
 using MTree.Publisher;
 using MTree.RealTimeProvider;
+using MTree.Utility;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -45,6 +46,9 @@ namespace MTree.DaishinPublisher
 
                 biddingObj = new StockJpbid();
                 biddingObj.Received += biddingObj_Received;
+
+                StartBiddingPriceQueueTask();
+                StartStockConclusionQueueTask();
             }
             catch (Exception ex)
             {
@@ -65,6 +69,11 @@ namespace MTree.DaishinPublisher
         private void stockCurObj_Received()
         {
             StockConclusionReceived();
+        }
+
+        private void biddingObj_Received()
+        {
+            BiddingPriceReceived();
         }
 
         public bool GetQuote(string code, ref StockMaster stockMaster)
@@ -380,7 +389,7 @@ namespace MTree.DaishinPublisher
             return (status == 0);
         }
 
-        private void biddingObj_Received()
+        private void BiddingPriceReceived()
         {
             try
             {
@@ -397,7 +406,7 @@ namespace MTree.DaishinPublisher
                     biddingPrice.Code = code.Substring(1); // Remove Profix
 
                 biddingPrice.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 100), (int)(time % 100), now.Second, now.Millisecond); // Daishin doesn't provide second 
-                
+
                 // 1~5
                 int startIdx = 3;
                 int biddingCnt = 5;
