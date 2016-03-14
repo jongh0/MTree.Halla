@@ -13,15 +13,20 @@ namespace MTree.Consumer
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        protected Guid ClientId { get; set; } = Guid.NewGuid();
+        protected Guid ClientId { get; } = Guid.NewGuid();
 
         protected InstanceContext CallbackInstance { get; set; }
         protected ConsumerClient ServiceClient { get; set; }
+
+        private System.Timers.Timer KeepConnectionTimer { get; } = new System.Timers.Timer(1000 * 60);
 
         public ConsumerBase()
         {
             try
             {
+                KeepConnectionTimer.Elapsed += KeepConnectionTimer_Elapsed;
+                KeepConnectionTimer.AutoReset = true;
+
                 CallbackInstance = new InstanceContext(this);
                 OpenChannel();
             }
@@ -56,7 +61,7 @@ namespace MTree.Consumer
                 {
                     logger.Info($"Close {GetType().Name} channel");
 
-                    ServiceClient.UnregisterSubscribeContractAll(ClientId);
+                    ServiceClient.UnregisterContractAll(ClientId);
                     ServiceClient.Close();
                 }
             }
@@ -69,11 +74,13 @@ namespace MTree.Consumer
         protected virtual void ServiceClient_Opened(object sender, EventArgs e)
         {
             logger.Info($"{GetType().Name} channel opened");
+            KeepConnectionTimer.Start();
         }
 
         protected virtual void ServiceClient_Closed(object sender, EventArgs e)
         {
             logger.Info($"{GetType().Name} channel closed");
+            KeepConnectionTimer.Stop();
         }
 
         public override void CloseClient()
@@ -90,6 +97,22 @@ namespace MTree.Consumer
                     Thread.Sleep(1000);
                     Environment.Exit(0);
                 });
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
+        private void KeepConnectionTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            try
+            {
+                if (ServiceClient?.State == CommunicationState.Opened)
+                {
+                    logger.Info($"{GetType().Name} keep connection");
+                    ServiceClient.NoOperation();
+                }
             }
             catch (Exception ex)
             {

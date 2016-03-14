@@ -13,15 +13,20 @@ namespace MTree.Publisher
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        protected Guid ClientId { get; set; } = Guid.NewGuid();
+        protected Guid ClientId { get; } = Guid.NewGuid();
 
         protected InstanceContext CallbackInstance { get; set; }
         protected PublisherClient ServiceClient { get; set; }
+
+        private System.Timers.Timer KeepConnectionTimer { get; } = new System.Timers.Timer(1000 * 60);
 
         public PublisherBase()
         {
             try
             {
+                KeepConnectionTimer.Elapsed += KeepConnectionTimer_Elapsed;
+                KeepConnectionTimer.AutoReset = true;
+
                 CallbackInstance = new InstanceContext(this);
                 OpenChannel();
             }
@@ -56,7 +61,7 @@ namespace MTree.Publisher
                 {
                     logger.Info($"Close {GetType().Name} channel");
 
-                    ServiceClient.UnregisterPublishContract(ClientId);
+                    ServiceClient.UnregisterContract(ClientId);
                     ServiceClient.Close();
                 }
             }
@@ -70,12 +75,11 @@ namespace MTree.Publisher
         {
             try
             {
-                logger.Info($"{GetType().Name} channel opened");
+                logger.Info($"{GetType().Name} keep connection");
+                KeepConnectionTimer.Start();
 
                 Task.Run(() =>
                 {
-                    Thread.Sleep(1000);
-
                     var args = Environment.GetCommandLineArgs();
                     if (args?.Length > 1)
                     {
@@ -84,11 +88,11 @@ namespace MTree.Publisher
                         var contract = new PublishContract();
                         contract.Type = PublishContract.ConvertToType(args[1]);
 
-                        ServiceClient.RegisterPublishContract(ClientId, contract);
+                        ServiceClient.RegisterContract(ClientId, contract);
                     }
                     else
                     {
-                        logger.Error("Wrong argument");
+                        logger.Error($"{GetType().Name} wrong argument");
                     }
                 });
             }
@@ -101,6 +105,7 @@ namespace MTree.Publisher
         protected virtual void ServiceClient_Closed(object sender, EventArgs e)
         {
             logger.Info($"{GetType().Name} channel closed");
+            KeepConnectionTimer.Stop();
         }
 
         public override void CloseClient()
@@ -117,6 +122,22 @@ namespace MTree.Publisher
                     Thread.Sleep(1000);
                     Environment.Exit(0);
                 });
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
+        private void KeepConnectionTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            try
+            {
+                if (ServiceClient?.State == CommunicationState.Opened)
+                {
+                    logger.Info($"{GetType().Name} keep connection");
+                    ServiceClient.NoOperation();
+                }
             }
             catch (Exception ex)
             {
