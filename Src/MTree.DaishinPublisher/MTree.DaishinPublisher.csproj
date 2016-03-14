@@ -38,6 +38,9 @@
   <PropertyGroup>
     <ApplicationIcon>app.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Interop.CPSYSDIBLib">
       <HintPath>..\packages\Daishin\Interop.CPSYSDIBLib.dll</HintPath>
@@ -109,6 +112,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="app.manifest" />
     <None Include="DaishinPublisher.cd" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

@@ -38,6 +38,9 @@
   <PropertyGroup>
     <ApplicationIcon>app.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Interop.XA_DATASETLib">
       <HintPath>..\packages\Ebest\Interop.XA_DATASETLib.dll</HintPath>
@@ -105,6 +108,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="app.manifest" />
     <None Include="EbestPublisher.cd" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
