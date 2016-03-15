@@ -13,60 +13,50 @@ namespace MTree.Publisher
     {
         public virtual void CloseClient()
         {
-            LastWcfCommunicateTick = Environment.TickCount;
         }
 
         public virtual Dictionary<string, CodeEntity> GetStockCodeList()
         {
-            LastWcfCommunicateTick = Environment.TickCount;
             return null;
         }
 
         public virtual StockMaster GetStockMaster(string code)
         {
-            LastWcfCommunicateTick = Environment.TickCount;
             return null;
         }
 
         public virtual bool IsSubscribable()
         {
-            LastWcfCommunicateTick = Environment.TickCount;
             return false;
         }
 
         public virtual bool SubscribeStock(string code)
         {
-            LastWcfCommunicateTick = Environment.TickCount;
             return false;
         }
 
         public virtual bool UnsubscribeStock(string code)
         {
-            LastWcfCommunicateTick = Environment.TickCount;
             return false;
         }
 
         public virtual bool SubscribeIndex(string code)
         {
-            LastWcfCommunicateTick = Environment.TickCount;
             return false;
         }
 
         public virtual bool UnsubscribeIndex(string code)
         {
-            LastWcfCommunicateTick = Environment.TickCount;
             return false;
         }
 
         public virtual bool SubscribeBidding(string code)
         {
-            LastWcfCommunicateTick = Environment.TickCount;
             return false;
         }
 
         public virtual bool UnsubscribeBidding(string code)
         {
-            LastWcfCommunicateTick = Environment.TickCount;
             return false;
         }
     }

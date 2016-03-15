@@ -130,30 +130,32 @@ namespace MTree.HistorySaver
 
         public override void ConsumeBiddingPrice(BiddingPrice biddingPrice)
         {
-            BiddingPriceQueue.Enqueue(biddingPrice);
             base.ConsumeBiddingPrice(biddingPrice);
+            BiddingPriceQueue.Enqueue(biddingPrice);
         }
 
         public override void ConsumeStockConclusion(StockConclusion conclusion)
         {
-            StockConclusionQueue.Enqueue(conclusion);
             base.ConsumeStockConclusion(conclusion);
+            StockConclusionQueue.Enqueue(conclusion);
         }
 
         public override void ConsumeIndexConclusion(IndexConclusion conclusion)
         {
-            IndexConclusionQueue.Enqueue(conclusion);
             base.ConsumeIndexConclusion(conclusion);
+            IndexConclusionQueue.Enqueue(conclusion);
         }
 
         public override void ConsumeCircuitBreak(CircuitBreak circuitBreak)
         {
-            CircuitBreakCollection.InsertOne(circuitBreak);
             base.ConsumeCircuitBreak(circuitBreak);
+            CircuitBreakCollection.InsertOne(circuitBreak);
         }
 
         public override void ConsumeStockMaster(StockMaster stockMaster)
         {
+            base.ConsumeStockMaster(stockMaster);
+
             try
             {
                 if (stockMaster == null || string.IsNullOrEmpty(stockMaster.Code) == true)
@@ -181,10 +183,6 @@ namespace MTree.HistorySaver
             catch (Exception ex)
             {
                 logger.Error(ex);
-            }
-            finally
-            {
-                base.ConsumeStockMaster(stockMaster);
             }
         }
     }

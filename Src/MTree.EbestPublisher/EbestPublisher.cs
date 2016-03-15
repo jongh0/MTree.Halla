@@ -44,12 +44,10 @@ namespace MTree.EbestPublisher
                 #region XAReal
                 indexSubscribingObj = new XARealClass();
                 indexSubscribingObj.ReceiveRealData += realObj_ReceiveRealData;
-                indexSubscribingObj.RecieveLinkData += realObj_RecieveLinkData;
                 indexSubscribingObj.ResFileName = resFilePath + "\\IJ_.res";
 
                 viSubscribingObj = new XARealClass();
                 viSubscribingObj.ReceiveRealData += realObj_ReceiveRealData;
-                viSubscribingObj.RecieveLinkData += realObj_RecieveLinkData;
                 viSubscribingObj.ResFileName = resFilePath + "\\VI_.res";
                 #endregion
 
@@ -115,11 +113,6 @@ namespace MTree.EbestPublisher
         #endregion
 
         #region XAReal
-        private void realObj_RecieveLinkData(string szLinkName, string szData, string szFiller)
-        {
-            LastFirmCommunicateTick = Environment.TickCount;
-        }
-
         private void realObj_ReceiveRealData(string szTrCode)
         {
             LastFirmCommunicateTick = Environment.TickCount;

@@ -132,18 +132,19 @@ namespace MTree.Publisher
                 if (ServiceClient?.State == CommunicationState.Opened &&
                     (Environment.TickCount - LastWcfCommunicateTick) > MaxCommunicateInterval)
                 {
-                    ServiceClient.NoOperation();
-
-                    LastWcfCommunicateTick = Environment.TickCount;
-                    logger.Info($"{GetType().Name} keep wcf connection");
+                    if (ServiceClient.State == CommunicationState.Opened)
+                    {
+                        LastWcfCommunicateTick = Environment.TickCount;
+                        ServiceClient.NoOperation();
+                        
+                        logger.Info($"{GetType().Name} keep wcf connection");
+                    }
                 }
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
             }
-
-            base.OnCommunicateTimer(sender, e);
         }
     }
 }

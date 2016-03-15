@@ -66,9 +66,14 @@ namespace MTree.Publisher
                 BiddingPrice biddingPrice;
                 if (ServiceClient.State == CommunicationState.Opened &&
                     BiddingPriceQueue.TryDequeue(out biddingPrice) == true)
+                {
+                    LastWcfCommunicateTick = Environment.TickCount;
                     ServiceClient.PublishBiddingPrice(biddingPrice);
+                }
                 else
+                {
                     Thread.Sleep(10);
+                }
             }
             catch (Exception ex)
             {
@@ -83,9 +88,14 @@ namespace MTree.Publisher
                 StockConclusion conclusion;
                 if (ServiceClient.State == CommunicationState.Opened &&
                     StockConclusionQueue.TryDequeue(out conclusion) == true)
+                {
+                    LastWcfCommunicateTick = Environment.TickCount;
                     ServiceClient.PublishStockConclusion(conclusion);
+                }
                 else
+                {
                     Thread.Sleep(10);
+                }
             }
             catch (Exception ex)
             {
@@ -100,9 +110,14 @@ namespace MTree.Publisher
                 IndexConclusion conclusion;
                 if (ServiceClient.State == CommunicationState.Opened &&
                     IndexConclusionQueue.TryDequeue(out conclusion) == true)
+                {
+                    LastWcfCommunicateTick = Environment.TickCount;
                     ServiceClient.PublishIndexConclusion(conclusion);
+                }
                 else
+                {
                     Thread.Sleep(10);
+                }
             }
             catch (Exception ex)
             {

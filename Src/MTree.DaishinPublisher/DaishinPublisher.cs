@@ -223,8 +223,6 @@ namespace MTree.DaishinPublisher
 
         public override bool SubscribeStock(string code)
         {
-            base.SubscribeStock(code);
-
             short status = 1;
 
             try
@@ -258,8 +256,6 @@ namespace MTree.DaishinPublisher
 
         public override bool UnsubscribeStock(string code)
         {
-            base.UnsubscribeStock(code);
-
             short status = 1;
 
             try
@@ -336,8 +332,6 @@ namespace MTree.DaishinPublisher
 
         public override bool SubscribeBidding(string code)
         {
-            base.SubscribeBidding(code);
-
             short status = 1;
 
             try
@@ -371,8 +365,6 @@ namespace MTree.DaishinPublisher
 
         public override bool UnsubscribeBidding(string code)
         {
-            base.UnsubscribeBidding(code);
-
             short status = 1;
 
             try
@@ -468,8 +460,6 @@ namespace MTree.DaishinPublisher
 
         public override Dictionary<string, CodeEntity> GetStockCodeList()
         {
-            base.GetStockCodeList();
-
             var codeList = new Dictionary<string, CodeEntity>();
 
             try
@@ -503,8 +493,6 @@ namespace MTree.DaishinPublisher
 
         public override StockMaster GetStockMaster(string code)
         {
-            base.GetStockMaster(code);
-
             var stockMaster = new StockMaster();
             stockMaster.Code = code;
 
@@ -518,8 +506,6 @@ namespace MTree.DaishinPublisher
 
         public override bool IsSubscribable()
         {
-            base.IsSubscribable();
-
             return sessionObj.GetLimitRemainCount(LIMIT_TYPE.LT_SUBSCRIBE) > 0;
         }
 
