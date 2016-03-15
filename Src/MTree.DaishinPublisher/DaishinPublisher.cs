@@ -4,6 +4,7 @@ using CPSYSDIBLib;
 using MTree.DataStructure;
 using MTree.Publisher;
 using MTree.RealTimeProvider;
+using MTree.Utility;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ using System.ServiceModel;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace MTree.DaishinPublisher
 {
@@ -20,9 +22,7 @@ namespace MTree.DaishinPublisher
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private object lockObject = new object();
-
-        private int LastQuoteTick { get; set; } = Environment.TickCount;
+        protected int LastQuoteTick { get; set; } = Environment.TickCount;
 
         #region Daishin Specific
         private CpCybos sessionObj;
@@ -38,6 +38,8 @@ namespace MTree.DaishinPublisher
         {
             try
             {
+                QuoteInterval = 15 * 1000 / 60; // 15초당 60개
+
                 sessionObj = new CpCybos();
                 sessionObj.OnDisconnect += sessionObj_OnDisconnect;
                 
@@ -50,9 +52,14 @@ namespace MTree.DaishinPublisher
                 biddingObj = new StockJpbid();
                 biddingObj.Received += biddingObj_Received;
 
+<<<<<<< HEAD
                 worldCurObj = new WorldCur();
                 worldCurObj.Received += WorldCurObj_Received;
                 //GetStockCodeList();
+=======
+                StartBiddingPriceQueueTask();
+                StartStockConclusionQueueTask();
+>>>>>>> origin/master
             }
             catch (Exception ex)
             {
@@ -101,34 +108,37 @@ namespace MTree.DaishinPublisher
 
         private void stockMstObj_Received()
         {
+            LastFirmCommunicateTick = Environment.TickCount;
             StockMasterReceived();
         }
 
         private void stockCurObj_Received()
         {
+            LastFirmCommunicateTick = Environment.TickCount;
             StockConclusionReceived();
+        }
+
+        private void biddingObj_Received()
+        {
+            LastFirmCommunicateTick = Environment.TickCount;
+            BiddingPriceReceived();
         }
 
         public bool GetQuote(string code, ref StockMaster stockMaster)
         {
-            if (Monitor.TryEnter(lockObject, 1000 * 10) == false)
+            if (Monitor.TryEnter(QuoteLock, QuoteLockTimeout) == false)
             {
                 logger.Error($"Quoting failed, Code: {code}, Can't obtaion lock object");
                 return false;
             }
 
-            logger.Info($"Start quoting, Code: {code}");
-
-            int ret = -1;
+            short ret = -1;
 
             try
             {
-                WaitQuotingLimit();
+                WaitQuoteInterval();
 
-                stockMaster.Code = code;
-                if (code[0] != 'A')
-                    code = "A" + code;
-
+                logger.Info($"Start quoting, Code: {code}");
                 QuotingStockMaster = stockMaster;
 
                 stockMstObj.SetInputValue(0, code);
@@ -136,19 +146,22 @@ namespace MTree.DaishinPublisher
 
                 if (ret == 0)
                 {
-                    if (WaitQuotingEvent.WaitOne(1000 * 10) == true)
+                    if (WaitQuoting() == true)
                     {
-                        logger.Info($"Quoting done. Code: {code.Substring(1)}");
+                        if (QuotingStockMaster.Code != string.Empty)
+                        {
+                            logger.Info($"Quoting done. Code: {code}");
+                            return true;
+                        }
+
+                        logger.Error($"Quoting fail. Code: {code}");
                     }
-                    else
-                    {
-                        logger.Error($"Quoting timeout. Code: {code.Substring(1)}");
-                        ret = -1;
-                    }
+
+                    logger.Error($"Quoting timeout. Code: {code}");
                 }
                 else
                 {
-                    logger.Error($"Quoting request failed. Code: {code.Substring(1)}, Quoting result: {ret}");
+                    logger.Error($"Quoting request fail. Code: {code}, result: {ret}");
                 }
             }
             catch (Exception ex)
@@ -158,38 +171,21 @@ namespace MTree.DaishinPublisher
             finally
             {
                 QuotingStockMaster = null;
-                Monitor.Exit(lockObject);
+                Monitor.Exit(QuoteLock);
             }
 
-            return (ret == 0);
+            return false;
         }
 
         private void StockMasterReceived()
         {
             try
             {
-                var value0 = stockMstObj.GetHeaderValue(0);
-                if (value0 == null || value0.ToString().Length == 0)
-                {
-                    if (QuotingStockMaster == null)
-                        QuotingStockMaster.Code = string.Empty;
+                if (QuotingStockMaster == null)
                     return;
-                }
 
                 // 0 - (string) 종목 코드
                 string code = stockMstObj.GetHeaderValue(0).ToString().Substring(1);
-
-                if (QuotingStockMaster == null)
-                {
-                    logger.Error($"Current quoting master is not assigned. Received Code: {code}");
-                    return;
-                }
-
-                if (QuotingStockMaster.Code != code)
-                {
-                    logger.Warn($"Different quoting code, {QuotingStockMaster.Code} != {code}");
-                    return;
-                }
 
                 // 1 - (string) 종목 명
                 QuotingStockMaster.Name = stockMstObj.GetHeaderValue(1).ToString();
@@ -265,13 +261,13 @@ namespace MTree.DaishinPublisher
             }
             finally
             {
-                WaitQuotingEvent.Set();
+                SetQuoting();
             }
         }
 
         public override bool SubscribeStock(string code)
         {
-            int status = 1;
+            short status = 1;
 
             try
             {
@@ -294,7 +290,7 @@ namespace MTree.DaishinPublisher
             finally
             {
                 if (status == 0)
-                    logger.Trace($"Subscribe stock, Code: {code}");
+                    logger.Info($"Subscribe stock, Code: {code}");
                 else
                     logger.Error($"Subscribe stock error, Code: {code}, Status: {status}, Msg: {stockCurObj.GetDibMsg1()}");
             }
@@ -304,7 +300,7 @@ namespace MTree.DaishinPublisher
 
         public override bool UnsubscribeStock(string code)
         {
-            int status = 1;
+            short status = 1;
 
             try
             {
@@ -352,7 +348,7 @@ namespace MTree.DaishinPublisher
                 conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100, now.Millisecond); // Daishin doesn't provide milisecond 
 
                 // 13 - (long) 현재가
-                conclusion.Price = (float)Convert.ToDouble(stockCurObj.GetHeaderValue(13));
+                conclusion.Price = Convert.ToSingle(stockCurObj.GetHeaderValue(13));
 
                 // 14 - (char)체결 상태
                 char type = Convert.ToChar(stockCurObj.GetHeaderValue(14));
@@ -380,7 +376,7 @@ namespace MTree.DaishinPublisher
 
         public override bool SubscribeBidding(string code)
         {
-            int status = 1;
+            short status = 1;
 
             try
             {
@@ -403,7 +399,7 @@ namespace MTree.DaishinPublisher
             finally
             {
                 if (status == 0)
-                    logger.Trace($"Subscribe bidding, Code: {code}");
+                    logger.Info($"Subscribe bidding, Code: {code}");
                 else
                     logger.Error($"Subscribe bidding error, Code: {code}, Status: {status}, Msg: {biddingObj.GetDibMsg1()}");
             }
@@ -413,7 +409,7 @@ namespace MTree.DaishinPublisher
 
         public override bool UnsubscribeBidding(string code)
         {
-            int status = 1;
+            short status = 1;
 
             try
             {
@@ -444,7 +440,7 @@ namespace MTree.DaishinPublisher
             return (status == 0);
         }
 
-        private void biddingObj_Received()
+        private void BiddingPriceReceived()
         {
             try
             {
@@ -461,7 +457,7 @@ namespace MTree.DaishinPublisher
                     biddingPrice.Code = code.Substring(1); // Remove Profix
 
                 biddingPrice.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 100), (int)(time % 100), now.Second, now.Millisecond); // Daishin doesn't provide second 
-                
+
                 // 1~5
                 int startIdx = 3;
                 int biddingCnt = 5;
@@ -542,16 +538,12 @@ namespace MTree.DaishinPublisher
         public override StockMaster GetStockMaster(string code)
         {
             var stockMaster = new StockMaster();
+            stockMaster.Code = code;
 
-            try
-            {
-                GetQuote(code, ref stockMaster);
-                stockMaster.Code = code;
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-            }
+            if (GetQuote(code, ref stockMaster) == true)
+                stockMaster.Code = CodeEntity.RemovePrefix(code);
+            else
+                stockMaster.Code = string.Empty;
 
             return stockMaster;
         }
@@ -561,17 +553,12 @@ namespace MTree.DaishinPublisher
             return sessionObj.GetLimitRemainCount(LIMIT_TYPE.LT_SUBSCRIBE) > 0;
         }
 
-        private void WaitQuotingLimit()
+        protected override void OnCommunicateTimer(object sender, ElapsedEventArgs e)
         {
-            int ms = 250 - (Environment.TickCount - LastQuoteTick);
-            
-            if (ms > 0)
-            {
-                logger.Trace($"Wait quoting limit, ms: {ms}");
-                Thread.Sleep(ms);
-            }
+            // TODO : Keep firm communication code
+            logger.Info($"{GetType().Name} keep firm connection");
 
-            LastQuoteTick = Environment.TickCount;
+            base.OnCommunicateTimer(sender, e);
         }
     }
 }

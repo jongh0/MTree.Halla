@@ -1,5 +1,6 @@
 ﻿using MTree.DataStructure;
 using MTree.Publisher;
+using MTree.Utility;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,6 +10,7 @@ using System.ServiceModel;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace MTree.KiwoomPublisher
 {
@@ -33,74 +35,49 @@ namespace MTree.KiwoomPublisher
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
     public class KiwoomPublisher : BrokerageFirmBase
     {
-        #region Dll Import
-        [DllImport("user32.dll")]
-        public static extern IntPtr FindWindow(string strClassName, string strWindowName);  //1. 찾고자하는 클래스이름, 2.캡션값
-
-        [DllImport("user32.dll")]
-        public static extern IntPtr FindWindowEx(IntPtr hWnd1, IntPtr hWnd2, string Ipsz1, string Ipsz2);    //1.바로위의 부모값을 주고 2. 0이나 null 3,4.클래스명과 캡션명을 
-        
-        [DllImport("user32.dll")]
-        private static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
-        
-        const int BM_CLICK = 0X00F5;
-        #endregion
-
-
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         private AxKHOpenAPILib.AxKHOpenAPI kiwoomObj;
 
-        private object lockObject = new object();
-        private bool requestResult = false;
-
         private int _scrNum = 5000;
-
-        private ManualResetEvent waitLoginEvent = new ManualResetEvent(false);
-
-        private int StockQuoteInterval { get; set; } = 0;
 
         public KiwoomPublisher(AxKHOpenAPILib.AxKHOpenAPI axKHOpenAPI) : base()
         {
-            StockQuoteInterval = 1000 / 5;
+            try
+            {
+                QuoteInterval = 1000 / 5;
 
-            kiwoomObj = axKHOpenAPI;
-            kiwoomObj.OnEventConnect += OnEventConnect;
-            kiwoomObj.OnReceiveTrData += OnReceiveTrData;
+                kiwoomObj = axKHOpenAPI;
+                kiwoomObj.OnEventConnect += OnEventConnect;
+                kiwoomObj.OnReceiveTrData += OnReceiveTrData;
 
-            Login();
+                Login();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
         }
 
         #region Session
-        public bool WaitLogin()
-        {
-            return waitLoginEvent.WaitOne(10000);
-        }
-
         public bool Login()
         {
-            bool ret = false;
-
-            waitLoginEvent.Reset();
             try
             {
                 if (kiwoomObj.CommConnect() == 0)
                 {
                     logger.Info("Login window open success");
-                    ret = true;
+                    return true;
                 }
-                else
-                {
-                    logger.Error("Login window open fail");
-                }
+
+                logger.Error("Login window open fail");
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
-                return false;
             }
 
-            return ret;
+            return false;
         }
 
         public bool Logout()
@@ -110,48 +87,60 @@ namespace MTree.KiwoomPublisher
                 kiwoomObj.CommTerminate();
                 LoginInstance.State = StateType.Logout;
                 logger.Info("Logout success");
+                return true;
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
-                return false;
             }
 
-            return true;
+            return false;
         }
 
         private void OnEventConnect(object sender, AxKHOpenAPILib._DKHOpenAPIEvents_OnEventConnectEvent e)
         {
-            if (e.nErrCode == 0)
-            {
-                logger.Info("Login sucess");
-                LoginInstance.State = StateType.Login;
-            }
-            else
-            {
-                logger.Error($"Login fail, return code: {e.nErrCode}. Message:{GetErrorMessage(e.nErrCode)}");
-            }
+            LastFirmCommunicateTick = Environment.TickCount;
 
-            waitLoginEvent.Set();
-            ClosePopup();
+            try
+            {
+                if (e.nErrCode == 0)
+                {
+                    logger.Info("Login sucess");
+                    LoginInstance.State = StateType.Login;
+                }
+                else
+                {
+                    logger.Error($"Login fail, return code: {e.nErrCode}. Message:{GetErrorMessage(e.nErrCode)}");
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+            finally
+            {
+                ClosePopup();
+
+                Thread.Sleep(5000); // Login이 바로되지 않아서..
+                SetLogin();
+            }
         }
 
         private bool ClosePopup()
         {
             try
             {
-                IntPtr windowH = FindWindow(null, "khopenapi");
+                IntPtr windowH = WindowUtility.FindWindow2("khopenapi");
 
                 if (windowH != IntPtr.Zero)
                 {
                     logger.Info($"khopenapi popup found");
 
-                    IntPtr buttonH = FindWindowEx(windowH, IntPtr.Zero, "Button", "확인");
+                    IntPtr buttonH = WindowUtility.FindWindowEx2(windowH, "Button", "확인");
                     if (buttonH != IntPtr.Zero)
                     {
                         logger.Info($"확인 button clicked");
-                        SendMessage(buttonH, BM_CLICK, 0, 0);
-
+                        WindowUtility.SendMessage2(buttonH, WindowUtility.BM_CLICK, 0, 0);
                         return true;
                     }
                 }
@@ -159,8 +148,8 @@ namespace MTree.KiwoomPublisher
             catch (Exception ex)
             {
                 logger.Error(ex);
-                return false;
             }
+
             return false;
         }
         #endregion
@@ -235,28 +224,26 @@ namespace MTree.KiwoomPublisher
 
         public bool GetQuote(string code, ref StockMaster stockMaster)
         {
-            if (Monitor.TryEnter(lockObject, 1000 * 10) == false)
+            if (Monitor.TryEnter(QuoteLock, QuoteLockTimeout) == false)
             {
                 logger.Error($"Quoting failed, Code: {code}, Can't obtaion lock object");
                 return false;
             }
 
-            if (waitLoginEvent.WaitOne(10000) == false)
-            {
-                logger.Error($"Quoting failed, Code: {code}, Not loggedin state");
-                return false;
-            }
-
-            logger.Info($"Start quoting, Code: {code}");
-            requestResult = false;
             int ret = -1;
 
             try
             {
-                WaitQuotingLimit();
+                if (WaitLogin() == false)
+                {
+                    logger.Error($"Quoting failed, Code: {code}, Not loggedin state");
+                    return false;
+                }
 
+                WaitQuoteInterval();
+
+                logger.Info($"Start quoting, Code: {code}");
                 QuotingStockMaster = stockMaster;
-                QuotingStockMaster.Code = code;
 
                 kiwoomObj.SetInputValue("종목코드", code);
 
@@ -264,40 +251,43 @@ namespace MTree.KiwoomPublisher
                 
                 if (ret == 0)
                 {
-                    if (WaitQuotingEvent.WaitOne(1000 * 10) == true)
+                    if (WaitQuoting() == true)
                     {
-                        logger.Info($"Quoting done. Code: {code}");
+                        if (QuotingStockMaster.Code != string.Empty)
+                        {
+                            logger.Info($"Quoting done. Code: {code}");
+                            return true;
+                        }
+
+                        logger.Error($"Quoting fail. Code: {code}");
                     }
-                    else
-                    {
-                        logger.Error($"Quoting timeout. Code: {code}");
-                        ret = -1;
-                    }
+
+                    logger.Error($"Quoting timeout. Code: {code}");
                 }
                 else
                 {
-                    logger.Error($"Quoting request failed. Code: {code}, Quoting result: {ret}. Message:{GetErrorMessage(ret)}");
-                    requestResult = false;
+                    logger.Error($"Quoting request fail. Code: {code}, Quoting result: {ret}. Message:{GetErrorMessage(ret)}");
                 }
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
-                requestResult = false;
             }
             finally
             {
                 QuotingStockMaster = null;
-                Monitor.Exit(lockObject);
+                Monitor.Exit(QuoteLock);
             }
 
-            return (ret == 0 && requestResult == true);
+            return false;
         }
 
         private void OnReceiveTrData(object sender, AxKHOpenAPILib._DKHOpenAPIEvents_OnReceiveTrDataEvent e)
         {
+            LastFirmCommunicateTick = Environment.TickCount;
+
             // OPT1001 : 주식기본정보
-            if (e.sRQName == "주식기본정보")
+            if (e?.sRQName == "주식기본정보")
             {
                 try
                 {
@@ -305,8 +295,7 @@ namespace MTree.KiwoomPublisher
                     if (nCnt != 1)
                     {
                         logger.Error("Multiple response received for single request");
-                        WaitQuotingEvent.Set();
-                        requestResult = false;
+                        QuotingStockMaster.Code = string.Empty;
                         return;
                     }
 
@@ -314,8 +303,7 @@ namespace MTree.KiwoomPublisher
                     if (QuotingStockMaster.Code != rxCode)
                     {
                         logger.Error($"Received code({rxCode}) is different from requested({QuotingStockMaster.Code})");
-                        requestResult = false;
-                        WaitQuotingEvent.Set();
+                        QuotingStockMaster.Code = string.Empty;
                         return;
                     }
 
@@ -331,39 +319,28 @@ namespace MTree.KiwoomPublisher
                     string ev = kiwoomObj.CommGetData(e.sTrCode, "", e.sRQName, 0, "EV").Trim();
                     if (ev != string.Empty)
                         QuotingStockMaster.EV = Convert.ToDouble(ev);
-
-                    requestResult = true;
                 }
                 catch (Exception ex)
                 {
-                    requestResult = false;
                     QuotingStockMaster.Code = string.Empty;
                     logger.Error(ex);
                 }
                 finally
                 {
-                    WaitQuotingEvent.Set();
+                    SetQuoting();
                 }
             }
         }
 
         public override StockMaster GetStockMaster(string code)
         {
-            var stockMaster = new StockMaster();
+            base.GetStockMaster(code);
 
-            try
-            {
-                if (GetQuote(code, ref stockMaster) == true)
-                    stockMaster.Code = code;
-                else
-                {
-                    stockMaster.Code = "";
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-            }
+            var stockMaster = new StockMaster();
+            stockMaster.Code = code;
+
+            if (GetQuote(code, ref stockMaster) == false)
+                stockMaster.Code = string.Empty;
 
             return stockMaster;
         }
@@ -382,15 +359,12 @@ namespace MTree.KiwoomPublisher
             base.CloseClient();
         }
 
-        public override bool IsSubscribable()
+        protected override void OnCommunicateTimer(object sender, ElapsedEventArgs e)
         {
-            return false;
-        }
+            // TODO : Keep firm communication code
+            logger.Info($"{GetType().Name} keep firm connection");
 
-        private void WaitQuotingLimit()
-        {
-            if (StockQuoteInterval > 0)
-                Thread.Sleep(StockQuoteInterval);
+            base.OnCommunicateTimer(sender, e);
         }
     }
 }

@@ -31,7 +31,7 @@ namespace TestConsumer
 
         public void StartConsume()
         {
-            GeneralTask.Run("Consumer.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
+            TaskUtility.Run("Consumer.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
 
             var subscription = new SubscribeContract();
             subscription.Type = SubscribeType.StockConclusion;
@@ -42,6 +42,7 @@ namespace TestConsumer
 
         public void StopConsume()
         {
+            StopCommunicateTimer();
             StopQueueTask();
             CloseChannel();
         }

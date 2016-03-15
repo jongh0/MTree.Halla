@@ -45,5 +45,13 @@ namespace MTree.DataStructure
                     return MarketType.KOSPI;
             }
         }
+
+        public static string RemovePrefix(string code)
+        {
+            if (code.Length > 6)
+                return code.Substring(1);
+            else
+                return code;
+        }
     }
 }

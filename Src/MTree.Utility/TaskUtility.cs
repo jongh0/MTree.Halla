@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MTree.Utility
 {
-    public class GeneralTask
+    public class TaskUtility
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 

@@ -34,9 +34,9 @@ namespace MTree.HistorySaver
 
                 CreateIndex();
 
-                GeneralTask.Run("HistorySaver.BiddingPriceQueue", QueueTaskCancelToken, ProcessBiddingPriceQueue);
-                GeneralTask.Run("HistorySaver.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
-                GeneralTask.Run("HistorySaver.IndexConclusionQueue", QueueTaskCancelToken, ProcessIndexConclusionQueue);
+                TaskUtility.Run("HistorySaver.BiddingPriceQueue", QueueTaskCancelToken, ProcessBiddingPriceQueue);
+                TaskUtility.Run("HistorySaver.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
+                TaskUtility.Run("HistorySaver.IndexConclusionQueue", QueueTaskCancelToken, ProcessIndexConclusionQueue);
             }
             catch (Exception ex)
             {
@@ -130,41 +130,40 @@ namespace MTree.HistorySaver
 
         public override void ConsumeBiddingPrice(BiddingPrice biddingPrice)
         {
+            base.ConsumeBiddingPrice(biddingPrice);
             BiddingPriceQueue.Enqueue(biddingPrice);
         }
 
         public override void ConsumeStockConclusion(StockConclusion conclusion)
         {
+            base.ConsumeStockConclusion(conclusion);
             StockConclusionQueue.Enqueue(conclusion);
         }
 
         public override void ConsumeIndexConclusion(IndexConclusion conclusion)
         {
+            base.ConsumeIndexConclusion(conclusion);
             IndexConclusionQueue.Enqueue(conclusion);
         }
 
         public override void ConsumeCircuitBreak(CircuitBreak circuitBreak)
         {
-            try
-            {
-                CircuitBreakCollection.InsertOneAsync(circuitBreak);
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-            }
+            base.ConsumeCircuitBreak(circuitBreak);
+            CircuitBreakCollection.InsertOne(circuitBreak);
         }
 
         public override void ConsumeStockMaster(StockMaster stockMaster)
         {
-            if (stockMaster == null || string.IsNullOrEmpty(stockMaster.Code) == true)
-            {
-                logger.Error("Stock master has a problem");
-                return;
-            }
+            base.ConsumeStockMaster(stockMaster);
 
             try
             {
+                if (stockMaster == null || string.IsNullOrEmpty(stockMaster.Code) == true)
+                {
+                    logger.Error("Stock master has a problem");
+                    return;
+                }
+
                 if (StockMasterCollection == null)
                 {
                     var db = MongoDbProvider.Instance.GetDatabase(DbType.StockMaster);

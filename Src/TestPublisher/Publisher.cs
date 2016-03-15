@@ -35,6 +35,7 @@ namespace TestPublisher
 
         public void StopPublishing()
         {
+            StopCommunicateTimer();
             StopQueueTask();
             CloseChannel();
         }
