@@ -345,6 +345,44 @@ namespace MTree.KiwoomPublisher
             return stockMaster;
         }
 
+        public override Dictionary<string, CodeEntity> GetStockCodeList()
+        {
+            var codeDictionary = new Dictionary<string, CodeEntity>();
+
+            try
+            {
+                //KOSPI
+                string[] kospiList = kiwoomObj.GetCodeListByMarket("0").Split(';');
+                foreach (string code in kospiList)
+                {
+                    var codeEntity = new CodeEntity();
+                    codeEntity.Code = code;
+                    codeEntity.Name = kiwoomObj.GetMasterCodeName(code);
+                    codeEntity.Market = MarketType.KOSPI;
+                    codeDictionary.Add(codeEntity.Code, codeEntity);
+                }
+
+                //KOSDAQ
+                string[] kosdaqList = kiwoomObj.GetCodeListByMarket("0").Split(';');
+                foreach (string code in kosdaqList)
+                {
+                    var codeEntity = new CodeEntity();
+                    codeEntity.Code = code;
+                    codeEntity.Name = kiwoomObj.GetMasterCodeName(code);
+                    codeEntity.Market = MarketType.KOSPI;
+                    codeDictionary.Add(codeEntity.Code, codeEntity);
+                }
+
+                logger.Info($"Stock code list query done, Count: {codeDictionary.Count}");
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+
+            return codeDictionary;
+        }
+
         protected override void ServiceClient_Opened(object sender, EventArgs e)
         {
             // Login이 완료된 후에 Publisher contract 등록
