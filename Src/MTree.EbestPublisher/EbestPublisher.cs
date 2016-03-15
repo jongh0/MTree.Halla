@@ -34,7 +34,8 @@ namespace MTree.EbestPublisher
 
         #region Ebest Specific
         private XASessionClass sessionObj;
-        private XARealClass realObj;
+        private XARealClass indexSubscribingObj;
+        private XARealClass viSubscribingObj;
         private XAQueryClass indexQuotingObj;
         private XAQueryClass stockQuotingObj;
         #endregion
@@ -53,10 +54,15 @@ namespace MTree.EbestPublisher
                 #endregion
 
                 #region XAReal
-                realObj = new XARealClass();
-                realObj.ReceiveRealData += realObj_ReceiveRealData;
-                realObj.RecieveLinkData += realObj_RecieveLinkData;
-                realObj.ResFileName = resFilePath + "\\IJ_.res";
+                indexSubscribingObj = new XARealClass();
+                indexSubscribingObj.ReceiveRealData += realObj_ReceiveRealData;
+                indexSubscribingObj.RecieveLinkData += realObj_RecieveLinkData;
+                indexSubscribingObj.ResFileName = resFilePath + "\\IJ_.res";
+
+                viSubscribingObj = new XARealClass();
+                viSubscribingObj.ReceiveRealData += realObj_ReceiveRealData;
+                viSubscribingObj.RecieveLinkData += realObj_RecieveLinkData;
+                viSubscribingObj.ResFileName = resFilePath + "\\VI_.res";
                 #endregion
 
                 #region XAQuery
@@ -127,7 +133,8 @@ namespace MTree.EbestPublisher
         {
             if (szTrCode == "IJ_")
                 IndexConclusionReceived(szTrCode);
-
+            else if (szTrCode == "VI_")
+                VolatilityInterruptionReceived(szTrCode);
             isAnyDataReceived = true;
         }
         #endregion
@@ -276,8 +283,8 @@ namespace MTree.EbestPublisher
 
             try
             {
-                realObj.SetFieldData("InBlock", "upcode", code);
-                realObj.AdviseRealData();
+                indexSubscribingObj.SetFieldData("InBlock", "upcode", code);
+                indexSubscribingObj.AdviseRealData();
 
                 subscribeCount++;
                 logger.Info($"Subscribe index success, Code: {code}");
@@ -302,8 +309,8 @@ namespace MTree.EbestPublisher
 
             try
             {
-                realObj.SetFieldData("InBlock", "upcode", code);
-                realObj.UnadviseRealData();
+                indexSubscribingObj.SetFieldData("InBlock", "upcode", code);
+                indexSubscribingObj.UnadviseRealData();
 
                 subscribeCount--;
                 logger.Info($"Unsubscribe index success, Code: {code}");
@@ -324,10 +331,10 @@ namespace MTree.EbestPublisher
             {
                 IndexConclusion conclusion = new IndexConclusion();
 
-                string temp = realObj.GetFieldData("OutBlock", "upcode");
+                string temp = indexSubscribingObj.GetFieldData("OutBlock", "upcode");
                 conclusion.Code = temp;
 
-                temp = realObj.GetFieldData("OutBlock", "time");
+                temp = indexSubscribingObj.GetFieldData("OutBlock", "time");
                 var now = DateTime.Now;
                 uint time;
 
@@ -336,42 +343,42 @@ namespace MTree.EbestPublisher
                 else
                     conclusion.Time = now;
 
-                temp = realObj.GetFieldData("OutBlock", "jisu");
+                temp = indexSubscribingObj.GetFieldData("OutBlock", "jisu");
                 double index;
                 if (double.TryParse(temp, out index) == true)
                     conclusion.Index = index;
 
-                temp = realObj.GetFieldData("OutBlock", "volume");
+                temp = indexSubscribingObj.GetFieldData("OutBlock", "volume");
                 double volumn;
                 if (double.TryParse(temp, out volumn) == true)
                     conclusion.Volume = volumn * 1000;
 
-                temp = realObj.GetFieldData("OutBlock", "value");
+                temp = indexSubscribingObj.GetFieldData("OutBlock", "value");
                 double value;
                 if (double.TryParse(temp, out value) == true)
                     conclusion.Value = value;
 
-                temp = realObj.GetFieldData("OutBlock", "upjo");
+                temp = indexSubscribingObj.GetFieldData("OutBlock", "upjo");
                 int upperLimitCount;
                 if (int.TryParse(temp, out upperLimitCount) == true)
                     conclusion.UpperLimitedItemCount = upperLimitCount;
 
-                temp = realObj.GetFieldData("OutBlock", "highjo");
+                temp = indexSubscribingObj.GetFieldData("OutBlock", "highjo");
                 int increasingCount;
                 if (int.TryParse(temp, out increasingCount) == true)
                     conclusion.IncreasingItemCount = increasingCount;
 
-                temp = realObj.GetFieldData("OutBlock", "unchgjo");
+                temp = indexSubscribingObj.GetFieldData("OutBlock", "unchgjo");
                 int steadyCount;
                 if (int.TryParse(temp, out steadyCount) == true)
                     conclusion.SteadyItemCount = steadyCount;
 
-                temp = realObj.GetFieldData("OutBlock", "lowjo");
+                temp = indexSubscribingObj.GetFieldData("OutBlock", "lowjo");
                 int decreasingCount;
                 if (int.TryParse(temp, out decreasingCount) == true)
                     conclusion.DecreasingItemCount = decreasingCount;
 
-                temp = realObj.GetFieldData("OutBlock", "downjo");
+                temp = indexSubscribingObj.GetFieldData("OutBlock", "downjo");
                 int lowerLimitedCount;
                 if (int.TryParse(temp, out lowerLimitedCount) == true)
                     conclusion.LowerLimitedItemCount = lowerLimitedCount;
@@ -398,6 +405,52 @@ namespace MTree.EbestPublisher
             {
                 logger.Error(ex);
             }
+        }
+
+        public bool SubscribeCircuitBreak(string code)
+        {
+            if (waitLoginEvent.WaitOne(10000) == false)
+            {
+                logger.Error("Not loggedin state");
+                return false;
+            }
+
+            try
+            {
+                viSubscribingObj.SetFieldData("InBlock", "shcode", code);
+                viSubscribingObj.AdviseRealData();
+
+                subscribeCount++;
+                logger.Info($"Subscribe circuit break success, Code: {code}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+
+            logger.Error($"Subscribe circuit break fail, Code: {code}");
+            return false;
+        }
+
+        private void VolatilityInterruptionReceived(string szTrCode)
+        {
+            CircuitBreak cb = new CircuitBreak();
+            cb.Code = viSubscribingObj.GetFieldData("OutBlock", "shcode");
+            cb.CircuitBreakState = (CircuitBreakType)Convert.ToInt32(viSubscribingObj.GetFieldData("OutBlock", "vi_gubun"));
+            if (cb.CircuitBreakState == CircuitBreakType.StaticInvoke)
+            {
+                cb.BasePrice = Convert.ToInt64(viSubscribingObj.GetFieldData("OutBlock", "svi_recprice"));
+            }
+            else if (cb.CircuitBreakState == CircuitBreakType.DynamicInvoke)
+            {
+                cb.BasePrice = Convert.ToInt64(viSubscribingObj.GetFieldData("OutBlock", "dvi_recprice"));
+            }
+            else
+            {
+                cb.BasePrice = 0;
+            }
+            cb.InvokePrice = Convert.ToInt64(viSubscribingObj.GetFieldData("OutBlock", "vi_trgprice"));
         }
 
         public bool GetQuote(string code, ref StockMaster stockMaster)
