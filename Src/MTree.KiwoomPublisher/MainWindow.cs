@@ -35,6 +35,19 @@ namespace MTree.KiwoomPublisher
                 }
             });
 #endif
+#if false
+            Task.Run(() =>
+            {
+                System.Threading.Thread.Sleep(10000);
+                int startTick = Environment.TickCount;
+                foreach (KeyValuePair<string, CodeEntity> pair in kiwoomPublisher.GetStockCodeList())
+                {
+                    StockMaster master = kiwoomPublisher.GetStockMaster(pair.Key);
+                    Console.WriteLine($"{master.Code}, {master.PER}");
+                }
+                Trace.WriteLine(">>>>>>>>>>>>>>> " + (Environment.TickCount - startTick));
+            });
+#endif
         }
     }
 }
