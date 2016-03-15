@@ -1,5 +1,6 @@
 ﻿using CPUTILLib;
 using DSCBO1Lib;
+using CPSYSDIBLib;
 using MTree.DataStructure;
 using MTree.Publisher;
 using MTree.RealTimeProvider;
@@ -28,6 +29,9 @@ namespace MTree.DaishinPublisher
         private StockMst stockMstObj;
         private StockCur stockCurObj;
         private StockJpbid biddingObj;
+
+        private WorldCur worldCurObj;
+
         #endregion
 
         public DaishinPublisher() : base()
@@ -46,12 +50,48 @@ namespace MTree.DaishinPublisher
                 biddingObj = new StockJpbid();
                 biddingObj.Received += biddingObj_Received;
 
-                GetStockCodeList();
+                worldCurObj = new WorldCur();
+                worldCurObj.Received += WorldCurObj_Received;
+                //GetStockCodeList();
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
             }
+        }
+        public bool SubscribeWorldStock(string code)
+        {
+            int status = 1;
+
+            try
+            {
+                worldCurObj.SetInputValue(0, code);
+                worldCurObj.Subscribe();
+
+                while (true)
+                {
+                    status = worldCurObj.GetDibStatus();
+                    if (status != 1) // 1 - 수신대기
+                        break;
+
+                    Thread.Sleep(10);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+            finally
+            {
+                
+            }
+
+            return (status == 0);
+        }
+        private void WorldCurObj_Received()
+        {
+            string code = worldCurObj.GetHeaderValue(0).ToString();
+            float price = Convert.ToSingle(worldCurObj.GetHeaderValue(1));
         }
 
         private void sessionObj_OnDisconnect()
