@@ -52,14 +52,11 @@ namespace MTree.DaishinPublisher
                 biddingObj = new StockJpbid();
                 biddingObj.Received += biddingObj_Received;
 
-<<<<<<< HEAD
                 worldCurObj = new WorldCur();
                 worldCurObj.Received += WorldCurObj_Received;
-                //GetStockCodeList();
-=======
+
                 StartBiddingPriceQueueTask();
                 StartStockConclusionQueueTask();
->>>>>>> origin/master
             }
             catch (Exception ex)
             {
