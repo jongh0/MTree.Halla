@@ -28,6 +28,7 @@ namespace MTree.DaishinPublisher
 
             Publisher = new DaishinPublisher();
             //Publisher.SubscribeWorldStock("ENXH");
+            //bool result = Publisher.SubscribeStock("051910");
         }
     }
 }

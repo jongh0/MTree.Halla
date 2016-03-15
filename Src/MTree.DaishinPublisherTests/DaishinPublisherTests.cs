@@ -43,5 +43,13 @@ namespace MTree.DaishinPublisher.Tests
             Dictionary<string, CodeEntity> list = publisher.GetStockCodeList();
             Assert.IsTrue(cnt > 0);
         }
+
+        [TestMethod()]
+        public void SubscribeWorldStockTest()
+        {
+            DaishinPublisher publisher = new DaishinPublisher();
+            publisher.SubscribeWorldStock("ENXH");
+            while (true) ;
+        }
     }
 }
