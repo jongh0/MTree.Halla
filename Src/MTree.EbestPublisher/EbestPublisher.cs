@@ -8,6 +8,7 @@ using XA_DATASETLib;
 using System.ServiceModel;
 using MTree.RealTimeProvider;
 using MTree.Utility;
+using System.Timers;
 
 namespace MTree.EbestPublisher
 {
@@ -16,21 +17,10 @@ namespace MTree.EbestPublisher
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private object lockObject = new object();
-
         private const int maxSubscribeCount = 200;
         private int subscribeCount = 0;
 
         private readonly string resFilePath = "\\Res";
-
-        private CancellationTokenSource loginCheckerCancelSource = new CancellationTokenSource();
-        private CancellationToken loginCheckerCancelToken;
-
-        private ManualResetEvent waitLoginEvent = new ManualResetEvent(false);
-
-        private int StockQuoteInterval { get; set; } = 0;
-
-        private bool isAnyDataReceived;
 
         #region Ebest Specific
         private XASessionClass sessionObj;
@@ -44,8 +34,6 @@ namespace MTree.EbestPublisher
         {
             try
             {
-                loginCheckerCancelToken = loginCheckerCancelSource.Token;
-
                 #region XASession
                 sessionObj = new XASessionClass();
                 sessionObj.Disconnect += sessionObj_Disconnect;
@@ -102,24 +90,26 @@ namespace MTree.EbestPublisher
         #region XAQuery
         private void queryObj_ReceiveMessage(bool bIsSystemError, string nMessageCode, string szMessage)
         {
+            LastFirmCommunicateTick = Environment.TickCount;
+
             if (bIsSystemError == true)
                 logger.Error($"bIsSystemError: {bIsSystemError}, nMessageCode: {nMessageCode}, szMessage: {szMessage}");
         }
 
         private void queryObj_ReceiveData(string szTrCode)
         {
+            LastFirmCommunicateTick = Environment.TickCount;
             logger.Info($"szTrCode: {szTrCode}");
 
             if (szTrCode == "t1102")
                 StockMasterReceived();
             else if (szTrCode == "t1511")
                 IndexMasterReceived();
-
-            isAnyDataReceived = true;
         }
 
         private void queryObj_ReceiveChartRealData(string szTrCode)
         {
+            LastFirmCommunicateTick = Environment.TickCount;
             logger.Info($"szTrCode: {szTrCode}");
         }
         #endregion
@@ -127,89 +117,49 @@ namespace MTree.EbestPublisher
         #region XAReal
         private void realObj_RecieveLinkData(string szLinkName, string szData, string szFiller)
         {
+            LastFirmCommunicateTick = Environment.TickCount;
         }
 
         private void realObj_ReceiveRealData(string szTrCode)
         {
+            LastFirmCommunicateTick = Environment.TickCount;
+
             if (szTrCode == "IJ_")
                 IndexConclusionReceived(szTrCode);
             else if (szTrCode == "VI_")
                 VolatilityInterruptionReceived(szTrCode);
-            isAnyDataReceived = true;
         }
         #endregion
 
         #region XASession
         private void sessionObj_Event_Logout()
         {
-            LoginInstance.State = StateType.Logout;
-            loginCheckerCancelSource.Cancel();
+            LastFirmCommunicateTick = Environment.TickCount;
 
+            LoginInstance.State = StateType.Logout;
             logger.Info(LoginInstance.ToString());
         }
 
         private void sessionObj_Event_Login(string szCode, string szMsg)
         {
-            StockQuoteInterval = 1000 / stockQuotingObj.GetTRCountPerSec("t1102");
+            LastFirmCommunicateTick = Environment.TickCount;
+
+            QuoteInterval = 1000 / stockQuotingObj.GetTRCountPerSec("t1102");
 
             LoginInstance.State = StateType.Login;
-            waitLoginEvent.Set();
+            SetLogin();
 
             logger.Info($"{LoginInstance.ToString()}nszCode: {szCode}, szMsg: {szMsg}");
-
-            //Task.Run(() => { LoginStateChecker(); }, loginCheckerCancelToken);
         }
 
         private void sessionObj_Disconnect()
         {
             LoginInstance.State = StateType.Disconnect;
-            loginCheckerCancelSource.Cancel();
-
             logger.Info(LoginInstance.ToString());
         }
         #endregion
 
         #region Login / Logout
-        private void LoginStateChecker()
-        {
-            logger.Info("LoginStateChecker started");
-
-            while (LoginInstance.State == StateType.Login)
-            {
-                try
-                {
-                    loginCheckerCancelToken.ThrowIfCancellationRequested();
-
-                    if (isAnyDataReceived == false)
-                    {
-                        IndexMaster indexMaster = new IndexMaster();
-                        GetQuote("001", ref indexMaster);
-                    }
-
-                    isAnyDataReceived = false;
-
-                    // 10분 sleep
-                    int sleepCount = 60 * 10;
-                    while (sleepCount-- > 0)
-                    {
-                        loginCheckerCancelToken.ThrowIfCancellationRequested();
-                        Thread.Sleep(1000);
-                    }
-                }
-                catch (OperationCanceledException)
-                {
-                    Console.WriteLine("LoginStateChecker canceled");
-                    break;
-                }
-                catch (Exception ex)
-                {
-                    logger.Error(ex);
-                }
-            }
-
-            logger.Info("LoginStateChecker stopped");
-        }
-
         public bool Login()
         {
             bool ret = false;
@@ -243,11 +193,6 @@ namespace MTree.EbestPublisher
             return ret;
         }
 
-        public bool WaitLogin()
-        {
-            return waitLoginEvent.WaitOne(5000);
-        }
-
         public bool Logout()
         {
             try
@@ -270,12 +215,14 @@ namespace MTree.EbestPublisher
             }
 
             return true;
-        } 
+        }
         #endregion
 
         public override bool SubscribeIndex(string code)
         {
-            if (waitLoginEvent.WaitOne(10000) == false)
+            base.SubscribeIndex(code);
+
+            if (WaitLogin() == false)
             {
                 logger.Error("Not loggedin state");
                 return false;
@@ -287,7 +234,7 @@ namespace MTree.EbestPublisher
                 indexSubscribingObj.AdviseRealData();
 
                 subscribeCount++;
-                logger.Info($"Subscribe index success, Code: {code}");
+                logger.Info($"Subscribe index success, Code: {code}, subscribeCount: {subscribeCount}");
                 return true;
             }
             catch (Exception ex)
@@ -301,7 +248,9 @@ namespace MTree.EbestPublisher
 
         public override bool UnsubscribeIndex(string code)
         {
-            if (waitLoginEvent.WaitOne(10000) == false)
+            base.UnsubscribeIndex(code);
+
+            if (WaitLogin() == false)
             {
                 logger.Error("Not loggedin state");
                 return false;
@@ -313,7 +262,7 @@ namespace MTree.EbestPublisher
                 indexSubscribingObj.UnadviseRealData();
 
                 subscribeCount--;
-                logger.Info($"Unsubscribe index success, Code: {code}");
+                logger.Info($"Unsubscribe index success, Code: {code}, subscribeCount: {subscribeCount}");
                 return true;
             }
             catch (Exception ex)
@@ -409,7 +358,7 @@ namespace MTree.EbestPublisher
 
         public bool SubscribeCircuitBreak(string code)
         {
-            if (waitLoginEvent.WaitOne(10000) == false)
+            if (WaitLogin() == false)
             {
                 logger.Error("Not loggedin state");
                 return false;
@@ -460,25 +409,25 @@ namespace MTree.EbestPublisher
 
         public bool GetQuote(string code, ref StockMaster stockMaster)
         {
-            if (Monitor.TryEnter(lockObject, 1000 * 10) == false)
+            if (Monitor.TryEnter(QuoteLock, QuoteLockTimeout) == false)
             {
                 logger.Error($"Quoting failed, Code: {code}, Can't obtaion lock object");
                 return false;
             }
 
-            if (waitLoginEvent.WaitOne(10000) == false)
-            {
-                logger.Error($"Quoting failed, Code: {code}, Not loggedin state");
-                return false;
-            }
-
-            logger.Info($"Start quoting, Code: {code}");
-
             int ret = -1;
 
             try
             {
-                WaitQuotingLimit();
+                if (WaitLogin() == false)
+                {
+                    logger.Error($"Quoting failed, Code: {code}, Not loggedin state");
+                    return false;
+                }
+
+                WaitQuoteInterval();
+
+                logger.Info($"Start quoting, Code: {code}");
                 QuotingStockMaster = stockMaster;
 
                 stockQuotingObj.SetFieldData("t1102InBlock", "shcode", 0, code);
@@ -486,18 +435,22 @@ namespace MTree.EbestPublisher
 
                 if (ret > 0)
                 {
-                    if (WaitQuotingEvent.WaitOne(1000 * 10) == true &&
-                        QuotingStockMaster.Code != string.Empty)
+                    if (WaitQuoting() == true)
                     {
-                        logger.Info($"Quoting done. Code: {code}");
-                        return true;
+                        if (QuotingStockMaster.Code != string.Empty)
+                        {
+                            logger.Info($"Quoting done. Code: {code}");
+                            return true;
+                        }
+
+                        logger.Error($"Quoting fail. Code: {code}");
                     }
 
                     logger.Error($"Quoting timeout. Code: {code}");
                 }
                 else
                 {
-                    logger.Error($"Quoting request failed. Code: {code}, result: {ret}");
+                    logger.Error($"Quoting request fail. Code: {code}, result: {ret}");
                 }
             }
             catch (Exception ex)
@@ -507,7 +460,7 @@ namespace MTree.EbestPublisher
             finally
             {
                 QuotingStockMaster = null;
-                Monitor.Exit(lockObject);
+                Monitor.Exit(QuoteLock);
             }
 
             return false;
@@ -515,25 +468,25 @@ namespace MTree.EbestPublisher
 
         public bool GetQuote(string code, ref IndexMaster indexMaster)
         {
-            if (Monitor.TryEnter(lockObject, 1000 * 10) == false)
+            if (Monitor.TryEnter(QuoteLock, QuoteLockTimeout) == false)
             {
                 logger.Error($"Quoting failed, Code: {code}, Can't obtaion lock object");
                 return false;
             }
 
-            if (waitLoginEvent.WaitOne(10000) == false)
-            {
-                logger.Error($"Quoting failed, Code: {code}, Not loggedin state");
-                return false;
-            }
-
-            logger.Info($"Start quoting, Code: {code}");
-
             int ret = -1;
 
             try
             {
-                WaitQuotingLimit();
+                if (WaitLogin() == false)
+                {
+                    logger.Error($"Quoting failed, Code: {code}, Not loggedin state");
+                    return false;
+                }
+
+                WaitQuoteInterval();
+
+                logger.Info($"Start quoting, Code: {code}");
                 QuotingIndexMaster = indexMaster;
 
                 indexQuotingObj.SetFieldData("t1511InBlock", "upcode", 0, code);
@@ -541,18 +494,22 @@ namespace MTree.EbestPublisher
 
                 if (ret > 0)
                 {
-                    if (WaitQuotingEvent.WaitOne(1000 * 10) == true &&
-                        QuotingIndexMaster.Code != string.Empty)
+                    if (WaitQuoting() == true)
                     {
-                        logger.Info($"Quoting done. Code: {code}");
-                        return true;
+                        if (QuotingIndexMaster.Code != string.Empty)
+                        {
+                            logger.Info($"Quoting done. Code: {code}");
+                            return true;
+                        }
+
+                        logger.Error($"Quoting fail. Code: {code}");
                     }
 
                     logger.Error($"Quoting timeout. Code: {code}");
                 }
                 else
                 {
-                    logger.Error($"Quoting request failed. Code: {code}, Quoting result: {ret}");
+                    logger.Error($"Quoting request fail. Code: {code}, Quoting result: {ret}");
                 }
             }
             catch (Exception ex)
@@ -562,7 +519,7 @@ namespace MTree.EbestPublisher
             finally
             {
                 QuotingIndexMaster = null;
-                Monitor.Exit(lockObject);
+                Monitor.Exit(QuoteLock);
             }
 
             return false;
@@ -626,7 +583,7 @@ namespace MTree.EbestPublisher
             }
             finally
             {
-                WaitQuotingEvent.Set();
+                SetQuoting();
             }
         }
 
@@ -656,12 +613,14 @@ namespace MTree.EbestPublisher
             }
             finally
             {
-                WaitQuotingEvent.Set();
+                SetQuoting();
             }
         }
 
         public override StockMaster GetStockMaster(string code)
         {
+            base.GetStockMaster(code);
+
             var stockMaster = new StockMaster();
             stockMaster.Code = code;
 
@@ -687,13 +646,20 @@ namespace MTree.EbestPublisher
 
         public override bool IsSubscribable()
         {
+            base.IsSubscribable();
+
             return subscribeCount < maxSubscribeCount;
         }
 
-        private void WaitQuotingLimit()
-        { 
-            if (StockQuoteInterval > 0)
-                Thread.Sleep(StockQuoteInterval);
+        protected override void OnCommunicateTimer(object sender, ElapsedEventArgs e)
+        {
+            // TODO : Keep firm communication code
+            if ((Environment.TickCount - LastFirmCommunicateTick) > MaxCommunicateInterval)
+            {
+                logger.Info($"{GetType().Name} keep firm connection");
+            }
+
+            base.OnCommunicateTimer(sender, e);
         }
     }
 }

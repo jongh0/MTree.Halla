@@ -12,6 +12,7 @@ using System.ServiceModel;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace MTree.DaishinPublisher
 {
@@ -20,9 +21,7 @@ namespace MTree.DaishinPublisher
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private object lockObject = new object();
-
-        private int LastQuoteTick { get; set; } = Environment.TickCount;
+        protected int LastQuoteTick { get; set; } = Environment.TickCount;
 
         #region Daishin Specific
         private CpCybos sessionObj;
@@ -35,6 +34,8 @@ namespace MTree.DaishinPublisher
         {
             try
             {
+                QuoteInterval = 15 * 1000 / 60; // 15초당 60개
+
                 sessionObj = new CpCybos();
                 sessionObj.OnDisconnect += sessionObj_OnDisconnect;
                 
@@ -63,35 +64,37 @@ namespace MTree.DaishinPublisher
 
         private void stockMstObj_Received()
         {
+            LastFirmCommunicateTick = Environment.TickCount;
             StockMasterReceived();
         }
 
         private void stockCurObj_Received()
         {
+            LastFirmCommunicateTick = Environment.TickCount;
             StockConclusionReceived();
         }
 
         private void biddingObj_Received()
         {
+            LastFirmCommunicateTick = Environment.TickCount;
             BiddingPriceReceived();
         }
 
         public bool GetQuote(string code, ref StockMaster stockMaster)
         {
-            if (Monitor.TryEnter(lockObject, 1000 * 10) == false)
+            if (Monitor.TryEnter(QuoteLock, QuoteLockTimeout) == false)
             {
                 logger.Error($"Quoting failed, Code: {code}, Can't obtaion lock object");
                 return false;
             }
 
-            logger.Info($"Start quoting, Code: {code}");
-
             short ret = -1;
 
             try
             {
-                WaitQuotingLimit();
+                WaitQuoteInterval();
 
+                logger.Info($"Start quoting, Code: {code}");
                 QuotingStockMaster = stockMaster;
 
                 stockMstObj.SetInputValue(0, code);
@@ -99,18 +102,22 @@ namespace MTree.DaishinPublisher
 
                 if (ret == 0)
                 {
-                    if (WaitQuotingEvent.WaitOne(1000 * 10) == true && 
-                        QuotingStockMaster.Code != string.Empty)
+                    if (WaitQuoting() == true)
                     {
-                        logger.Info($"Quoting done. Code: {code}");
-                        return true;
+                        if (QuotingStockMaster.Code != string.Empty)
+                        {
+                            logger.Info($"Quoting done. Code: {code}");
+                            return true;
+                        }
+
+                        logger.Error($"Quoting fail. Code: {code}");
                     }
 
-                    logger.Error($"Quoting failed. Code: {code}");
+                    logger.Error($"Quoting timeout. Code: {code}");
                 }
                 else
                 {
-                    logger.Error($"Quoting request failed. Code: {code}, result: {ret}");
+                    logger.Error($"Quoting request fail. Code: {code}, result: {ret}");
                 }
             }
             catch (Exception ex)
@@ -120,7 +127,7 @@ namespace MTree.DaishinPublisher
             finally
             {
                 QuotingStockMaster = null;
-                Monitor.Exit(lockObject);
+                Monitor.Exit(QuoteLock);
             }
 
             return false;
@@ -210,12 +217,14 @@ namespace MTree.DaishinPublisher
             }
             finally
             {
-                WaitQuotingEvent.Set();
+                SetQuoting();
             }
         }
 
         public override bool SubscribeStock(string code)
         {
+            base.SubscribeStock(code);
+
             short status = 1;
 
             try
@@ -239,7 +248,7 @@ namespace MTree.DaishinPublisher
             finally
             {
                 if (status == 0)
-                    logger.Trace($"Subscribe stock, Code: {code}");
+                    logger.Info($"Subscribe stock, Code: {code}");
                 else
                     logger.Error($"Subscribe stock error, Code: {code}, Status: {status}, Msg: {stockCurObj.GetDibMsg1()}");
             }
@@ -249,6 +258,8 @@ namespace MTree.DaishinPublisher
 
         public override bool UnsubscribeStock(string code)
         {
+            base.UnsubscribeStock(code);
+
             short status = 1;
 
             try
@@ -297,7 +308,7 @@ namespace MTree.DaishinPublisher
                 conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100, now.Millisecond); // Daishin doesn't provide milisecond 
 
                 // 13 - (long) 현재가
-                conclusion.Price = (float)Convert.ToDouble(stockCurObj.GetHeaderValue(13));
+                conclusion.Price = Convert.ToSingle(stockCurObj.GetHeaderValue(13));
 
                 // 14 - (char)체결 상태
                 char type = Convert.ToChar(stockCurObj.GetHeaderValue(14));
@@ -325,6 +336,8 @@ namespace MTree.DaishinPublisher
 
         public override bool SubscribeBidding(string code)
         {
+            base.SubscribeBidding(code);
+
             short status = 1;
 
             try
@@ -348,7 +361,7 @@ namespace MTree.DaishinPublisher
             finally
             {
                 if (status == 0)
-                    logger.Trace($"Subscribe bidding, Code: {code}");
+                    logger.Info($"Subscribe bidding, Code: {code}");
                 else
                     logger.Error($"Subscribe bidding error, Code: {code}, Status: {status}, Msg: {biddingObj.GetDibMsg1()}");
             }
@@ -358,6 +371,8 @@ namespace MTree.DaishinPublisher
 
         public override bool UnsubscribeBidding(string code)
         {
+            base.UnsubscribeBidding(code);
+
             short status = 1;
 
             try
@@ -453,6 +468,8 @@ namespace MTree.DaishinPublisher
 
         public override Dictionary<string, CodeEntity> GetStockCodeList()
         {
+            base.GetStockCodeList();
+
             var codeList = new Dictionary<string, CodeEntity>();
 
             try
@@ -486,6 +503,8 @@ namespace MTree.DaishinPublisher
 
         public override StockMaster GetStockMaster(string code)
         {
+            base.GetStockMaster(code);
+
             var stockMaster = new StockMaster();
             stockMaster.Code = code;
 
@@ -499,20 +518,17 @@ namespace MTree.DaishinPublisher
 
         public override bool IsSubscribable()
         {
+            base.IsSubscribable();
+
             return sessionObj.GetLimitRemainCount(LIMIT_TYPE.LT_SUBSCRIBE) > 0;
         }
 
-        private void WaitQuotingLimit()
+        protected override void OnCommunicateTimer(object sender, ElapsedEventArgs e)
         {
-            int ms = 250 - (Environment.TickCount - LastQuoteTick);
-            
-            if (ms > 0)
-            {
-                logger.Trace($"Wait quoting limit, ms: {ms}");
-                Thread.Sleep(ms);
-            }
+            // TODO : Keep firm communication code
+            logger.Info($"{GetType().Name} keep firm connection");
 
-            LastQuoteTick = Environment.TickCount;
+            base.OnCommunicateTimer(sender, e);
         }
     }
 }

@@ -14,26 +14,32 @@ namespace MTree.Consumer
     {
         public virtual void CloseClient()
         {
+            LastWcfCommunicateTick = Environment.TickCount;
         }
 
         public virtual void ConsumeBiddingPrice(BiddingPrice biddingPrice)
         {
+            LastWcfCommunicateTick = Environment.TickCount;
         }
 
         public virtual void ConsumeCircuitBreak(CircuitBreak circuitBreak)
         {
+            LastWcfCommunicateTick = Environment.TickCount;
         }
 
         public virtual void ConsumeIndexConclusion(IndexConclusion conclusion)
         {
+            LastWcfCommunicateTick = Environment.TickCount;
         }
 
         public virtual void ConsumeStockConclusion(StockConclusion conclusion)
         {
+            LastWcfCommunicateTick = Environment.TickCount;
         }
 
         public virtual void ConsumeStockMaster(StockMaster stockMaster)
         {
+            LastWcfCommunicateTick = Environment.TickCount;
         }
     }
 }

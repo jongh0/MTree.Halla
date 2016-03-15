@@ -18,15 +18,10 @@ namespace MTree.Consumer
         protected InstanceContext CallbackInstance { get; set; }
         protected ConsumerClient ServiceClient { get; set; }
 
-        private System.Timers.Timer KeepConnectionTimer { get; } = new System.Timers.Timer(1000 * 60 * 5);
-
         public ConsumerBase()
         {
             try
             {
-                KeepConnectionTimer.Elapsed += KeepConnectionTimer_Elapsed;
-                KeepConnectionTimer.AutoReset = true;
-
                 CallbackInstance = new InstanceContext(this);
                 OpenChannel();
             }
@@ -74,13 +69,13 @@ namespace MTree.Consumer
         protected virtual void ServiceClient_Opened(object sender, EventArgs e)
         {
             logger.Info($"{GetType().Name} channel opened");
-            KeepConnectionTimer.Start();
+            CommunicateTimer.Start();
         }
 
         protected virtual void ServiceClient_Closed(object sender, EventArgs e)
         {
             logger.Info($"{GetType().Name} channel closed");
-            KeepConnectionTimer.Stop();
+            CommunicateTimer.Stop();
         }
 
         public override void CloseClient()
@@ -89,6 +84,7 @@ namespace MTree.Consumer
             {
                 logger.Info($"{GetType().Name} process will be closed");
 
+                StopCommunicateTimer();
                 StopQueueTask();
                 CloseChannel();
 
@@ -104,20 +100,25 @@ namespace MTree.Consumer
             }
         }
 
-        private void KeepConnectionTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        protected override void OnCommunicateTimer(object sender, System.Timers.ElapsedEventArgs e)
         {
             try
             {
-                if (ServiceClient?.State == CommunicationState.Opened)
+                if (ServiceClient?.State == CommunicationState.Opened &&
+                    (Environment.TickCount - LastWcfCommunicateTick) > MaxCommunicateInterval)
                 {
-                    logger.Info($"{GetType().Name} keep connection");
                     ServiceClient.NoOperation();
+
+                    LastWcfCommunicateTick = Environment.TickCount;
+                    logger.Info($"{GetType().Name} keep wcf connection");
                 }
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
             }
+
+            base.OnCommunicateTimer(sender, e);
         }
     }
 }
