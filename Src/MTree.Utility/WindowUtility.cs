@@ -80,7 +80,7 @@ namespace MTree.Utility
         {
             try
             {
-                while (retryCount-- > 0)
+                while (retryCount-- >= 0)
                 {
                     IntPtr handle = FindWindow(null, windowName);
                     if (handle != IntPtr.Zero)
@@ -112,7 +112,7 @@ namespace MTree.Utility
         {
             try
             {
-                while (retryCount-- > 0)
+                while (retryCount-- >= 0)
                 {
                     IntPtr handle = FindWindowEx(window, IntPtr.Zero, className, caption);
                     if (handle != IntPtr.Zero)

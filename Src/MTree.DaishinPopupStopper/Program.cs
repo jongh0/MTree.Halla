@@ -61,7 +61,7 @@ namespace MTree.DaishinPopupStopper
         {
             try
             {
-                IntPtr windowH = WindowUtility.FindWindow2("CPDIB");
+                IntPtr windowH = WindowUtility.FindWindow2("CPDIB", interval:10, setForeground : false);
                 if (windowH == IntPtr.Zero)
                     windowH = WindowUtility.FindWindow2("CPSYSDIB");
 
