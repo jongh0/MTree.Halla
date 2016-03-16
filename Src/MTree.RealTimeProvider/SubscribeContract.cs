@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MTree.RealTimeProvider
 {
-    public enum SubscribeType
+    public enum SubscribeTypes
     {
         StockMaster,
         BiddingPrice,
@@ -14,7 +14,7 @@ namespace MTree.RealTimeProvider
         IndexConclusion,
     }
 
-    public enum SubscribeScope
+    public enum SubscribeScopes
     {
         All,
         Partial,
@@ -23,9 +23,9 @@ namespace MTree.RealTimeProvider
     [Serializable]
     public class SubscribeContract
     {
-        public SubscribeType Type { get; set; }
+        public SubscribeTypes Type { get; set; }
 
-        public SubscribeScope Scope { get; set; } = SubscribeScope.All;
+        public SubscribeScopes Scope { get; set; } = SubscribeScopes.All;
 
         public HashSet<string> Codes { get; set; } = new HashSet<string>();
 
@@ -35,18 +35,18 @@ namespace MTree.RealTimeProvider
         {
         }
 
-        public SubscribeContract(SubscribeType type)
+        public SubscribeContract(SubscribeTypes type)
         {
             Type = type;
         }
 
-        public SubscribeContract(SubscribeType type, SubscribeScope scope)
+        public SubscribeContract(SubscribeTypes type, SubscribeScopes scope)
         {
             Type = type;
             Scope = scope;
         }
 
-        public SubscribeContract(SubscribeType type, SubscribeScope scope, HashSet<string> codes)
+        public SubscribeContract(SubscribeTypes type, SubscribeScopes scope, HashSet<string> codes)
         {
             Type = type;
             Scope = scope;

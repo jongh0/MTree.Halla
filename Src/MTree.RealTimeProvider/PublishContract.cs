@@ -14,7 +14,7 @@ namespace MTree.RealTimeProvider
 
         public int Id { get; set; } = -1;
 
-        public ProcessType Type { get; set; }
+        public ProcessTypes Type { get; set; }
 
         public IRealTimePublisherCallback Callback { get; set; } = null;
 
@@ -25,13 +25,13 @@ namespace MTree.RealTimeProvider
             return $"{Type}/{Id}/{NowOperating}";
         }
 
-        public static ProcessType ConvertToType(string value)
+        public static ProcessTypes ConvertToType(string value)
         {
-            ProcessType type;
+            ProcessTypes type;
             if (Enum.TryParse(value, out type) == true)
                 return type;
             else
-                return ProcessType.None;
+                return ProcessTypes.None;
         }
     }
 }

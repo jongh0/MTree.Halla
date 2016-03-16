@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace MTree.DataStructure
 {
     #region enum
-    public enum CircuitBreakType
+    public enum CircuitBreakTypes
     {
         Clear,
         StaticInvoke,
@@ -19,8 +19,8 @@ namespace MTree.DataStructure
     [Serializable]
     public class CircuitBreak : Subscribable
     {
-        [BsonElement("CBS")]
-        public CircuitBreakType CircuitBreakState { get; set; }
+        [BsonElement("CBT")]
+        public CircuitBreakTypes CircuitBreakType { get; set; }
 
         [BsonElement("BP")]
         public float BasePrice { get; set; }
@@ -32,7 +32,7 @@ namespace MTree.DataStructure
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(base.ToString());
-            sb.AppendLine($"{nameof(CircuitBreakState)}: {CircuitBreakState}");
+            sb.AppendLine($"{nameof(CircuitBreakType)}: {CircuitBreakType}");
             sb.AppendLine($"{nameof(BasePrice)}: {BasePrice}");
             sb.AppendLine($"{nameof(InvokePrice)}: {InvokePrice}");
 

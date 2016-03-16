@@ -20,20 +20,24 @@ namespace MTree.DataStructure
         /// 공시일
         /// </summary>
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
+        [BsonElement("D")]
         public DateTime Disclosure { get; set; }
 
         /// <summary>
         /// 지정일
         /// </summary>
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
+        [BsonElement("S")]
         public DateTime Start { get; set; }
 
         /// <summary>
         /// 해지일
         /// </summary>
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
+        [BsonElement("E")]
         public DateTime End { get; set; }
 
+        [BsonElement("R")]
         public string Reason { get; set; }
 
         public override string ToString()

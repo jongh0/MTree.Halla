@@ -29,10 +29,10 @@ namespace MTree.HistorySaver
             try
             {
                 MongoDbProvider.Instance.Connect();
-                BiddingPriceCollection = MongoDbProvider.Instance.GetDatabase(DbType.BiddingPrice).GetCollection<BiddingPrice>(Config.Database.TodayCollectionName);
-                StockConclusionCollection = MongoDbProvider.Instance.GetDatabase(DbType.StockConclusion).GetCollection<StockConclusion>(Config.Database.TodayCollectionName);
-                IndexConclusionCollection = MongoDbProvider.Instance.GetDatabase(DbType.IndexConclusion).GetCollection<IndexConclusion>(Config.Database.TodayCollectionName);
-                CircuitBreakCollection = MongoDbProvider.Instance.GetDatabase(DbType.CircuitBreak).GetCollection<CircuitBreak>(nameof(CircuitBreak)); // TODO : circuit break collection name 정해야함
+                BiddingPriceCollection = MongoDbProvider.Instance.GetDatabase(DbTypes.BiddingPrice).GetCollection<BiddingPrice>(Config.Database.TodayCollectionName);
+                StockConclusionCollection = MongoDbProvider.Instance.GetDatabase(DbTypes.StockConclusion).GetCollection<StockConclusion>(Config.Database.TodayCollectionName);
+                IndexConclusionCollection = MongoDbProvider.Instance.GetDatabase(DbTypes.IndexConclusion).GetCollection<IndexConclusion>(Config.Database.TodayCollectionName);
+                CircuitBreakCollection = MongoDbProvider.Instance.GetDatabase(DbTypes.CircuitBreak).GetCollection<CircuitBreak>(nameof(CircuitBreak)); // TODO : circuit break collection name 정해야함
 
                 CreateIndex();
 
@@ -76,10 +76,10 @@ namespace MTree.HistorySaver
         {
             base.ServiceClient_Opened(sender, e);
 
-            ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeType.StockMaster));
-            ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeType.BiddingPrice, SubscribeScope.All));
-            ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeType.StockConclusion, SubscribeScope.All));
-            ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeType.IndexConclusion, SubscribeScope.All));
+            ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.StockMaster));
+            ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.BiddingPrice, SubscribeScopes.All));
+            ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.StockConclusion, SubscribeScopes.All));
+            ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.IndexConclusion, SubscribeScopes.All));
         }
 
         private void ProcessBiddingPriceQueue()
@@ -172,7 +172,7 @@ namespace MTree.HistorySaver
                     {
                         if (StockMasterCollection == null)
                         {
-                            var db = MongoDbProvider.Instance.GetDatabase(DbType.StockMaster);
+                            var db = MongoDbProvider.Instance.GetDatabase(DbTypes.StockMaster);
                             db.DropCollection(Config.Database.TodayCollectionName);
                             logger.Info($"Stock master collection droped, {Config.Database.TodayCollectionName}");
 

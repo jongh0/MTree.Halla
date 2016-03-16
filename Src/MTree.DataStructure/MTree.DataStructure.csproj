@@ -59,6 +59,8 @@
   <ItemGroup>
     <Compile Include="BiddingPrice.cs" />
     <Compile Include="BiddingPriceEntity.cs" />
+    <Compile Include="Candle.cs" />
+    <Compile Include="Chart.cs" />
     <Compile Include="CircuitBreak.cs" />
     <Compile Include="CodeEntity.cs" />
     <Compile Include="Conclusion.cs" />

@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace MTree.Publisher
 {
-    public enum StateType
+    public enum LoginStates
     {
         Disconnect,
         Login,
         Logout,
     }
 
-    public enum FirmType
+    public enum FirmTypes
     {
         Daishin,
         Ebest,
@@ -25,9 +25,9 @@ namespace MTree.Publisher
     {
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        public StateType State { get; set; } = StateType.Disconnect;
-        public FirmType Firm { get; set; } = FirmType.Ebest;
-        public ServerType Server { get; set; } = ServerType.Real;
+        public LoginStates State { get; set; } = LoginStates.Disconnect;
+        public FirmTypes FirmType { get; set; } = FirmTypes.Ebest;
+        public ServerTypes ServerType { get; set; } = ServerTypes.Real;
 
         public string UserId { get; set; }
         public string UserPw { get; set; }
@@ -39,7 +39,7 @@ namespace MTree.Publisher
 
         public override string ToString()
         {
-            return $"{State}/{Firm}/{ServerAddress}/{ServerPort}/{UserId}/{Id}";
+            return $"{State}/{FirmType}/{ServerAddress}/{ServerPort}/{UserId}/{Id}";
         }
     }
 }

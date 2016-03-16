@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace MTree.DataStructure
 {
-    public enum MasteringStateType
+    public enum MasteringStates
     {
         Ready,
         Running,
         Finished,
     }
 
-    public enum MarketType
+    public enum MarketTypes
     {
         Unknown,
         INDEX,
@@ -42,8 +42,8 @@ namespace MTree.DataStructure
         [BsonElement("C")]
         public string Code { get; set; }
 
-        [BsonElement("M")]
-        public MarketType Market { get; set; } = MarketType.Unknown;
+        [BsonElement("MT")]
+        public MarketTypes MarketType { get; set; } = MarketTypes.Unknown;
 
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         [BsonElement("T")]
@@ -54,7 +54,7 @@ namespace MTree.DataStructure
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"{nameof(Id)}: {Id}");
             sb.AppendLine($"{nameof(Code)}: {Code}");
-            sb.AppendLine($"{nameof(Market)}: {Market}");
+            sb.AppendLine($"{nameof(MarketType)}: {MarketType}");
             sb.AppendLine($"{nameof(Time)}: {Time}");
 
             return sb.ToString();

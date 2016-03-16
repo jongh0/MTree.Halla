@@ -13,36 +13,36 @@ namespace MTree.DataStructure
 
         public string Name { get; set; }
 
-        public MarketType Market { get; set; } = MarketType.Unknown;
+        public MarketTypes MarketType { get; set; } = MarketTypes.Unknown;
 
         public override string ToString()
         {
-            return $"{Code}/{Name}/{Market}";
+            return $"{Code}/{Name}/{MarketType}";
         }
 
         public static string ConvertToDaishinCode(CodeEntity entity)
         {
-            switch (entity.Market)
+            switch (entity.MarketType)
             {
-                case MarketType.ELW:
+                case MarketTypes.ELW:
                     return "J" + entity.Code;
-                case MarketType.ETN:
+                case MarketTypes.ETN:
                     return "Q" + entity.Code;
                 default:
                     return "A" + entity.Code;
             }
         }
 
-        public static MarketType ConvertToMarketType(string fullCode)
+        public static MarketTypes ConvertToMarketType(string fullCode)
         {
             switch (fullCode[0])
             {
                 case 'J':
-                    return MarketType.ELW;
+                    return MarketTypes.ELW;
                 case 'Q':
-                    return MarketType.ETN;
+                    return MarketTypes.ETN;
                 default:
-                    return MarketType.KOSPI;
+                    return MarketTypes.KOSPI;
             }
         }
 

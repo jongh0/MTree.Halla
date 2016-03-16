@@ -9,11 +9,11 @@ namespace MTree.RealTimeProvider
 {
     public class StockMastering
     {
-        public MasteringStateType DaishinState { get; set; } = MasteringStateType.Ready;
-        public MasteringStateType EbestState { get; set; } = MasteringStateType.Ready;
-        public MasteringStateType KiwoomState { get; set; } = MasteringStateType.Ready;
-        public MasteringStateType KrxState { get; set; } = MasteringStateType.Ready;
-        public MasteringStateType NaverState { get; set; } = MasteringStateType.Ready;
+        public MasteringStates DaishinState { get; set; } = MasteringStates.Ready;
+        public MasteringStates EbestState { get; set; } = MasteringStates.Ready;
+        public MasteringStates KiwoomState { get; set; } = MasteringStates.Ready;
+        public MasteringStates KrxState { get; set; } = MasteringStates.Ready;
+        public MasteringStates NaverState { get; set; } = MasteringStates.Ready;
 
         public StockMaster Stock { get; } = new StockMaster();
     }

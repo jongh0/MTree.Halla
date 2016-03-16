@@ -85,7 +85,7 @@ namespace MTree.KiwoomPublisher
             try
             {
                 kiwoomObj.CommTerminate();
-                LoginInstance.State = StateType.Logout;
+                LoginInstance.State = LoginStates.Logout;
                 logger.Info("Logout success");
                 return true;
             }
@@ -106,7 +106,7 @@ namespace MTree.KiwoomPublisher
                 if (e.nErrCode == 0)
                 {
                     logger.Info("Login sucess");
-                    LoginInstance.State = StateType.Login;
+                    LoginInstance.State = LoginStates.Login;
                 }
                 else
                 {
@@ -358,7 +358,7 @@ namespace MTree.KiwoomPublisher
                     var codeEntity = new CodeEntity();
                     codeEntity.Code = code;
                     codeEntity.Name = kiwoomObj.GetMasterCodeName(code);
-                    codeEntity.Market = MarketType.KOSPI;
+                    codeEntity.MarketType = MarketTypes.KOSPI;
                     codeDictionary.Add(codeEntity.Code, codeEntity);
                 }
 
@@ -369,7 +369,7 @@ namespace MTree.KiwoomPublisher
                     var codeEntity = new CodeEntity();
                     codeEntity.Code = code;
                     codeEntity.Name = kiwoomObj.GetMasterCodeName(code);
-                    codeEntity.Market = MarketType.KOSPI;
+                    codeEntity.MarketType = MarketTypes.KOSPI;
                     codeDictionary.Add(codeEntity.Code, codeEntity);
                 }
 

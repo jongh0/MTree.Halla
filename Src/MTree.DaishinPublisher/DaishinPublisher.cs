@@ -351,8 +351,8 @@ namespace MTree.DaishinPublisher
 
                 // 14 - (char)체결 상태
                 char type = Convert.ToChar(stockCurObj.GetHeaderValue(14));
-                if (type == '1')    conclusion.ConclusionType = ConclusionType.Buy;
-                else                conclusion.ConclusionType = ConclusionType.Sell;
+                if (type == '1')    conclusion.ConclusionType = ConclusionTypes.Buy;
+                else                conclusion.ConclusionType = ConclusionTypes.Sell;
 
 
                 // 17 - (long) 순간체결수량
@@ -362,11 +362,11 @@ namespace MTree.DaishinPublisher
 
                 // 20 - (char) 장 구분 플래그
                 char typeTime = Convert.ToChar(stockCurObj.GetHeaderValue(20));
-                if (typeTime == '1')        conclusion.MarketTimeType = MarketTimeType.BeforeExpect;
-                else if (typeTime == '2')   conclusion.MarketTimeType = MarketTimeType.Normal;
-                else if (typeTime == '3')   conclusion.MarketTimeType = MarketTimeType.BeforeOffTheClock;
-                else if (typeTime == '4')   conclusion.MarketTimeType = MarketTimeType.AfterOffTheClock;
-                else if (typeTime == '5')   conclusion.MarketTimeType = MarketTimeType.AfterOffTheClock;
+                if (typeTime == '1')        conclusion.MarketTimeType = MarketTimeTypes.BeforeExpect;
+                else if (typeTime == '2')   conclusion.MarketTimeType = MarketTimeTypes.Normal;
+                else if (typeTime == '3')   conclusion.MarketTimeType = MarketTimeTypes.BeforeOffTheClock;
+                else if (typeTime == '4')   conclusion.MarketTimeType = MarketTimeTypes.AfterOffTheClock;
+                else if (typeTime == '5')   conclusion.MarketTimeType = MarketTimeTypes.AfterOffTheClock;
                 else logger.Error($"Stock conclusion typeTime error, {stockCurObj.GetHeaderValue(20)}");
 
                 StockConclusionQueue.Enqueue(conclusion);
@@ -530,7 +530,7 @@ namespace MTree.DaishinPublisher
                     var codeEntity = new CodeEntity();
                     codeEntity.Code = fullCode.Substring(1);
                     codeEntity.Name = codeMgr.CodeToName(fullCode);
-                    codeEntity.Market = CodeEntity.ConvertToMarketType(fullCode);
+                    codeEntity.MarketType = CodeEntity.ConvertToMarketType(fullCode);
                     codeList.Add(codeEntity.Code, codeEntity);
                 }
 

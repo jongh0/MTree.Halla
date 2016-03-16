@@ -123,7 +123,7 @@ namespace MTree.RealTimeProvider
                 {
                     lock (masteringLock)
                     {
-                        if (StockMasteringList.Count(m => m.DaishinState != MasteringStateType.Finished) == 0)
+                        if (StockMasteringList.Count(m => m.DaishinState != MasteringStates.Finished) == 0)
                             break;
                     }
 
@@ -131,9 +131,9 @@ namespace MTree.RealTimeProvider
 
                     lock (masteringLock)
                     {
-                        mastering = StockMasteringList.FirstOrDefault(m => m.DaishinState == MasteringStateType.Ready);
+                        mastering = StockMasteringList.FirstOrDefault(m => m.DaishinState == MasteringStates.Ready);
                         if (mastering != null)
-                            mastering.DaishinState = MasteringStateType.Running;
+                            mastering.DaishinState = MasteringStates.Running;
                     }
                     
                     if (mastering != null)
@@ -187,7 +187,7 @@ namespace MTree.RealTimeProvider
                 {
                     lock (masteringLock)
                     {
-                        if (StockMasteringList.Count(m => m.EbestState != MasteringStateType.Finished) == 0)
+                        if (StockMasteringList.Count(m => m.EbestState != MasteringStates.Finished) == 0)
                             break;
                     }
 
@@ -195,9 +195,9 @@ namespace MTree.RealTimeProvider
 
                     lock (masteringLock)
                     {
-                        mastering = StockMasteringList.FirstOrDefault(m => m.EbestState == MasteringStateType.Ready);
+                        mastering = StockMasteringList.FirstOrDefault(m => m.EbestState == MasteringStates.Ready);
                         if (mastering != null)
-                            mastering.EbestState = MasteringStateType.Running;
+                            mastering.EbestState = MasteringStates.Running;
                     }
 
                     if (mastering != null)
@@ -251,7 +251,7 @@ namespace MTree.RealTimeProvider
                 {
                     lock (masteringLock)
                     {
-                        if (StockMasteringList.Count(m => m.KiwoomState != MasteringStateType.Finished) == 0)
+                        if (StockMasteringList.Count(m => m.KiwoomState != MasteringStates.Finished) == 0)
                             break;
                     }
 
@@ -259,9 +259,9 @@ namespace MTree.RealTimeProvider
 
                     lock (masteringLock)
                     {
-                        mastering = StockMasteringList.FirstOrDefault(m => m.KiwoomState == MasteringStateType.Ready);
+                        mastering = StockMasteringList.FirstOrDefault(m => m.KiwoomState == MasteringStates.Ready);
                         if (mastering != null)
-                            mastering.KiwoomState = MasteringStateType.Running;
+                            mastering.KiwoomState = MasteringStates.Running;
                     }
 
                     if (mastering != null)
@@ -309,24 +309,24 @@ namespace MTree.RealTimeProvider
                 var codeEntity = StockCodeList[mastering.Stock.Code];
                 var code = codeEntity.Code;
 
-                if (contract.Type == ProcessType.Daishin)
+                if (contract.Type == ProcessTypes.Daishin)
                     code = CodeEntity.ConvertToDaishinCode(codeEntity);
 
                 StockMaster master = contract.Callback.GetStockMaster(code);
 
-                if (contract.Type == ProcessType.Daishin)
+                if (contract.Type == ProcessTypes.Daishin)
                     CopyStockMasterFromDaishin(mastering, master);
-                else if (contract.Type == ProcessType.Ebest)
+                else if (contract.Type == ProcessTypes.Ebest)
                     CopyStockMasterFromEbest(mastering, master);
-                else if (contract.Type == ProcessType.Kiwoon)
+                else if (contract.Type == ProcessTypes.Kiwoon)
                     CopyStockMasterFromKiwoom(mastering, master);
                 else
                     logger.Warn("Wrong contract type for stock mastering");
 
 #if false
-                if (mastering.KiwoomState == MasteringStateType.Finished && 
-                    mastering.EbestState == MasteringStateType.Finished && 
-                    mastering.DaishinState == MasteringStateType.Finished)
+                if (mastering.KiwoomState == MasteringStates.Finished && 
+                    mastering.EbestState == MasteringStates.Finished && 
+                    mastering.DaishinState == MasteringStates.Finished)
                 {
                     logger.Info(mastering.Stock.ToString());
                 }
@@ -339,17 +339,17 @@ namespace MTree.RealTimeProvider
             }
             finally
             {
-                if (contract.Type == ProcessType.Daishin)
+                if (contract.Type == ProcessTypes.Daishin)
                 {
                     lock (daishinMasteringLock)
                         contract.NowOperating = false;
                 }
-                else if (contract.Type == ProcessType.Ebest)
+                else if (contract.Type == ProcessTypes.Ebest)
                 {
                     lock (ebestMasteringLock)
                         contract.NowOperating = false;
                 }
-                else if (contract.Type == ProcessType.Kiwoon)
+                else if (contract.Type == ProcessTypes.Kiwoon)
                 {
                     lock (kiwoomMasteringLock)
                         contract.NowOperating = false;
@@ -359,7 +359,7 @@ namespace MTree.RealTimeProvider
 
         private void CopyStockMasterFromDaishin(StockMastering mastering, StockMaster source)
         {
-            var state = MasteringStateType.Ready;
+            var state = MasteringStates.Ready;
 
             try
             {
@@ -393,7 +393,7 @@ namespace MTree.RealTimeProvider
                     if (dest.BasisPrice != 0 && dest.PER != 0 && dest.ShareVolume != 0)
                         dest.NetIncome = (dest.BasisPrice / dest.PER) * dest.ShareVolume;
 
-                    state = MasteringStateType.Finished;
+                    state = MasteringStates.Finished;
                 }
             }
             catch (Exception ex)
@@ -409,7 +409,7 @@ namespace MTree.RealTimeProvider
 
         private void CopyStockMasterFromEbest(StockMastering mastering, StockMaster source)
         {
-            var state = MasteringStateType.Ready;
+            var state = MasteringStates.Ready;
 
             try
             {
@@ -425,9 +425,9 @@ namespace MTree.RealTimeProvider
 
                     //dest.PreviousVolume = source.PreviousVolume; // => Daishin에서 조회
                     dest.CirculatingVolume = source.CirculatingVolume;
-                    dest.ValueAltered = source.ValueAltered;
+                    dest.ValueAlteredType = source.ValueAlteredType;
 
-                    state = MasteringStateType.Finished;
+                    state = MasteringStates.Finished;
                 }
             }
             catch (Exception ex)
@@ -443,7 +443,7 @@ namespace MTree.RealTimeProvider
 
         private void CopyStockMasterFromKiwoom(StockMastering mastering, StockMaster source)
         {
-            var state = MasteringStateType.Ready;
+            var state = MasteringStates.Ready;
 
             try
             {
@@ -470,7 +470,7 @@ namespace MTree.RealTimeProvider
                     if (dest.BasisPrice != 0 && dest.PER != 0 && dest.ShareVolume != 0)
                         dest.NetIncome = (dest.BasisPrice / dest.PER) * dest.ShareVolume;
 
-                    state = MasteringStateType.Finished;
+                    state = MasteringStates.Finished;
                 }
             }
             catch (Exception ex)

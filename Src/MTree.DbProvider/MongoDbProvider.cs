@@ -6,7 +6,7 @@ using System;
 
 namespace MTree.DbProvider
 {
-    public enum DbType
+    public enum DbTypes
     {
         Chart,
         BiddingPrice,
@@ -94,26 +94,26 @@ namespace MTree.DbProvider
             }
         }
 
-        public IMongoDatabase GetDatabase(DbType type)
+        public IMongoDatabase GetDatabase(DbTypes type)
         {
             switch (type)
             {
-                case DbType.Chart:
+                case DbTypes.Chart:
                     return ChartDb;
 
-                case DbType.BiddingPrice:
+                case DbTypes.BiddingPrice:
                     return BiddingPriceDb;
 
-                case DbType.StockMaster:
+                case DbTypes.StockMaster:
                     return StockMasterDb;
 
-                case DbType.StockConclusion:
+                case DbTypes.StockConclusion:
                     return StockConclusionDb;
 
-                case DbType.IndexConclusion:
+                case DbTypes.IndexConclusion:
                     return IndexConclusionDb;
 
-                case DbType.CircuitBreak:
+                case DbTypes.CircuitBreak:
                     return CircuitBreakDb;
 
                 default:
