@@ -38,14 +38,30 @@ namespace MTree.KiwoomPublisher
 #if false
             Task.Run(() =>
             {
-                System.Threading.Thread.Sleep(10000);
-                int startTick = Environment.TickCount;
-                foreach (KeyValuePair<string, CodeEntity> pair in kiwoomPublisher.GetStockCodeList())
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+
+                Dictionary<string, CodeEntity> list = kiwoomPublisher.GetStockCodeList();
+                Console.WriteLine($"count:{list.Count}");
+                int cnt = 0;
+                foreach (KeyValuePair<string, CodeEntity> codeEntity in list)
                 {
-                    StockMaster master = kiwoomPublisher.GetStockMaster(pair.Key);
-                    Console.WriteLine($"{master.Code}, {master.PER}");
+                    if (codeEntity.Value.Market == MarketType.KOSPI || codeEntity.Value.Market == MarketType.KOSDAQ ||
+                                    codeEntity.Value.Market == MarketType.ETF || codeEntity.Value.Market == MarketType.ETN ||
+                                    codeEntity.Value.Market == MarketType.FREEBOARD)
+                    {
+                        if (codeEntity.Value.Code != "108630" && codeEntity.Value.Code != "025850")/* Daishin not support */
+                        {
+                            StockMaster master = kiwoomPublisher.GetStockMaster(codeEntity.Key);
+                            Console.WriteLine($"{master.Code}, {master.PER}");
+                            cnt++;
+                        }
+                    }
                 }
-                Trace.WriteLine(">>>>>>>>>>>>>>> " + (Environment.TickCount - startTick));
+                Console.WriteLine($"count:{cnt}");
+                sw.Stop();
+                Trace.WriteLine(">>>>>>>>>>>>>>> " + (sw.Elapsed));
+                Debugger.Break();
             });
 #endif
         }

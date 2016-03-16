@@ -28,8 +28,6 @@ namespace MTree.RealTimeProvider
 
             try
             {
-                LaunchClientProcess();
-
                 foreach (var codeEntity in StockCodeList.Values)
                 {
                     var mastering = new StockMastering();
@@ -39,6 +37,8 @@ namespace MTree.RealTimeProvider
 
                     StockMasteringList.Add(mastering);
                 }
+
+                LaunchClientProcess();
 
                 var masteringTask = new List<Task>();
                 masteringTask.Add(Task.Run(() => StartKiwoomStockMastering()));

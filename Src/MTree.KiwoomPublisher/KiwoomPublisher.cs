@@ -372,7 +372,7 @@ namespace MTree.KiwoomPublisher
                     }
                 }
                 #endregion
-                
+
                 #region KOSPI & ETN
                 string[] kospiList = kiwoomObj.GetCodeListByMarket("0").Split(';');
                 foreach (string code in kospiList)
@@ -419,7 +419,7 @@ namespace MTree.KiwoomPublisher
                     }
                 }
                 #endregion
-                
+
                 #region KOSDAQ
                 string[] kosdaqList = kiwoomObj.GetCodeListByMarket("10").Split(';');
                 foreach (string code in kosdaqList)
@@ -471,8 +471,9 @@ namespace MTree.KiwoomPublisher
                         else
                             logger.Trace("Code is already in the list");
                     }
-                } 
-                #endregion
+                }
+                #endregion  
+
 
                 logger.Info($"Stock code list query done, Count: {codeDictionary.Count}");
             }

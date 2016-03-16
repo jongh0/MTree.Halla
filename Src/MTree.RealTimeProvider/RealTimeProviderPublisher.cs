@@ -86,7 +86,7 @@ namespace MTree.RealTimeProvider
                 ProcessUtility.Start(ProcessType.HistorySaver);
 
                 // Kiwoom
-                ProcessUtility.Start(ProcessType.Kiwoon);
+                //ProcessUtility.Start(ProcessType.Kiwoon);
 
                 // Daishin popup stopper
                 ProcessUtility.Start(ProcessType.DaishinPopupStopper);
@@ -127,9 +127,11 @@ namespace MTree.RealTimeProvider
                     }
                     else
                     {
-                        bool isDaishinMaster = contract.Type == ProcessType.DaishinMaster;
-                        if (contract.Type == ProcessType.DaishinMaster)
-                            contract.Type = ProcessType.Daishin;
+                        //bool IsCodeListProvider = contract.Type == ProcessType.DaishinMaster;
+                        //if (contract.Type == ProcessType.DaishinMaster)
+                        //    contract.Type = ProcessType.Daishin;
+
+                        bool IsCodeListProvider = contract.Type == ProcessType.Kiwoon;
 
                         contract.Id = PublishContract.IdNumbering++;
                         contract.Callback = OperationContext.Current.GetCallbackChannel<IRealTimePublisherCallback>();
@@ -137,9 +139,23 @@ namespace MTree.RealTimeProvider
 
                         logger.Info($"{contract.ToString()} contract registered / {clientId}");
 
-                        if (isDaishinMaster)
+                        if (IsCodeListProvider)
                         {
-                            StockCodeList = contract.Callback.GetStockCodeList();
+                            var kiwoomList = contract.Callback.GetStockCodeList();
+                            StockCodeList = new Dictionary<string, CodeEntity>();
+                            foreach (KeyValuePair<string, CodeEntity> codeEntity in kiwoomList)
+                            {
+                                if (codeEntity.Value.Market == MarketType.KOSPI || codeEntity.Value.Market == MarketType.KOSDAQ || 
+                                    codeEntity.Value.Market == MarketType.ETF || codeEntity.Value.Market == MarketType.ETN || 
+                                    codeEntity.Value.Market == MarketType.FREEBOARD)
+                                {
+                                    if (codeEntity.Value.Code != "108630" && codeEntity.Value.Code != "025850")/* Daishin not support */
+                                    {
+                                        StockCodeList.Add(codeEntity.Key, codeEntity.Value);
+                                    }
+                                }
+                                else { }// Daishin doesn't support for KONEX and ELW
+                            }
 
                             if (StockCodeList != null)
                             {
