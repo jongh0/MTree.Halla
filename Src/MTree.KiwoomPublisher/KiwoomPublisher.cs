@@ -85,7 +85,7 @@ namespace MTree.KiwoomPublisher
             try
             {
                 kiwoomObj.CommTerminate();
-                LoginInstance.State = StateType.Logout;
+                LoginInstance.State = LoginStates.Logout;
                 logger.Info("Logout success");
                 return true;
             }
@@ -106,7 +106,7 @@ namespace MTree.KiwoomPublisher
                 if (e.nErrCode == 0)
                 {
                     logger.Info("Login sucess");
-                    LoginInstance.State = StateType.Login;
+                    LoginInstance.State = LoginStates.Login;
                 }
                 else
                 {
@@ -363,7 +363,7 @@ namespace MTree.KiwoomPublisher
                         var codeEntity = new CodeEntity();
                         codeEntity.Code = code;
                         codeEntity.Name = kiwoomObj.GetMasterCodeName(code);
-                        codeEntity.Market = MarketType.ETF;
+                        codeEntity.MarketType = MarketTypes.ETF;
 
                         if (!codeDictionary.ContainsKey(code))
                             codeDictionary.Add(codeEntity.Code, codeEntity);
@@ -384,9 +384,9 @@ namespace MTree.KiwoomPublisher
                         codeEntity.Name = kiwoomObj.GetMasterCodeName(code);
 
                         if (code[0] == '5')
-                            codeEntity.Market = MarketType.ETN;
+                            codeEntity.MarketType = MarketTypes.ETN;
                         else
-                            codeEntity.Market = MarketType.KOSPI;
+                            codeEntity.MarketType = MarketTypes.KOSPI;
 
                         if (!codeDictionary.ContainsKey(code))
                         {
@@ -394,7 +394,7 @@ namespace MTree.KiwoomPublisher
                         }
                         else
                         {
-                            if (codeDictionary[code].Market != MarketType.ETF)
+                            if (codeDictionary[code].MarketType != MarketTypes.ETF)
                                 logger.Trace("Code is already in the list");
                         }
                     }
@@ -410,13 +410,14 @@ namespace MTree.KiwoomPublisher
                         var codeEntity = new CodeEntity();
                         codeEntity.Code = code;
                         codeEntity.Name = kiwoomObj.GetMasterCodeName(code);
-                        codeEntity.Market = MarketType.ELW;
+                        codeEntity.MarketType = MarketTypes.ELW;
 
                         if (!codeDictionary.ContainsKey(code))
                             codeDictionary.Add(codeEntity.Code, codeEntity);
                         else
                             logger.Trace("Code is already in the list");
                     }
+
                 }
                 #endregion
 
@@ -429,7 +430,7 @@ namespace MTree.KiwoomPublisher
                         var codeEntity = new CodeEntity();
                         codeEntity.Code = code;
                         codeEntity.Name = kiwoomObj.GetMasterCodeName(code);
-                        codeEntity.Market = MarketType.KOSDAQ;
+                        codeEntity.MarketType = MarketTypes.KOSDAQ;
                         if (!codeDictionary.ContainsKey(code))
                             codeDictionary.Add(codeEntity.Code, codeEntity);
                         else
@@ -447,7 +448,7 @@ namespace MTree.KiwoomPublisher
                         var codeEntity = new CodeEntity();
                         codeEntity.Code = code;
                         codeEntity.Name = kiwoomObj.GetMasterCodeName(code);
-                        codeEntity.Market = MarketType.KONEX;
+                        codeEntity.MarketType = MarketTypes.KONEX;
                         if (!codeDictionary.ContainsKey(code))
                             codeDictionary.Add(codeEntity.Code, codeEntity);
                         else
@@ -465,12 +466,13 @@ namespace MTree.KiwoomPublisher
                         var codeEntity = new CodeEntity();
                         codeEntity.Code = code;
                         codeEntity.Name = kiwoomObj.GetMasterCodeName(code);
-                        codeEntity.Market = MarketType.FREEBOARD;
+                        codeEntity.MarketType = MarketTypes.FREEBOARD;
                         if (!codeDictionary.ContainsKey(code))
                             codeDictionary.Add(codeEntity.Code, codeEntity);
                         else
                             logger.Trace("Code is already in the list");
                     }
+
                 }
                 #endregion  
 

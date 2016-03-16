@@ -3,7 +3,7 @@ using Newtonsoft.Json.Converters;
 
 namespace MTree.Configuration
 {
-    public enum ServerType
+    public enum ServerTypes
     {
         Real,
         Simul,
@@ -22,14 +22,14 @@ namespace MTree.Configuration
         public string AccountPw { get; set; } = string.Empty;
 
         [JsonConverter(typeof(StringEnumConverter))]
-        public ServerType Server { get; set; } = ServerType.Real;
+        public ServerTypes ServerType { get; set; } = ServerTypes.Real;
 
         [JsonIgnore]
         public string ServerAddress
         {
             get
             {
-                if (Server == ServerType.Real)
+                if (ServerType == ServerTypes.Real)
                     return "Hts.etrade.co.kr";
                 else
                     return "demo.etrade.co.kr";

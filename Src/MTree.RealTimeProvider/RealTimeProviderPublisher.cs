@@ -20,60 +20,60 @@ namespace MTree.RealTimeProvider
         #region Daishin
         private List<PublishContract> DaishinContracts
         {
-            get { return PublishContracts.Values.Where(c => c.Type == ProcessType.Daishin).ToList(); }
+            get { return PublishContracts.Values.Where(c => c.Type == ProcessTypes.Daishin).ToList(); }
         }
 
         private PublishContract DaishinContractForMastering
         {
-            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == ProcessType.Daishin && c.NowOperating == false); }
+            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == ProcessTypes.Daishin && c.NowOperating == false); }
         }
         #endregion
 
         #region Ebest
         private List<PublishContract> EbestContracts
         {
-            get { return PublishContracts.Values.Where(c => c.Type == ProcessType.Ebest).ToList(); }
+            get { return PublishContracts.Values.Where(c => c.Type == ProcessTypes.Ebest).ToList(); }
         }
 
         private PublishContract EbestContractForMastering
         {
-            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == ProcessType.Ebest && c.NowOperating == false); }
+            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == ProcessTypes.Ebest && c.NowOperating == false); }
         }
         #endregion
 
         #region Kiwoom
         private List<PublishContract> KiwoomContracts
         {
-            get { return PublishContracts.Values.Where(c => c.Type == ProcessType.Kiwoon).ToList(); }
+            get { return PublishContracts.Values.Where(c => c.Type == ProcessTypes.Kiwoon).ToList(); }
         }
 
         private PublishContract KiwoomContractForMastering
         {
-            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == ProcessType.Kiwoon && c.NowOperating == false); }
+            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == ProcessTypes.Kiwoon && c.NowOperating == false); }
         }
         #endregion
 
         #region Krx
         private List<PublishContract> KrxContracts
         {
-            get { return PublishContracts.Values.Where(c => c.Type == ProcessType.Krx).ToList(); }
+            get { return PublishContracts.Values.Where(c => c.Type == ProcessTypes.Krx).ToList(); }
         }
 
         private PublishContract KrxContractForMastering
         {
-            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == ProcessType.Krx && c.NowOperating == false); }
+            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == ProcessTypes.Krx && c.NowOperating == false); }
         }
         #endregion
 
         #region Naver
         private List<PublishContract> NaverContracts
         {
-            get { return PublishContracts.Values.Where(c => c.Type == ProcessType.Naver).ToList(); }
+            get { return PublishContracts.Values.Where(c => c.Type == ProcessTypes.Naver).ToList(); }
         }
 
         private PublishContract NaverContractForMastering
         {
-            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == ProcessType.Naver && c.NowOperating == false); }
+            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == ProcessTypes.Naver && c.NowOperating == false); }
         }
         #endregion
         #endregion
@@ -83,23 +83,23 @@ namespace MTree.RealTimeProvider
             try
             {
                 // HistorySaver
-                ProcessUtility.Start(ProcessType.HistorySaver);
+                ProcessUtility.Start(ProcessTypes.HistorySaver);
 
                 // Kiwoom
                 //ProcessUtility.Start(ProcessType.Kiwoon);
 
                 // Daishin popup stopper
-                ProcessUtility.Start(ProcessType.DaishinPopupStopper);
+                ProcessUtility.Start(ProcessTypes.DaishinPopupStopper);
 
                 // Daishin
                 int daishinProcessCount = StockCodeList.Count * 2 / 200;
                 for (int i = 0; i < daishinProcessCount; i++)
-                    ProcessUtility.Start(ProcessType.Daishin);
+                    ProcessUtility.Start(ProcessTypes.Daishin);
 
                 // Ebest
                 int ebestProcessCount = 3;
                 for (int i = 0; i < ebestProcessCount; i++)
-                    ProcessUtility.Start(ProcessType.Ebest);
+                    ProcessUtility.Start(ProcessTypes.Ebest);
 
                 // Krx
 
@@ -121,7 +121,7 @@ namespace MTree.RealTimeProvider
                 }
                 else
                 {
-                    if (contract.Type == ProcessType.None)
+                    if (contract.Type == ProcessTypes.None)
                     {
                         logger.Info($"{contract.ToString()} wrong contract type / {clientId}");
                     }
@@ -131,7 +131,8 @@ namespace MTree.RealTimeProvider
                         //if (contract.Type == ProcessType.DaishinMaster)
                         //    contract.Type = ProcessType.Daishin;
 
-                        bool IsCodeListProvider = contract.Type == ProcessType.Kiwoon;
+                        bool IsCodeListProvider = contract.Type == ProcessTypes.Kiwoon;
+
 
                         contract.Id = PublishContract.IdNumbering++;
                         contract.Callback = OperationContext.Current.GetCallbackChannel<IRealTimePublisherCallback>();
@@ -145,9 +146,9 @@ namespace MTree.RealTimeProvider
                             StockCodeList = new Dictionary<string, CodeEntity>();
                             foreach (KeyValuePair<string, CodeEntity> codeEntity in kiwoomList)
                             {
-                                if (codeEntity.Value.Market == MarketType.KOSPI || codeEntity.Value.Market == MarketType.KOSDAQ || 
-                                    codeEntity.Value.Market == MarketType.ETF || codeEntity.Value.Market == MarketType.ETN || 
-                                    codeEntity.Value.Market == MarketType.FREEBOARD)
+                                if (codeEntity.Value.MarketType == MarketTypes.KOSPI || codeEntity.Value.MarketType == MarketTypes.KOSDAQ || 
+                                    codeEntity.Value.MarketType == MarketTypes.ETF || codeEntity.Value.MarketType == MarketTypes.ETN || 
+                                    codeEntity.Value.MarketType == MarketTypes.FREEBOARD)
                                 {
                                     if (codeEntity.Value.Code != "108630" && codeEntity.Value.Code != "025850")/* Daishin not support */
                                     {
@@ -223,7 +224,7 @@ namespace MTree.RealTimeProvider
                             var codeEntity = StockCodeList.Values.ElementAt(index);
                             var code = codeEntity.Code;
 
-                            if (contract.Type == ProcessType.Daishin)
+                            if (contract.Type == ProcessTypes.Daishin)
                                 code = CodeEntity.ConvertToDaishinCode(codeEntity);
 
                             if (contract.Callback.SubscribeBidding(code) == true)
@@ -266,7 +267,7 @@ namespace MTree.RealTimeProvider
                             var codeEntity = StockCodeList.Values.ElementAt(index);
                             var code = codeEntity.Code;
 
-                            if (contract.Type == ProcessType.Daishin)
+                            if (contract.Type == ProcessTypes.Daishin)
                                 code = CodeEntity.ConvertToDaishinCode(codeEntity);
 
                             if (contract.Callback.SubscribeStock(code) == true)

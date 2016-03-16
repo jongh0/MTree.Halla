@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace MTree.DataStructure
 {
     #region enum
-    public enum ValueAlteredType
+    public enum ValueAlteredTypes
     {
         None,
         /// <summary>
@@ -262,21 +262,8 @@ namespace MTree.DataStructure
         /// <summary>
         /// 락(Ebest)
         /// </summary>
-        [BsonElement("VA")]
-        public ValueAlteredType ValueAltered { get; set; }
-
-        public StockMaster()
-        {
-            // TODO : 생성해주는게 맞나?
-            //AdministrativeIssue = new Warning();
-            //InvestCaution = new Warning();
-            //InvestWarning = new Warning();
-            //InvestmentRisk = new Warning();
-            //UnfairAnnouncement = new Warning();
-            //CallingAttention = new Warning();
-            //CleaningTrade = new Warning();
-            //Overheated = new Warning();
-        }
+        [BsonElement("VAT")]
+        public ValueAlteredTypes ValueAlteredType { get; set; }
 
         public override string ToString()
         {
@@ -318,7 +305,7 @@ namespace MTree.DataStructure
                 sb.AppendLine($"{nameof(NetIncome)}: {NetIncome}");
                 sb.AppendLine($"{nameof(EPS)}: {EPS}");
                 sb.AppendLine($"{nameof(PER)}: {PER}");
-                sb.AppendLine($"{nameof(ValueAltered)}: {ValueAltered}");
+                sb.AppendLine($"{nameof(ValueAlteredType)}: {ValueAlteredType}");
             }
             catch { }
 

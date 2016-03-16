@@ -50,12 +50,12 @@ namespace MTree.RealTimeProvider
 
         public void UnregisterContractAll(Guid clientId)
         {
-            UnregisterContract(clientId, SubscribeType.BiddingPrice);
-            UnregisterContract(clientId, SubscribeType.StockConclusion);
-            UnregisterContract(clientId, SubscribeType.IndexConclusion);
+            UnregisterContract(clientId, SubscribeTypes.BiddingPrice);
+            UnregisterContract(clientId, SubscribeTypes.StockConclusion);
+            UnregisterContract(clientId, SubscribeTypes.IndexConclusion);
         }
 
-        public void UnregisterContract(Guid clientId, SubscribeType type)
+        public void UnregisterContract(Guid clientId, SubscribeTypes type)
         {
             try
             {
@@ -94,20 +94,20 @@ namespace MTree.RealTimeProvider
             }
         }
 
-        private ConcurrentDictionary<Guid, SubscribeContract> GetSubscriptionList(SubscribeType type)
+        private ConcurrentDictionary<Guid, SubscribeContract> GetSubscriptionList(SubscribeTypes type)
         {
             switch (type)
             {
-                case SubscribeType.StockMaster:
+                case SubscribeTypes.StockMaster:
                     return StockMasterContracts;
 
-                case SubscribeType.BiddingPrice:
+                case SubscribeTypes.BiddingPrice:
                     return BiddingPriceContracts;
 
-                case SubscribeType.StockConclusion:
+                case SubscribeTypes.StockConclusion:
                     return StockConclusionContracts;
 
-                case SubscribeType.IndexConclusion:
+                case SubscribeTypes.IndexConclusion:
                     return IndexConclusionContracts;
 
                 default:
@@ -124,7 +124,7 @@ namespace MTree.RealTimeProvider
                 {
                     foreach (var contract in BiddingPriceContracts)
                     {
-                        if (contract.Value.Scope == SubscribeScope.All ||
+                        if (contract.Value.Scope == SubscribeScopes.All ||
                             contract.Value.ContainCode(biddingPrice.Code) == true)
                         {
                             try
@@ -158,7 +158,7 @@ namespace MTree.RealTimeProvider
                 {
                     foreach (var contract in StockConclusionContracts)
                     {
-                        if (contract.Value.Scope == SubscribeScope.All ||
+                        if (contract.Value.Scope == SubscribeScopes.All ||
                             contract.Value.ContainCode(conclusion.Code) == true)
                         {
                             try
@@ -192,7 +192,7 @@ namespace MTree.RealTimeProvider
                 {
                     foreach (var contract in IndexConclusionContracts)
                     {
-                        if (contract.Value.Scope == SubscribeScope.All ||
+                        if (contract.Value.Scope == SubscribeScopes.All ||
                             contract.Value.ContainCode(conclusion.Code) == true)
                         {
                             try

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MTree.Utility
 {
-    public enum ProcessType
+    public enum ProcessTypes
     {
         None,
         Daishin,
@@ -25,7 +25,7 @@ namespace MTree.Utility
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public static void Start(ProcessType type, bool waitIdle = false)
+        public static void Start(ProcessTypes type, bool waitIdle = false)
         {
             try
             {
@@ -33,30 +33,30 @@ namespace MTree.Utility
 
                 switch (type)
                 {
-                    case ProcessType.Daishin:
-                    case ProcessType.DaishinMaster:
+                    case ProcessTypes.Daishin:
+                    case ProcessTypes.DaishinMaster:
                         Start("MTree.DaishinPublisher.exe", type.ToString(), windowStyle: windowStyle, waitIdle: waitIdle);
                         break;
 
-                    case ProcessType.Ebest:
+                    case ProcessTypes.Ebest:
                         Start("MTree.EbestPublisher.exe", type.ToString(), windowStyle: windowStyle, waitIdle: waitIdle);
                         break;
-                    case ProcessType.Kiwoon:
+                    case ProcessTypes.Kiwoon:
                         Start("MTree.KiwoomPublisher.exe", type.ToString(), windowStyle: windowStyle, waitIdle: waitIdle);
                         break;
-                    case ProcessType.Krx:
+                    case ProcessTypes.Krx:
                         Start("MTree.KrxPublisher.exe", type.ToString(), windowStyle: windowStyle, waitIdle: waitIdle);
                         break;
 
-                    case ProcessType.Naver:
+                    case ProcessTypes.Naver:
                         Start("MTree.NaverPublisher.exe", type.ToString(), windowStyle: windowStyle, waitIdle: waitIdle);
                         break;
 
-                    case ProcessType.DaishinPopupStopper:
+                    case ProcessTypes.DaishinPopupStopper:
                         Start("MTree.DaishinPopupStopper.exe", windowStyle: windowStyle, waitIdle: waitIdle);
                         break;
 
-                    case ProcessType.HistorySaver:
+                    case ProcessTypes.HistorySaver:
                         Start("MTree.HistorySaver.exe", windowStyle: windowStyle, waitIdle: waitIdle);
                         break;
                 }

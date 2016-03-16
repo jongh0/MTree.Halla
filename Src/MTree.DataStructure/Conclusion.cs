@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace MTree.DataStructure
 {
     #region enum
-    public enum MarketTimeType
+    public enum MarketTimeTypes
     {
         Normal,
         BeforeOffTheClock,
@@ -25,7 +25,7 @@ namespace MTree.DataStructure
         public long Amount { get; set; }
 
         [BsonElement("MTT")]
-        public MarketTimeType MarketTimeType { get; set; }
+        public MarketTimeTypes MarketTimeType { get; set; }
 
         [BsonElement("P")]
         public float Price { get; set; }

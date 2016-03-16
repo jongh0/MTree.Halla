@@ -70,7 +70,7 @@ namespace MTree.EbestPublisher
                 LoginInstance.UserPw = Config.Ebest.UserPw;
                 LoginInstance.CertPw = Config.Ebest.CertPw;
                 LoginInstance.AccountPw = Config.Ebest.AccountPw;
-                LoginInstance.Server = Config.Ebest.Server;
+                LoginInstance.ServerType = Config.Ebest.ServerType;
                 LoginInstance.ServerAddress = Config.Ebest.ServerAddress;
                 LoginInstance.ServerPort = Config.Ebest.ServerPort;
 
@@ -129,7 +129,7 @@ namespace MTree.EbestPublisher
         {
             LastFirmCommunicateTick = Environment.TickCount;
 
-            LoginInstance.State = StateType.Logout;
+            LoginInstance.State = LoginStates.Logout;
             logger.Info(LoginInstance.ToString());
         }
 
@@ -139,7 +139,7 @@ namespace MTree.EbestPublisher
 
             QuoteInterval = 1000 / stockQuotingObj.GetTRCountPerSec("t1102");
 
-            LoginInstance.State = StateType.Login;
+            LoginInstance.State = LoginStates.Login;
             SetLogin();
 
             logger.Info($"{LoginInstance.ToString()}nszCode: {szCode}, szMsg: {szMsg}");
@@ -147,7 +147,7 @@ namespace MTree.EbestPublisher
 
         private void sessionObj_Disconnect()
         {
-            LoginInstance.State = StateType.Disconnect;
+            LoginInstance.State = LoginStates.Disconnect;
             logger.Info(LoginInstance.ToString());
         }
         #endregion
@@ -163,7 +163,7 @@ namespace MTree.EbestPublisher
                 {
                     logger.Info("Server connected");
 
-                    if (LoginInstance.Server == ServerType.Real)
+                    if (LoginInstance.ServerType == ServerTypes.Real)
                         ret = sessionObj.Login(LoginInstance.UserId, LoginInstance.UserPw, LoginInstance.CertPw, (int)XA_SERVER_TYPE.XA_REAL_SERVER, true);
                     else
                         ret = sessionObj.Login(LoginInstance.UserId, LoginInstance.UserPw, LoginInstance.CertPw, (int)XA_SERVER_TYPE.XA_SIMUL_SERVER, true);
@@ -193,7 +193,7 @@ namespace MTree.EbestPublisher
                 if (sessionObj.IsConnected() == false)
                     return false;
 
-                if (LoginInstance.State != StateType.Login)
+                if (LoginInstance.State != LoginStates.Login)
                     return false;
 
                 sessionObj.Logout();
@@ -388,11 +388,11 @@ namespace MTree.EbestPublisher
             {
                 CircuitBreak circuitBreak = new CircuitBreak();
                 circuitBreak.Code = viSubscribingObj.GetFieldData("OutBlock", "shcode");
-                circuitBreak.CircuitBreakState = (CircuitBreakType)Convert.ToInt32(viSubscribingObj.GetFieldData("OutBlock", "vi_gubun"));
+                circuitBreak.CircuitBreakType = (CircuitBreakTypes)Convert.ToInt32(viSubscribingObj.GetFieldData("OutBlock", "vi_gubun"));
 
-                if (circuitBreak.CircuitBreakState == CircuitBreakType.StaticInvoke)
+                if (circuitBreak.CircuitBreakType == CircuitBreakTypes.StaticInvoke)
                     circuitBreak.BasePrice = Convert.ToSingle(viSubscribingObj.GetFieldData("OutBlock", "svi_recprice"));
-                else if (circuitBreak.CircuitBreakState == CircuitBreakType.DynamicInvoke)
+                else if (circuitBreak.CircuitBreakType == CircuitBreakTypes.DynamicInvoke)
                     circuitBreak.BasePrice = Convert.ToSingle(viSubscribingObj.GetFieldData("OutBlock", "dvi_recprice"));
                 else
                     circuitBreak.BasePrice = 0;
@@ -540,15 +540,15 @@ namespace MTree.EbestPublisher
                 QuotingStockMaster.CirculatingVolume = cv * 1000;  //유통주식수
 
                 string valueAltered = stockQuotingObj.GetFieldData("t1102OutBlock", "info1", 0);
-                if (valueAltered == "권배락")         QuotingStockMaster.ValueAltered = ValueAlteredType.ExRightDividend;
-                else if (valueAltered == "권리락")    QuotingStockMaster.ValueAltered = ValueAlteredType.ExRight;
-                else if (valueAltered == "배당락")    QuotingStockMaster.ValueAltered = ValueAlteredType.ExDividend;
-                else if (valueAltered == "액면분할")  QuotingStockMaster.ValueAltered = ValueAlteredType.SplitFaceValue;
-                else if (valueAltered == "액면병합")  QuotingStockMaster.ValueAltered = ValueAlteredType.MergeFaceValue;
-                else if (valueAltered == "주식병합")  QuotingStockMaster.ValueAltered = ValueAlteredType.Consolidation;
-                else if (valueAltered == "기업분할")  QuotingStockMaster.ValueAltered = ValueAlteredType.Divestiture;
-                else if (valueAltered == "감자")      QuotingStockMaster.ValueAltered = ValueAlteredType.CapitalReduction;
-                else                                  QuotingStockMaster.ValueAltered = ValueAlteredType.None;
+                if (valueAltered == "권배락")         QuotingStockMaster.ValueAlteredType = ValueAlteredTypes.ExRightDividend;
+                else if (valueAltered == "권리락")    QuotingStockMaster.ValueAlteredType = ValueAlteredTypes.ExRight;
+                else if (valueAltered == "배당락")    QuotingStockMaster.ValueAlteredType = ValueAlteredTypes.ExDividend;
+                else if (valueAltered == "액면분할")  QuotingStockMaster.ValueAlteredType = ValueAlteredTypes.SplitFaceValue;
+                else if (valueAltered == "액면병합")  QuotingStockMaster.ValueAlteredType = ValueAlteredTypes.MergeFaceValue;
+                else if (valueAltered == "주식병합")  QuotingStockMaster.ValueAlteredType = ValueAlteredTypes.Consolidation;
+                else if (valueAltered == "기업분할")  QuotingStockMaster.ValueAlteredType = ValueAlteredTypes.Divestiture;
+                else if (valueAltered == "감자")      QuotingStockMaster.ValueAlteredType = ValueAlteredTypes.CapitalReduction;
+                else                                  QuotingStockMaster.ValueAlteredType = ValueAlteredTypes.None;
             }
             catch (Exception ex)
             {

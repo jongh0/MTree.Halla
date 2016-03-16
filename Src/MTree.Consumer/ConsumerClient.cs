@@ -29,7 +29,7 @@ namespace MTree.Consumer
             base.Channel.UnregisterContractAll(clientId);
         }
 
-        public void UnregisterContract(Guid clientId, SubscribeType type)
+        public void UnregisterContract(Guid clientId, SubscribeTypes type)
         {
             base.Channel.UnregisterContract(clientId, type);
         }

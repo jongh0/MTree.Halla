@@ -34,8 +34,8 @@ namespace TestConsumer
             TaskUtility.Run("Consumer.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
 
             var subscription = new SubscribeContract();
-            subscription.Type = SubscribeType.StockConclusion;
-            subscription.Scope = SubscribeScope.Partial;
+            subscription.Type = SubscribeTypes.StockConclusion;
+            subscription.Scope = SubscribeScopes.Partial;
             subscription.Codes.Add("000020");
             ServiceClient.RegisterContract(ClientId, subscription);
         }

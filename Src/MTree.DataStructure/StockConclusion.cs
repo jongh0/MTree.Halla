@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace MTree.DataStructure
 {
     #region enum
-    public enum ConclusionType
+    public enum ConclusionTypes
     {
         Sell,
         Buy,
@@ -19,7 +19,7 @@ namespace MTree.DataStructure
     public class StockConclusion : Conclusion
     {
         [BsonElement("CT")]
-        public ConclusionType ConclusionType { get; set; }
+        public ConclusionTypes ConclusionType { get; set; }
 
         public override string ToString()
         {
