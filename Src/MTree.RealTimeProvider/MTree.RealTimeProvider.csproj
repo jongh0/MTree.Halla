@@ -148,6 +148,10 @@
       <Project>{da1959a9-15fa-47aa-98ac-3844a723fea1}</Project>
       <Name>MTree.DataStructure</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MTree.PushService\MTree.PushService.csproj">
+      <Project>{28bebd63-1709-43b2-a109-2545d65fd7cc}</Project>
+      <Name>MTree.PushService</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MTree.Utility\MTree.Utility.csproj">
       <Project>{d8291168-4d81-4acd-81c4-da122a249102}</Project>
       <Name>MTree.Utility</Name>

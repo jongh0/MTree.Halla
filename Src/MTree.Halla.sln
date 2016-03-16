@@ -57,6 +57,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KillAll", "KillAll\KillAll.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.RealTimeProviderTests", "MTree.RealTimeProviderTests\MTree.RealTimeProviderTests.csproj", "{D49C549F-53FE-4F57-9618-5A039F23142C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.PushService", "MTree.PushService\MTree.PushService.csproj", "{28BEBD63-1709-43B2-A109-2545D65FD7CC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -155,6 +157,10 @@ Global
 		{D49C549F-53FE-4F57-9618-5A039F23142C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D49C549F-53FE-4F57-9618-5A039F23142C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D49C549F-53FE-4F57-9618-5A039F23142C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28BEBD63-1709-43B2-A109-2545D65FD7CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28BEBD63-1709-43B2-A109-2545D65FD7CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28BEBD63-1709-43B2-A109-2545D65FD7CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28BEBD63-1709-43B2-A109-2545D65FD7CC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

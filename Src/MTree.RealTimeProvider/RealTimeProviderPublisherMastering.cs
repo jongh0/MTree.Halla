@@ -1,4 +1,5 @@
 ﻿using MTree.DataStructure;
+using MTree.PushService;
 using MTree.Utility;
 using System;
 using System.Collections.Concurrent;
@@ -23,6 +24,8 @@ namespace MTree.RealTimeProvider
         {
             logger.Info("Stock mastering started");
 
+            bool masteringRet = false;
+
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
@@ -41,11 +44,11 @@ namespace MTree.RealTimeProvider
                 }
 
                 var masteringTask = new List<Task>();
-                masteringTask.Add(Task.Run(() => StartKiwoomStockMastering()));
                 masteringTask.Add(Task.Run(() => StartDaishinStockMastering()));
                 masteringTask.Add(Task.Run(() => StartEbestStockMatering()));
+                masteringTask.Add(Task.Run(() => StartKiwoomStockMastering()));
 
-                Task.WaitAll(masteringTask.ToArray());
+                masteringRet = Task.WaitAll(masteringTask.ToArray(), TimeSpan.FromMinutes(30));
             }
             catch (Exception ex)
             {
@@ -54,9 +57,20 @@ namespace MTree.RealTimeProvider
             finally
             {
                 sw.Stop();
-                logger.Info($"Stock mastering done, Elapsed time: {sw.Elapsed.ToString()}");
 
-                Task.Run(() => StartStockMasterPublishing());
+                if (masteringRet == true)
+                {
+                    logger.Info($"Stock mastering done, Elapsed time: {sw.Elapsed.ToString()}");
+                    NotificationHub.Instance.Send("Stock mastering success");
+
+                    Task.Run(() => StartStockMasterPublishing());
+                }
+                else
+                {
+                    logger.Info("Stock mastering failed");
+                    NotificationHub.Instance.Send("Stock mastering fail");
+                }
+                
                 Task.Run(() => StartCodeDistributing());
             }
         }

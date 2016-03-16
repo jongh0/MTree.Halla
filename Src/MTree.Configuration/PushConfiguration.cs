@@ -10,10 +10,8 @@ namespace MTree.Configuration
     {
         public static readonly string FileName = "Config.Push.json";
 
-        public string GcmSenderId { get; set; } = "mtree-1251";
+        public string ConnectionString { get; set; } = "Endpoint=sb://mtreenotificationspace.servicebus.windows.net/;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=RQDGxAhXvvS/Mgg5AYwx5FfecJifbIEadaWu/44LzOo=";
 
-        public string GcmAuthToken { get; set; } = "AIzaSyAXEZu7i1m60ZHKgMM0uKkfVw6xkYiUDPg";
-
-        public List<string> RegistrationIds { get; set; } = new List<string>() { "" };
+        public string NotificationHubPath { get; set; } = "MTreeNotificationHub";
     }
 }

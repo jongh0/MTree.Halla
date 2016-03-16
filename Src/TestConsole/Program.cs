@@ -7,6 +7,7 @@ using MTree.Configuration;
 using System.Threading;
 using MTree.DbProvider;
 using MTree.DataStructure;
+using MTree.PushService;
 
 namespace TestConsole
 {
@@ -17,6 +18,7 @@ namespace TestConsole
         static void Main(string[] args)
         {
             CreateConfiguraionFile(); // Configuration 파일들 없으면 자동 생성될 수 있도록
+            TestPushService();
 
             //TestDbSaving();
         }
@@ -27,6 +29,11 @@ namespace TestConsole
             Console.WriteLine(Config.Daishin.UserId);
             Console.WriteLine(Config.Database.ConnectionString);
             Console.WriteLine(Config.Ebest.Server);
+        }
+
+        private static void TestPushService()
+        {
+            NotificationHub.Instance.Send("Hello MTree");
         }
 
         private static void TestDbSaving()
