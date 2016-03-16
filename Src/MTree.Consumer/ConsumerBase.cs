@@ -35,7 +35,7 @@ namespace MTree.Consumer
         {
             try
             {
-                logger.Info($"Open {GetType().Name} channel");
+                logger.Info($"[{GetType().Name}] Open channel");
 
                 ServiceClient = new ConsumerClient(CallbackInstance, "RealTimeConsumerConfig");
                 ServiceClient.InnerChannel.Opened += ServiceClient_Opened;
@@ -54,7 +54,7 @@ namespace MTree.Consumer
             {
                 if (ServiceClient != null)
                 {
-                    logger.Info($"Close {GetType().Name} channel");
+                    logger.Info($"[{GetType().Name}] Close channel");
 
                     ServiceClient.UnregisterContractAll(ClientId);
                     ServiceClient.Close();
@@ -68,13 +68,13 @@ namespace MTree.Consumer
 
         protected virtual void ServiceClient_Opened(object sender, EventArgs e)
         {
-            logger.Info($"{GetType().Name} channel opened");
+            logger.Info($"[{GetType().Name}] Channel opened");
             CommunicateTimer.Start();
         }
 
         protected virtual void ServiceClient_Closed(object sender, EventArgs e)
         {
-            logger.Info($"{GetType().Name} channel closed");
+            logger.Info($"[{GetType().Name}] Channel closed");
             CommunicateTimer.Stop();
         }
 
@@ -82,7 +82,7 @@ namespace MTree.Consumer
         {
             try
             {
-                logger.Info($"{GetType().Name} process will be closed");
+                logger.Info($"[{GetType().Name}] Process will be closed");
 
                 StopCommunicateTimer();
                 StopQueueTask();
@@ -112,7 +112,7 @@ namespace MTree.Consumer
                         LastWcfCommunicateTick = Environment.TickCount;
                         ServiceClient.NoOperation();
                         
-                        logger.Info($"{GetType().Name} keep wcf connection");
+                        logger.Info($"[{GetType().Name}] Keep wcf connection");
                     }
                 }
             }

@@ -35,7 +35,7 @@ namespace MTree.Publisher
         {
             try
             {
-                logger.Info($"Open {GetType().Name} channel");
+                logger.Info($"[{GetType().Name}] Open channel");
 
                 ServiceClient = new PublisherClient(CallbackInstance, "RealTimePublisherConfig");
                 ServiceClient.InnerChannel.Opened += ServiceClient_Opened;
@@ -54,7 +54,7 @@ namespace MTree.Publisher
             {
                 if (ServiceClient != null)
                 {
-                    logger.Info($"Close {GetType().Name} channel");
+                    logger.Info($"[{GetType().Name}] Close channel");
 
                     ServiceClient.UnregisterContract(ClientId);
                     ServiceClient.Close();
@@ -70,7 +70,7 @@ namespace MTree.Publisher
         {
             try
             {
-                logger.Info($"{GetType().Name} keep connection");
+                logger.Info($"[{GetType().Name}] Keep connection");
                 CommunicateTimer.Start();
 
                 Task.Run(() =>
@@ -87,7 +87,7 @@ namespace MTree.Publisher
                     }
                     else
                     {
-                        logger.Error($"{GetType().Name} wrong argument");
+                        logger.Error($"[{GetType().Name}] Wrong argument");
                     }
                 });
             }
@@ -99,7 +99,7 @@ namespace MTree.Publisher
 
         protected virtual void ServiceClient_Closed(object sender, EventArgs e)
         {
-            logger.Info($"{GetType().Name} channel closed");
+            logger.Info($"[{GetType().Name}] Channel closed");
             CommunicateTimer.Stop();
         }
 
@@ -107,7 +107,7 @@ namespace MTree.Publisher
         {
             try
             {
-                logger.Info($"{GetType().Name} process will be closed");
+                logger.Info($"[{GetType().Name}] Process will be closed");
 
                 StopCommunicateTimer();
                 StopQueueTask();
@@ -137,7 +137,7 @@ namespace MTree.Publisher
                         LastWcfCommunicateTick = Environment.TickCount;
                         ServiceClient.NoOperation();
                         
-                        logger.Info($"{GetType().Name} keep wcf connection");
+                        logger.Info($"[{GetType().Name}] Keep wcf connection");
                     }
                 }
             }

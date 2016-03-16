@@ -16,6 +16,8 @@ namespace MTree.HistorySaver
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
+        private object lockObject { get; } = new object();
+
         private IMongoCollection<BiddingPrice> BiddingPriceCollection { get; set; }
         private IMongoCollection<StockConclusion> StockConclusionCollection { get; set; }
         private IMongoCollection<IndexConclusion> IndexConclusionCollection { get; set; }
@@ -166,15 +168,21 @@ namespace MTree.HistorySaver
 
                 if (StockMasterCollection == null)
                 {
-                    var db = MongoDbProvider.Instance.GetDatabase(DbType.StockMaster);
-                    db.DropCollection(Config.Database.TodayCollectionName);
-                    logger.Info($"Stock master collection droped, {Config.Database.TodayCollectionName}");
+                    lock (lockObject)
+                    {
+                        if (StockMasterCollection == null)
+                        {
+                            var db = MongoDbProvider.Instance.GetDatabase(DbType.StockMaster);
+                            db.DropCollection(Config.Database.TodayCollectionName);
+                            logger.Info($"Stock master collection droped, {Config.Database.TodayCollectionName}");
 
-                    StockMasterCollection = db.GetCollection<StockMaster>(Config.Database.TodayCollectionName);
+                            StockMasterCollection = db.GetCollection<StockMaster>(Config.Database.TodayCollectionName);
 
-                    var keys = Builders<StockMaster>.IndexKeys.Ascending(i => i.Code).Ascending(i => i.Time);
-                    StockMasterCollection.Indexes.CreateOneAsync(keys);
-                    logger.Info($"Stock master collection index created, {Config.Database.TodayCollectionName}");
+                            var keys = Builders<StockMaster>.IndexKeys.Ascending(i => i.Code).Ascending(i => i.Time);
+                            StockMasterCollection.Indexes.CreateOneAsync(keys);
+                            logger.Info($"Stock master collection index created, {Config.Database.TodayCollectionName}");
+                        }
+                    }
                 }
 
                 StockMasterCollection.InsertOne(stockMaster);

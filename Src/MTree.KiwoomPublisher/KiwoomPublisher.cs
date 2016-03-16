@@ -400,7 +400,7 @@ namespace MTree.KiwoomPublisher
         protected override void OnCommunicateTimer(object sender, ElapsedEventArgs e)
         {
             // TODO : Keep firm communication code
-            logger.Info($"{GetType().Name} keep firm connection");
+            logger.Info($"[{GetType().Name}] Keep firm connection");
 
             base.OnCommunicateTimer(sender, e);
         }

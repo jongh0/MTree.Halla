@@ -10,9 +10,9 @@ namespace MTree.DataStructure
     #region enum
     public enum MarketTimeType
     {
+        Normal,
         BeforeOffTheClock,
         BeforeExpect,
-        Normal,
         AfterExpect,
         AfterOffTheClock,
     } 

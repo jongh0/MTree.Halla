@@ -46,6 +46,7 @@ namespace MTree.DataStructure
         public MarketType Market { get; set; } = MarketType.Unknown;
 
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
+        [BsonElement("T")]
         public DateTime Time { get; set; }
 
         public override string ToString()

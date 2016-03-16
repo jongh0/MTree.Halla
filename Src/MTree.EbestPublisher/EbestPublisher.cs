@@ -271,59 +271,66 @@ namespace MTree.EbestPublisher
         {
             try
             {
+                var now = DateTime.Now;
                 IndexConclusion conclusion = new IndexConclusion();
 
                 string temp = indexSubscribingObj.GetFieldData("OutBlock", "upcode");
                 conclusion.Code = temp;
 
                 temp = indexSubscribingObj.GetFieldData("OutBlock", "time");
-                var now = DateTime.Now;
                 uint time;
-
                 if (uint.TryParse(temp, out time) == true)
                     conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100, now.Millisecond);
                 else
                     conclusion.Time = now;
 
                 temp = indexSubscribingObj.GetFieldData("OutBlock", "jisu");
-                double index;
-                if (double.TryParse(temp, out index) == true)
-                    conclusion.Index = index;
+                double index = 0;
+                if (double.TryParse(temp, out index) == false)
+                    logger.Error($"Index conclusion index error, {temp}");
+                conclusion.Index = index;
 
                 temp = indexSubscribingObj.GetFieldData("OutBlock", "volume");
-                double volumn;
-                if (double.TryParse(temp, out volumn) == true)
-                    conclusion.Volume = volumn * 1000;
+                double volumn = 0;
+                if (double.TryParse(temp, out volumn) == false)
+                    logger.Error($"Index conclusion index error, {temp}");
+                conclusion.Volume = volumn * 1000;
 
                 temp = indexSubscribingObj.GetFieldData("OutBlock", "value");
                 double value;
-                if (double.TryParse(temp, out value) == true)
-                    conclusion.Value = value;
+                if (double.TryParse(temp, out value) == false)
+                    logger.Error($"Index conclusion value error, {temp}");
+                conclusion.Value = value;
 
                 temp = indexSubscribingObj.GetFieldData("OutBlock", "upjo");
                 int upperLimitCount;
-                if (int.TryParse(temp, out upperLimitCount) == true)
-                    conclusion.UpperLimitedItemCount = upperLimitCount;
+                if (int.TryParse(temp, out upperLimitCount) == false)
+                    logger.Error($"Index conclusion upper limit count error, {temp}");
+                conclusion.UpperLimitedItemCount = upperLimitCount;
 
                 temp = indexSubscribingObj.GetFieldData("OutBlock", "highjo");
                 int increasingCount;
-                if (int.TryParse(temp, out increasingCount) == true)
-                    conclusion.IncreasingItemCount = increasingCount;
+                if (int.TryParse(temp, out increasingCount) == false)
+                    logger.Error($"Index conclusion increasing count error, {temp}");
+                conclusion.IncreasingItemCount = increasingCount;
 
                 temp = indexSubscribingObj.GetFieldData("OutBlock", "unchgjo");
                 int steadyCount;
-                if (int.TryParse(temp, out steadyCount) == true)
-                    conclusion.SteadyItemCount = steadyCount;
+                if (int.TryParse(temp, out steadyCount) == false)
+                    logger.Error($"Index conclusion steady count error, {temp}");
+                conclusion.SteadyItemCount = steadyCount;
 
                 temp = indexSubscribingObj.GetFieldData("OutBlock", "lowjo");
                 int decreasingCount;
-                if (int.TryParse(temp, out decreasingCount) == true)
-                    conclusion.DecreasingItemCount = decreasingCount;
+                if (int.TryParse(temp, out decreasingCount) == false)
+                    logger.Error($"Index conclusion decreasing count error, {temp}");
+                conclusion.DecreasingItemCount = decreasingCount;
 
                 temp = indexSubscribingObj.GetFieldData("OutBlock", "downjo");
                 int lowerLimitedCount;
-                if (int.TryParse(temp, out lowerLimitedCount) == true)
-                    conclusion.LowerLimitedItemCount = lowerLimitedCount;
+                if (int.TryParse(temp, out lowerLimitedCount) == false)
+                    logger.Error($"Index conclusion lower limited count error, {temp}");
+                conclusion.LowerLimitedItemCount = lowerLimitedCount;
 
                 if (PrevIndexConclusions.ContainsKey(conclusion.Code) == false)
                     PrevIndexConclusions.TryAdd(conclusion.Code, new IndexConclusion());
@@ -525,49 +532,23 @@ namespace MTree.EbestPublisher
                 if (QuotingStockMaster == null)
                     return;
 
-                string temp = stockQuotingObj.GetFieldData("t1102OutBlock", "price", 0);
-                if (temp == "")
-                {
-                    logger.Error("price is null");
-                    temp = "0";
-                }
+                string cvStr = stockQuotingObj.GetFieldData("t1102OutBlock", "abscnt", 0);
+                long cv = 0;
+                if (long.TryParse(cvStr, out cv) == false)
+                    logger.Error($"Stock master circulating volume error, {cvStr}");
 
-                temp = stockQuotingObj.GetFieldData("t1102OutBlock", "jnilvolume", 0);
-                if (temp == "")
-                {
-                    logger.Error("previous volume is null");
-                    temp = "0";
-                }
-
-                temp = stockQuotingObj.GetFieldData("t1102OutBlock", "abscnt", 0);
-                if (temp == "")
-                {
-                    logger.Error("Circulating volume is null");
-                    temp = "0";
-                }
-
-                QuotingStockMaster.CirculatingVolume = int.Parse(temp) * 1000;  //유통주식수
+                QuotingStockMaster.CirculatingVolume = cv * 1000;  //유통주식수
 
                 string valueAltered = stockQuotingObj.GetFieldData("t1102OutBlock", "info1", 0);
-
-                if (valueAltered == "권배락")
-                    QuotingStockMaster.ValueAltered = ValueAlteredType.ExRightDividend;
-                else if (valueAltered == "권리락")
-                    QuotingStockMaster.ValueAltered = ValueAlteredType.ExRight;
-                else if (valueAltered == "배당락")
-                    QuotingStockMaster.ValueAltered = ValueAlteredType.ExDividend;
-                else if (valueAltered == "액면분할")
-                    QuotingStockMaster.ValueAltered = ValueAlteredType.SplitFaceValue;
-                else if (valueAltered == "액면병합")
-                    QuotingStockMaster.ValueAltered = ValueAlteredType.MergeFaceValue;
-                else if (valueAltered == "주식병합")
-                    QuotingStockMaster.ValueAltered = ValueAlteredType.Consolidation;
-                else if (valueAltered == "기업분할")
-                    QuotingStockMaster.ValueAltered = ValueAlteredType.Divestiture;
-                else if (valueAltered == "감자")
-                    QuotingStockMaster.ValueAltered = ValueAlteredType.CapitalReduction;
-                else
-                    QuotingStockMaster.ValueAltered = ValueAlteredType.None;
+                if (valueAltered == "권배락")         QuotingStockMaster.ValueAltered = ValueAlteredType.ExRightDividend;
+                else if (valueAltered == "권리락")    QuotingStockMaster.ValueAltered = ValueAlteredType.ExRight;
+                else if (valueAltered == "배당락")    QuotingStockMaster.ValueAltered = ValueAlteredType.ExDividend;
+                else if (valueAltered == "액면분할")  QuotingStockMaster.ValueAltered = ValueAlteredType.SplitFaceValue;
+                else if (valueAltered == "액면병합")  QuotingStockMaster.ValueAltered = ValueAlteredType.MergeFaceValue;
+                else if (valueAltered == "주식병합")  QuotingStockMaster.ValueAltered = ValueAlteredType.Consolidation;
+                else if (valueAltered == "기업분할")  QuotingStockMaster.ValueAltered = ValueAlteredType.Divestiture;
+                else if (valueAltered == "감자")      QuotingStockMaster.ValueAltered = ValueAlteredType.CapitalReduction;
+                else                                  QuotingStockMaster.ValueAltered = ValueAlteredType.None;
             }
             catch (Exception ex)
             {
@@ -649,7 +630,7 @@ namespace MTree.EbestPublisher
             // TODO : Keep firm communication code
             if ((Environment.TickCount - LastFirmCommunicateTick) > MaxCommunicateInterval)
             {
-                logger.Info($"{GetType().Name} keep firm connection");
+                logger.Info($"[{GetType().Name}] Keep firm connection");
             }
 
             base.OnCommunicateTimer(sender, e);

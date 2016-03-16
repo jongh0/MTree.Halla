@@ -36,13 +36,13 @@ namespace MTree.RealTimeProvider
         protected void StopQueueTask()
         {
             QueueTaskCancelSource.Cancel();
-            logger.Info($"{GetType().Name} queue task stopped");
+            logger.Info($"[{GetType().Name}] Queue task stopped");
         }
 
         protected void StopCommunicateTimer()
         {
             CommunicateTimer.Stop();
-            logger.Info($"{GetType().Name} communicate timer stopped");
+            logger.Info($"[{GetType().Name}] Communicate timer stopped");
         }
 
         protected virtual void OnCommunicateTimer(object sender, System.Timers.ElapsedEventArgs e)
