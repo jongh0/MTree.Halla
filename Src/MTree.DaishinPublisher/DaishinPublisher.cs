@@ -463,37 +463,43 @@ namespace MTree.DaishinPublisher
 
                 // 1~5
                 int startIdx = 3;
-                int biddingCnt = 5;
-                for (int i = startIdx; i < startIdx + 4 * biddingCnt;)
+                for (int i = 0; i < 5;i++)
                 {
+                    int offset = 0;
                     BiddingPriceEntity offerEntity = new BiddingPriceEntity();  // Sell
-                    offerEntity.Index = (i - startIdx) / 4;
-                    offerEntity.Price = Convert.ToSingle(biddingObj.GetHeaderValue(i++));
-                    offerEntity.Amount = Convert.ToInt64(biddingObj.GetHeaderValue(i++));
-                    biddingPrice.Offers.Add(offerEntity);
-
                     BiddingPriceEntity bidEntity = new BiddingPriceEntity();    // Buy
-                    bidEntity.Index = (i - startIdx) / 4;
-                    bidEntity.Price = Convert.ToSingle(biddingObj.GetHeaderValue(i++));
-                    bidEntity.Amount = Convert.ToInt64(biddingObj.GetHeaderValue(i++));
+
+                    offerEntity.Index = i;
+                    bidEntity.Index = i;
+
+                    offerEntity.Price = Convert.ToSingle(biddingObj.GetHeaderValue(startIdx + i * 4 + offset++));
+                    bidEntity.Price = Convert.ToSingle(biddingObj.GetHeaderValue(startIdx + i * 4 + offset++));
+
+                    offerEntity.Amount = Convert.ToInt64(biddingObj.GetHeaderValue(startIdx + i * 4 + offset++));
+                    bidEntity.Amount = Convert.ToInt64(biddingObj.GetHeaderValue(startIdx + i * 4 + offset++));
+
+                    biddingPrice.Offers.Add(offerEntity);
                     biddingPrice.Bids.Add(bidEntity);
                 }
-
+                
                 // 6~10
                 startIdx = 27;
-                biddingCnt = 5;
-                for (int i = startIdx; i < startIdx + 4 * biddingCnt;)
+                for (int i = 0; i < 5; i++)
                 {
+                    int offset = 0;
                     BiddingPriceEntity offerEntity = new BiddingPriceEntity();  // Sell
-                    offerEntity.Index = (i - startIdx) / 4 + 5;
-                    offerEntity.Price = Convert.ToSingle(biddingObj.GetHeaderValue(i++));
-                    offerEntity.Amount = Convert.ToInt64(biddingObj.GetHeaderValue(i++));
-                    biddingPrice.Offers.Add(offerEntity);
-
                     BiddingPriceEntity bidEntity = new BiddingPriceEntity();    // Buy
-                    bidEntity.Index = (i - startIdx) / 4 + 5;
-                    bidEntity.Price = Convert.ToSingle(biddingObj.GetHeaderValue(i++));
-                    bidEntity.Amount = Convert.ToInt64(biddingObj.GetHeaderValue(i++));
+
+                    offerEntity.Index = i + 5;
+                    bidEntity.Index = i + 5;
+
+                    offerEntity.Price = Convert.ToSingle(biddingObj.GetHeaderValue(startIdx + i * 4 + offset++));
+                    bidEntity.Price = Convert.ToSingle(biddingObj.GetHeaderValue(startIdx + i * 4 + offset++));
+
+                    offerEntity.Amount = Convert.ToInt64(biddingObj.GetHeaderValue(startIdx + i * 4 + offset++));
+                    bidEntity.Amount = Convert.ToInt64(biddingObj.GetHeaderValue(startIdx + i * 4 + offset++));
+
+                    biddingPrice.Offers.Add(offerEntity);
                     biddingPrice.Bids.Add(bidEntity);
                 }
 
