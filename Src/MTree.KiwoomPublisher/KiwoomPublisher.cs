@@ -347,31 +347,132 @@ namespace MTree.KiwoomPublisher
 
         public override Dictionary<string, CodeEntity> GetStockCodeList()
         {
+            if (WaitLogin() == false)
+                logger.Error("Session is not established");
+
             var codeDictionary = new Dictionary<string, CodeEntity>();
 
             try
             {
-                //KOSPI
+                #region ETF(belongs to KOSPI)
+                string[] etfList = kiwoomObj.GetCodeListByMarket("8").Split(';');
+                foreach (string code in etfList)
+                {
+                    if (code != string.Empty)
+                    {
+                        var codeEntity = new CodeEntity();
+                        codeEntity.Code = code;
+                        codeEntity.Name = kiwoomObj.GetMasterCodeName(code);
+                        codeEntity.Market = MarketType.ETF;
+
+                        if (!codeDictionary.ContainsKey(code))
+                            codeDictionary.Add(codeEntity.Code, codeEntity);
+                        else
+                            logger.Trace("Code is already in the list");
+                    }
+                }
+                #endregion
+                
+                #region KOSPI & ETN
                 string[] kospiList = kiwoomObj.GetCodeListByMarket("0").Split(';');
                 foreach (string code in kospiList)
                 {
-                    var codeEntity = new CodeEntity();
-                    codeEntity.Code = code;
-                    codeEntity.Name = kiwoomObj.GetMasterCodeName(code);
-                    codeEntity.Market = MarketType.KOSPI;
-                    codeDictionary.Add(codeEntity.Code, codeEntity);
-                }
+                    if (code != string.Empty)
+                    {
+                        var codeEntity = new CodeEntity();
+                        codeEntity.Code = code;
+                        codeEntity.Name = kiwoomObj.GetMasterCodeName(code);
 
-                //KOSDAQ
-                string[] kosdaqList = kiwoomObj.GetCodeListByMarket("0").Split(';');
+                        if (code[0] == '5')
+                            codeEntity.Market = MarketType.ETN;
+                        else
+                            codeEntity.Market = MarketType.KOSPI;
+
+                        if (!codeDictionary.ContainsKey(code))
+                        {
+                            codeDictionary.Add(codeEntity.Code, codeEntity);
+                        }
+                        else
+                        {
+                            if (codeDictionary[code].Market != MarketType.ETF)
+                                logger.Trace("Code is already in the list");
+                        }
+                    }
+                }
+                #endregion
+
+                #region ELW
+                string[] elwList = kiwoomObj.GetCodeListByMarket("3").Split(';');
+                foreach (string code in elwList)
+                {
+                    if (code != string.Empty)
+                    {
+                        var codeEntity = new CodeEntity();
+                        codeEntity.Code = code;
+                        codeEntity.Name = kiwoomObj.GetMasterCodeName(code);
+                        codeEntity.Market = MarketType.ELW;
+
+                        if (!codeDictionary.ContainsKey(code))
+                            codeDictionary.Add(codeEntity.Code, codeEntity);
+                        else
+                            logger.Trace("Code is already in the list");
+                    }
+                }
+                #endregion
+                
+                #region KOSDAQ
+                string[] kosdaqList = kiwoomObj.GetCodeListByMarket("10").Split(';');
                 foreach (string code in kosdaqList)
                 {
-                    var codeEntity = new CodeEntity();
-                    codeEntity.Code = code;
-                    codeEntity.Name = kiwoomObj.GetMasterCodeName(code);
-                    codeEntity.Market = MarketType.KOSPI;
-                    codeDictionary.Add(codeEntity.Code, codeEntity);
+                    if (code != string.Empty)
+                    {
+                        var codeEntity = new CodeEntity();
+                        codeEntity.Code = code;
+                        codeEntity.Name = kiwoomObj.GetMasterCodeName(code);
+                        codeEntity.Market = MarketType.KOSDAQ;
+                        if (!codeDictionary.ContainsKey(code))
+                            codeDictionary.Add(codeEntity.Code, codeEntity);
+                        else
+                            logger.Trace("Code is already in the list");
+                    }
                 }
+                #endregion
+                
+                #region KONEX
+                string[] konexList = kiwoomObj.GetCodeListByMarket("50").Split(';');
+                foreach (string code in konexList)
+                {
+                    if (code != string.Empty)
+                    {
+                        var codeEntity = new CodeEntity();
+                        codeEntity.Code = code;
+                        codeEntity.Name = kiwoomObj.GetMasterCodeName(code);
+                        codeEntity.Market = MarketType.KONEX;
+                        if (!codeDictionary.ContainsKey(code))
+                            codeDictionary.Add(codeEntity.Code, codeEntity);
+                        else
+                            logger.Trace("Code is already in the list");
+                    }
+                }
+                #endregion
+                
+                #region Freeboard (K-OTC)
+                string[] freeboard = kiwoomObj.GetCodeListByMarket("30").Split(';');
+                foreach (string code in freeboard)
+                {
+                    if (code != string.Empty)
+                    {
+                        var codeEntity = new CodeEntity();
+                        codeEntity.Code = code;
+                        codeEntity.Name = kiwoomObj.GetMasterCodeName(code);
+                        codeEntity.Market = MarketType.FREEBOARD;
+                        if (!codeDictionary.ContainsKey(code))
+                            codeDictionary.Add(codeEntity.Code, codeEntity);
+                        else
+                            logger.Trace("Code is already in the list");
+                    }
+                } 
+                #endregion
 
                 logger.Info($"Stock code list query done, Count: {codeDictionary.Count}");
             }

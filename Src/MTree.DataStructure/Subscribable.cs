@@ -21,9 +21,11 @@ namespace MTree.DataStructure
         INDEX,
         KOSPI,
         KOSDAQ,
+        KONEX,
         ETF,
         ETN,
         ELW,
+        FREEBOARD
     }
 
     [BsonDiscriminator(RootClass = true)]
