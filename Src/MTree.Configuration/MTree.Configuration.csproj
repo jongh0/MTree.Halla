@@ -52,6 +52,7 @@
     <Compile Include="Config.cs" />
     <Compile Include="DaishinConfiguration.cs" />
     <Compile Include="DatabaseConfiguration.cs" />
+    <Compile Include="PushConfiguration.cs" />
     <Compile Include="GeneralConfiguration.cs" />
     <Compile Include="EbestConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

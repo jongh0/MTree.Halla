@@ -75,6 +75,26 @@ namespace MTree.Configuration
         }
         #endregion
 
+        #region Push
+        private static PushConfiguration _push;
+        public static PushConfiguration Push
+        {
+            get
+            {
+                if (_push == null)
+                {
+                    lock (lockObject)
+                    {
+                        if (_push == null)
+                            LoadConfiguration(ref _push, PushConfiguration.FileName);
+                    }
+                }
+
+                return _push;
+            }
+        }
+        #endregion
+
         #region Load / Save
         private static void LoadConfiguration<T>(ref T config, string filePath)
         {
