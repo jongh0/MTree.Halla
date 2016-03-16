@@ -112,7 +112,7 @@ namespace MTree.Consumer
                         LastWcfCommunicateTick = Environment.TickCount;
                         ServiceClient.NoOperation();
                         
-                        logger.Info($"[{GetType().Name}] Keep wcf connection");
+                        logger.Trace($"[{GetType().Name}] Keep wcf connection");
                     }
                 }
             }

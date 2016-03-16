@@ -12,7 +12,6 @@ namespace MTree.DataStructure
     {
         Sell,
         Buy,
-        None,
     } 
     #endregion
 

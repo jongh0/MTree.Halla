@@ -351,9 +351,8 @@ namespace MTree.DaishinPublisher
 
                 // 14 - (char)체결 상태
                 char type = Convert.ToChar(stockCurObj.GetHeaderValue(14));
-                if (type == '1') conclusion.ConclusionType = ConclusionType.Buy;
-                else if (type == '2') conclusion.ConclusionType = ConclusionType.Sell;
-                else logger.Error($"Stock conclusion type error, {stockCurObj.GetHeaderValue(14)}");
+                if (type == '1')    conclusion.ConclusionType = ConclusionType.Buy;
+                else                conclusion.ConclusionType = ConclusionType.Sell;
 
 
                 // 17 - (long) 순간체결수량
