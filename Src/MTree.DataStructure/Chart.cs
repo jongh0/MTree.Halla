@@ -36,5 +36,25 @@ namespace MTree.DataStructure
 
         [BsonElement("Cs")]
         public Dictionary<DateTime, Candle> Candles { get; set; }
+
+        public Chart ConvertType(ChartTypes chartType, TimeSpan interval)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Candle CandleAt(DateTime dateTime)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Candle NextCandle(Candle baseCandle)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Candle PrevCandle(Candle baseCandle)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
