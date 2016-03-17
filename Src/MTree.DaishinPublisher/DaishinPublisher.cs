@@ -331,9 +331,10 @@ namespace MTree.DaishinPublisher
 
         private void StockConclusionReceived()
         {
+            int startTick = Environment.TickCount;
+
             try
             {
-                Stopwatch sw = new Stopwatch();
                 var now = DateTime.Now;
                 StockConclusion conclusion = new StockConclusion();
 
@@ -359,28 +360,29 @@ namespace MTree.DaishinPublisher
                 if (type == '1')    conclusion.ConclusionType = ConclusionTypes.Buy;
                 else                conclusion.ConclusionType = ConclusionTypes.Sell;
 
-
                 // 17 - (long) 순간체결수량
                 conclusion.Amount = Convert.ToInt64(stockCurObj.GetHeaderValue(17));
                 if (conclusion.Amount <= 0)
                     logger.Error($"Stock conclusion amount error, {conclusion.Amount}/{stockCurObj.GetHeaderValue(17)}");
 
                 // 20 - (char) 장 구분 플래그
-                char typeTime = Convert.ToChar(stockCurObj.GetHeaderValue(20));
-                if (typeTime == '1')        conclusion.MarketTimeType = MarketTimeTypes.BeforeExpect;
-                else if (typeTime == '2')   conclusion.MarketTimeType = MarketTimeTypes.Normal;
-                else if (typeTime == '3')   conclusion.MarketTimeType = MarketTimeTypes.BeforeOffTheClock;
-                else if (typeTime == '4')   conclusion.MarketTimeType = MarketTimeTypes.AfterOffTheClock;
-                else if (typeTime == '5')   conclusion.MarketTimeType = MarketTimeTypes.AfterOffTheClock;
-                else logger.Error($"Stock conclusion typeTime error, {stockCurObj.GetHeaderValue(20)}");
+                char marketTime = Convert.ToChar(stockCurObj.GetHeaderValue(20));
+                if (marketTime == '1')        conclusion.MarketTimeType = MarketTimeTypes.BeforeExpect;
+                else if (marketTime == '2')   conclusion.MarketTimeType = MarketTimeTypes.Normal;
+                else if (marketTime == '3')   conclusion.MarketTimeType = MarketTimeTypes.BeforeOffTheClock;
+                else if (marketTime == '4')   conclusion.MarketTimeType = MarketTimeTypes.AfterOffTheClock;
+                else if (marketTime == '5')   conclusion.MarketTimeType = MarketTimeTypes.AfterOffTheClock;
+                else logger.Error($"Stock conclusion market time type error, {stockCurObj.GetHeaderValue(20)}");
 
                 StockConclusionQueue.Enqueue(conclusion);
-                sw.Stop();
-                logger.Trace(sw.Elapsed);
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
+            }
+            finally
+            {
+                logger.Trace($"Stock conclusion receive tick : {Environment.TickCount - startTick}");
             }
         }
 
