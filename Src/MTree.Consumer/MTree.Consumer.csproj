@@ -47,8 +47,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChartableIndex.cs" />
-    <Compile Include="ChartableStock.cs" />
+    <Compile Include="Index.cs" />
+    <Compile Include="Stock.cs" />
     <Compile Include="ConsumerCallback.cs" />
     <Compile Include="ConsumerBase.cs" />
     <Compile Include="IChartable.cs" />
