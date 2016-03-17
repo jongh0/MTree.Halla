@@ -13,7 +13,7 @@ namespace MTree.RealTimeProvider
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        protected int MaxCommunicateInterval { get; } = 1000 * 60 * 2;
+        protected int MaxCommunicateInterval { get; } = 1000 * 60 * 5;
         protected int LastWcfCommunicateTick { get; set; } = Environment.TickCount; // 마지막으로 WCF 통신을 한 시간
         protected System.Timers.Timer CommunicateTimer { get; set; }
 

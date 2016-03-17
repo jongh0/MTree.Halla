@@ -339,8 +339,6 @@ namespace MTree.KiwoomPublisher
         {
             try
             {
-                base.GetStockMaster(code);
-
                 var stockMaster = new StockMaster();
                 stockMaster.Code = code;
 
@@ -510,14 +508,6 @@ namespace MTree.KiwoomPublisher
             // Logout한 이후 Process 종료시킨다
             Logout();
             base.CloseClient();
-        }
-
-        protected override void OnCommunicateTimer(object sender, ElapsedEventArgs e)
-        {
-            // TODO : Keep firm communication code
-            logger.Info($"[{GetType().Name}] Keep firm connection");
-
-            base.OnCommunicateTimer(sender, e);
         }
     }
 }

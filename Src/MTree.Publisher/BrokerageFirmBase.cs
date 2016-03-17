@@ -8,6 +8,7 @@ using System.ServiceModel;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace MTree.Publisher
 {
@@ -149,6 +150,21 @@ namespace MTree.Publisher
         {
             if (QuoteInterval > 0)
                 Thread.Sleep(QuoteInterval);
+        }
+
+        protected override void OnCommunicateTimer(object sender, ElapsedEventArgs e)
+        {
+            if ((Environment.TickCount - LastFirmCommunicateTick) > MaxCommunicateInterval)
+            {
+                LastFirmCommunicateTick = Environment.TickCount;
+
+                string code = GetType().Name.Equals("DaishinPublisher") ? "A000020" : "000020";
+                GetStockMaster(code);
+
+                logger.Info($"[{GetType().Name}] Keep firm connection");
+            }
+
+            base.OnCommunicateTimer(sender, e);
         }
     }
 }

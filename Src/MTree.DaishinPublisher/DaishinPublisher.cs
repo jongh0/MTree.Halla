@@ -604,16 +604,8 @@ namespace MTree.DaishinPublisher
 
         public override bool IsSubscribable()
         {
-            int limit = sessionObj.GetLimitRemainCount(LIMIT_TYPE.LT_SUBSCRIBE);
-            return sessionObj.GetLimitRemainCount(LIMIT_TYPE.LT_SUBSCRIBE) > 0;
-        }
-
-        protected override void OnCommunicateTimer(object sender, ElapsedEventArgs e)
-        {
-            // TODO : Keep firm communication code
-            logger.Info($"[{GetType().Name}] Keep firm connection");
-
-            base.OnCommunicateTimer(sender, e);
+            int remainCount = sessionObj.GetLimitRemainCount(LIMIT_TYPE.LT_SUBSCRIBE);
+            return remainCount > 0;
         }
     }
 }

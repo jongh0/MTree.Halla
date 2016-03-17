@@ -213,8 +213,6 @@ namespace MTree.EbestPublisher
 
         public override bool SubscribeIndex(string code)
         {
-            base.SubscribeIndex(code);
-
             if (WaitLogin() == false)
             {
                 logger.Error("Not loggedin state");
@@ -241,8 +239,6 @@ namespace MTree.EbestPublisher
 
         public override bool UnsubscribeIndex(string code)
         {
-            base.UnsubscribeIndex(code);
-
             if (WaitLogin() == false)
             {
                 logger.Error("Not loggedin state");
@@ -594,8 +590,6 @@ namespace MTree.EbestPublisher
 
         public override StockMaster GetStockMaster(string code)
         {
-            base.GetStockMaster(code);
-
             var stockMaster = new StockMaster();
             stockMaster.Code = code;
 
@@ -621,20 +615,7 @@ namespace MTree.EbestPublisher
 
         public override bool IsSubscribable()
         {
-            base.IsSubscribable();
-
             return subscribeCount < maxSubscribeCount;
-        }
-
-        protected override void OnCommunicateTimer(object sender, ElapsedEventArgs e)
-        {
-            // TODO : Keep firm communication code
-            if ((Environment.TickCount - LastFirmCommunicateTick) > MaxCommunicateInterval)
-            {
-                logger.Info($"[{GetType().Name}] Keep firm connection");
-            }
-
-            base.OnCommunicateTimer(sender, e);
         }
     }
 }
