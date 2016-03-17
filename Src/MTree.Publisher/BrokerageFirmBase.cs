@@ -24,6 +24,9 @@ namespace MTree.Publisher
         // Last firm communication tick
         protected int LastFirmCommunicateTick { get; set; } = Environment.TickCount;
 
+        // Conclusion receive lock
+        protected object ConclusionLock { get; } = new object();
+
         // Quote interval
         protected int QuoteInterval { get; set; } = 0;
 
@@ -40,10 +43,6 @@ namespace MTree.Publisher
         protected IndexMaster QuotingIndexMaster { get; set; } = null;
 
         protected ConcurrentDictionary<string, IndexConclusion> PrevIndexConclusions { get; } = new ConcurrentDictionary<string, IndexConclusion>();
-
-        // Conclusion receive lock
-        protected bool UseConclusionLock { get; set; } = false;
-        protected object ConclusionLock { get; } = new object();
 
         public BrokerageFirmBase() : base()
         {

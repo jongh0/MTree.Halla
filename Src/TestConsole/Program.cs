@@ -18,17 +18,17 @@ namespace TestConsole
         static void Main(string[] args)
         {
             CreateConfiguraionFile(); // Configuration 파일들 없으면 자동 생성될 수 있도록
-            TestPushService();
-
+            
+            //TestPushService();
             //TestDbSaving();
         }
 
         private static void CreateConfiguraionFile()
         {
+            Console.WriteLine(Config.General.TestMode);
             Console.WriteLine(Config.Ebest.UserId);
             Console.WriteLine(Config.Daishin.UserId);
             Console.WriteLine(Config.Database.ConnectionString);
-            Console.WriteLine(Config.Ebest.ServerType);
         }
 
         private static void TestPushService()

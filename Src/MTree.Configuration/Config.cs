@@ -12,7 +12,23 @@ namespace MTree.Configuration
         private static object lockObject = new object();
 
         #region General
-        public static GeneralConfiguration General { get; } = new GeneralConfiguration();
+        private static GeneralConfiguration _general;
+        public static GeneralConfiguration General
+        {
+            get
+            {
+                if (_general == null)
+                {
+                    lock (lockObject)
+                    {
+                        if (_general == null)
+                            LoadConfiguration(ref _general, GeneralConfiguration.FileName);
+                    }
+                }
+
+                return _general;
+            }
+        }
         #endregion
 
         #region Ebest

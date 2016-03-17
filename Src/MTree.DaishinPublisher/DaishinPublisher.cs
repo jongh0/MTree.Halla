@@ -15,6 +15,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Diagnostics;
+using MTree.Configuration;
 
 namespace MTree.DaishinPublisher
 {
@@ -114,7 +115,7 @@ namespace MTree.DaishinPublisher
         {
             int startTick = LastFirmCommunicateTick = Environment.TickCount;
 
-            if (UseConclusionLock == true)
+            if (Config.General.TestMode == true)
             {
                 lock (ConclusionLock)
                     StockConclusionReceived();
@@ -610,7 +611,11 @@ namespace MTree.DaishinPublisher
         public override bool IsSubscribable()
         {
             int remainCount = sessionObj.GetLimitRemainCount(LIMIT_TYPE.LT_SUBSCRIBE);
-            return remainCount > 0;
+
+            if (Config.General.TestMode == true)
+                return remainCount > 200;
+            else
+                return remainCount > 0;
         }
     }
 }

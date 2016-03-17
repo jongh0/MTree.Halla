@@ -195,7 +195,7 @@ namespace MTree.RealTimeProvider
         private void StartCodeDistributing()
         {
             DistributeStockCode();
-            DistributeIndexCode();
+            //DistributeIndexCode();
             DistributeBiddingCode();
         }
 
@@ -288,6 +288,7 @@ namespace MTree.RealTimeProvider
         private void DistributeIndexCode()
         {
             logger.Info("Index code distribution, Start");
+            logger.Info("Index code distribution, Done");
         }
 
         public void PublishBiddingPrice(BiddingPrice biddingPrice)
