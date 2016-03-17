@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
+using System.Diagnostics;
 
 namespace MTree.DaishinPublisher
 {
@@ -332,6 +333,7 @@ namespace MTree.DaishinPublisher
         {
             try
             {
+                Stopwatch sw = new Stopwatch();
                 var now = DateTime.Now;
                 StockConclusion conclusion = new StockConclusion();
 
@@ -373,6 +375,8 @@ namespace MTree.DaishinPublisher
                 else logger.Error($"Stock conclusion typeTime error, {stockCurObj.GetHeaderValue(20)}");
 
                 StockConclusionQueue.Enqueue(conclusion);
+                sw.Stop();
+                logger.Trace(sw.Elapsed);
             }
             catch (Exception ex)
             {
@@ -500,21 +504,79 @@ namespace MTree.DaishinPublisher
             {
                 var codeMgr = new CpCodeMgrClass();
 
-                List<object> objList = new List<object>();
-                objList.AddRange((object[])codeMgr.GetStockListByMarket(CPE_MARKET_KIND.CPC_MARKET_KOSPI));
-                objList.AddRange((object[])codeMgr.GetStockListByMarket(CPE_MARKET_KIND.CPC_MARKET_KOSDAQ));
-                objList.AddRange((object[])codeMgr.GetStockListByMarket(CPE_MARKET_KIND.CPC_MARKET_FREEBOARD));
-                objList.AddRange((object[])codeMgr.GetStockListByMarket(CPE_MARKET_KIND.CPC_MARKET_KRX));
-
-                foreach (string fullCode in objList)
+                #region KOSPI & ETF & ETN
+                foreach (string fullCode in (object[])codeMgr.GetStockListByMarket(CPE_MARKET_KIND.CPC_MARKET_KOSPI))
                 {
                     var codeEntity = new CodeEntity();
                     codeEntity.Code = fullCode.Substring(1);
                     codeEntity.Name = codeMgr.CodeToName(fullCode);
-                    codeEntity.MarketType = CodeEntity.ConvertToMarketType(fullCode);
+                    if (codeMgr.GetStockSectionKind(fullCode) == CPE_KSE_SECTION_KIND.CPC_KSE_SECTION_KIND_ETF)
+                    {
+                        codeEntity.MarketType = MarketTypes.ETF;
+                    }
+                    else if (fullCode[0] == 'Q')
+                    {
+                        codeEntity.MarketType = MarketTypes.ETN;
+                    }
+                    else
+                    {
+                        codeEntity.MarketType = MarketTypes.KOSPI;
+                    }
+
                     codeList.Add(codeEntity.Code, codeEntity);
                 }
+                #endregion
 
+                #region KOSDAQ
+                foreach (string fullCode in (object[])codeMgr.GetStockListByMarket(CPE_MARKET_KIND.CPC_MARKET_KOSDAQ))
+                {
+                    var codeEntity = new CodeEntity();
+                    codeEntity.Code = fullCode.Substring(1);
+                    codeEntity.Name = codeMgr.CodeToName(fullCode);
+                    codeEntity.MarketType = MarketTypes.KOSDAQ;
+                    codeList.Add(codeEntity.Code, codeEntity);
+                }
+                #endregion
+
+                #region KONEX
+                foreach (string fullCode in (object[])codeMgr.GetStockListByMarket((CPE_MARKET_KIND)5))
+                {
+                    var codeEntity = new CodeEntity();
+                    codeEntity.Code = fullCode.Substring(1);
+                    codeEntity.Name = codeMgr.CodeToName(fullCode);
+                    codeEntity.MarketType = MarketTypes.KONEX;
+                    codeList.Add(codeEntity.Code, codeEntity);
+                }
+                #endregion
+
+                #region Freeboard
+                foreach (string fullCode in (object[])codeMgr.GetStockListByMarket(CPE_MARKET_KIND.CPC_MARKET_FREEBOARD))
+                {
+                    var codeEntity = new CodeEntity();
+                    codeEntity.Code = fullCode.Substring(1);
+                    codeEntity.Name = codeMgr.CodeToName(fullCode);
+                    codeEntity.MarketType = MarketTypes.FREEBOARD;
+                    codeList.Add(codeEntity.Code, codeEntity);
+                }
+                #endregion
+
+                #region ELW
+                var elwCodeMgr = new CpElwCodeClass();
+                int cnt = elwCodeMgr.GetCount();
+                for (int i = 0; i < cnt; i++)
+                {
+                    string fullCode = elwCodeMgr.GetData(0, (short)i).ToString();
+                    if (fullCode.Length == 0)
+                        continue;
+
+                    var codeEntity = new CodeEntity();
+                    codeEntity.Code = fullCode.Substring(1);
+                    codeEntity.Name = codeMgr.CodeToName(fullCode);
+                    codeEntity.MarketType = MarketTypes.ELW;
+                    codeList.Add(codeEntity.Code, codeEntity);
+                } 
+                #endregion
+                
                 logger.Info($"Stock code list query done, Count: {codeList.Count}");
             }
             catch (Exception ex)

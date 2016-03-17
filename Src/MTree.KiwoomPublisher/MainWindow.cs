@@ -46,9 +46,9 @@ namespace MTree.KiwoomPublisher
                 int cnt = 0;
                 foreach (KeyValuePair<string, CodeEntity> codeEntity in list)
                 {
-                    if (codeEntity.Value.Market == MarketType.KOSPI || codeEntity.Value.Market == MarketType.KOSDAQ ||
-                                    codeEntity.Value.Market == MarketType.ETF || codeEntity.Value.Market == MarketType.ETN ||
-                                    codeEntity.Value.Market == MarketType.FREEBOARD)
+                    if (codeEntity.Value.MarketType == MarketTypes.KOSPI || codeEntity.Value.MarketType == MarketTypes.KOSDAQ ||
+                                    codeEntity.Value.MarketType == MarketTypes.ETF || codeEntity.Value.MarketType == MarketTypes.ETN ||
+                                    codeEntity.Value.MarketType == MarketTypes.FREEBOARD)
                     {
                         if (codeEntity.Value.Code != "108630" && codeEntity.Value.Code != "025850")/* Daishin not support */
                         {

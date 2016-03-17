@@ -55,8 +55,8 @@ namespace MTree.RealTimeProvider
             logger.Info("RealTimeHost opened");
 
             if (Config.General.OfflineMode == false)
-                //ProcessUtility.Start(ProcessTypes.DaishinMaster);
-                ProcessUtility.Start(ProcessTypes.Kiwoom);
+                ProcessUtility.Start(ProcessTypes.DaishinMaster);
+                //ProcessUtility.Start(ProcessTypes.Kiwoom);
         }
     }
 }
