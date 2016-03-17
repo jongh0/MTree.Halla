@@ -540,6 +540,7 @@ namespace MTree.DaishinPublisher
 
         public override bool IsSubscribable()
         {
+            int limit = sessionObj.GetLimitRemainCount(LIMIT_TYPE.LT_SUBSCRIBE);
             return sessionObj.GetLimitRemainCount(LIMIT_TYPE.LT_SUBSCRIBE) > 0;
         }
 
