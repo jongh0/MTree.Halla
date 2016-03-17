@@ -112,8 +112,19 @@ namespace MTree.DaishinPublisher
 
         private void stockCurObj_Received()
         {
-            LastFirmCommunicateTick = Environment.TickCount;
-            StockConclusionReceived();
+            int startTick = LastFirmCommunicateTick = Environment.TickCount;
+
+            if (UseConclusionLock == true)
+            {
+                lock (ConclusionLock)
+                    StockConclusionReceived();
+            }
+            else
+            {
+                StockConclusionReceived();
+            }
+
+            logger.Info($"Stock conclusion receive tick : {Environment.TickCount - startTick}");
         }
 
         private void biddingObj_Received()
@@ -331,8 +342,6 @@ namespace MTree.DaishinPublisher
 
         private void StockConclusionReceived()
         {
-            int startTick = Environment.TickCount;
-
             try
             {
                 var now = DateTime.Now;
@@ -379,10 +388,6 @@ namespace MTree.DaishinPublisher
             catch (Exception ex)
             {
                 logger.Error(ex);
-            }
-            finally
-            {
-                logger.Trace($"Stock conclusion receive tick : {Environment.TickCount - startTick}");
             }
         }
 

@@ -41,6 +41,10 @@ namespace MTree.Publisher
 
         protected ConcurrentDictionary<string, IndexConclusion> PrevIndexConclusions { get; } = new ConcurrentDictionary<string, IndexConclusion>();
 
+        // Conclusion receive lock
+        protected bool UseConclusionLock { get; set; } = false;
+        protected object ConclusionLock { get; } = new object();
+
         public BrokerageFirmBase() : base()
         {
         }
