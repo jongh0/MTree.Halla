@@ -280,7 +280,7 @@ namespace MTree.RealTimeProvider
                                 }
                             }
 
-                            Thread.Sleep(100);
+                            Thread.Sleep(10);
                         }
 
                         Task.Run(() => GetStockMaster(mastering, contract));

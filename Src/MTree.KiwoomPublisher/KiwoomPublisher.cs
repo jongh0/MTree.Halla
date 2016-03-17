@@ -337,15 +337,23 @@ namespace MTree.KiwoomPublisher
 
         public override StockMaster GetStockMaster(string code)
         {
-            base.GetStockMaster(code);
+            try
+            {
+                base.GetStockMaster(code);
 
-            var stockMaster = new StockMaster();
-            stockMaster.Code = code;
+                var stockMaster = new StockMaster();
+                stockMaster.Code = code;
 
-            if (GetQuote(code, ref stockMaster) == false)
-                stockMaster.Code = string.Empty;
+                if (GetQuote(code, ref stockMaster) == false)
+                    stockMaster.Code = string.Empty;
 
-            return stockMaster;
+                return stockMaster;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                return null;
+            }
         }
 
         public override Dictionary<string, CodeEntity> GetStockCodeList()
