@@ -29,7 +29,7 @@ namespace MTree.EbestPublisher
 
             Publisher = new EbestPublisher();
 
-#if true
+#if false
             Task.Run(() =>
             {
                 Publisher.GetStockCodeList();
