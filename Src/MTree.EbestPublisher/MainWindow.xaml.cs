@@ -29,11 +29,10 @@ namespace MTree.EbestPublisher
 
             Publisher = new EbestPublisher();
 
-#if false
+#if true
             Task.Run(() =>
             {
-                Publisher.WaitLogin();
-
+                Publisher.GetStockCodeList();
                 DataStructure.StockMaster master = new DataStructure.StockMaster();
                 //for (int i = 0; i < 100; i++)
                 {

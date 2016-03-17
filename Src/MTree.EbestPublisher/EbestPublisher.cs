@@ -9,6 +9,7 @@ using System.ServiceModel;
 using MTree.RealTimeProvider;
 using MTree.Utility;
 using System.Timers;
+using System.Collections.Generic;
 
 namespace MTree.EbestPublisher
 {
@@ -24,11 +25,16 @@ namespace MTree.EbestPublisher
 
         #region Ebest Specific
         private XASessionClass sessionObj;
+        
         private XARealClass indexSubscribingObj;
         private XARealClass viSubscribingObj;
+
+        private XAQueryClass indexListObj;
         private XAQueryClass indexQuotingObj;
         private XAQueryClass stockQuotingObj;
         #endregion
+
+        Dictionary<string, string> IndustryDictionary = new Dictionary<string, string>();
 
         public EbestPublisher() : base()
         {
@@ -52,6 +58,12 @@ namespace MTree.EbestPublisher
                 #endregion
 
                 #region XAQuery
+                indexListObj = new XAQueryClass();
+                indexListObj.ResFileName = resFilePath + "\\t8424.res";
+                indexListObj.ReceiveChartRealData += queryObj_ReceiveChartRealData;
+                indexListObj.ReceiveData += queryObj_ReceiveData;
+                indexListObj.ReceiveMessage += queryObj_ReceiveMessage;
+                
                 indexQuotingObj = new XAQueryClass();
                 indexQuotingObj.ResFileName = resFilePath + "\\t1511.res";
                 indexQuotingObj.ReceiveChartRealData += queryObj_ReceiveChartRealData;
@@ -103,6 +115,8 @@ namespace MTree.EbestPublisher
                 StockMasterReceived();
             else if (szTrCode == "t1511")
                 IndexMasterReceived();
+            else if (szTrCode == "t8424")
+                IndexListReceived();
         }
 
         private void queryObj_ReceiveChartRealData(string szTrCode)
@@ -597,6 +611,57 @@ namespace MTree.EbestPublisher
                 stockMaster.Code = string.Empty;
 
             return stockMaster;
+        }
+
+        public  Dictionary<string, string> GetIndexCodeList()
+        {
+            Dictionary<string, string> list = new Dictionary<string, string>();
+
+            int ret = -1;
+            try
+            {
+                if (WaitLogin() == false)
+                {
+                    logger.Error($"Get industry list fail. Not loggedin state");
+                    return list;
+                }
+
+                WaitQuoteInterval();
+
+                indexListObj.SetFieldData("t8424InBlock", "gubun1", 0, "");
+                ret = indexListObj.Request(false);
+
+                if (ret > 0)
+                {
+                    if (WaitQuoting() == true)
+                    {
+                        logger.Error("Quoting industry list success");
+                    }
+
+                    logger.Error("Quoting industry list fail");
+                }
+                else
+                {
+                    logger.Error($"Quoting industry list fail. Quoting result: {ret}");
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+
+            return IndustryDictionary;
+        }
+
+        private void IndexListReceived()
+        {
+
+            int cnt = indexListObj.GetBlockCount("t8424OutBlock");
+            for (int i = 0; i < cnt; i++)
+            {
+                IndustryDictionary.Add(indexListObj.GetFieldData("t8424OutBlock", "upcode", i), indexListObj.GetFieldData("t8424OutBlock", "hname", i));
+            }
+            SetQuoting();
         }
 
         protected override void ServiceClient_Opened(object sender, EventArgs e)
