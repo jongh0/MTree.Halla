@@ -44,12 +44,12 @@ namespace MTree.RealTimeProvider
         #region Kiwoom
         private List<PublishContract> KiwoomContracts
         {
-            get { return PublishContracts.Values.Where(c => c.Type == ProcessTypes.Kiwoon).ToList(); }
+            get { return PublishContracts.Values.Where(c => c.Type == ProcessTypes.Kiwoom).ToList(); }
         }
 
         private PublishContract KiwoomContractForMastering
         {
-            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == ProcessTypes.Kiwoon && c.NowOperating == false); }
+            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == ProcessTypes.Kiwoom && c.NowOperating == false); }
         }
         #endregion
 
@@ -131,7 +131,7 @@ namespace MTree.RealTimeProvider
                         //if (contract.Type == ProcessType.DaishinMaster)
                         //    contract.Type = ProcessType.Daishin;
 
-                        bool IsCodeListProvider = contract.Type == ProcessTypes.Kiwoon;
+                        bool IsCodeListProvider = contract.Type == ProcessTypes.Kiwoom;
 
 
                         contract.Id = PublishContract.IdNumbering++;

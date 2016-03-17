@@ -14,7 +14,7 @@ namespace MTree.Utility
         Daishin,
         DaishinMaster,
         DaishinPopupStopper,
-        Kiwoon,
+        Kiwoom,
         Ebest,
         Krx,
         Naver,
@@ -41,9 +41,11 @@ namespace MTree.Utility
                     case ProcessTypes.Ebest:
                         Start("MTree.EbestPublisher.exe", type.ToString(), windowStyle: windowStyle, waitIdle: waitIdle);
                         break;
-                    case ProcessTypes.Kiwoon:
+
+                    case ProcessTypes.Kiwoom:
                         Start("MTree.KiwoomPublisher.exe", type.ToString(), windowStyle: windowStyle, waitIdle: waitIdle);
                         break;
+
                     case ProcessTypes.Krx:
                         Start("MTree.KrxPublisher.exe", type.ToString(), windowStyle: windowStyle, waitIdle: waitIdle);
                         break;

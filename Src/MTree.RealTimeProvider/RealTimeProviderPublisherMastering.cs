@@ -318,7 +318,7 @@ namespace MTree.RealTimeProvider
                     CopyStockMasterFromDaishin(mastering, master);
                 else if (contract.Type == ProcessTypes.Ebest)
                     CopyStockMasterFromEbest(mastering, master);
-                else if (contract.Type == ProcessTypes.Kiwoon)
+                else if (contract.Type == ProcessTypes.Kiwoom)
                     CopyStockMasterFromKiwoom(mastering, master);
                 else
                     logger.Warn("Wrong contract type for stock mastering");
@@ -349,7 +349,7 @@ namespace MTree.RealTimeProvider
                     lock (ebestMasteringLock)
                         contract.NowOperating = false;
                 }
-                else if (contract.Type == ProcessTypes.Kiwoon)
+                else if (contract.Type == ProcessTypes.Kiwoom)
                 {
                     lock (kiwoomMasteringLock)
                         contract.NowOperating = false;
