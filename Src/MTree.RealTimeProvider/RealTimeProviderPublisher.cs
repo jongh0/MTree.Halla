@@ -123,29 +123,29 @@ namespace MTree.RealTimeProvider
                 {
                     if (contract.Type == ProcessTypes.None)
                     {
-                        logger.Info($"{contract.ToString()} wrong contract type / {clientId}");
+                        PublishContracts.TryAdd(clientId, contract);
+                        logger.Warn($"{contract.ToString()} contract type is not set / {clientId}");
                     }
                     else
                     {
-                        //bool IsCodeListProvider = contract.Type == ProcessTypes.Kiwoom;
+                        bool isCodeListProvider = contract.Type == ProcessTypes.DaishinMaster;
+                        if (contract.Type == ProcessTypes.DaishinMaster) contract.Type = ProcessTypes.Daishin;
 
-                        bool IsCodeListProvider = contract.Type == ProcessTypes.DaishinMaster;
-                        if (contract.Type == ProcessTypes.DaishinMaster)
-                            contract.Type = ProcessTypes.Daishin;
-                        
                         contract.Id = PublishContract.IdNumbering++;
                         contract.Callback = OperationContext.Current.GetCallbackChannel<IRealTimePublisherCallback>();
                         PublishContracts.TryAdd(clientId, contract);
 
                         logger.Info($"{contract.ToString()} contract registered / {clientId}");
 
-                        if (IsCodeListProvider)
+                        if (isCodeListProvider == true)
                         {
                             var codeList = contract.Callback.GetStockCodeList();
+
                             StockCodeList = new Dictionary<string, CodeEntity>();
                             foreach (KeyValuePair<string, CodeEntity> codeEntity in codeList)
                             {
-                                if (codeEntity.Value.MarketType != MarketTypes.INDEX && codeEntity.Value.MarketType != MarketTypes.ELW)
+                                if (codeEntity.Value.MarketType != MarketTypes.INDEX && 
+                                    codeEntity.Value.MarketType != MarketTypes.ELW)
                                 {
                                     StockCodeList.Add(codeEntity.Key, codeEntity.Value);
                                 }
