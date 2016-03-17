@@ -54,7 +54,7 @@ namespace MTree.Utility
 
         public static IntPtr GetWindow2(IntPtr hWnd, int uCmd, int retryCount = 0, int interval = 100)
         {
-            while (retryCount-- > 0)
+            while (retryCount-- >= 0)
             {
                 IntPtr handle = GetWindow(hWnd, uCmd);
                 if (handle != IntPtr.Zero)
