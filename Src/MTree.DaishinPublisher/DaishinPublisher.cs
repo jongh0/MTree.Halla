@@ -113,25 +113,40 @@ namespace MTree.DaishinPublisher
 
         private void stockCurObj_Received()
         {
-            int startTick = LastFirmCommunicateTick = Environment.TickCount;
+            LastFirmCommunicateTick = Environment.TickCount;
 
             if (Config.General.TestMode == true)
             {
+                int startTick = Environment.TickCount;
+
                 lock (ConclusionLock)
                     StockConclusionReceived();
+
+                logger.Info($"Stock conclusion receive tick : {Environment.TickCount - startTick}");
             }
             else
             {
                 StockConclusionReceived();
             }
-
-            logger.Info($"Stock conclusion receive tick : {Environment.TickCount - startTick}");
         }
 
         private void biddingObj_Received()
         {
             LastFirmCommunicateTick = Environment.TickCount;
-            BiddingPriceReceived();
+
+            if (Config.General.TestMode == true)
+            {
+                int startTick = Environment.TickCount;
+
+                lock (BiddingLock)
+                    BiddingPriceReceived();
+
+                logger.Info($"Bidding receive tick : {Environment.TickCount - startTick}");
+            }
+            else
+            {
+                BiddingPriceReceived();
+            }
         }
 
         public bool GetQuote(string code, ref StockMaster stockMaster)

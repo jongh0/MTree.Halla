@@ -24,8 +24,9 @@ namespace MTree.Publisher
         // Last firm communication tick
         protected int LastFirmCommunicateTick { get; set; } = Environment.TickCount;
 
-        // Conclusion receive lock
+        // TestMode Lock
         protected object ConclusionLock { get; } = new object();
+        protected object BiddingLock { get; } = new object();
 
         // Quote interval
         protected int QuoteInterval { get; set; } = 0;
