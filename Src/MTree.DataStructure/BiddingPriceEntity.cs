@@ -19,6 +19,17 @@ namespace MTree.DataStructure
         [BsonElement("A")]
         public long Amount { get; set; }
 
+        public BiddingPriceEntity()
+        {
+        }
+
+        public BiddingPriceEntity(int index, float price, long amount)
+        {
+            Index = index;
+            Price = price;
+            Amount = amount;
+        }
+
         public override string ToString()
         {
             return $"{Index}/{Price}/{Amount}";

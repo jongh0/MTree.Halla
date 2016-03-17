@@ -336,9 +336,12 @@ namespace MTree.DaishinPublisher
                 StockConclusion conclusion = new StockConclusion();
 
                 // 0 - (string) 종목 코드
-                string code = stockCurObj.GetHeaderValue(0).ToString();
-                if (code.Length != 0)
-                    conclusion.Code = code.Substring(1); // Remove prefix
+                string fullCode = stockCurObj.GetHeaderValue(0).ToString();
+                if (fullCode.Length != 0)
+                {
+                    conclusion.Code = fullCode.Substring(1); // Remove prefix
+                    conclusion.MarketType = CodeEntity.ConvertToMarketType(fullCode);
+                }
                 
                 // 18 - (long) 시간 (초)
                 long time = Convert.ToInt64(stockCurObj.GetHeaderValue(18));
@@ -453,54 +456,32 @@ namespace MTree.DaishinPublisher
                 biddingPrice.Bids = new List<BiddingPriceEntity>();
                 biddingPrice.Offers = new List<BiddingPriceEntity>();
 
-                string code = Convert.ToString(biddingObj.GetHeaderValue(0));
+                string fullCode = Convert.ToString(biddingObj.GetHeaderValue(0));
                 long time = Convert.ToInt64(biddingObj.GetHeaderValue(1));
 
-                if (code.Length != 0)
-                    biddingPrice.Code = code.Substring(1); // Remove Profix
+                if (fullCode.Length != 0)
+                {
+                    biddingPrice.Code = fullCode.Substring(1); // Remove prefix
+                    biddingPrice.MarketType = CodeEntity.ConvertToMarketType(fullCode);
+                }
 
                 biddingPrice.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 100), (int)(time % 100), now.Second, now.Millisecond); // Daishin doesn't provide second 
 
-                // 1~5
-                int startIdx = 3;
-                for (int i = 0; i < 5;i++)
+                int[] indexes = { 3, 7, 11, 15, 19, 27, 31, 35, 39, 43 };
+
+                for (int i = 0; i < indexes.Length; i++)
                 {
-                    int offset = 0;
-                    BiddingPriceEntity offerEntity = new BiddingPriceEntity();  // Sell
-                    BiddingPriceEntity bidEntity = new BiddingPriceEntity();    // Buy
+                    int index = indexes[i];
 
-                    offerEntity.Index = i;
-                    bidEntity.Index = i;
+                    biddingPrice.Offers.Add(new BiddingPriceEntity(i,
+                        Convert.ToSingle(biddingObj.GetHeaderValue(index)),
+                        Convert.ToInt64(biddingObj.GetHeaderValue(index + 2))
+                        ));
 
-                    offerEntity.Price = Convert.ToSingle(biddingObj.GetHeaderValue(startIdx + i * 4 + offset++));
-                    bidEntity.Price = Convert.ToSingle(biddingObj.GetHeaderValue(startIdx + i * 4 + offset++));
-
-                    offerEntity.Amount = Convert.ToInt64(biddingObj.GetHeaderValue(startIdx + i * 4 + offset++));
-                    bidEntity.Amount = Convert.ToInt64(biddingObj.GetHeaderValue(startIdx + i * 4 + offset++));
-
-                    biddingPrice.Offers.Add(offerEntity);
-                    biddingPrice.Bids.Add(bidEntity);
-                }
-                
-                // 6~10
-                startIdx = 27;
-                for (int i = 0; i < 5; i++)
-                {
-                    int offset = 0;
-                    BiddingPriceEntity offerEntity = new BiddingPriceEntity();  // Sell
-                    BiddingPriceEntity bidEntity = new BiddingPriceEntity();    // Buy
-
-                    offerEntity.Index = i + 5;
-                    bidEntity.Index = i + 5;
-
-                    offerEntity.Price = Convert.ToSingle(biddingObj.GetHeaderValue(startIdx + i * 4 + offset++));
-                    bidEntity.Price = Convert.ToSingle(biddingObj.GetHeaderValue(startIdx + i * 4 + offset++));
-
-                    offerEntity.Amount = Convert.ToInt64(biddingObj.GetHeaderValue(startIdx + i * 4 + offset++));
-                    bidEntity.Amount = Convert.ToInt64(biddingObj.GetHeaderValue(startIdx + i * 4 + offset++));
-
-                    biddingPrice.Offers.Add(offerEntity);
-                    biddingPrice.Bids.Add(bidEntity);
+                    biddingPrice.Bids.Add(new BiddingPriceEntity(i,
+                        Convert.ToSingle(biddingObj.GetHeaderValue(index + 1)),
+                        Convert.ToInt64(biddingObj.GetHeaderValue(index + 3))
+                        ));
                 }
 
                 BiddingPriceQueue.Enqueue(biddingPrice);

@@ -276,6 +276,7 @@ namespace MTree.EbestPublisher
 
                 string temp = indexSubscribingObj.GetFieldData("OutBlock", "upcode");
                 conclusion.Code = temp;
+                conclusion.MarketType = CodeEntity.ConvertToMarketType(temp);
 
                 temp = indexSubscribingObj.GetFieldData("OutBlock", "time");
                 uint time;

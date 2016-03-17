@@ -35,7 +35,7 @@ namespace MTree.DataStructure
 
         public static MarketTypes ConvertToMarketType(string fullCode)
         {
-            switch (fullCode[0])
+            switch (fullCode[0]) // TODO : Daishin code 추가, Ebest도 처리 필요
             {
                 case 'J':
                     return MarketTypes.ELW;
