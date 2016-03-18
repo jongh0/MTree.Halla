@@ -16,6 +16,15 @@ namespace MTree.Consumer
 
         public float LastValue { get; set; }
 
+        public Index()
+        {
+        }
+
+        public Index(string code)
+        {
+            Code = code;
+        }
+
         public Chart GetChart(ChartTypes chartType, DateTime target, TimeSpan interval)
         {
             throw new NotImplementedException();
@@ -27,9 +36,7 @@ namespace MTree.Consumer
             {
                 if (Indexes.ContainsKey(code) == false)
                 {
-                    var index = new Index();
-                    index.Code = code;
-
+                    var index = new Index(code);
                     Indexes.TryAdd(code, index);
                     return index;
                 }

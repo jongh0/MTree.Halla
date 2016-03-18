@@ -1,4 +1,5 @@
-﻿using MTree.DataStructure;
+﻿using MTree.Configuration;
+using MTree.DataStructure;
 using MTree.Utility;
 using System;
 using System.Collections.Concurrent;
@@ -86,13 +87,14 @@ namespace MTree.RealTimeProvider
                 ProcessUtility.Start(ProcessTypes.HistorySaver);
 
                 // Kiwoom
-                ProcessUtility.Start(ProcessTypes.Kiwoom);
+                if (Config.General.SkipMastering == false)
+                    ProcessUtility.Start(ProcessTypes.Kiwoom);
 
                 // Daishin popup stopper
                 ProcessUtility.Start(ProcessTypes.DaishinPopupStopper);
 
                 // Daishin
-                int daishinProcessCount = StockCodeList.Count * 2 / 200;
+                int daishinProcessCount = StockCodeList.Count * 2 / 400;
                 for (int i = 0; i < daishinProcessCount; i++)
                     ProcessUtility.Start(ProcessTypes.Daishin);
 
@@ -121,6 +123,9 @@ namespace MTree.RealTimeProvider
                 }
                 else
                 {
+                    contract.Id = PublishContract.IdNumbering++;
+                    contract.Callback = OperationContext.Current.GetCallbackChannel<IRealTimePublisherCallback>();
+
                     if (contract.Type == ProcessTypes.None)
                     {
                         PublishContracts.TryAdd(clientId, contract);
@@ -128,16 +133,13 @@ namespace MTree.RealTimeProvider
                     }
                     else
                     {
-                        bool isCodeListProvider = contract.Type == ProcessTypes.DaishinMaster;
+                        bool isMasterProcess = (contract.Type == ProcessTypes.DaishinMaster);
                         if (contract.Type == ProcessTypes.DaishinMaster) contract.Type = ProcessTypes.Daishin;
 
-                        contract.Id = PublishContract.IdNumbering++;
-                        contract.Callback = OperationContext.Current.GetCallbackChannel<IRealTimePublisherCallback>();
                         PublishContracts.TryAdd(clientId, contract);
-
                         logger.Info($"{contract.ToString()} contract registered / {clientId}");
 
-                        if (isCodeListProvider == true)
+                        if (isMasterProcess == true)
                         {
                             var codeList = contract.Callback.GetStockCodeList();
 
@@ -154,7 +156,21 @@ namespace MTree.RealTimeProvider
                             if (StockCodeList != null)
                             {
                                 logger.Info($"Stock code list count: {StockCodeList.Count}");
-                                Task.Run(() => StartStockMastering());
+
+                                LaunchClientProcess();
+
+                                if (Config.General.SkipMastering == true)
+                                {
+                                    Task.Run(() =>
+                                    {
+                                        Thread.Sleep(1000 * 60);
+                                        StartCodeDistributing();
+                                    });
+                                }
+                                else
+                                {
+                                    Task.Run(() => StartStockMastering());
+                                }
                             }
                             else
                             {

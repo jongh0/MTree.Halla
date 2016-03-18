@@ -31,14 +31,14 @@ namespace MTree.RealTimeProvider
 
             try
             {
-                LaunchClientProcess();
+                var now = DateTime.Now;
 
                 foreach (var codeEntity in StockCodeList.Values)
                 {
                     var mastering = new StockMastering();
                     mastering.Stock.Code = codeEntity.Code;
                     mastering.Stock.Name = codeEntity.Name;
-                    mastering.Stock.Time = DateTime.Now;
+                    mastering.Stock.Time = now;
 
                     StockMasteringList.Add(mastering);
                 }
@@ -299,6 +299,15 @@ namespace MTree.RealTimeProvider
             {
                 sw.Stop();
                 logger.Info($"Kiwoom stock mastering done, Elapsed time: {sw.Elapsed.ToString()}");
+
+                var contracts = KiwoomContracts;
+                if (contracts != null)
+                {
+                    foreach (var contract in contracts)
+                    {
+                        contract.Callback.CloseClient();
+                    }
+                }
             }
         }
 

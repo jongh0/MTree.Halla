@@ -55,6 +55,9 @@ namespace MTree.DataStructure
         [BsonElement("N")]
         public string Name { get; set; }
 
+        [BsonElement("MT")]
+        public MarketTypes MarketType { get; set; } = MarketTypes.Unknown;
+
         /// <summary>
         /// 결산월(Daishin)
         /// </summary>
@@ -272,6 +275,7 @@ namespace MTree.DataStructure
             {
                 sb.Append(base.ToString());
                 sb.AppendLine($"{nameof(Name)}: {Name}");
+                sb.AppendLine($"{nameof(MarketType)}: {MarketType}");
                 sb.AppendLine($"{nameof(SettlementMonth)}: {SettlementMonth}");
                 sb.AppendLine($"{nameof(FaceValue)}: {FaceValue}");
                 sb.AppendLine($"{nameof(ListedDate)}: {ListedDate}");

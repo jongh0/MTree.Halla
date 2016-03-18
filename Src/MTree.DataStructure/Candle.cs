@@ -9,8 +9,8 @@ namespace MTree.DataStructure
 {
     public enum CandleTypes
     {
-        A,
-        B,
+        Tick,
+        Day,
     }
 
     [Serializable]

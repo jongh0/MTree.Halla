@@ -33,25 +33,12 @@ namespace MTree.DataStructure
             }
         }
 
-        public static MarketTypes ConvertToMarketType(string fullCode)
+        public static string RemovePrefix(string fullCode)
         {
-            switch (fullCode[0]) // TODO : Daishin code 추가, Ebest도 처리 필요
-            {
-                case 'J':
-                    return MarketTypes.ELW;
-                case 'Q':
-                    return MarketTypes.ETN;
-                default:
-                    return MarketTypes.KOSPI;
-            }
-        }
-
-        public static string RemovePrefix(string code)
-        {
-            if (code.Length > 6)
-                return code.Substring(1);
+            if (fullCode?.Length > 6)
+                return fullCode.Substring(1);
             else
-                return code;
+                return fullCode;
         }
     }
 }

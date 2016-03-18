@@ -18,6 +18,15 @@ namespace MTree.Consumer
 
         public MarketTypes MarketType { get; set; }
 
+        public Stock()
+        {
+        }
+
+        public Stock(string code)
+        {
+            Code = code;
+        }
+
         public Chart GetChart(ChartTypes chartType, DateTime target, TimeSpan interval)
         {
             throw new NotImplementedException();
@@ -34,9 +43,7 @@ namespace MTree.Consumer
             {
                 if (Stocks.ContainsKey(code) == false)
                 {
-                    var stock = new Stock();
-                    stock.Code = code;
-
+                    var stock = new Stock(code);
                     Stocks.TryAdd(code, stock);
                     return stock;
                 }

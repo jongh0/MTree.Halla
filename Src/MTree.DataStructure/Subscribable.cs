@@ -44,9 +44,6 @@ namespace MTree.DataStructure
         [BsonElement("C")]
         public string Code { get; set; }
 
-        [BsonElement("MT")]
-        public MarketTypes MarketType { get; set; } = MarketTypes.Unknown;
-
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         [BsonElement("T")]
         public DateTime Time { get; set; }
@@ -56,7 +53,6 @@ namespace MTree.DataStructure
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"{nameof(Id)}: {Id}");
             sb.AppendLine($"{nameof(Code)}: {Code}");
-            sb.AppendLine($"{nameof(MarketType)}: {MarketType}");
             sb.AppendLine($"{nameof(Time)}: {Time}");
 
             return sb.ToString();

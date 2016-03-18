@@ -114,39 +114,13 @@ namespace MTree.DaishinPublisher
         private void stockCurObj_Received()
         {
             LastFirmCommunicateTick = Environment.TickCount;
-
-            if (Config.General.TestMode == true)
-            {
-                int startTick = Environment.TickCount;
-
-                lock (ConclusionLock)
-                    StockConclusionReceived();
-
-                logger.Info($"Stock conclusion receive tick : {Environment.TickCount - startTick}");
-            }
-            else
-            {
-                StockConclusionReceived();
-            }
+            StockConclusionReceived();
         }
 
         private void biddingObj_Received()
         {
             LastFirmCommunicateTick = Environment.TickCount;
-
-            if (Config.General.TestMode == true)
-            {
-                int startTick = Environment.TickCount;
-
-                lock (BiddingLock)
-                    BiddingPriceReceived();
-
-                logger.Info($"Bidding receive tick : {Environment.TickCount - startTick}");
-            }
-            else
-            {
-                BiddingPriceReceived();
-            }
+            BiddingPriceReceived();
         }
 
         public bool GetQuote(string code, ref StockMaster stockMaster)
@@ -365,12 +339,8 @@ namespace MTree.DaishinPublisher
 
                 // 0 - (string) 종목 코드
                 string fullCode = stockCurObj.GetHeaderValue(0).ToString();
-                if (fullCode.Length != 0)
-                {
-                    conclusion.Code = fullCode.Substring(1); // Remove prefix
-                    conclusion.MarketType = CodeEntity.ConvertToMarketType(fullCode);
-                }
-                
+                conclusion.Code = CodeEntity.RemovePrefix(fullCode);
+
                 // 18 - (long) 시간 (초)
                 long time = Convert.ToInt64(stockCurObj.GetHeaderValue(18));
                 conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100, now.Millisecond); // Daishin doesn't provide milisecond 
@@ -387,8 +357,6 @@ namespace MTree.DaishinPublisher
 
                 // 17 - (long) 순간체결수량
                 conclusion.Amount = Convert.ToInt64(stockCurObj.GetHeaderValue(17));
-                if (conclusion.Amount <= 0)
-                    logger.Error($"Stock conclusion amount error, {conclusion.Amount}/{stockCurObj.GetHeaderValue(17)}");
 
                 // 20 - (char) 장 구분 플래그
                 char marketTime = Convert.ToChar(stockCurObj.GetHeaderValue(20));
@@ -484,14 +452,9 @@ namespace MTree.DaishinPublisher
                 biddingPrice.Offers = new List<BiddingPriceEntity>();
 
                 string fullCode = Convert.ToString(biddingObj.GetHeaderValue(0));
+                biddingPrice.Code = CodeEntity.RemovePrefix(fullCode);
+
                 long time = Convert.ToInt64(biddingObj.GetHeaderValue(1));
-
-                if (fullCode.Length != 0)
-                {
-                    biddingPrice.Code = fullCode.Substring(1); // Remove prefix
-                    biddingPrice.MarketType = CodeEntity.ConvertToMarketType(fullCode);
-                }
-
                 biddingPrice.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 100), (int)(time % 100), now.Second, now.Millisecond); // Daishin doesn't provide second 
 
                 int[] indexes = { 3, 7, 11, 15, 19, 27, 31, 35, 39, 43 };
@@ -533,18 +496,13 @@ namespace MTree.DaishinPublisher
                     var codeEntity = new CodeEntity();
                     codeEntity.Code = fullCode.Substring(1);
                     codeEntity.Name = codeMgr.CodeToName(fullCode);
+
                     if (codeMgr.GetStockSectionKind(fullCode) == CPE_KSE_SECTION_KIND.CPC_KSE_SECTION_KIND_ETF)
-                    {
                         codeEntity.MarketType = MarketTypes.ETF;
-                    }
                     else if (fullCode[0] == 'Q')
-                    {
                         codeEntity.MarketType = MarketTypes.ETN;
-                    }
                     else
-                    {
                         codeEntity.MarketType = MarketTypes.KOSPI;
-                    }
 
                     codeList.Add(codeEntity.Code, codeEntity);
                 }
@@ -557,6 +515,7 @@ namespace MTree.DaishinPublisher
                     codeEntity.Code = fullCode.Substring(1);
                     codeEntity.Name = codeMgr.CodeToName(fullCode);
                     codeEntity.MarketType = MarketTypes.KOSDAQ;
+
                     codeList.Add(codeEntity.Code, codeEntity);
                 }
                 #endregion
@@ -568,6 +527,7 @@ namespace MTree.DaishinPublisher
                     codeEntity.Code = fullCode.Substring(1);
                     codeEntity.Name = codeMgr.CodeToName(fullCode);
                     codeEntity.MarketType = MarketTypes.KONEX;
+
                     codeList.Add(codeEntity.Code, codeEntity);
                 }
                 #endregion
@@ -579,6 +539,7 @@ namespace MTree.DaishinPublisher
                     codeEntity.Code = fullCode.Substring(1);
                     codeEntity.Name = codeMgr.CodeToName(fullCode);
                     codeEntity.MarketType = MarketTypes.FREEBOARD;
+
                     codeList.Add(codeEntity.Code, codeEntity);
                 }
                 #endregion
@@ -596,6 +557,7 @@ namespace MTree.DaishinPublisher
                     codeEntity.Code = fullCode.Substring(1);
                     codeEntity.Name = codeMgr.CodeToName(fullCode);
                     codeEntity.MarketType = MarketTypes.ELW;
+
                     codeList.Add(codeEntity.Code, codeEntity);
                 } 
                 #endregion
@@ -626,11 +588,7 @@ namespace MTree.DaishinPublisher
         public override bool IsSubscribable()
         {
             int remainCount = sessionObj.GetLimitRemainCount(LIMIT_TYPE.LT_SUBSCRIBE);
-
-            if (Config.General.TestMode == true)
-                return remainCount > 200;
-            else
-                return remainCount > 0;
+            return remainCount > 0;
         }
     }
 }

@@ -15,8 +15,10 @@ namespace MTree.Configuration
         [JsonIgnore]
         public string DateTimeFormat { get; } = "yyyy-MM-dd HH:mm:ss.fff";
 
-        public bool OfflineMode { get; } = false;
+        public bool OfflineMode { get; set; } = false;
 
-        public bool TestMode { get; } = false;
+        public bool TestMode { get; set; } = false;
+
+        public bool SkipMastering { get; set; } = false;
     }
 }

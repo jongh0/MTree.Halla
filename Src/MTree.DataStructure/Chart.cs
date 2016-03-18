@@ -34,8 +34,11 @@ namespace MTree.DataStructure
         [BsonElement("IA")]
         public bool IsAdjusted { get; set; }
 
-        [BsonElement("Cs")]
-        public Dictionary<DateTime, Candle> Candles { get; set; }
+        [BsonIgnore]
+        public Dictionary<DateTime, Candle> TickCandles { get; set; }
+
+        [BsonElement("DC")]
+        public Dictionary<DateTime, Candle> DayCandles { get; set; }
 
         public Chart ConvertType(ChartTypes chartType, TimeSpan interval)
         {
