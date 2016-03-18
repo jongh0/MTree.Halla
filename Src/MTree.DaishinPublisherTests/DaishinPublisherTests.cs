@@ -28,10 +28,14 @@ namespace MTree.DaishinPublisher.Tests
         [TestMethod()]
         public void SubscribeStockTest()
         {
-            string code = "000020";
             DaishinPublisher publisher = new DaishinPublisher();
-            bool result = publisher.SubscribeStock(code);
-            Assert.IsTrue(result);
+            Dictionary<string, CodeEntity> list = publisher.GetStockCodeList();
+            for (int i = 0; i < 400; i++)
+            {
+                bool result = publisher.SubscribeStock("A" + list.ToArray()[i].Key);
+                Assert.IsTrue(result);
+            }
+            
             while (true) ;
         }
 
