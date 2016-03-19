@@ -11,260 +11,212 @@ namespace MTree.DataStructure
     public enum ValueAlteredTypes
     {
         None,
-        /// <summary>
-        /// 권배락
-        /// </summary>
-        ExRightDividend,
-        /// <summary>
-        /// 권리락
-        /// </summary>
-        ExRight,
-        /// <summary>
-        /// 배당락
-        /// </summary>
-        ExDividend,
-        /// <summary>
-        /// 액면분할
-        /// </summary>
-        SplitFaceValue,
-        /// <summary>
-        /// 액면병합
-        /// </summary>
-        MergeFaceValue,
-        /// <summary>
-        /// 주식병합
-        /// </summary>
-        Consolidation,
-        /// <summary>
-        /// 기업분할
-        /// </summary>
-        Divestiture,
-        /// <summary>
-        /// 감자
-        /// </summary>
-        CapitalReduction,
+        ExRightDividend,    // 권배락
+        ExRight,            // 권리락
+        ExDividend,         // 배당락
+        SplitFaceValue,     // 액면분할
+        MergeFaceValue,     // 액면병합
+        Consolidation,      // 주식병합
+        Divestiture,        // 기업분할
+        CapitalReduction,   // 감자
     } 
+
+    // 관리 구분
+    public enum AdministrativeTypes
+    {
+        Normal,
+        Administrative,
+    }
+
+    // 투자경고 구분
+    public enum InvestmentWarningTypes
+    {
+        Normal,
+        Caution,
+        Warning,
+        ForeRisk,
+        Risk,
+    }
+
+    // 거래정지 구분
+    public enum TradingHaltTypes
+    {
+        Normal,
+        TradingHalt,
+    }
+
+    // 불성실공시 구분
+    public enum UnfairAnnouncementTypes
+    {
+        Normal,
+        UnfairAnnouncement,
+        UnfairAnnouncement2, // 프리보드 불성실공시 2회
+    }
     #endregion
 
     [Serializable]
     public class StockMaster : Subscribable
     {
-        /// <summary>
-        /// 종목명(Daishin)
-        /// </summary>
+        // 종목명(Daishin)
         [BsonElement("N")]
         public string Name { get; set; }
 
         [BsonElement("MT")]
         public MarketTypes MarketType { get; set; } = MarketTypes.Unknown;
 
-        /// <summary>
-        /// 결산월(Daishin)
-        /// </summary>
+        // 결산월(Daishin)
         [BsonElement("SM")]
         public int SettlementMonth { get; set; }
 
-        /// <summary>
-        /// 액면가(Daishin)
-        /// </summary>
+        // 액면가(Daishin)
         [BsonElement("FV")]
         public int FaceValue { get; set; }
 
-        /// <summary>
-        /// 상장일(Ebest)
-        /// </summary>
+        // 상장일(Ebest)
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         [BsonElement("LD")]
         public DateTime ListedDate { get; set; }
 
-        /// <summary>
-        /// 유동주식수(Ebest)
-        /// </summary>
+        // 유동주식수(Ebest)
         [BsonElement("CV")]
         public long CirculatingVolume { get; set; }
 
-        /// <summary>
-        /// 상장주식수(Daishin)
-        /// </summary>
+        // 상장주식수(Daishin)
         [BsonElement("SV")]
         public long ShareVolume { get; set; }
 
-        /// <summary>
-        /// 자본금(Daishin)
-        /// </summary>
+        // 자본금(Daishin)
         [BsonElement("LC")]
         public long ListedCapital { get; set; }
 
-        /// <summary>
-        /// 기준가(Daishin)
-        /// </summary>
+        // 기준가(Daishin)
         [BsonElement("BP")]
         public float BasisPrice { get; set; }
 
-        /// <summary>
-        /// 상한가(Daishin)
-        /// </summary>
+        // 상한가(Daishin)
         [BsonElement("UL")]
         public int UpperLimit { get; set; }
 
-        /// <summary>
-        /// 하한가(Daishin)
-        /// </summary>
+        // 하한가(Daishin)
         [BsonElement("LL")]
         public int LowerLimit { get; set; }
 
-        /// <summary>
-        /// 전일종가(Daishin)
-        /// </summary>
+        // 전일종가(Daishin)
         [BsonElement("PCP")]
         public float PreviousClosedPrice { get; set; }
 
-        /// <summary>
-        /// 전일거래량(Daishin)
-        /// </summary>
+        // 전일거래량(Daishin)
         [BsonElement("PV")]
         public long PreviousVolume { get; set; }
 
-        /// <summary>
-        /// 호가단위(Daishin)
-        /// </summary>
+        // 호가단위(Daishin)
         [BsonElement("QU")]
         public int QuantityUnit { get; set; }
 
-        /// <summary>
-        /// 외국인한도(Daishin)
-        /// </summary>
+        // 외국인한도(Daishin)
         [BsonElement("FL")]
         public long ForeigneLimit { get; set; }
 
-        /// <summary>
-        /// 외국인잔량(Daishin)
-        /// </summary>
+        // 외국인잔량(Daishin)
         [BsonElement("FAR")]
         public long ForeigneAvailableRemain { get; set; }
 
-        /// <summary>
-        /// 외국인한도비율
-        /// </summary>
+        // 외국인한도비율
         [BsonIgnore]
         public float ForeigneLimitRate { get { return (float)ForeigneLimit / ShareVolume * 100; } }
 
-        /// <summary>
-        /// 외국인보유
-        /// </summary>
+        // 외국인보유
         [BsonIgnore]
         public long ForeigneHold { get { return ForeigneLimit - ForeigneAvailableRemain; } }
 
-        /// <summary>
-        /// 외국인소진율
-        /// </summary>
+        // 외국인소진율
         [BsonIgnore]
         public float ForeigneExhaustingRate { get { return (float)ForeigneHold / ForeigneLimit * 100; } }
 
-        /// <summary>
-        /// 외국인잔량률
-        /// </summary>
+        // 외국인잔량률
         [BsonIgnore]
         public float ForeigneAvailableRemainRate { get { return (float)ForeigneAvailableRemain / ShareVolume * 100; } }
 
-        /// <summary>
-        /// 매매정지(KRX)
-        /// </summary>
+#if true
+        // 관리 구분
+        [BsonElement("A")]
+        public AdministrativeTypes Administrative { get; set; }
+
+        // 투자경고 구분
+        [BsonElement("IW")]
+        public InvestmentWarningTypes InvestmentWarning { get; set; }
+
+        // 거래정지 구분
+        [BsonElement("TH")]
+        public TradingHaltTypes TradingHalt { get; set; }
+
+        // 불성실공시 구분
+        [BsonElement("UA")]
+        public UnfairAnnouncementTypes UnfairAnnouncement { get; set; }
+#else
+        // 매매정지(KRX)
         [BsonElement("TH")]
         public Warning TradingHalt { get; set; }
 
-        /// <summary>
-        /// 관리(KRX)
-        /// </summary>
+        // 관리(KRX)
         [BsonElement("AI")]
         public Warning AdministrativeIssue { get; set; }
 
-        /// <summary>
-        /// 주의(KRX)
-        /// </summary>
+        // 주의(KRX)
         [BsonElement("IC")]
         public Warning InvestCaution { get; set; }
 
-        /// <summary>
-        /// 경고(KRX)
-        /// </summary>
+        // 경고(KRX)
         [BsonElement("IW")]
         public Warning InvestWarning { get; set; }
 
-        /// <summary>
-        /// 위험(KRX)
-        /// </summary>
+        // 위험(KRX)
         [BsonElement("IR")]
         public Warning InvestmentRisk { get; set; }
 
-        /// <summary>
-        /// 불성실공시(KRX)
-        /// </summary>
+        // 불성실공시(KRX)
         [BsonElement("UA")]
         public Warning UnfairAnnouncement { get; set; }
 
-        /// <summary>
-        /// 주의환기(KRX)
-        /// </summary>
+        // 주의환기(KRX)
         [BsonElement("CA")]
         public Warning CallingAttention { get; set; }
 
-        /// <summary>
-        /// 정리매매(KRX)
-        /// </summary>
+        // 정리매매(KRX)
         [BsonElement("CT")]
         public Warning CleaningTrade { get; set; }
 
-        /// <summary>
-        /// 단기과열(KRX)
-        /// </summary>
+        // 단기과열(KRX)
         [BsonElement("OH")]
         public Warning Overheated { get; set; }
+#endif
 
-        /// <summary>
-        /// 자산(Kiwoom & Daishin)
-        /// </summary>        
+        // 자산(Kiwoom & Daishin)
         public double Asset { get; set; }
 
-        /// <summary>
-        /// Bookvalue Per Share (Kiwoom)
-        /// </summary>
+        // Bookvalue Per Share (Kiwoom)
         public double BPS { get; set; }
 
-        /// <summary>
-        /// Price Earning Ratio (Kiwoom)
-        /// </summary>
+        // Price Earning Ratio (Kiwoom)
         public double PBR { get; set; }
 
-        /// <summary>
-        /// 당기순이익(Kiwoom & Daishin)
-        /// </summary>
+        // 당기순이익(Kiwoom & Daishin)
         [BsonElement("NI")]
         public double NetIncome { get; set; }
 
-        /// <summary>
-        /// Earning Per Share (Kiwoom)
-        /// </summary>
+        // Earning Per Share (Kiwoom)
         public double EPS { get; set; }
 
-        /// <summary>
-        /// Price Earning Ratio (Kiwoom)
-        /// </summary>
+        // Price Earning Ratio (Kiwoom)
         public double PER { get; set; }
 
-        /// <summary>
-        /// Return On Equity (Kiwoom)
-        /// </summary>
+        // Return On Equity (Kiwoom)
         public double ROE { get; set; }
 
-        /// <summary>
-        /// Enterprise Value (Kiwoom)
-        /// </summary>
+        // Enterprise Value (Kiwoom)
         public double EV { get; set; }
 
-        /// <summary>
-        /// 락(Ebest)
-        /// </summary>
+        // 락(Ebest)
         [BsonElement("VAT")]
         public ValueAlteredTypes ValueAlteredType { get; set; }
 
@@ -295,7 +247,13 @@ namespace MTree.DataStructure
                 sb.AppendLine($"{nameof(ForeigneExhaustingRate)}: {ForeigneExhaustingRate}");
                 sb.AppendLine($"{nameof(ForeigneAvailableRemainRate)}: {ForeigneAvailableRemainRate}");
                 sb.AppendLine($"{nameof(TradingHalt)}: {TradingHalt}");
-                sb.AppendLine($"{nameof(AdministrativeIssue)}: {AdministrativeIssue}");
+                sb.AppendLine($"{nameof(Administrative)}: {Administrative}");
+#if true
+                sb.AppendLine($"{nameof(Administrative)}: {Administrative}");
+                sb.AppendLine($"{nameof(InvestmentWarning)}: {InvestmentWarning}");
+                sb.AppendLine($"{nameof(TradingHalt)}: {TradingHalt}");
+                sb.AppendLine($"{nameof(UnfairAnnouncement)}: {UnfairAnnouncement}");
+#else
                 sb.AppendLine($"{nameof(InvestCaution)}: {InvestCaution}");
                 sb.AppendLine($"{nameof(InvestWarning)}: {InvestWarning}");
                 sb.AppendLine($"{nameof(InvestmentRisk)}: {InvestmentRisk}");
@@ -303,6 +261,7 @@ namespace MTree.DataStructure
                 sb.AppendLine($"{nameof(CallingAttention)}: {CallingAttention}");
                 sb.AppendLine($"{nameof(CleaningTrade)}: {CleaningTrade}");
                 sb.AppendLine($"{nameof(Overheated)}: {Overheated}");
+#endif
                 sb.AppendLine($"{nameof(Asset)}: {Asset}");
                 sb.AppendLine($"{nameof(BPS)}: {BPS}");
                 sb.AppendLine($"{nameof(PBR)}: {PBR}");
