@@ -98,20 +98,11 @@ namespace MTree.RealTimeProvider
         {
             switch (type)
             {
-                case SubscribeTypes.StockMaster:
-                    return StockMasterContracts;
-
-                case SubscribeTypes.BiddingPrice:
-                    return BiddingPriceContracts;
-
-                case SubscribeTypes.StockConclusion:
-                    return StockConclusionContracts;
-
-                case SubscribeTypes.IndexConclusion:
-                    return IndexConclusionContracts;
-
-                default:
-                    return null;
+                case SubscribeTypes.StockMaster:        return StockMasterContracts;
+                case SubscribeTypes.BiddingPrice:       return BiddingPriceContracts;
+                case SubscribeTypes.StockConclusion:    return StockConclusionContracts;
+                case SubscribeTypes.IndexConclusion:    return IndexConclusionContracts;
+                default:                                return null;
             }
         }
 

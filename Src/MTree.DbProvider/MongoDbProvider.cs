@@ -98,26 +98,13 @@ namespace MTree.DbProvider
         {
             switch (type)
             {
-                case DbTypes.Chart:
-                    return ChartDb;
-
-                case DbTypes.BiddingPrice:
-                    return BiddingPriceDb;
-
-                case DbTypes.StockMaster:
-                    return StockMasterDb;
-
-                case DbTypes.StockConclusion:
-                    return StockConclusionDb;
-
-                case DbTypes.IndexConclusion:
-                    return IndexConclusionDb;
-
-                case DbTypes.CircuitBreak:
-                    return CircuitBreakDb;
-
-                default:
-                    return TestDb;
+                case DbTypes.Chart:             return ChartDb;
+                case DbTypes.BiddingPrice:      return BiddingPriceDb;
+                case DbTypes.StockMaster:       return StockMasterDb;
+                case DbTypes.StockConclusion:   return StockConclusionDb;
+                case DbTypes.IndexConclusion:   return IndexConclusionDb;
+                case DbTypes.CircuitBreak:      return CircuitBreakDb;
+                default:                        return TestDb;
             }
         }
     }

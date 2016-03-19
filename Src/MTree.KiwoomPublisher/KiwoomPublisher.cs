@@ -170,59 +170,39 @@ namespace MTree.KiwoomPublisher
 
         private string GetErrorMessage(int errorCode)
         {
-            string errorMessage = "";
-            
             switch ((KOAErrorCode)errorCode)
             {
-
                 case KOAErrorCode.OP_ERR_NONE:
-                    errorMessage = "정상처리";
-                    break;
+                    return "정상처리";
                 case KOAErrorCode.OP_ERR_LOGIN:
-                    errorMessage = "사용자정보교환에 실패하였습니다. 잠시 후 다시 시작하여 주십시오.";
-                    break;
+                    return "사용자정보교환에 실패하였습니다. 잠시 후 다시 시작하여 주십시오.";
                 case KOAErrorCode.OP_ERR_CONNECT:
-                    errorMessage = "서버 접속 실패";
-                    break;
+                    return "서버 접속 실패";
                 case KOAErrorCode.OP_ERR_VERSION:
-                    errorMessage = "버전처리가 실패하였습니다";
-                    break;
+                    return "버전처리가 실패하였습니다";
                 case KOAErrorCode.OP_ERR_SISE_OVERFLOW:
-                    errorMessage = "시세조회 과부하";
-                    break;
+                    return "시세조회 과부하";
                 case KOAErrorCode.OP_ERR_RQ_STRUCT_FAIL:
-                    errorMessage = "REQUEST_INPUT_st Failed";
-                    break;
+                    return "REQUEST_INPUT_st Failed";
                 case KOAErrorCode.OP_ERR_RQ_STRING_FAIL:
-                    errorMessage = "요청 전문 작성 실패";
-                    break;
+                    return "요청 전문 작성 실패";
                 case KOAErrorCode.OP_ERR_ORD_WRONG_INPUT:
-                    errorMessage = "주문 입력값 오류";
-                    break;
+                    return "주문 입력값 오류";
                 case KOAErrorCode.OP_ERR_ORD_WRONG_ACCNO:
-                    errorMessage = "계좌비밀번호를 입력하십시오.";
-                    break;
+                    return "계좌비밀번호를 입력하십시오.";
                 case KOAErrorCode.OP_ERR_OTHER_ACC_USE:
-                    errorMessage = "타인계좌는 사용할 수 없습니다.";
-                    break;
+                    return "타인계좌는 사용할 수 없습니다.";
                 case KOAErrorCode.OP_ERR_MIS_2BILL_EXC:
-                    errorMessage = "주문가격이 20억원을 초과합니다.";
-                    break;
+                    return "주문가격이 20억원을 초과합니다.";
                 case KOAErrorCode.OP_ERR_MIS_5BILL_EXC:
-                    errorMessage = "주문가격은 50억원을 초과할 수 없습니다.";
-                    break;
+                    return "주문가격은 50억원을 초과할 수 없습니다.";
                 case KOAErrorCode.OP_ERR_MIS_1PER_EXC:
-                    errorMessage = "주문수량이 총발행주수의 1%를 초과합니다.";
-                    break;
+                    return "주문수량이 총발행주수의 1%를 초과합니다.";
                 case KOAErrorCode.OP_ERR_MID_3PER_EXC:
-                    errorMessage = "주문수량은 총발행주수의 3%를 초과할 수 없습니다";
-                    break;
+                    return "주문수량은 총발행주수의 3%를 초과할 수 없습니다";
                 default:
-                    errorMessage = "알려지지 않은 오류입니다.";
-                    break;
+                    return "알려지지 않은 오류입니다.";
             }
-
-            return errorMessage;
         }
 
         public bool GetQuote(string code, ref StockMaster stockMaster)
