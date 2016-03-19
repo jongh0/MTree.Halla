@@ -208,7 +208,12 @@ namespace MTree.DaishinSessionManager
 
         private static void LaunchStarter()
         {
-            ProcessUtility.Start("C:\\Daishin\\STARTER\\ncStarter.exe", "/prj:cp", waitIdle: true);
+            try // 원격에서 Exception 발생하는거 방지
+            {
+                ProcessUtility.Start("C:\\Daishin\\STARTER\\ncStarter.exe", "/prj:cp")?.WaitForInputIdle();
+            }
+            catch
+            { }
         }
     }
 }

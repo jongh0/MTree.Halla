@@ -45,7 +45,6 @@ namespace MTree.DaishinPublisher
 
                 sessionObj = new CpCybosClass();
                 sessionObj.OnDisconnect += sessionObj_OnDisconnect;
-                
 
                 stockMstObj = new StockMstClass();
                 stockMstObj.Received += stockMstObj_Received;

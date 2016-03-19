@@ -54,6 +54,12 @@ namespace MTree.RealTimeProvider
         {
             logger.Info("RealTimeHost opened");
 
+            if (ProcessUtility.Exists(ProcessUtility.CybosStarterName) == false)
+            {
+                logger.Info("Daishin starter not exists");
+                ProcessUtility.Start(ProcessTypes.DaishinSessionManager)?.WaitForExit();
+            }
+
             if (Config.General.OfflineMode == false)
                 ProcessUtility.Start(ProcessTypes.DaishinMaster);
         }
