@@ -46,6 +46,7 @@ namespace MTree.DaishinPublisher
                 sessionObj = new CpCybosClass();
                 sessionObj.OnDisconnect += sessionObj_OnDisconnect;
                 
+
                 stockMstObj = new StockMstClass();
                 stockMstObj.Received += stockMstObj_Received;
 
@@ -60,6 +61,14 @@ namespace MTree.DaishinPublisher
 
                 stockChartObj = new StockChartClass();
                 stockChartObj.Received += stockChartObj_Received;
+
+                if (sessionObj.IsConnect != 1)
+                {
+                    logger.Error("Session not connected");
+                    return;
+                }
+
+                logger.Info($"Server type: {sessionObj.ServerType}");
 
                 StartBiddingPriceQueueTask();
                 StartStockConclusionQueueTask();
