@@ -86,9 +86,9 @@ namespace MTree.EbestPublisher
                 LoginInstance.ServerAddress = Config.Ebest.ServerAddress;
                 LoginInstance.ServerPort = Config.Ebest.ServerPort;
 
-                if (string.IsNullOrEmpty(Config.Ebest.UserId) == false &&
-                    string.IsNullOrEmpty(Config.Ebest.UserPw) == false &&
-                    string.IsNullOrEmpty(Config.Ebest.CertPw) == false)
+                if (string.IsNullOrEmpty(LoginInstance.UserId) == false &&
+                    string.IsNullOrEmpty(LoginInstance.UserPw) == false &&
+                    string.IsNullOrEmpty(LoginInstance.CertPw) == false)
                 {
                     Login();
                 }
