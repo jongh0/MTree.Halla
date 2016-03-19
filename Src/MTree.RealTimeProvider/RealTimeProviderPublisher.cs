@@ -86,9 +86,11 @@ namespace MTree.RealTimeProvider
                 // HistorySaver
                 ProcessUtility.Start(ProcessTypes.HistorySaver);
 
+#if true
                 // Kiwoom
                 if (Config.General.SkipMastering == false)
                     ProcessUtility.Start(ProcessTypes.Kiwoom);
+#endif
 
                 // Daishin popup stopper
                 ProcessUtility.Start(ProcessTypes.DaishinPopupStopper);
@@ -98,10 +100,12 @@ namespace MTree.RealTimeProvider
                 for (int i = 0; i < daishinProcessCount; i++)
                     ProcessUtility.Start(ProcessTypes.Daishin);
 
+#if true
                 // Ebest
                 int ebestProcessCount = 3;
                 for (int i = 0; i < ebestProcessCount; i++)
                     ProcessUtility.Start(ProcessTypes.Ebest);
+#endif
 
                 // Krx
 

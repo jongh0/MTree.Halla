@@ -32,12 +32,12 @@ namespace MTree.DataStructure
         public float High { get; set; }
 
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
-        [BsonElement("ST")]
-        public DateTime StartTime { get; set; }
+        [BsonElement("S")]
+        public DateTime Start { get; set; }
 
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
-        [BsonElement("ET")]
-        public DateTime EndTime { get; set; }
+        [BsonElement("E")]
+        public DateTime End { get; set; }
 
         [BsonElement("TVa")]
         public long TradeValue { get; set; }

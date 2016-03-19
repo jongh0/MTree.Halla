@@ -56,7 +56,6 @@ namespace MTree.RealTimeProvider
 
             if (Config.General.OfflineMode == false)
                 ProcessUtility.Start(ProcessTypes.DaishinMaster);
-                //ProcessUtility.Start(ProcessTypes.Kiwoom);
         }
     }
 }
