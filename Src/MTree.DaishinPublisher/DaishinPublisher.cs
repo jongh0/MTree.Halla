@@ -263,7 +263,7 @@ namespace MTree.DaishinPublisher
 #if true // Daishin Warning Code Sample
                 // 66 - (char) 관리구분
                 char administrative = Convert.ToChar(stockMstObj.GetHeaderValue(66));
-                if (administrative == 'N')          QuotingStockMaster.Administrative = AdministrativeTypes.Administrative;
+                if (administrative == 'Y')          QuotingStockMaster.Administrative = AdministrativeTypes.Administrative;
                 else                                QuotingStockMaster.Administrative = AdministrativeTypes.Normal;
 
                 // 67 - (char)투자경고구분
