@@ -260,7 +260,7 @@ namespace MTree.DaishinPublisher
                 // 54 - (short) 액면가
                 QuotingStockMaster.FaceValue = (int)stockMstObj.GetHeaderValue(54);
 
-#if true
+#if true // Daishin Warning Code Sample
                 // 66 - (char) 관리구분
                 char administrative = Convert.ToChar(stockMstObj.GetHeaderValue(66));
                 if (administrative == 'N')          QuotingStockMaster.Administrative = AdministrativeTypes.Administrative;

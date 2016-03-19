@@ -19,8 +19,9 @@ namespace MTree.DataStructure
         Consolidation,      // 주식병합
         Divestiture,        // 기업분할
         CapitalReduction,   // 감자
-    } 
+    }
 
+#if true // Daishin Warning Code Sample
     // 관리 구분
     public enum AdministrativeTypes
     {
@@ -52,7 +53,8 @@ namespace MTree.DataStructure
         UnfairAnnouncement,
         UnfairAnnouncement2, // 프리보드 불성실공시 2회
     }
-    #endregion
+#endif
+#endregion
 
     [Serializable]
     public class StockMaster : Subscribable
@@ -137,7 +139,7 @@ namespace MTree.DataStructure
         [BsonIgnore]
         public float ForeigneAvailableRemainRate { get { return (float)ForeigneAvailableRemain / ShareVolume * 100; } }
 
-#if true
+#if true // Daishin Warning Code Sample
         // 관리 구분
         [BsonElement("A")]
         public AdministrativeTypes Administrative { get; set; }
@@ -248,7 +250,7 @@ namespace MTree.DataStructure
                 sb.AppendLine($"{nameof(ForeigneAvailableRemainRate)}: {ForeigneAvailableRemainRate}");
                 sb.AppendLine($"{nameof(TradingHalt)}: {TradingHalt}");
                 sb.AppendLine($"{nameof(Administrative)}: {Administrative}");
-#if true
+#if true // Daishin Warning Code Sample
                 sb.AppendLine($"{nameof(Administrative)}: {Administrative}");
                 sb.AppendLine($"{nameof(InvestmentWarning)}: {InvestmentWarning}");
                 sb.AppendLine($"{nameof(TradingHalt)}: {TradingHalt}");
