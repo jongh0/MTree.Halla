@@ -49,14 +49,6 @@ namespace MTree.DaishinPublisher.Tests
         }
 
         [TestMethod()]
-        public void SubscribeWorldStockTest()
-        {
-            DaishinPublisher publisher = new DaishinPublisher();
-            publisher.SubscribeWorldStock("ENXH");
-            while (true) ;
-        }
-
-        [TestMethod()]
         public void IsSubscribableTest()
         {
             DaishinPublisher publisher = new DaishinPublisher();

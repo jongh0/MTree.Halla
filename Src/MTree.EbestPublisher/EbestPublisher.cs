@@ -99,7 +99,7 @@ namespace MTree.EbestPublisher
                 }
                 #endregion
 
-                StartIndexConclusionQueueTask();
+                //StartIndexConclusionQueueTask();
             }
             catch (Exception ex)
             {
