@@ -77,8 +77,7 @@ namespace MTree.DaishinPublisher
                 logger.Error(ex);
             }
         }
-
-<<<<<<< HEAD
+        
         public override Dictionary<string, CodeEntity> GetStockCodeList()
         {
             var codeList = new Dictionary<string, CodeEntity>();
@@ -202,9 +201,7 @@ namespace MTree.DaishinPublisher
 
             return codeList;
         }
-
-=======
->>>>>>> origin/master
+        
         public bool SubscribeWorldStock(string code)
         {
             int status = 1;
@@ -234,12 +231,8 @@ namespace MTree.DaishinPublisher
 
             return (status == 0);
         }
-<<<<<<< HEAD
 
-        private void WorldCurObj_Received()
-=======
         private void worldCurObj_Received()
->>>>>>> origin/master
         {
             string code = worldCurObj.GetHeaderValue(0).ToString();
             float price = Convert.ToSingle(worldCurObj.GetHeaderValue(1));
