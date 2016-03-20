@@ -55,8 +55,8 @@ namespace MTree.DaishinPublisher
                 StartStockConclusionQueueTask();
                 StartIndexConclusionQueueTask();
 
-#if false
-                var chart = GetChart("A000020", new DateTime(2016, 2, 10), new DateTime(2016, 2, 10), ChartTypes.Min);
+#if true
+                var chart = GetChart("A000020", new DateTime(2016, 3, 17), new DateTime(2016, 3, 17), ChartTypes.Min);
                 logger.Info($"Candle count: {chart.Count}");
 #endif
             }

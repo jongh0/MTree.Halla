@@ -19,10 +19,10 @@ namespace MTree.DaishinPublisher
             CandleList.Clear();
 
             stockChartObj.SetInputValue(0, code);
-            stockChartObj.SetInputValue(1, 1); // 1: 기간, 2: 개수
+            stockChartObj.SetInputValue(1, '1'); // 1: 기간, 2: 개수
             stockChartObj.SetInputValue(2, endDate.Year * 10000 + endDate.Month * 100 + endDate.Day); // 요청 종료일
             stockChartObj.SetInputValue(3, startDate.Year * 10000 + startDate.Month * 100 + startDate.Day); // 요청 시작일
-            stockChartObj.SetInputValue(4, uint.MaxValue);
+            //stockChartObj.SetInputValue(4, uint.MaxValue);
             stockChartObj.SetInputValue(5, new int[] { 0, 1, 2, 3, 4, 5}); // 요청 필드 (날짜, 시간, 시가, 고가, 저가, 종가)
             stockChartObj.SetInputValue(6, Chart.ConvertToChar(chartType)); // 차트 구분
             stockChartObj.SetInputValue(8, 0); // 0: 갭무보정, 1: 갭보정
