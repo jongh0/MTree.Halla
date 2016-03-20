@@ -10,9 +10,29 @@ using MTree.RealTimeProvider;
 using MTree.Utility;
 using System.Timers;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MTree.EbestPublisher
 {
+    enum WarningTypes1
+    {
+        AdministrativeIssue = 1,    // 관리
+        UnfairAnnouncement = 2,     // 불성실공시
+        InvestAttention = 3,        // 투자유의
+        CallingAttention = 4,       // 투자환기
+    }
+    enum WarningTypes2
+    { 
+        InvestWarning = 1,          // 경고
+        TradingHalt = 2,            // 매매정지
+        CleaningTrade = 3,          // 정리매매
+        InvestCaution = 4,          // 주의
+        InvestmentRisk =5 ,         // 위험
+        InvestmentRiskNoticed = 6,  // 위험예고
+        Overheated = 7,             // 단기과열
+        OverheatNoticed = 8,        // 단기과열지정예고
+    }
+
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
     public class EbestPublisher : BrokerageFirmBase
     {
@@ -32,6 +52,9 @@ namespace MTree.EbestPublisher
         private XAQueryClass indexListObj;
         private XAQueryClass indexQuotingObj;
         private XAQueryClass stockQuotingObj;
+
+        private XAQueryClass warningObj1;
+        private XAQueryClass warningObj2;
         #endregion
 
         Dictionary<string, string> IndustryDictionary = new Dictionary<string, string>();
@@ -75,6 +98,12 @@ namespace MTree.EbestPublisher
                 stockQuotingObj.ReceiveChartRealData += queryObj_ReceiveChartRealData;
                 stockQuotingObj.ReceiveData += queryObj_ReceiveData;
                 stockQuotingObj.ReceiveMessage += queryObj_ReceiveMessage;
+
+                warningObj1 = new XAQueryClass();
+                warningObj1.ResFileName = resFilePath + "\\t1404.res";
+                warningObj1.ReceiveChartRealData += queryObj_ReceiveChartRealData;
+                warningObj1.ReceiveData += queryObj_ReceiveData;
+                warningObj1.ReceiveMessage += queryObj_ReceiveMessage;
                 #endregion
 
                 #region Login
@@ -100,6 +129,22 @@ namespace MTree.EbestPublisher
                 #endregion
 
                 //StartIndexConclusionQueueTask();
+
+#if false
+                Task.Run(() => {
+                    if (WaitLogin() == false)
+                    {
+                        logger.Error("Not loggedin state");
+                        return;
+                    }
+
+                    foreach (WarningTypes1 warningType in Enum.GetValues(typeof(WarningTypes1)))
+                    {
+                        GetWarningList(warningType);
+                    }
+                    
+                });
+#endif
             }
             catch (Exception ex)
             {
@@ -127,6 +172,8 @@ namespace MTree.EbestPublisher
                 IndexMasterReceived();
             else if (szTrCode == "t8424")
                 IndexListReceived();
+            else if (szTrCode == "t1404")
+                WarningListReceived();
         }
 
         private void queryObj_ReceiveChartRealData(string szTrCode)
@@ -673,6 +720,31 @@ namespace MTree.EbestPublisher
             SetQuoting();
         }
 
+        private bool GetWarningList(WarningTypes1 warningType)
+        {
+            warningObj1.SetFieldData("t1404InBlock", "gubun", 0, "0");
+            warningObj1.SetFieldData("t1404InBlock", "jongchk", 0, ((int)warningType).ToString());
+            int ret = warningObj1.Request(false);
+
+            if (ret > 0)
+            {
+                if (WaitQuoting() == true)
+                {
+
+                }
+            }
+            return true;
+        }
+
+        private void WarningListReceived()
+        {
+            int cnt = warningObj1.GetBlockCount("t1404OutBlock1");
+            for (int i = 0; i < cnt; i++)
+            {
+                logger.Trace(warningObj1.GetFieldData("t1404OutBlock1", "shcode", i));
+            }
+            SetQuoting();
+        }
         protected override void ServiceClient_Opened(object sender, EventArgs e)
         {
             // Login이 완료된 후에 Publisher contract 등록

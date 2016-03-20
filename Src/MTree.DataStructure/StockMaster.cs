@@ -20,41 +20,7 @@ namespace MTree.DataStructure
         Divestiture,        // 기업분할
         CapitalReduction,   // 감자
     }
-
-#if true // Daishin Warning Code Sample
-    // 관리 구분
-    public enum AdministrativeTypes
-    {
-        Normal,
-        Administrative,
-    }
-
-    // 투자경고 구분
-    public enum InvestmentWarningTypes
-    {
-        Normal,
-        Caution,
-        Warning,
-        ForeRisk,
-        Risk,
-    }
-
-    // 거래정지 구분
-    public enum TradingHaltTypes
-    {
-        Normal,
-        TradingHalt,
-    }
-
-    // 불성실공시 구분
-    public enum UnfairAnnouncementTypes
-    {
-        Normal,
-        UnfairAnnouncement,
-        UnfairAnnouncement2, // 프리보드 불성실공시 2회
-    }
-#endif
-#endregion
+    #endregion
 
     [Serializable]
     public class StockMaster : Subscribable
@@ -139,59 +105,57 @@ namespace MTree.DataStructure
         [BsonIgnore]
         public float ForeigneAvailableRemainRate { get { return (float)ForeigneAvailableRemain / ShareVolume * 100; } }
 
-#if true // Daishin Warning Code Sample
-        // 관리 구분
-        [BsonElement("A")]
-        public AdministrativeTypes Administrative { get; set; }
-
-        // 투자경고 구분
-        [BsonElement("IW")]
-        public InvestmentWarningTypes InvestmentWarning { get; set; }
-
-        // 거래정지 구분
-        [BsonElement("TH")]
-        public TradingHaltTypes TradingHalt { get; set; }
-
-        // 불성실공시 구분
-        [BsonElement("UA")]
-        public UnfairAnnouncementTypes UnfairAnnouncement { get; set; }
-#else
-        // 매매정지(KRX)
-        [BsonElement("TH")]
-        public Warning TradingHalt { get; set; }
-
-        // 관리(KRX)
+        // 관리(Ebest)
         [BsonElement("AI")]
-        public Warning AdministrativeIssue { get; set; }
+        public bool AdministrativeIssue { get; set; }
 
-        // 주의(KRX)
+        // 주의(Ebest)
         [BsonElement("IC")]
-        public Warning InvestCaution { get; set; }
+        public bool InvestCaution { get; set; }
 
-        // 경고(KRX)
+        // 경고(Ebest)
         [BsonElement("IW")]
-        public Warning InvestWarning { get; set; }
+        public bool InvestWarning { get; set; }
 
-        // 위험(KRX)
+        // 위험예고(Ebest)
+        [BsonElement("IRN")]
+        public bool InvestmentRiskNoticed { get; set; }
+
+        // 위험(Ebest)
         [BsonElement("IR")]
-        public Warning InvestmentRisk { get; set; }
+        public bool InvestmentRisk { get; set; }
 
-        // 불성실공시(KRX)
+        // 매매정지(Ebest)
+        [BsonElement("TH")]
+        public bool TradingHalt { get; set; }
+
+        // 매매중단(Ebest)
+        [BsonElement("TS")]
+        public bool TradingSuspend { get; set; }
+
+        // 불성실공시(Ebest)
         [BsonElement("UA")]
-        public Warning UnfairAnnouncement { get; set; }
+        public bool UnfairAnnouncement { get; set; }
 
-        // 주의환기(KRX)
-        [BsonElement("CA")]
-        public Warning CallingAttention { get; set; }
-
-        // 정리매매(KRX)
-        [BsonElement("CT")]
-        public Warning CleaningTrade { get; set; }
-
-        // 단기과열(KRX)
+        // 단기과열(Ebest)
         [BsonElement("OH")]
-        public Warning Overheated { get; set; }
-#endif
+        public bool Overheated { get; set; }
+
+        // 단기과열지정예고(Ebest)
+        [BsonElement("OHN")]
+        public bool OverheatNoticed { get; set; }
+
+        // 정리매매(Ebest)
+        [BsonElement("CT")]
+        public bool CleaningTrade { get; set; }
+
+        // 투자유의(Ebest)
+        [BsonElement("IA")]
+        public bool InvestAttention { get; set; }
+
+        // 투자환기(Ebest)
+        [BsonElement("CA")]
+        public bool CallingAttention { get; set; }
 
         // 자산(Kiwoom & Daishin)
         public double Asset { get; set; }
@@ -248,22 +212,19 @@ namespace MTree.DataStructure
                 sb.AppendLine($"{nameof(ForeigneHold)}: {ForeigneHold}");
                 sb.AppendLine($"{nameof(ForeigneExhaustingRate)}: {ForeigneExhaustingRate}");
                 sb.AppendLine($"{nameof(ForeigneAvailableRemainRate)}: {ForeigneAvailableRemainRate}");
-                sb.AppendLine($"{nameof(TradingHalt)}: {TradingHalt}");
-                sb.AppendLine($"{nameof(Administrative)}: {Administrative}");
-#if true // Daishin Warning Code Sample
-                sb.AppendLine($"{nameof(Administrative)}: {Administrative}");
-                sb.AppendLine($"{nameof(InvestmentWarning)}: {InvestmentWarning}");
-                sb.AppendLine($"{nameof(TradingHalt)}: {TradingHalt}");
-                sb.AppendLine($"{nameof(UnfairAnnouncement)}: {UnfairAnnouncement}");
-#else
+                sb.AppendLine($"{nameof(AdministrativeIssue)}: {AdministrativeIssue}");
                 sb.AppendLine($"{nameof(InvestCaution)}: {InvestCaution}");
                 sb.AppendLine($"{nameof(InvestWarning)}: {InvestWarning}");
+                sb.AppendLine($"{nameof(InvestmentRiskNoticed)}: {InvestmentRiskNoticed}");
                 sb.AppendLine($"{nameof(InvestmentRisk)}: {InvestmentRisk}");
+                sb.AppendLine($"{nameof(TradingHalt)}: {TradingHalt}");
+                sb.AppendLine($"{nameof(TradingSuspend)}: {TradingSuspend}");
                 sb.AppendLine($"{nameof(UnfairAnnouncement)}: {UnfairAnnouncement}");
-                sb.AppendLine($"{nameof(CallingAttention)}: {CallingAttention}");
-                sb.AppendLine($"{nameof(CleaningTrade)}: {CleaningTrade}");
                 sb.AppendLine($"{nameof(Overheated)}: {Overheated}");
-#endif
+                sb.AppendLine($"{nameof(OverheatNoticed)}: {OverheatNoticed}");
+                sb.AppendLine($"{nameof(CleaningTrade)}: {CleaningTrade}");
+                sb.AppendLine($"{nameof(InvestAttention)}: {InvestAttention}");
+                sb.AppendLine($"{nameof(CallingAttention)}: {CallingAttention}");
                 sb.AppendLine($"{nameof(Asset)}: {Asset}");
                 sb.AppendLine($"{nameof(BPS)}: {BPS}");
                 sb.AppendLine($"{nameof(PBR)}: {PBR}");

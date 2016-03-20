@@ -144,32 +144,6 @@ namespace MTree.DaishinPublisher
 
                 // 54 - (short) 액면가
                 QuotingStockMaster.FaceValue = (int)stockMstObj.GetHeaderValue(54);
-
-#if true // Daishin Warning Code Sample
-                // 66 - (char) 관리구분
-                char administrative = Convert.ToChar(stockMstObj.GetHeaderValue(66));
-                if (administrative == 'Y') QuotingStockMaster.Administrative = AdministrativeTypes.Administrative;
-                else QuotingStockMaster.Administrative = AdministrativeTypes.Normal;
-
-                // 67 - (char)투자경고구분
-                char investmentWarning = Convert.ToChar(stockMstObj.GetHeaderValue(67));
-                if (investmentWarning == '2') QuotingStockMaster.InvestmentWarning = InvestmentWarningTypes.Caution;
-                else if (investmentWarning == '3') QuotingStockMaster.InvestmentWarning = InvestmentWarningTypes.Warning;
-                else if (investmentWarning == '4') QuotingStockMaster.InvestmentWarning = InvestmentWarningTypes.ForeRisk;
-                else if (investmentWarning == '5') QuotingStockMaster.InvestmentWarning = InvestmentWarningTypes.Risk;
-                else QuotingStockMaster.InvestmentWarning = InvestmentWarningTypes.Normal;
-
-                // 68 - (char)거래정지구분
-                char tradingHalt = Convert.ToChar(stockMstObj.GetHeaderValue(68));
-                if (tradingHalt == 'Y') QuotingStockMaster.TradingHalt = TradingHaltTypes.TradingHalt;
-                else QuotingStockMaster.TradingHalt = TradingHaltTypes.Normal;
-
-                // 69 - (char) 불성실 공시구분
-                char unfairAnnouncement = Convert.ToChar(stockMstObj.GetHeaderValue(69));
-                if (unfairAnnouncement == '1') QuotingStockMaster.UnfairAnnouncement = UnfairAnnouncementTypes.UnfairAnnouncement;
-                else if (unfairAnnouncement == '2') QuotingStockMaster.UnfairAnnouncement = UnfairAnnouncementTypes.UnfairAnnouncement2;
-                else QuotingStockMaster.UnfairAnnouncement = UnfairAnnouncementTypes.Normal;
-#endif
             }
             catch (Exception ex)
             {
