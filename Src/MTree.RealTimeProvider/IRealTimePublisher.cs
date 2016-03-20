@@ -36,7 +36,7 @@ namespace MTree.RealTimeProvider
         void SendMessage(MessageTypes type, string message);
 
         [OperationContract]
-        Dictionary<string, CodeEntity> GetStockCodeList();
+        Dictionary<string, CodeEntity> GetCodeList();
 
         [OperationContract]
         StockMaster GetStockMaster(string code);

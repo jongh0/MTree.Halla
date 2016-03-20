@@ -29,7 +29,7 @@ namespace MTree.DaishinPublisher.Tests
         public void SubscribeStockTest()
         {
             DaishinPublisher publisher = new DaishinPublisher();
-            Dictionary<string, CodeEntity> list = publisher.GetStockCodeList();
+            Dictionary<string, CodeEntity> list = publisher.GetCodeList();
             for (int i = 0; i < 400; i++)
             {
                 bool result = publisher.SubscribeStock("A" + list.ToArray()[i].Key);
@@ -44,7 +44,7 @@ namespace MTree.DaishinPublisher.Tests
         {
             int cnt = 0;
             DaishinPublisher publisher = new DaishinPublisher();
-            Dictionary<string, CodeEntity> list = publisher.GetStockCodeList();
+            Dictionary<string, CodeEntity> list = publisher.GetCodeList();
             Assert.IsTrue(cnt > 0);
         }
 

@@ -15,7 +15,7 @@ namespace MTree.Publisher
         {
         }
 
-        public virtual Dictionary<string, CodeEntity> GetStockCodeList()
+        public virtual Dictionary<string, CodeEntity> GetCodeList()
         {
             return null;
         }

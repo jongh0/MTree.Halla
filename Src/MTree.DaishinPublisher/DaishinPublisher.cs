@@ -78,14 +78,13 @@ namespace MTree.DaishinPublisher
             }
         }
         
-        public override Dictionary<string, CodeEntity> GetStockCodeList()
+        public override Dictionary<string, CodeEntity> GetCodeList()
         {
             var codeList = new Dictionary<string, CodeEntity>();
 
             try
             {
                 var codeMgr = new CpCodeMgrClass();
-
 
                 #region Index
                 foreach (string fullCode in (object[])codeMgr.GetIndustryList())
@@ -125,18 +124,13 @@ namespace MTree.DaishinPublisher
                     var codeEntity = new CodeEntity();
                     codeEntity.Code = fullCode.Substring(1);
                     codeEntity.Name = codeMgr.CodeToName(fullCode);
+
                     if (codeMgr.GetStockSectionKind(fullCode) == CPE_KSE_SECTION_KIND.CPC_KSE_SECTION_KIND_ETF)
-                    {
                         codeEntity.MarketType = MarketTypes.ETF;
-                    }
                     else if (fullCode[0] == 'Q')
-                    {
                         codeEntity.MarketType = MarketTypes.ETN;
-                    }
                     else
-                    {
                         codeEntity.MarketType = MarketTypes.KOSPI;
-                    }
 
                     codeList.Add(codeEntity.Code, codeEntity);
                 }
@@ -192,7 +186,7 @@ namespace MTree.DaishinPublisher
                 }
                 #endregion
 
-                logger.Info($"Stock code list query done, Count: {codeList.Count}");
+                logger.Info($"Code list query done, Count: {codeList.Count}");
             }
             catch (Exception ex)
             {

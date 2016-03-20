@@ -145,7 +145,7 @@ namespace MTree.RealTimeProvider
 
                         if (isMasterProcess == true)
                         {
-                            var codeList = contract.Callback.GetStockCodeList();
+                            var codeList = contract.Callback.GetCodeList();
 
                             StockCodeList = new Dictionary<string, CodeEntity>();
                             foreach (KeyValuePair<string, CodeEntity> codeEntity in codeList)

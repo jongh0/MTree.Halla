@@ -335,7 +335,7 @@ namespace MTree.KiwoomPublisher
             }
         }
 
-        public override Dictionary<string, CodeEntity> GetStockCodeList()
+        public override Dictionary<string, CodeEntity> GetCodeList()
         {
             if (WaitLogin() == false)
                 logger.Error("Session is not established");
