@@ -9,7 +9,7 @@ namespace MTree.RealTimeProvider
     public interface IRealTimePublisher
     {
         [OperationContract(IsOneWay = true)]
-        void NoOperation();
+        void SendMessage(MessageTypes type, string message);
 
         [OperationContract]
         void RegisterContract(Guid clientId, PublishContract contract);
@@ -33,7 +33,7 @@ namespace MTree.RealTimeProvider
     public interface IRealTimePublisherCallback
     {
         [OperationContract(IsOneWay = true)]
-        void CloseClient();
+        void SendMessage(MessageTypes type, string message);
 
         [OperationContract]
         Dictionary<string, CodeEntity> GetStockCodeList();

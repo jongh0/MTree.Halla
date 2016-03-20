@@ -9,6 +9,12 @@ using System.Threading.Tasks;
 
 namespace MTree.RealTimeProvider
 {
+    public enum MessageTypes
+    {
+        None,
+        Close,
+    }
+
     public class RealTimeBase
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();

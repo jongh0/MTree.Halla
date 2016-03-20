@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
+using MTree.RealTimeProvider;
 
 namespace MTree.KiwoomPublisher
 {
@@ -483,11 +484,12 @@ namespace MTree.KiwoomPublisher
             base.ServiceClient_Opened(sender, e);
         }
 
-        public override void CloseClient()
+        public override void SendMessage(MessageTypes type, string message)
         {
-            // Logout한 이후 Process 종료시킨다
-            Logout();
-            base.CloseClient();
+            if (type == MessageTypes.Close)
+                Logout();
+
+            base.SendMessage(type, message);
         }
     }
 }

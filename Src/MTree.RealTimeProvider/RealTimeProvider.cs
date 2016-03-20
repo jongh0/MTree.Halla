@@ -28,7 +28,7 @@ namespace MTree.RealTimeProvider
             TaskUtility.Run("RealTimeProvider.IndexConclusionQueue", QueueTaskCancelToken, ProcessIndexConclusionQueue);
         }
 
-        public void NoOperation()
+        public void SendMessage(MessageTypes type, string message)
         {
         }
     }

@@ -14,9 +14,9 @@ namespace MTree.Consumer
     {
         public ConsumerClient(InstanceContext callbackInstance, string endpointConfigurationName) : base(callbackInstance, endpointConfigurationName) { }
 
-        public void NoOperation()
+        public void SendMessage(MessageTypes type, string message)
         {
-            base.Channel.NoOperation();
+            base.Channel.SendMessage(type, message);
         }
 
         public void RegisterContract(Guid clientId, SubscribeContract subscription)

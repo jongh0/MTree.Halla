@@ -8,7 +8,7 @@ namespace MTree.RealTimeProvider
     public interface IRealTimeConsumer
     {
         [OperationContract(IsOneWay = true)]
-        void NoOperation();
+        void SendMessage(MessageTypes type, string message);
 
         [OperationContract(IsOneWay = true)]
         void RegisterContract(Guid clientId, SubscribeContract contract);
@@ -23,7 +23,7 @@ namespace MTree.RealTimeProvider
     public interface IRealTimeConsumerCallback
     {
         [OperationContract(IsOneWay = true)]
-        void CloseClient();
+        void SendMessage(MessageTypes type, string message);
 
         [OperationContract(IsOneWay = true)]
         void ConsumeBiddingPrice(BiddingPrice biddingPrice);

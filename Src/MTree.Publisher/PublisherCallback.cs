@@ -11,7 +11,7 @@ namespace MTree.Publisher
 {
     public class PublisherCallback : RealTimeBase, IRealTimePublisherCallback
     {
-        public virtual void CloseClient()
+        public virtual void SendMessage(MessageTypes type, string message)
         {
         }
 
