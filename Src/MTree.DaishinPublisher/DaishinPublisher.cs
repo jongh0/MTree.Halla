@@ -14,8 +14,6 @@ namespace MTree.DaishinPublisher
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        protected int LastQuoteTick { get; set; } = Environment.TickCount;
-
         #region Daishin Specific
         private CpCybosClass sessionObj;
         private StockMstClass stockMstObj;
@@ -56,6 +54,11 @@ namespace MTree.DaishinPublisher
                 StartBiddingPriceQueueTask();
                 StartStockConclusionQueueTask();
                 StartIndexConclusionQueueTask();
+
+#if false
+                var chart = GetChart("A000020", new DateTime(2016, 2, 10), new DateTime(2016, 2, 10), ChartTypes.Min);
+                logger.Info($"Candle count: {chart.Count}");
+#endif
             }
             catch (Exception ex)
             {

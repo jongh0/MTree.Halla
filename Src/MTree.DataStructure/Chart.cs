@@ -115,5 +115,29 @@ namespace MTree.DataStructure
                 default:                return null;
             }
         }
+
+        public static char ConvertToChar(ChartTypes type)
+        {
+            switch (type)
+            {
+                case ChartTypes.Min:    return 'm';
+                case ChartTypes.Day:    return 'D';
+                case ChartTypes.Week:   return 'W';
+                case ChartTypes.Month:  return 'M';
+                default: return         'T';
+            }
+        }
+
+        public static ChartTypes ConvertToChartType(char type)
+        {
+            switch (type)
+            {
+                case 'm': return        ChartTypes.Min;
+                case 'D': return        ChartTypes.Day;
+                case 'W': return        ChartTypes.Week;
+                case 'M': return        ChartTypes.Month;
+                default:                return ChartTypes.Tick;
+            }
+        }
     }
 }

@@ -25,6 +25,11 @@ namespace MTree.Publisher
             return null;
         }
 
+        public virtual List<Candle> GetChart(string code, DateTime startDate, DateTime endDate, ChartTypes chartType)
+        {
+            return null;
+        }
+
         public virtual bool IsSubscribable()
         {
             return false;
