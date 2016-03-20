@@ -24,12 +24,9 @@ namespace MTree.DataStructure
         {
             switch (entity.MarketType)
             {
-                case MarketTypes.ELW:
-                    return "J" + entity.Code;
-                case MarketTypes.ETN:
-                    return "Q" + entity.Code;
-                default:
-                    return "A" + entity.Code;
+                case MarketTypes.ELW:   return "J" + entity.Code;
+                case MarketTypes.ETN:   return "Q" + entity.Code;
+                default:                return "A" + entity.Code;
             }
         }
 

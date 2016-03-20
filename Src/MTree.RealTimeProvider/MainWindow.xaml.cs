@@ -54,9 +54,19 @@ namespace MTree.RealTimeProvider
         {
             logger.Info("RealTimeHost opened");
 
-            if (Config.General.OfflineMode == false)
-                ProcessUtility.Start(ProcessTypes.DaishinMaster);
-                //ProcessUtility.Start(ProcessTypes.Kiwoom);
+            Task.Run(() =>
+            {
+                // Daishin CybosPlus 실행
+                if (ProcessUtility.Exists(ProcessUtility.CybosStarterName) == false)
+                {
+                    logger.Info("Daishin starter not exists");
+                    ProcessUtility.Start(ProcessTypes.DaishinSessionManager)?.WaitForExit();
+                }
+
+                // Daishin Master 실행
+                if (Config.General.OfflineMode == false)
+                    ProcessUtility.Start(ProcessTypes.DaishinMaster);
+            });
         }
     }
 }

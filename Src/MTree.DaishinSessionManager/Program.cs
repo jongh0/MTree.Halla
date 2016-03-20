@@ -21,6 +21,14 @@ namespace MTree.DaishinSessionManager
             {
                 logger.Info("Application Started");
 
+                if (string.IsNullOrEmpty(Config.Daishin.UserId) == true ||
+                    string.IsNullOrEmpty(Config.Daishin.UserPw) == true ||
+                    string.IsNullOrEmpty(Config.Daishin.CertPw) == true)
+                {
+                    logger.Error("Check Daishin configuration file");
+                    return;
+                }
+
                 ProcessUtility.Kill("DaishinSessionManager", Process.GetCurrentProcess().Id);
                 ProcessUtility.Kill("CpStart"); // 키보드 보안 및 메모리 보안 프로그램 사용 체크 해제해야 함 (CpStart -> 설정)
                 ProcessUtility.Kill("DibServer");
@@ -34,7 +42,7 @@ namespace MTree.DaishinSessionManager
                 ClosePopup("대신증권 CYBOS FAMILY", "예(&Y)"); //=> 키보드 보안 및 메모리 보안 프로그램 사용 미체크 시 Popup뜸
 
                 // Find CYBOS Starter
-                var cybosStarterH = WindowUtility.FindWindow2("CYBOS Starter", retryCount: 10);
+                var cybosStarterH = WindowUtility.FindWindow2("CYBOS Starter", retryCount: 100);
                 if (cybosStarterH == IntPtr.Zero)
                 {
                     logger.Error("CYBOS Starter not found");
@@ -49,12 +57,14 @@ namespace MTree.DaishinSessionManager
                 IntPtr pwH = WindowUtility.GetWindow2(idH, WindowUtility.GW_HWNDNEXT);
                 IntPtr certPwH = WindowUtility.GetWindow2(pwH, WindowUtility.GW_HWNDNEXT);
 
+#if false
                 // UserPw, CertPw 삭제
                 for (int i = 0; i < 20; i++)
                 {
                     WindowUtility.SendMessage2(pwH, WindowUtility.WM_CHAR, WindowUtility.VK_BACKSPACE, 0);
                     WindowUtility.SendMessage2(certPwH, WindowUtility.WM_CHAR, WindowUtility.VK_BACKSPACE, 0);
                 }
+#endif
 
                 EnterUserPw(pwH);
                 EnterCertPw(certPwH);
@@ -178,11 +188,11 @@ namespace MTree.DaishinSessionManager
         {
             try
             {
-                var certWindowH = WindowUtility.FindWindow2(title, retryCount: 10);
+                var certWindowH = WindowUtility.FindWindow2(title, retryCount: 100);
                 if (certWindowH != IntPtr.Zero)
                 {
                     logger.Info($"{title} popup handle found");
-                    var applyButtonH = WindowUtility.FindWindowEx2(certWindowH, "Button", buttonName, retryCount: 10);
+                    var applyButtonH = WindowUtility.FindWindowEx2(certWindowH, "Button", buttonName, retryCount: 100);
                     if (applyButtonH != IntPtr.Zero)
                     {
                         WindowUtility.SendMessage2(applyButtonH, WindowUtility.BM_CLICK, 0, 0);
@@ -198,7 +208,12 @@ namespace MTree.DaishinSessionManager
 
         private static void LaunchStarter()
         {
-            ProcessUtility.Start("C:\\Daishin\\STARTER\\ncStarter.exe", "/prj:cp", waitIdle: true);
+            try // 원격에서 Exception 발생하는거 방지
+            {
+                ProcessUtility.Start("C:\\Daishin\\STARTER\\ncStarter.exe", "/prj:cp")?.WaitForInputIdle();
+            }
+            catch
+            { }
         }
     }
 }

@@ -27,12 +27,13 @@ namespace MTree.DaishinPublisher
         protected int LastQuoteTick { get; set; } = Environment.TickCount;
 
         #region Daishin Specific
-        private CpCybos sessionObj;
-        private StockMst stockMstObj;
-        private StockCur stockCurObj;
-        private StockJpbid biddingObj;
+        private CpCybosClass sessionObj;
+        private StockMstClass stockMstObj;
+        private StockCurClass stockCurObj;
+        private StockJpbidClass stockJpbidObj;
+        private StockChartClass stockChartObj;
 
-        private WorldCur worldCurObj;
+        private WorldCurClass worldCurObj;
 
         #endregion
 
@@ -42,20 +43,31 @@ namespace MTree.DaishinPublisher
             {
                 QuoteInterval = 15 * 1000 / 60; // 15초당 60개
 
-                sessionObj = new CpCybos();
+                sessionObj = new CpCybosClass();
                 sessionObj.OnDisconnect += sessionObj_OnDisconnect;
-                
-                stockMstObj = new StockMst();
+
+                stockMstObj = new StockMstClass();
                 stockMstObj.Received += stockMstObj_Received;
 
-                stockCurObj = new StockCur();
+                stockCurObj = new StockCurClass();
                 stockCurObj.Received += stockCurObj_Received;
 
-                biddingObj = new StockJpbid();
-                biddingObj.Received += biddingObj_Received;
+                stockJpbidObj = new StockJpbidClass();
+                stockJpbidObj.Received += stockJpbidObj_Received;
 
-                worldCurObj = new WorldCur();
-                worldCurObj.Received += WorldCurObj_Received;
+                worldCurObj = new WorldCurClass();
+                worldCurObj.Received += worldCurObj_Received;
+
+                stockChartObj = new StockChartClass();
+                stockChartObj.Received += stockChartObj_Received;
+
+                if (sessionObj.IsConnect != 1)
+                {
+                    logger.Error("Session not connected");
+                    return;
+                }
+
+                logger.Info($"Server type: {sessionObj.ServerType}");
 
                 StartBiddingPriceQueueTask();
                 StartStockConclusionQueueTask();
@@ -66,6 +78,7 @@ namespace MTree.DaishinPublisher
             }
         }
 
+<<<<<<< HEAD
         public override Dictionary<string, CodeEntity> GetStockCodeList()
         {
             var codeList = new Dictionary<string, CodeEntity>();
@@ -190,6 +203,8 @@ namespace MTree.DaishinPublisher
             return codeList;
         }
 
+=======
+>>>>>>> origin/master
         public bool SubscribeWorldStock(string code)
         {
             int status = 1;
@@ -219,8 +234,12 @@ namespace MTree.DaishinPublisher
 
             return (status == 0);
         }
+<<<<<<< HEAD
 
         private void WorldCurObj_Received()
+=======
+        private void worldCurObj_Received()
+>>>>>>> origin/master
         {
             string code = worldCurObj.GetHeaderValue(0).ToString();
             float price = Convert.ToSingle(worldCurObj.GetHeaderValue(1));
@@ -243,10 +262,16 @@ namespace MTree.DaishinPublisher
             StockConclusionReceived();
         }
 
-        private void biddingObj_Received()
+        private void stockJpbidObj_Received()
         {
             LastFirmCommunicateTick = Environment.TickCount;
             BiddingPriceReceived();
+        }
+
+        private void stockChartObj_Received()
+        {
+            LastFirmCommunicateTick = Environment.TickCount;
+            StockChartReceived();
         }
 
         public bool GetQuote(string code, ref StockMaster stockMaster)
@@ -375,9 +400,31 @@ namespace MTree.DaishinPublisher
                 // 54 - (short) 액면가
                 QuotingStockMaster.FaceValue = (int)stockMstObj.GetHeaderValue(54);
 
-                // 69 -(char) 불성실 공시구분 => KRX로 이동
-                //if ((char)stockMstObj.GetHeaderValue(69) != '0')
-                //    QuotingStockMaster.UnfairAnnouncement = new Warning() { Start = DateTime.Now };
+#if true // Daishin Warning Code Sample
+                // 66 - (char) 관리구분
+                char administrative = Convert.ToChar(stockMstObj.GetHeaderValue(66));
+                if (administrative == 'Y')          QuotingStockMaster.Administrative = AdministrativeTypes.Administrative;
+                else                                QuotingStockMaster.Administrative = AdministrativeTypes.Normal;
+
+                // 67 - (char)투자경고구분
+                char investmentWarning = Convert.ToChar(stockMstObj.GetHeaderValue(67));
+                if (investmentWarning == '2')       QuotingStockMaster.InvestmentWarning = InvestmentWarningTypes.Caution;
+                else if (investmentWarning == '3')  QuotingStockMaster.InvestmentWarning = InvestmentWarningTypes.Warning;
+                else if (investmentWarning == '4')  QuotingStockMaster.InvestmentWarning = InvestmentWarningTypes.ForeRisk;
+                else if (investmentWarning == '5')  QuotingStockMaster.InvestmentWarning = InvestmentWarningTypes.Risk;
+                else                                QuotingStockMaster.InvestmentWarning = InvestmentWarningTypes.Normal;
+
+                // 68 - (char)거래정지구분
+                char tradingHalt = Convert.ToChar(stockMstObj.GetHeaderValue(68));
+                if (tradingHalt == 'Y')             QuotingStockMaster.TradingHalt = TradingHaltTypes.TradingHalt;
+                else                                QuotingStockMaster.TradingHalt = TradingHaltTypes.Normal;
+
+                // 69 - (char) 불성실 공시구분
+                char unfairAnnouncement = Convert.ToChar(stockMstObj.GetHeaderValue(69));
+                if (unfairAnnouncement == '1')      QuotingStockMaster.UnfairAnnouncement = UnfairAnnouncementTypes.UnfairAnnouncement;
+                else if (unfairAnnouncement == '2') QuotingStockMaster.UnfairAnnouncement = UnfairAnnouncementTypes.UnfairAnnouncement2;
+                else                                QuotingStockMaster.UnfairAnnouncement = UnfairAnnouncementTypes.Normal;
+#endif
             }
             catch (Exception ex)
             {
@@ -501,18 +548,30 @@ namespace MTree.DaishinPublisher
             }
         }
 
+        private void StockChartReceived()
+        {
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
         public override bool SubscribeBidding(string code)
         {
             short status = 1;
 
             try
             {
-                biddingObj.SetInputValue(0, code);
-                biddingObj.Subscribe();
+                stockJpbidObj.SetInputValue(0, code);
+                stockJpbidObj.Subscribe();
 
                 while (true)
                 {
-                    status = biddingObj.GetDibStatus();
+                    status = stockJpbidObj.GetDibStatus();
                     if (status != 1) // 1 - 수신대기
                         break;
 
@@ -528,7 +587,7 @@ namespace MTree.DaishinPublisher
                 if (status == 0)
                     logger.Info($"Subscribe bidding, Code: {code}");
                 else
-                    logger.Error($"Subscribe bidding error, Code: {code}, Status: {status}, Msg: {biddingObj.GetDibMsg1()}");
+                    logger.Error($"Subscribe bidding error, Code: {code}, Status: {status}, Msg: {stockJpbidObj.GetDibMsg1()}");
             }
 
             return (status == 0);
@@ -540,12 +599,12 @@ namespace MTree.DaishinPublisher
 
             try
             {
-                biddingObj.SetInputValue(0, code);
-                biddingObj.Unsubscribe();
+                stockJpbidObj.SetInputValue(0, code);
+                stockJpbidObj.Unsubscribe();
 
                 while (true)
                 {
-                    status = biddingObj.GetDibStatus();
+                    status = stockJpbidObj.GetDibStatus();
                     if (status != 1) // 1 - 수신대기
                         break;
 
@@ -561,7 +620,7 @@ namespace MTree.DaishinPublisher
                 if (status == 0)
                     logger.Trace($"Unsubscribe bidding, Code: {code}");
                 else
-                    logger.Error($"Unsubscribe bidding error, Code: {code}, Status: {status}, Msg: {biddingObj.GetDibMsg1()}");
+                    logger.Error($"Unsubscribe bidding error, Code: {code}, Status: {status}, Msg: {stockJpbidObj.GetDibMsg1()}");
             }
 
             return (status == 0);
@@ -577,10 +636,10 @@ namespace MTree.DaishinPublisher
                 biddingPrice.Bids = new List<BiddingPriceEntity>();
                 biddingPrice.Offers = new List<BiddingPriceEntity>();
 
-                string fullCode = Convert.ToString(biddingObj.GetHeaderValue(0));
+                string fullCode = Convert.ToString(stockJpbidObj.GetHeaderValue(0));
                 biddingPrice.Code = CodeEntity.RemovePrefix(fullCode);
 
-                long time = Convert.ToInt64(biddingObj.GetHeaderValue(1));
+                long time = Convert.ToInt64(stockJpbidObj.GetHeaderValue(1));
                 biddingPrice.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 100), (int)(time % 100), now.Second, now.Millisecond); // Daishin doesn't provide second 
 
                 int[] indexes = { 3, 7, 11, 15, 19, 27, 31, 35, 39, 43 };
@@ -590,13 +649,13 @@ namespace MTree.DaishinPublisher
                     int index = indexes[i];
 
                     biddingPrice.Offers.Add(new BiddingPriceEntity(i,
-                        Convert.ToSingle(biddingObj.GetHeaderValue(index)),
-                        Convert.ToInt64(biddingObj.GetHeaderValue(index + 2))
+                        Convert.ToSingle(stockJpbidObj.GetHeaderValue(index)),
+                        Convert.ToInt64(stockJpbidObj.GetHeaderValue(index + 2))
                         ));
 
                     biddingPrice.Bids.Add(new BiddingPriceEntity(i,
-                        Convert.ToSingle(biddingObj.GetHeaderValue(index + 1)),
-                        Convert.ToInt64(biddingObj.GetHeaderValue(index + 3))
+                        Convert.ToSingle(stockJpbidObj.GetHeaderValue(index + 1)),
+                        Convert.ToInt64(stockJpbidObj.GetHeaderValue(index + 3))
                         ));
                 }
 
