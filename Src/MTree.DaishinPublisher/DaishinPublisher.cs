@@ -84,7 +84,10 @@ namespace MTree.DaishinPublisher
                     codeEntity.Name = codeMgr.GetIndustryName(fullCode);
                     codeEntity.MarketType = MarketTypes.INDEX;
 
-                    codeList.Add(codeEntity.Code, codeEntity);
+                    if (codeList.ContainsKey(codeEntity.Code) == false)
+                        codeList.Add(codeEntity.Code, codeEntity);
+                    else
+                        logger.Error($"{codeEntity.Code} code already exists");
                 }
 
                 foreach (string fullCode in (object[])codeMgr.GetKosdaqIndustry1List())
@@ -94,7 +97,10 @@ namespace MTree.DaishinPublisher
                     codeEntity.Name = codeMgr.GetIndustryName(fullCode);
                     codeEntity.MarketType = MarketTypes.INDEX;
 
-                    codeList.Add(codeEntity.Code, codeEntity);
+                    if (codeList.ContainsKey(codeEntity.Code) == false)
+                        codeList.Add(codeEntity.Code, codeEntity);
+                    else
+                        logger.Error($"{codeEntity.Code} code already exists");
                 }
 
                 foreach (string fullCode in (object[])codeMgr.GetKosdaqIndustry2List())
@@ -104,7 +110,10 @@ namespace MTree.DaishinPublisher
                     codeEntity.Name = codeMgr.GetIndustryName(fullCode);
                     codeEntity.MarketType = MarketTypes.INDEX;
 
-                    codeList.Add(codeEntity.Code, codeEntity);
+                    if (codeList.ContainsKey(codeEntity.Code) == false)
+                        codeList.Add(codeEntity.Code, codeEntity);
+                    else
+                        logger.Error($"{codeEntity.Code} code already exists");
                 } 
                 #endregion
 
@@ -122,7 +131,10 @@ namespace MTree.DaishinPublisher
                     else
                         codeEntity.MarketType = MarketTypes.KOSPI;
 
-                    codeList.Add(codeEntity.Code, codeEntity);
+                    if (codeList.ContainsKey(codeEntity.Code) == false)
+                        codeList.Add(codeEntity.Code, codeEntity);
+                    else
+                        logger.Error($"{codeEntity.Code} code already exists");
                 }
                 #endregion
 
@@ -133,7 +145,11 @@ namespace MTree.DaishinPublisher
                     codeEntity.Code = CodeEntity.RemovePrefix(fullCode);
                     codeEntity.Name = codeMgr.CodeToName(fullCode);
                     codeEntity.MarketType = MarketTypes.KOSDAQ;
-                    codeList.Add(codeEntity.Code, codeEntity);
+
+                    if (codeList.ContainsKey(codeEntity.Code) == false)
+                        codeList.Add(codeEntity.Code, codeEntity);
+                    else
+                        logger.Error($"{codeEntity.Code} code already exists");
                 }
                 #endregion
 
@@ -144,7 +160,11 @@ namespace MTree.DaishinPublisher
                     codeEntity.Code = CodeEntity.RemovePrefix(fullCode);
                     codeEntity.Name = codeMgr.CodeToName(fullCode);
                     codeEntity.MarketType = MarketTypes.KONEX;
-                    codeList.Add(codeEntity.Code, codeEntity);
+
+                    if (codeList.ContainsKey(codeEntity.Code) == false)
+                        codeList.Add(codeEntity.Code, codeEntity);
+                    else
+                        logger.Error($"{codeEntity.Code} code already exists");
                 }
                 #endregion
 
@@ -155,7 +175,11 @@ namespace MTree.DaishinPublisher
                     codeEntity.Code = CodeEntity.RemovePrefix(fullCode);
                     codeEntity.Name = codeMgr.CodeToName(fullCode);
                     codeEntity.MarketType = MarketTypes.FREEBOARD;
-                    codeList.Add(codeEntity.Code, codeEntity);
+
+                    if (codeList.ContainsKey(codeEntity.Code) == false)
+                        codeList.Add(codeEntity.Code, codeEntity);
+                    else
+                        logger.Error($"{codeEntity.Code} code already exists");
                 }
                 #endregion
 
@@ -172,7 +196,11 @@ namespace MTree.DaishinPublisher
                     codeEntity.Code = CodeEntity.RemovePrefix(fullCode);
                     codeEntity.Name = codeMgr.CodeToName(fullCode);
                     codeEntity.MarketType = MarketTypes.ELW;
-                    codeList.Add(codeEntity.Code, codeEntity);
+
+                    if (codeList.ContainsKey(codeEntity.Code) == false)
+                        codeList.Add(codeEntity.Code, codeEntity);
+                    else
+                        logger.Error($"{codeEntity.Code} code already exists");
                 }
                 #endregion
 
