@@ -28,6 +28,11 @@ namespace MTree.RealTimeProvider
         {
             get { return PublishContracts.Values.FirstOrDefault(c => c.Type == ProcessTypes.Daishin && c.NowOperating == false); }
         }
+
+        private PublishContract DaishinContractMaster
+        {
+            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == ProcessTypes.DaishinMaster); }
+        }
         #endregion
 
         #region Ebest
@@ -96,7 +101,7 @@ namespace MTree.RealTimeProvider
                 ProcessUtility.Start(ProcessTypes.DaishinPopupStopper);
 
                 // Daishin
-                int daishinProcessCount = StockCodeList.Count * 2 / 400;
+                int daishinProcessCount = (StockCodeList.Count + IndexCodeList.Count) * 2 / 400 + 1;
                 for (int i = 0; i < daishinProcessCount; i++)
                     ProcessUtility.Start(ProcessTypes.Daishin);
 
@@ -106,10 +111,6 @@ namespace MTree.RealTimeProvider
                 for (int i = 0; i < ebestProcessCount; i++)
                     ProcessUtility.Start(ProcessTypes.Ebest);
 #endif
-
-                // Krx
-
-                // Naver
             }
             catch (Exception ex)
             {
@@ -138,7 +139,7 @@ namespace MTree.RealTimeProvider
                     else
                     {
                         bool isMasterProcess = (contract.Type == ProcessTypes.DaishinMaster);
-                        if (contract.Type == ProcessTypes.DaishinMaster) contract.Type = ProcessTypes.Daishin;
+                        //if (contract.Type == ProcessTypes.DaishinMaster) contract.Type = ProcessTypes.Daishin;
 
                         PublishContracts.TryAdd(clientId, contract);
                         logger.Info($"{contract.ToString()} contract registered / {clientId}");
@@ -147,38 +148,34 @@ namespace MTree.RealTimeProvider
                         {
                             var codeList = contract.Callback.GetCodeList();
 
-                            StockCodeList = new Dictionary<string, CodeEntity>();
                             foreach (KeyValuePair<string, CodeEntity> codeEntity in codeList)
                             {
-                                if (codeEntity.Value.MarketType != MarketTypes.INDEX && 
-                                    codeEntity.Value.MarketType != MarketTypes.ELW)
+                                if (codeEntity.Value.MarketType == MarketTypes.INDEX ||
+                                    codeEntity.Value.MarketType == MarketTypes.ELW)
+                                {
+                                    IndexCodeList.Add(codeEntity.Key, codeEntity.Value);
+                                }
+                                else
                                 {
                                     StockCodeList.Add(codeEntity.Key, codeEntity.Value);
                                 }
                             }
 
-                            if (StockCodeList != null)
+                            logger.Info($"Stock code: {StockCodeList.Count}, Index code: {IndexCodeList.Count}");
+
+                            LaunchClientProcess();
+
+                            if (Config.General.SkipMastering == true)
                             {
-                                logger.Info($"Stock code list count: {StockCodeList.Count}");
-
-                                LaunchClientProcess();
-
-                                if (Config.General.SkipMastering == true)
+                                Task.Run(() =>
                                 {
-                                    Task.Run(() =>
-                                    {
-                                        Thread.Sleep(1000 * 60);
-                                        StartCodeDistributing();
-                                    });
-                                }
-                                else
-                                {
-                                    Task.Run(() => StartStockMastering());
-                                }
+                                    Thread.Sleep(1000 * 60);
+                                    StartCodeDistributing();
+                                });
                             }
                             else
                             {
-                                logger.Error("Stock code list gathering failed");
+                                Task.Run(() => StartStockMastering());
                             }
                         }
                     }

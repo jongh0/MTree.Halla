@@ -495,7 +495,7 @@ namespace MTree.DaishinPublisher
             try
             {
                 var now = DateTime.Now;
-                StockConclusion conclusion = new StockConclusion();
+                var conclusion = new StockConclusion();
 
                 // 0 - (string) 종목 코드
                 string fullCode = stockCurObj.GetHeaderValue(0).ToString();
@@ -528,18 +528,6 @@ namespace MTree.DaishinPublisher
                 else logger.Error($"Stock conclusion market time type error, {stockCurObj.GetHeaderValue(20)}");
 
                 StockConclusionQueue.Enqueue(conclusion);
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-            }
-        }
-
-        private void StockChartReceived()
-        {
-            try
-            {
-
             }
             catch (Exception ex)
             {
@@ -617,9 +605,9 @@ namespace MTree.DaishinPublisher
         {
             try
             {
-                DateTime now = DateTime.Now;
+                var now = DateTime.Now;
 
-                BiddingPrice biddingPrice = new BiddingPrice();
+                var biddingPrice = new BiddingPrice();
                 biddingPrice.Bids = new List<BiddingPriceEntity>();
                 biddingPrice.Offers = new List<BiddingPriceEntity>();
 
@@ -653,7 +641,34 @@ namespace MTree.DaishinPublisher
                 logger.Error(ex.Message);
             }
         }
-        
+
+        public override bool SubscribeIndex(string code)
+        {
+            return false;
+        }
+
+        public override bool UnsubscribeIndex(string code)
+        {
+            return false;
+        }
+
+        private void IndexConclusionReceived()
+        {
+            try
+            {
+                var now = DateTime.Now;
+                var conclusion = new IndexConclusion();
+
+                
+
+                IndexConclusionQueue.Enqueue(conclusion);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
         public override StockMaster GetStockMaster(string code)
         {
             var stockMaster = new StockMaster();
@@ -672,5 +687,18 @@ namespace MTree.DaishinPublisher
             int remainCount = sessionObj.GetLimitRemainCount(LIMIT_TYPE.LT_SUBSCRIBE);
             return remainCount > 0;
         }
+
+        private void StockChartReceived()
+        {
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
     }
 }
