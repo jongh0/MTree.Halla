@@ -158,6 +158,7 @@ namespace MTree.DataStructure
         public bool CallingAttention { get; set; }
 
         // 자산(Kiwoom & Daishin)
+        [BsonElement("A")]
         public double Asset { get; set; }
 
         // Bookvalue Per Share (Kiwoom)
