@@ -12,8 +12,7 @@ namespace MTree.DaishinPublisher
 
         public override List<Candle> GetChart(string code, DateTime startDate, DateTime endDate, ChartTypes chartType)
         {
-            if (string.IsNullOrEmpty(code) == true ||
-                startDate == null || endDate == null || startDate > endDate)
+            if (string.IsNullOrEmpty(code) == true || startDate == null || endDate == null || startDate > endDate)
                 return null;
 
             try
@@ -24,7 +23,7 @@ namespace MTree.DaishinPublisher
                 stockChartObj.SetInputValue(1, '1'); // 1: 기간, 2: 개수
                 stockChartObj.SetInputValue(2, endDate.Year * 10000 + endDate.Month * 100 + endDate.Day); // 요청 종료일
                 stockChartObj.SetInputValue(3, startDate.Year * 10000 + startDate.Month * 100 + startDate.Day); // 요청 시작일
-                stockChartObj.SetInputValue(5, new int[] { 0, 1, 2, 3, 4, 5 }); // 요청 필드 (날짜, 시간, 시가, 고가, 저가, 종가)
+                stockChartObj.SetInputValue(5, new int[] { 0, 1, 2, 3, 4, 5, 8, 9 }); // 요청 필드 (날짜, 시간, 시가, 고가, 저가, 종가, 거래량, 거래대금)
                 stockChartObj.SetInputValue(6, Chart.ConvertToChar(chartType)); // 차트 구분
                 stockChartObj.SetInputValue(8, 0); // 0: 갭무보정, 1: 갭보정
                 stockChartObj.SetInputValue(9, 1); // 0: 무수정주가, 1: 수정주가
@@ -32,9 +31,10 @@ namespace MTree.DaishinPublisher
 
                 stockChartObj.BlockRequest();
 
+                CandleTypes candleType = Chart.ConvertToCandleType(chartType);
                 foreach (var candle in CandleList)
                 {
-
+                    candle.CandleType = candleType;
                 }
 
                 return CandleList;
@@ -60,11 +60,20 @@ namespace MTree.DaishinPublisher
 
                     ulong date = Convert.ToUInt64(stockChartObj.GetDataValue(0, i));
                     long time = Convert.ToInt64(stockChartObj.GetDataValue(1, i));
-                    candle.Start = new DateTime((int)(date / 10000), (int)(date % 10000 / 100), (int)(date % 100), (int)(time / 100), (int)(time % 100), 0);
+                    candle.Time = new DateTime((int)(date / 10000), (int)(date % 10000 / 100), (int)(date % 100), (int)(time / 100), (int)(time % 100), 0);
+
+                    // 2:시가(long or float)
                     candle.Open = Convert.ToSingle(stockChartObj.GetDataValue(2, i));
+                    // 3:고가(long or float)
                     candle.High = Convert.ToSingle(stockChartObj.GetDataValue(3, i));
+                    // 4:저가(long or float)
                     candle.Low = Convert.ToSingle(stockChartObj.GetDataValue(4, i));
+                    // 5:종가(long or float)
                     candle.Close = Convert.ToSingle(stockChartObj.GetDataValue(5, i));
+                    // 8:거래량(ulong or ulonglong) 주) 정밀도 만원 단위
+                    candle.Volume = Convert.ToUInt64(stockChartObj.GetDataValue(8, i));
+                    // 9:거래대금(ulonglong)
+                    candle.Value = Convert.ToUInt64(stockChartObj.GetDataValue(9, i));
 
                     CandleList.Add(candle);
                 }

@@ -40,17 +40,13 @@ namespace MTree.DataStructure
         public float High { get; set; }
 
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
-        [BsonElement("S")]
-        public DateTime Start { get; set; }
+        [BsonElement("T")]
+        public DateTime Time { get; set; }
 
-        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
-        [BsonElement("E")]
-        public DateTime End { get; set; }
+        [BsonElement("Va")]
+        public ulong Value { get; set; }
 
-        [BsonElement("TVa")]
-        public long TradeValue { get; set; }
-
-        [BsonElement("TVo")]
-        public long TradeVolume { get; set; }
+        [BsonElement("Vo")]
+        public ulong Volume { get; set; }
     }
 }

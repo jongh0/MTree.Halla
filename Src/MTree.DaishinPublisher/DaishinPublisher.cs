@@ -6,6 +6,7 @@ using MTree.Publisher;
 using System;
 using System.Collections.Generic;
 using System.ServiceModel;
+using System.Diagnostics;
 
 namespace MTree.DaishinPublisher
 {
@@ -56,8 +57,9 @@ namespace MTree.DaishinPublisher
                 StartIndexConclusionQueueTask();
 
 #if false // Chart test code
-                var chart = GetChart("A000020", new DateTime(2016, 3, 17), new DateTime(2016, 3, 17), ChartTypes.Min);
+                var chart = GetChart("A000020", new DateTime(2015, 3, 4), new DateTime(2015, 3, 4), ChartTypes.Min);
                 logger.Info($"Candle count: {chart.Count}");
+                Debugger.Break();
 #endif
             }
             catch (Exception ex)
