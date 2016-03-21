@@ -20,19 +20,22 @@ namespace MTree.DataStructure
             return $"{Code}/{Name}/{MarketType}";
         }
 
-        public static string ConvertToDaishinCode(CodeEntity entity)
+        public static string ConvertToDaishinCode(CodeEntity codeEntity)
         {
-            switch (entity.MarketType)
+            switch (codeEntity.MarketType)
             {
-                case MarketTypes.ELW:   return "J" + entity.Code;
-                case MarketTypes.ETN:   return "Q" + entity.Code;
-                default:                return "A" + entity.Code;
+                case MarketTypes.INDEX: return "U" + codeEntity.Code;
+                case MarketTypes.ELW:   return "J" + codeEntity.Code;
+                case MarketTypes.ETN:   return "Q" + codeEntity.Code;
+                default:                return "A" + codeEntity.Code;
             }
         }
 
         public static string RemovePrefix(string fullCode)
         {
-            if (fullCode?.Length > 6)
+            if (fullCode?.Length == 7)
+                return fullCode.Substring(1);
+            else if (fullCode?.Length == 4)
                 return fullCode.Substring(1);
             else
                 return fullCode;

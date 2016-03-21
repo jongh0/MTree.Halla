@@ -78,7 +78,7 @@ namespace MTree.DaishinPublisher
                 foreach (string fullCode in (object[])codeMgr.GetIndustryList())
                 {
                     var codeEntity = new CodeEntity();
-                    codeEntity.Code = fullCode.Substring(1);
+                    codeEntity.Code = CodeEntity.RemovePrefix(fullCode);
                     codeEntity.Name = codeMgr.GetIndustryName(fullCode);
                     codeEntity.MarketType = MarketTypes.INDEX;
 
@@ -88,7 +88,7 @@ namespace MTree.DaishinPublisher
                 foreach (string fullCode in (object[])codeMgr.GetKosdaqIndustry1List())
                 {
                     var codeEntity = new CodeEntity();
-                    codeEntity.Code = fullCode.Substring(1);
+                    codeEntity.Code = CodeEntity.RemovePrefix(fullCode);
                     codeEntity.Name = codeMgr.GetIndustryName(fullCode);
                     codeEntity.MarketType = MarketTypes.INDEX;
 
@@ -98,7 +98,7 @@ namespace MTree.DaishinPublisher
                 foreach (string fullCode in (object[])codeMgr.GetKosdaqIndustry2List())
                 {
                     var codeEntity = new CodeEntity();
-                    codeEntity.Code = fullCode.Substring(1);
+                    codeEntity.Code = CodeEntity.RemovePrefix(fullCode);
                     codeEntity.Name = codeMgr.GetIndustryName(fullCode);
                     codeEntity.MarketType = MarketTypes.INDEX;
 
@@ -110,7 +110,7 @@ namespace MTree.DaishinPublisher
                 foreach (string fullCode in (object[])codeMgr.GetStockListByMarket(CPE_MARKET_KIND.CPC_MARKET_KOSPI))
                 {
                     var codeEntity = new CodeEntity();
-                    codeEntity.Code = fullCode.Substring(1);
+                    codeEntity.Code = CodeEntity.RemovePrefix(fullCode);
                     codeEntity.Name = codeMgr.CodeToName(fullCode);
 
                     if (codeMgr.GetStockSectionKind(fullCode) == CPE_KSE_SECTION_KIND.CPC_KSE_SECTION_KIND_ETF)
@@ -128,7 +128,7 @@ namespace MTree.DaishinPublisher
                 foreach (string fullCode in (object[])codeMgr.GetStockListByMarket(CPE_MARKET_KIND.CPC_MARKET_KOSDAQ))
                 {
                     var codeEntity = new CodeEntity();
-                    codeEntity.Code = fullCode.Substring(1);
+                    codeEntity.Code = CodeEntity.RemovePrefix(fullCode);
                     codeEntity.Name = codeMgr.CodeToName(fullCode);
                     codeEntity.MarketType = MarketTypes.KOSDAQ;
                     codeList.Add(codeEntity.Code, codeEntity);
@@ -139,7 +139,7 @@ namespace MTree.DaishinPublisher
                 foreach (string fullCode in (object[])codeMgr.GetStockListByMarket((CPE_MARKET_KIND)5))
                 {
                     var codeEntity = new CodeEntity();
-                    codeEntity.Code = fullCode.Substring(1);
+                    codeEntity.Code = CodeEntity.RemovePrefix(fullCode);
                     codeEntity.Name = codeMgr.CodeToName(fullCode);
                     codeEntity.MarketType = MarketTypes.KONEX;
                     codeList.Add(codeEntity.Code, codeEntity);
@@ -150,7 +150,7 @@ namespace MTree.DaishinPublisher
                 foreach (string fullCode in (object[])codeMgr.GetStockListByMarket(CPE_MARKET_KIND.CPC_MARKET_FREEBOARD))
                 {
                     var codeEntity = new CodeEntity();
-                    codeEntity.Code = fullCode.Substring(1);
+                    codeEntity.Code = CodeEntity.RemovePrefix(fullCode);
                     codeEntity.Name = codeMgr.CodeToName(fullCode);
                     codeEntity.MarketType = MarketTypes.FREEBOARD;
                     codeList.Add(codeEntity.Code, codeEntity);
@@ -167,7 +167,7 @@ namespace MTree.DaishinPublisher
                         continue;
 
                     var codeEntity = new CodeEntity();
-                    codeEntity.Code = fullCode.Substring(1);
+                    codeEntity.Code = CodeEntity.RemovePrefix(fullCode);
                     codeEntity.Name = codeMgr.CodeToName(fullCode);
                     codeEntity.MarketType = MarketTypes.ELW;
                     codeList.Add(codeEntity.Code, codeEntity);
