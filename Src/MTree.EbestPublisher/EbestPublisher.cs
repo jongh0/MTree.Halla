@@ -57,8 +57,10 @@ namespace MTree.EbestPublisher
         private XAQueryClass warningObj2;
         #endregion
 
-        Dictionary<string, string> IndustryDictionary = new Dictionary<string, string>();
-
+        private Dictionary<string, string> industryDictionary = new Dictionary<string, string>();
+        private Dictionary<string, List<string>> warningListDic;
+        private string currentUpdatingWarningType;
+        private bool isWarningListUpdatedDone;
         public EbestPublisher() : base()
         {
             try
@@ -104,6 +106,12 @@ namespace MTree.EbestPublisher
                 warningObj1.ReceiveChartRealData += queryObj_ReceiveChartRealData;
                 warningObj1.ReceiveData += queryObj_ReceiveData;
                 warningObj1.ReceiveMessage += queryObj_ReceiveMessage;
+
+                warningObj2 = new XAQueryClass();
+                warningObj2.ResFileName = resFilePath + "\\t1405.res";
+                warningObj2.ReceiveChartRealData += queryObj_ReceiveChartRealData;
+                warningObj2.ReceiveData += queryObj_ReceiveData;
+                warningObj2.ReceiveMessage += queryObj_ReceiveMessage;
                 #endregion
 
                 #region Login
@@ -130,26 +138,28 @@ namespace MTree.EbestPublisher
 
                 //StartIndexConclusionQueueTask();
 
-#if false
-                Task.Run(() => {
-                    if (WaitLogin() == false)
-                    {
-                        logger.Error("Not loggedin state");
-                        return;
-                    }
-
-                    foreach (WarningTypes1 warningType in Enum.GetValues(typeof(WarningTypes1)))
-                    {
-                        GetWarningList(warningType);
-                    }
-                    
-                });
-#endif
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
             }
+
+            #region Warning List Update
+            var tast = Task.Run(() =>
+            {
+                isWarningListUpdatedDone = false;
+                foreach (WarningTypes1 warningType in Enum.GetValues(typeof(WarningTypes1)))
+                {
+                    GetWarningList(warningType);
+                }
+
+                foreach (WarningTypes2 warningType in Enum.GetValues(typeof(WarningTypes2)))
+                {
+                    GetWarningList(warningType);
+                }
+                isWarningListUpdatedDone = true;
+            });
+            #endregion
         }
 
         #region XAQuery
@@ -173,7 +183,9 @@ namespace MTree.EbestPublisher
             else if (szTrCode == "t8424")
                 IndexListReceived();
             else if (szTrCode == "t1404")
-                WarningListReceived();
+                WarningType1ListReceived();
+            else if (szTrCode == "t1405")
+                WarningType2ListReceived();
         }
 
         private void queryObj_ReceiveChartRealData(string szTrCode)
@@ -355,19 +367,19 @@ namespace MTree.EbestPublisher
                 double index = 0;
                 if (double.TryParse(temp, out index) == false)
                     logger.Error($"Index conclusion index error, {temp}");
-                conclusion.Index = index;
+                conclusion.Price = (float)index;
 
                 temp = indexSubscribingObj.GetFieldData("OutBlock", "volume");
-                double volumn = 0;
-                if (double.TryParse(temp, out volumn) == false)
+                long volume = 0;
+                if (long.TryParse(temp, out volume) == false)
                     logger.Error($"Index conclusion index error, {temp}");
-                conclusion.Volume = volumn * 1000;
+                conclusion.Amount = volume * 1000;
 
                 temp = indexSubscribingObj.GetFieldData("OutBlock", "value");
-                double value;
-                if (double.TryParse(temp, out value) == false)
+                long value;
+                if (long.TryParse(temp, out value) == false)
                     logger.Error($"Index conclusion value error, {temp}");
-                conclusion.Value = value;
+                conclusion.MarketCapitalization = value;
 
                 temp = indexSubscribingObj.GetFieldData("OutBlock", "upjo");
                 int upperLimitCount;
@@ -402,18 +414,18 @@ namespace MTree.EbestPublisher
                 if (PrevIndexConclusions.ContainsKey(conclusion.Code) == false)
                     PrevIndexConclusions.TryAdd(conclusion.Code, new IndexConclusion());
 
-                if (PrevIndexConclusions[conclusion.Code].Value == conclusion.Value && 
-                    PrevIndexConclusions[conclusion.Code].Volume == conclusion.Volume)
+                if (PrevIndexConclusions[conclusion.Code].MarketCapitalization == conclusion.MarketCapitalization && 
+                    PrevIndexConclusions[conclusion.Code].Amount == conclusion.Amount)
                     return;
 
-                double newReceived;
-                newReceived = conclusion.Value;
-                conclusion.Value = conclusion.Value - PrevIndexConclusions[conclusion.Code].Value;
-                PrevIndexConclusions[conclusion.Code].Value = newReceived;
+                long newReceived;
+                newReceived = conclusion.MarketCapitalization;
+                conclusion.MarketCapitalization = conclusion.MarketCapitalization - PrevIndexConclusions[conclusion.Code].MarketCapitalization;
+                PrevIndexConclusions[conclusion.Code].MarketCapitalization = newReceived;
 
-                newReceived = conclusion.Volume;
-                conclusion.Volume = conclusion.Volume - PrevIndexConclusions[conclusion.Code].Volume;
-                PrevIndexConclusions[conclusion.Code].Volume = newReceived;
+                newReceived = conclusion.Amount;
+                conclusion.Amount = conclusion.Amount - PrevIndexConclusions[conclusion.Code].Amount;
+                PrevIndexConclusions[conclusion.Code].Amount = newReceived;
 
                 IndexConclusionQueue.Enqueue(conclusion);
             }
@@ -476,11 +488,19 @@ namespace MTree.EbestPublisher
 
         public bool GetQuote(string code, ref StockMaster stockMaster)
         {
+            if(isWarningListUpdatedDone == false)
+            {
+                logger.Error($"Quoting failed, Code: {code}, Warning list update is not done yet.");
+                return false;
+            }
+
             if (Monitor.TryEnter(QuoteLock, QuoteLockTimeout) == false)
             {
                 logger.Error($"Quoting failed, Code: {code}, Can't obtaion lock object");
                 return false;
             }
+
+            QuoteInterval = 1000 / stockQuotingObj.GetTRCountPerSec("t1102");
 
             int ret = -1;
 
@@ -540,6 +560,8 @@ namespace MTree.EbestPublisher
                 logger.Error($"Quoting failed, Code: {code}, Can't obtaion lock object");
                 return false;
             }
+
+            QuoteInterval = 1000 / stockQuotingObj.GetTRCountPerSec("t1511");
 
             int ret = -1;
 
@@ -616,6 +638,83 @@ namespace MTree.EbestPublisher
                 else if (valueAltered == "기업분할")  QuotingStockMaster.ValueAlteredType = ValueAlteredTypes.Divestiture;
                 else if (valueAltered == "감자")      QuotingStockMaster.ValueAlteredType = ValueAlteredTypes.CapitalReduction;
                 else                                  QuotingStockMaster.ValueAlteredType = ValueAlteredTypes.None;
+
+                string suspended = stockQuotingObj.GetFieldData("t1102OutBlock", "info3", 0);
+                if (suspended == "suspended") QuotingStockMaster.TradingSuspend = true;
+                else QuotingStockMaster.TradingSuspend = false;
+
+                // 관리
+                if (warningListDic["AdministrativeIssue"].Contains(QuotingStockMaster.Code))
+                    QuotingStockMaster.AdministrativeIssue = true;
+                else
+                    QuotingStockMaster.AdministrativeIssue = false;
+
+                // 불성실공시
+                if (warningListDic["UnfairAnnouncement"].Contains(QuotingStockMaster.Code))
+                    QuotingStockMaster.UnfairAnnouncement = true;
+                else
+                    QuotingStockMaster.UnfairAnnouncement = false;
+
+                // 투자유의
+                if (warningListDic["InvestAttention"].Contains(QuotingStockMaster.Code))
+                    QuotingStockMaster.InvestAttention = true;
+                else
+                    QuotingStockMaster.InvestAttention = false;
+
+                // 투자환기
+                if (warningListDic["CallingAttention"].Contains(QuotingStockMaster.Code))
+                    QuotingStockMaster.CallingAttention = true;
+                else
+                    QuotingStockMaster.CallingAttention = false;
+
+                // 경고
+                if (warningListDic["InvestWarning"].Contains(QuotingStockMaster.Code))
+                    QuotingStockMaster.InvestWarning = true;
+                else
+                    QuotingStockMaster.InvestWarning = false;
+
+                // 매매정지
+                if (warningListDic["TradingHalt"].Contains(QuotingStockMaster.Code))
+                    QuotingStockMaster.TradingHalt = true;
+                else
+                    QuotingStockMaster.TradingHalt = false;
+
+                // 정리매매
+                if (warningListDic["CleaningTrade"].Contains(QuotingStockMaster.Code))
+                    QuotingStockMaster.CleaningTrade = true;
+                else
+                    QuotingStockMaster.CleaningTrade = false;
+
+                // 주의
+                if (warningListDic["InvestCaution"].Contains(QuotingStockMaster.Code))
+                    QuotingStockMaster.InvestCaution = true;
+                else
+                    QuotingStockMaster.InvestCaution = false;
+
+                // 위험
+                if (warningListDic["InvestmentRisk"].Contains(QuotingStockMaster.Code))
+                    QuotingStockMaster.InvestmentRisk = true;
+                else
+                    QuotingStockMaster.InvestmentRisk = false;
+
+                // 위험예고
+                if (warningListDic["InvestmentRiskNoticed"].Contains(QuotingStockMaster.Code))
+                    QuotingStockMaster.InvestmentRiskNoticed = true;
+                else
+                    QuotingStockMaster.InvestmentRiskNoticed = false;
+
+                // 단기과열
+                if (warningListDic["Overheated"].Contains(QuotingStockMaster.Code))
+                    QuotingStockMaster.Overheated = true;
+                else
+                    QuotingStockMaster.Overheated = false;
+
+                // 단기과열지정예고
+                if (warningListDic["OverheatNoticed"].Contains(QuotingStockMaster.Code))
+                    QuotingStockMaster.OverheatNoticed = true;
+                else
+                    QuotingStockMaster.OverheatNoticed = false;
+
             }
             catch (Exception ex)
             {
@@ -706,7 +805,7 @@ namespace MTree.EbestPublisher
                 logger.Error(ex);
             }
 
-            return IndustryDictionary;
+            return industryDictionary;
         }
 
         private void IndexListReceived()
@@ -715,36 +814,163 @@ namespace MTree.EbestPublisher
             int cnt = indexListObj.GetBlockCount("t8424OutBlock");
             for (int i = 0; i < cnt; i++)
             {
-                IndustryDictionary.Add(indexListObj.GetFieldData("t8424OutBlock", "upcode", i), indexListObj.GetFieldData("t8424OutBlock", "hname", i));
+                industryDictionary.Add(indexListObj.GetFieldData("t8424OutBlock", "upcode", i), indexListObj.GetFieldData("t8424OutBlock", "hname", i));
             }
             SetQuoting();
         }
-
+        
         private bool GetWarningList(WarningTypes1 warningType)
         {
-            warningObj1.SetFieldData("t1404InBlock", "gubun", 0, "0");
-            warningObj1.SetFieldData("t1404InBlock", "jongchk", 0, ((int)warningType).ToString());
-            int ret = warningObj1.Request(false);
-
-            if (ret > 0)
+            if (Monitor.TryEnter(QuoteLock, QuoteLockTimeout) == false)
             {
-                if (WaitQuoting() == true)
-                {
+                logger.Error($"Updating {warningType.ToString()} list fail. Can't obtaion lock object");
+                return false;
+            }
 
+            QuoteInterval = 1000 / stockQuotingObj.GetTRCountPerSec("t1404");
+
+            try
+            {
+                if (WaitLogin() == false)
+                {
+                    logger.Error($"Updating {warningType.ToString()} list fail, Not loggedin state");
+                    return false;
                 }
+
+                WaitQuoteInterval();
+
+                if (warningListDic == null)
+                {
+                    warningListDic = new Dictionary<string, List<string>>();
+                }
+                if (!warningListDic.ContainsKey(warningType.ToString()))
+                {
+                    warningListDic.Add(warningType.ToString(), new List<string>());
+                }
+                currentUpdatingWarningType = warningType.ToString();
+                warningObj1.SetFieldData("t1404InBlock", "gubun", 0, "0");
+                warningObj1.SetFieldData("t1404InBlock", "jongchk", 0, ((int)warningType).ToString());
+                int ret = warningObj1.Request(false);
+
+                if (ret > 0)
+                {
+                    if (WaitQuoting() == true)
+                    {
+                        logger.Info($"Updating {warningType.ToString()} list done");
+                    }
+                    else
+                    {
+                        logger.Error($"Updating {warningType.ToString()} list timeout.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+            finally
+            {
+                currentUpdatingWarningType = "";
+                Monitor.Exit(QuoteLock);
             }
             return true;
         }
 
-        private void WarningListReceived()
+        private bool GetWarningList(WarningTypes2 warningType)
+        {
+            if (Monitor.TryEnter(QuoteLock, QuoteLockTimeout) == false)
+            {
+                logger.Error($"Updating {warningType.ToString()} list fail. Can't obtaion lock object");
+                return false;
+            }
+
+            QuoteInterval = 1000 / stockQuotingObj.GetTRCountPerSec("t1405");
+
+            try
+            {
+                if (WaitLogin() == false)
+                {
+                    logger.Error($"Updating {warningType.ToString()} list fail, Not loggedin state");
+                    return false;
+                }
+
+                WaitQuoteInterval();
+
+                if (warningListDic == null)
+                {
+                    warningListDic = new Dictionary<string, List<string>>();
+                }
+                if (!warningListDic.ContainsKey(warningType.ToString()))
+                {
+                    warningListDic.Add(warningType.ToString(), new List<string>());
+                }
+                currentUpdatingWarningType = warningType.ToString();
+                warningObj2.SetFieldData("t1405InBlock", "gubun", 0, "0");
+                warningObj2.SetFieldData("t1405InBlock", "jongchk", 0, ((int)warningType).ToString());
+                int ret = warningObj2.Request(false);
+
+                if (ret > 0)
+                {
+                    if (WaitQuoting() == true)
+                    {
+                        logger.Info($"Updating {warningType.ToString()} list done");
+                    }
+                    else
+                    {
+                        logger.Error($"Updating {warningType.ToString()} list timeout.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+            finally
+            {
+                currentUpdatingWarningType = "";
+                Monitor.Exit(QuoteLock);
+            }
+            return true;
+        }
+
+        private void WarningType1ListReceived()
         {
             int cnt = warningObj1.GetBlockCount("t1404OutBlock1");
             for (int i = 0; i < cnt; i++)
             {
-                logger.Trace(warningObj1.GetFieldData("t1404OutBlock1", "shcode", i));
+                warningListDic[currentUpdatingWarningType].Add(warningObj1.GetFieldData("t1404OutBlock1", "shcode", i));
             }
-            SetQuoting();
+            string continueCode = warningObj1.GetFieldData("t1404OutBlock", "cts_shcode", 0);
+            if (continueCode != "")
+            {
+                warningObj1.SetFieldData("t1404InBlock", "cts_shcode", 0, continueCode);
+                warningObj1.Request(true);
+            }
+            else
+            {
+                SetQuoting();
+            }
         }
+
+        private void WarningType2ListReceived()
+        {
+            int cnt = warningObj2.GetBlockCount("t1405OutBlock1");
+            for (int i = 0; i < cnt; i++)
+            {
+                warningListDic[currentUpdatingWarningType].Add(warningObj2.GetFieldData("t1405OutBlock1", "shcode", i));
+            }
+            string continueCode = warningObj2.GetFieldData("t1405OutBlock", "cts_shcode", 0);
+            if (continueCode != "")
+            {
+                warningObj2.SetFieldData("t1405InBlock", "cts_shcode", 0, continueCode);
+                warningObj2.Request(true);
+            }
+            else
+            {
+                SetQuoting();
+            }
+        }
+
         protected override void ServiceClient_Opened(object sender, EventArgs e)
         {
             // Login이 완료된 후에 Publisher contract 등록
