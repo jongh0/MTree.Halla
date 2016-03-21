@@ -16,22 +16,35 @@ namespace MTree.DaishinPublisher
                 startDate == null || endDate == null || startDate > endDate)
                 return null;
 
-            CandleList.Clear();
+            try
+            {
+                CandleList.Clear();
 
-            stockChartObj.SetInputValue(0, code);
-            stockChartObj.SetInputValue(1, '1'); // 1: 기간, 2: 개수
-            stockChartObj.SetInputValue(2, endDate.Year * 10000 + endDate.Month * 100 + endDate.Day); // 요청 종료일
-            stockChartObj.SetInputValue(3, startDate.Year * 10000 + startDate.Month * 100 + startDate.Day); // 요청 시작일
-            //stockChartObj.SetInputValue(4, uint.MaxValue);
-            stockChartObj.SetInputValue(5, new int[] { 0, 1, 2, 3, 4, 5}); // 요청 필드 (날짜, 시간, 시가, 고가, 저가, 종가)
-            stockChartObj.SetInputValue(6, Chart.ConvertToChar(chartType)); // 차트 구분
-            stockChartObj.SetInputValue(8, 0); // 0: 갭무보정, 1: 갭보정
-            stockChartObj.SetInputValue(9, 1); // 0: 무수정주가, 1: 수정주가
-            stockChartObj.SetInputValue(10, 3); // 1: 시간외거래량 모두 포함, 3: 시간외거래량 모두 제외
+                stockChartObj.SetInputValue(0, code);
+                stockChartObj.SetInputValue(1, '1'); // 1: 기간, 2: 개수
+                stockChartObj.SetInputValue(2, endDate.Year * 10000 + endDate.Month * 100 + endDate.Day); // 요청 종료일
+                stockChartObj.SetInputValue(3, startDate.Year * 10000 + startDate.Month * 100 + startDate.Day); // 요청 시작일
+                stockChartObj.SetInputValue(5, new int[] { 0, 1, 2, 3, 4, 5 }); // 요청 필드 (날짜, 시간, 시가, 고가, 저가, 종가)
+                stockChartObj.SetInputValue(6, Chart.ConvertToChar(chartType)); // 차트 구분
+                stockChartObj.SetInputValue(8, 0); // 0: 갭무보정, 1: 갭보정
+                stockChartObj.SetInputValue(9, 1); // 0: 무수정주가, 1: 수정주가
+                stockChartObj.SetInputValue(10, 1); // 1: 시간외거래량 모두 포함, 3: 시간외거래량 모두 제외
 
-            stockChartObj.BlockRequest();
+                stockChartObj.BlockRequest();
 
-            return CandleList;
+                foreach (var candle in CandleList)
+                {
+
+                }
+
+                return CandleList;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+
+            return null;
         }
 
         private void StockChartReceived()

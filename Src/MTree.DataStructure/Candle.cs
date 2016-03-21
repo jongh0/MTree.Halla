@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,9 +17,13 @@ namespace MTree.DataStructure
         Month,
     }
 
+    [BsonDiscriminator(RootClass = true)]
     [Serializable]
     public class Candle
     {
+        [BsonId]
+        public ObjectId Id { get; set; }
+
         [BsonElement("CT")]
         public CandleTypes CandleType { get; set; }
 

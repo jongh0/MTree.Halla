@@ -18,37 +18,25 @@ namespace MTree.DataStructure
         Month,
     }
 
-    [BsonDiscriminator(RootClass = true)]
     [Serializable]
     public class Chart
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        [BsonId]
-        public ObjectId Id { get; set; }
-
-        [BsonElement("C")]
         public string Code { get; set; }
 
-        [BsonElement("CT")]
-        public ChartTypes ChartType { get; set; }
+        public ChartTypes ChartType { get; set; } = ChartTypes.Tick;
 
-        [BsonElement("IA")]
-        public bool IsAdjusted { get; set; }
+        public bool IsAdjusted { get; set; } = false;
 
-        [BsonIgnore]
         public SortedList<DateTime, Candle> TickCandles { get; set; }
 
-        [BsonIgnore]
         public SortedList<DateTime, Candle> MinCandles { get; set; }
 
-        [BsonIgnore]
         public SortedList<DateTime, Candle> DayCandles { get; set; }
 
-        [BsonIgnore]
         public SortedList<DateTime, Candle> WeekCandles { get; set; }
 
-        [BsonIgnore]
         public SortedList<DateTime, Candle> MonthCandles { get; set; }
 
         public Chart ConvertType(ChartTypes chartType, TimeSpan interval)
@@ -137,6 +125,18 @@ namespace MTree.DataStructure
                 case 'W': return        ChartTypes.Week;
                 case 'M': return        ChartTypes.Month;
                 default:                return ChartTypes.Tick;
+            }
+        }
+
+        public static CandleTypes ConvertToCandleType(ChartTypes type)
+        {
+            switch (type)
+            {
+                case ChartTypes.Min:    return CandleTypes.Min;
+                case ChartTypes.Day:    return CandleTypes.Day;
+                case ChartTypes.Week:   return CandleTypes.Week;
+                case ChartTypes.Month:  return CandleTypes.Month;
+                default:                return CandleTypes.Tick;
             }
         }
     }

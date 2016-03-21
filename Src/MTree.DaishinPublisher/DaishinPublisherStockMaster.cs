@@ -41,18 +41,13 @@ namespace MTree.DaishinPublisher
 
                 if (ret == 0)
                 {
-                    if (WaitQuoting() == true)
+                    if (QuotingStockMaster.Code != string.Empty)
                     {
-                        if (QuotingStockMaster.Code != string.Empty)
-                        {
-                            logger.Info($"Quoting done. Code: {code}");
-                            return true;
-                        }
-
-                        logger.Error($"Quoting fail. Code: {code}");
+                        logger.Info($"Quoting done. Code: {code}");
+                        return true;
                     }
 
-                    logger.Error($"Quoting timeout. Code: {code}");
+                    logger.Error($"Quoting fail. Code: {code}");
                 }
                 else
                 {
@@ -149,10 +144,6 @@ namespace MTree.DaishinPublisher
             {
                 QuotingStockMaster.Code = string.Empty;
                 logger.Error(ex);
-            }
-            finally
-            {
-                SetQuoting();
             }
         }
     }
