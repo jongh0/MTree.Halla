@@ -71,9 +71,9 @@ namespace MTree.DaishinPublisher
                     // 5:종가(long or float)
                     candle.Close = Convert.ToSingle(stockChartObj.GetDataValue(5, i));
                     // 8:거래량(ulong or ulonglong) 주) 정밀도 만원 단위
-                    candle.Volume = Convert.ToUInt64(stockChartObj.GetDataValue(8, i));
+                    candle.Volume = Convert.ToUInt64(stockChartObj.GetDataValue(6, i));
                     // 9:거래대금(ulonglong)
-                    candle.Value = Convert.ToUInt64(stockChartObj.GetDataValue(9, i));
+                    candle.Value = Convert.ToUInt64(stockChartObj.GetDataValue(7, i));
 
                     CandleList.Add(candle);
                 }
