@@ -8,6 +8,7 @@ using MTree.Configuration;
 using MTree.Consumer;
 using MTree.Utility;
 using MTree.RealTimeProvider;
+using System.Collections.Concurrent;
 
 namespace MTree.HistorySaver
 {
@@ -16,55 +17,32 @@ namespace MTree.HistorySaver
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private object lockObject { get; } = new object();
+        #region Lock
+        private object ChartLock { get; } = new object();
+        private object BiddingPriceLock { get; } = new object();
+        private object StockMasterLock { get; } = new object();
+        private object StockConclusionLock { get; } = new object();
+        private object IndexConclusionLock { get; } = new object();
+        #endregion
 
-        private IMongoCollection<BiddingPrice> BiddingPriceCollection { get; set; }
-        private IMongoCollection<StockConclusion> StockConclusionCollection { get; set; }
-        private IMongoCollection<IndexConclusion> IndexConclusionCollection { get; set; }
-        private IMongoCollection<CircuitBreak> CircuitBreakCollection { get; set; }
-        private IMongoCollection<StockMaster> StockMasterCollection { get; set; }
+        #region Collections
+        private ConcurrentDictionary<string, IMongoCollection<Candle>> ChartCollections { get; set; } = new ConcurrentDictionary<string, IMongoCollection<Candle>>();
+        private ConcurrentDictionary<string, IMongoCollection<BiddingPrice>> BiddingPriceCollections { get; set; } = new ConcurrentDictionary<string, IMongoCollection<BiddingPrice>>();
+        private ConcurrentDictionary<string, IMongoCollection<StockMaster>> StockMasterCollections { get; set; } = new ConcurrentDictionary<string, IMongoCollection<StockMaster>>();
+        private ConcurrentDictionary<string, IMongoCollection<StockConclusion>> StockConclusionCollections { get; set; } = new ConcurrentDictionary<string, IMongoCollection<StockConclusion>>();
+        private ConcurrentDictionary<string, IMongoCollection<IndexConclusion>> IndexConclusionCollections { get; set; } = new ConcurrentDictionary<string, IMongoCollection<IndexConclusion>>();
+        private ConcurrentDictionary<string, IMongoCollection<CircuitBreak>> CircuitBreakCollections { get; set; } = new ConcurrentDictionary<string, IMongoCollection<CircuitBreak>>();
+        #endregion
 
         public HistorySaver()
         {
             try
             {
                 MongoDbProvider.Instance.Connect();
-                BiddingPriceCollection = MongoDbProvider.Instance.GetDatabase(DbTypes.BiddingPrice).GetCollection<BiddingPrice>(Config.Database.TodayCollectionName);
-                StockConclusionCollection = MongoDbProvider.Instance.GetDatabase(DbTypes.StockConclusion).GetCollection<StockConclusion>(Config.Database.TodayCollectionName);
-                IndexConclusionCollection = MongoDbProvider.Instance.GetDatabase(DbTypes.IndexConclusion).GetCollection<IndexConclusion>(Config.Database.TodayCollectionName);
-                CircuitBreakCollection = MongoDbProvider.Instance.GetDatabase(DbTypes.CircuitBreak).GetCollection<CircuitBreak>(nameof(CircuitBreak)); // TODO : circuit break collection name 정해야함
-
-                CreateIndex();
 
                 TaskUtility.Run("HistorySaver.BiddingPriceQueue", QueueTaskCancelToken, ProcessBiddingPriceQueue);
                 TaskUtility.Run("HistorySaver.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
                 TaskUtility.Run("HistorySaver.IndexConclusionQueue", QueueTaskCancelToken, ProcessIndexConclusionQueue);
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-            }
-        }
-
-        private void CreateIndex()
-        {
-            try
-            {
-                var biddingPriceKeys = Builders<BiddingPrice>.IndexKeys.Ascending(i => i.Code).Ascending(i => i.Time);
-                BiddingPriceCollection.Indexes.CreateOneAsync(biddingPriceKeys);
-                logger.Info("Bidding price collection index created");
-
-                var stockConclusionKeys = Builders<StockConclusion>.IndexKeys.Ascending(i => i.Code).Ascending(i => i.Time);
-                StockConclusionCollection.Indexes.CreateOneAsync(stockConclusionKeys);
-                logger.Info("Stock conclusion collection index created");
-
-                var indexConclusionKeys = Builders<IndexConclusion>.IndexKeys.Ascending(i => i.Code).Ascending(i => i.Time);
-                IndexConclusionCollection.Indexes.CreateOneAsync(indexConclusionKeys);
-                logger.Info("Index conclusion collection index created");
-
-                var circuitBreakKeys = Builders<CircuitBreak>.IndexKeys.Ascending(i => i.Code).Ascending(i => i.Time);
-                CircuitBreakCollection.Indexes.CreateOneAsync(circuitBreakKeys);
-                logger.Info("Circuit break collection index created");
             }
             catch (Exception ex)
             {
@@ -86,11 +64,36 @@ namespace MTree.HistorySaver
         {
             try
             {
-                BiddingPrice biddingPrice;
-                if (BiddingPriceQueue.TryDequeue(out biddingPrice) == true)
-                    BiddingPriceCollection.InsertOne(biddingPrice);
+                BiddingPrice item;
+                if (BiddingPriceQueue.TryDequeue(out item) == true)
+                {
+                    IMongoCollection<BiddingPrice> collection = null;
+
+                    if (BiddingPriceCollections.ContainsKey(item.Code) == false)
+                    {
+                        lock (BiddingPriceLock)
+                        {
+                            if (collection == null)
+                            {
+                                collection = MongoDbProvider.Instance.GetDatabase(DbTypes.BiddingPrice).GetCollection<BiddingPrice>(item.Code);
+                                var keys = Builders<BiddingPrice>.IndexKeys.Ascending(i => i.Time);
+                                collection.Indexes.CreateOneAsync(keys);
+
+                                BiddingPriceCollections.TryAdd(item.Code, collection);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        collection = BiddingPriceCollections[item.Code];
+                    }
+
+                    collection?.InsertOne(item);
+                }
                 else
+                {
                     Thread.Sleep(10);
+                }
             }
             catch (Exception ex)
             {
@@ -102,11 +105,36 @@ namespace MTree.HistorySaver
         {
             try
             {
-                StockConclusion conclusion;
-                if (StockConclusionQueue.TryDequeue(out conclusion) == true)
-                    StockConclusionCollection.InsertOne(conclusion);
+                StockConclusion item;
+                if (StockConclusionQueue.TryDequeue(out item) == true)
+                {
+                    IMongoCollection<StockConclusion> collection = null;
+
+                    if (StockConclusionCollections.ContainsKey(item.Code) == false)
+                    {
+                        lock (StockConclusionLock)
+                        {
+                            if (collection == null)
+                            {
+                                collection = MongoDbProvider.Instance.GetDatabase(DbTypes.StockConclusion).GetCollection<StockConclusion>(item.Code);
+                                var keys = Builders<StockConclusion>.IndexKeys.Ascending(i => i.Time);
+                                collection.Indexes.CreateOneAsync(keys);
+
+                                StockConclusionCollections.TryAdd(item.Code, collection);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        collection = StockConclusionCollections[item.Code];
+                    }
+
+                    collection?.InsertOne(item);
+                }
                 else
+                {
                     Thread.Sleep(10);
+                }
             }
             catch (Exception ex)
             {
@@ -118,11 +146,36 @@ namespace MTree.HistorySaver
         {
             try
             {
-                IndexConclusion conclusion;
-                if (IndexConclusionQueue.TryDequeue(out conclusion) == true)
-                    IndexConclusionCollection.InsertOne(conclusion);
+                IndexConclusion item;
+                if (IndexConclusionQueue.TryDequeue(out item) == true)
+                {
+                    IMongoCollection<IndexConclusion> collection = null;
+
+                    if (IndexConclusionCollections.ContainsKey(item.Code) == false)
+                    {
+                        lock (IndexConclusionLock)
+                        {
+                            if (collection == null)
+                            {
+                                collection = MongoDbProvider.Instance.GetDatabase(DbTypes.IndexConclusion).GetCollection<IndexConclusion>(item.Code);
+                                var keys = Builders<IndexConclusion>.IndexKeys.Ascending(i => i.Time);
+                                collection.Indexes.CreateOneAsync(keys);
+
+                                IndexConclusionCollections.TryAdd(item.Code, collection);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        collection = IndexConclusionCollections[item.Code];
+                    }
+
+                    collection?.InsertOne(item);
+                }
                 else
+                {
                     Thread.Sleep(10);
+                }
             }
             catch (Exception ex)
             {
@@ -151,7 +204,7 @@ namespace MTree.HistorySaver
         public override void ConsumeCircuitBreak(CircuitBreak circuitBreak)
         {
             base.ConsumeCircuitBreak(circuitBreak);
-            CircuitBreakCollection.InsertOne(circuitBreak);
+            MongoDbProvider.Instance.GetDatabase(DbTypes.CircuitBreak).GetCollection<CircuitBreak>(nameof(CircuitBreak)).InsertOne(circuitBreak);
         }
 
         public override void ConsumeStockMaster(StockMaster stockMaster)
@@ -160,33 +213,26 @@ namespace MTree.HistorySaver
 
             try
             {
-                if (stockMaster == null || string.IsNullOrEmpty(stockMaster.Code) == true)
-                {
-                    logger.Error("Stock master has a problem");
-                    return;
-                }
+                IMongoCollection<StockMaster> collection = null;
 
-                if (StockMasterCollection == null)
+                if (StockMasterCollections.ContainsKey(stockMaster.Code) == false)
                 {
-                    lock (lockObject)
+                    lock (StockMasterLock)
                     {
-                        if (StockMasterCollection == null)
+                        if (collection == null)
                         {
-                            var db = MongoDbProvider.Instance.GetDatabase(DbTypes.StockMaster);
-                            db.DropCollection(Config.Database.TodayCollectionName);
-                            logger.Info($"Stock master collection droped, {Config.Database.TodayCollectionName}");
-
-                            StockMasterCollection = db.GetCollection<StockMaster>(Config.Database.TodayCollectionName);
-
-                            var keys = Builders<StockMaster>.IndexKeys.Ascending(i => i.Code).Ascending(i => i.Time);
-                            StockMasterCollection.Indexes.CreateOneAsync(keys);
-                            logger.Info($"Stock master collection index created, {Config.Database.TodayCollectionName}");
+                            collection = MongoDbProvider.Instance.GetDatabase(DbTypes.StockMaster).GetCollection<StockMaster>(stockMaster.Code);
+                            var keys = Builders<StockMaster>.IndexKeys.Ascending(i => i.Time);
+                            collection.Indexes.CreateOneAsync(keys);
                         }
                     }
                 }
+                else
+                {
+                    collection = StockMasterCollections[stockMaster.Code];
+                }
 
-                StockMasterCollection.InsertOne(stockMaster);
-                logger.Trace($"Stock master saved, {stockMaster.Code}");
+                collection?.InsertOne(stockMaster);
             }
             catch (Exception ex)
             {
