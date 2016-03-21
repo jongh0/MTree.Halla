@@ -79,6 +79,7 @@ namespace MTree.DaishinSessionManager
             }
             finally
             {
+                Thread.Sleep(5000);
                 logger.Info("Application finished");
             }
         }
