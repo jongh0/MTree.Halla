@@ -211,6 +211,8 @@ namespace MTree.HistorySaver
         {
             base.ConsumeStockMaster(stockMaster);
 
+            int startTick = Environment.TickCount;
+
             try
             {
                 IMongoCollection<StockMaster> collection = null;
@@ -232,11 +234,17 @@ namespace MTree.HistorySaver
                     collection = StockMasterCollections[stockMaster.Code];
                 }
 
+                var filter = Builders<StockMaster>.Filter.Eq(i => i.Time, stockMaster.Time);
+                collection?.DeleteMany(filter);
                 collection?.InsertOne(stockMaster);
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
+            }
+            finally
+            {
+                logger.Info($"{stockMaster.Code} stock master saved, Tick: {Environment.TickCount - startTick}");
             }
         }
     }

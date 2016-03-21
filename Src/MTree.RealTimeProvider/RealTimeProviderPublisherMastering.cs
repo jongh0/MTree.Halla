@@ -38,7 +38,7 @@ namespace MTree.RealTimeProvider
                     var mastering = new StockMastering();
                     mastering.Stock.Code = codeEntity.Code;
                     mastering.Stock.Name = codeEntity.Name;
-                    mastering.Stock.Time = now;
+                    mastering.Stock.Time = new DateTime(now.Year, now.Month, now.Day);
 
                     StockMasteringList.Add(mastering);
                 }
