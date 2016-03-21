@@ -10,14 +10,8 @@ namespace MTree.DataStructure
     [Serializable]
     public class IndexConclusion : Conclusion
     {
-        [BsonElement("I")]
-        public double Index { get; set; }
-
-        [BsonElement("Vo")]
-        public double Volume { get; set; }
-
         [BsonElement("Va")]
-        public double Value { get; set; }
+        public long MarketCapitalization { get; set; }
 
         [BsonElement("ULIC")]
         public int UpperLimitedItemCount { get; set; }
@@ -38,9 +32,7 @@ namespace MTree.DataStructure
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(base.ToString());
-            sb.AppendLine($"{nameof(Index)}: {Index}");
-            sb.AppendLine($"{nameof(Volume)}: {Volume}");
-            sb.AppendLine($"{nameof(Value)}: {Value}");
+            sb.AppendLine($"{nameof(MarketCapitalization)}: {MarketCapitalization}");
             sb.AppendLine($"{nameof(UpperLimitedItemCount)}: {UpperLimitedItemCount}");
             sb.AppendLine($"{nameof(IncreasingItemCount)}: {IncreasingItemCount}");
             sb.AppendLine($"{nameof(SteadyItemCount)}: {SteadyItemCount}");
