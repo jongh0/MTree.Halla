@@ -200,7 +200,15 @@ namespace MTree.DaishinPublisher
         private void stockCurObj_Received()
         {
             LastFirmCommunicateTick = Environment.TickCount;
-            StockConclusionReceived();
+            string fullcode = stockCurObj.GetHeaderValue(0).ToString();
+            if (fullcode[0] == 'U')
+            {
+                IndexConclusionReceived();
+            }
+            else
+            {
+                StockConclusionReceived();
+            }
         }
 
         private void stockJpbidObj_Received()
