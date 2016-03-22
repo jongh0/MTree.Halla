@@ -50,7 +50,10 @@ namespace MTree.DbProvider
                     lock (lockObject)
                     {
                         if (_intance == null)
+                        {
                             _intance = new MongoDbProvider();
+                            _intance.Connect();
+                        }
                     }
                 }
 
@@ -58,25 +61,12 @@ namespace MTree.DbProvider
             }
         }
 
-        private void RegisterDbClass<T>()
-        {
-            try
-            {
-                if (BsonClassMap.IsClassMapRegistered(typeof(T)) == false)
-                {
-                    BsonClassMap.RegisterClassMap<T>();
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
         public void Connect()
         {
             try
             {
+                if (Client != null) return;
+
                 Client = new MongoClient(connectionString);
                 ChartDb = Client.GetDatabase(chartDbString);
                 BiddingPriceDb = Client.GetDatabase(biddingPriceDbString);
@@ -86,7 +76,7 @@ namespace MTree.DbProvider
                 CircuitBreakDb = Client.GetDatabase(circuitBreakDbString);
                 TestDb = Client.GetDatabase(testDbString);
 
-                logger.Info("MongoDb Connected");
+                logger.Info($"{GetType().Name} MongoDb Connected");
             }
             catch (Exception ex)
             {
