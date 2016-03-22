@@ -269,7 +269,7 @@ namespace MTree.HistorySaver
                 if (type == MessageTypes.CloseClient)
                 {
                     var sb = new StringBuilder();
-                    sb.AppendLine("<HistorySaver result>");
+                    sb.AppendLine("HistorySaver result");
                     sb.AppendLine($"StockMaster : {stockMasterCount}");
                     sb.AppendLine($"StockConclusion : {stockConclusionCount}");
                     sb.AppendLine($"IndexConclusion : {indexConclusionCount}");
