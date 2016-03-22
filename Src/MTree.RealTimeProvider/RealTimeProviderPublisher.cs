@@ -146,9 +146,6 @@ namespace MTree.RealTimeProvider
 
                         if (isMasterProcess == true)
                         {
-                            contract.Callback.NotifyMessage(MessageTypes.MarketStartTime, string.Empty);
-                            contract.Callback.NotifyMessage(MessageTypes.MarketEndTime, string.Empty);
-
                             var codeList = contract.Callback.GetCodeList();
 
                             foreach (KeyValuePair<string, CodeEntity> codeEntity in codeList)
@@ -165,6 +162,9 @@ namespace MTree.RealTimeProvider
                             }
 
                             logger.Info($"Stock code: {StockCodeList.Count}, Index code: {IndexCodeList.Count}");
+
+                            contract.Callback.NotifyMessage(MessageTypes.MarketStartTime, string.Empty);
+                            contract.Callback.NotifyMessage(MessageTypes.MarketEndTime, string.Empty);
 
                             LaunchClientProcess();
 
