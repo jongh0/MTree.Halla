@@ -9,7 +9,7 @@ namespace MTree.RealTimeProvider
     public interface IRealTimePublisher
     {
         [OperationContract(IsOneWay = true)]
-        void SendMessage(MessageTypes type, string message);
+        void NotifyMessage(MessageTypes type, string message);
 
         [OperationContract]
         void RegisterContract(Guid clientId, PublishContract contract);
@@ -33,7 +33,7 @@ namespace MTree.RealTimeProvider
     public interface IRealTimePublisherCallback
     {
         [OperationContract(IsOneWay = true)]
-        void SendMessage(MessageTypes type, string message);
+        void NotifyMessage(MessageTypes type, string message);
 
         [OperationContract]
         Dictionary<string, CodeEntity> GetCodeList();
@@ -42,7 +42,7 @@ namespace MTree.RealTimeProvider
         StockMaster GetStockMaster(string code);
 
         [OperationContract]
-        List<Candle> GetChart(string code, DateTime startDate, DateTime endDate, ChartTypes chartType);
+        List<Candle> GetChart(string code, DateTime startDate, DateTime endDate, CandleTypes candleType);
 
         [OperationContract]
         bool IsSubscribable();

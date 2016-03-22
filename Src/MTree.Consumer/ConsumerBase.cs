@@ -78,9 +78,9 @@ namespace MTree.Consumer
             CommunicateTimer.Stop();
         }
 
-        public override void SendMessage(MessageTypes type, string message)
+        public override void NotifyMessage(MessageTypes type, string message)
         {
-            if (type == MessageTypes.Close)
+            if (type == MessageTypes.CloseClient)
             {
                 try
                 {
@@ -102,7 +102,7 @@ namespace MTree.Consumer
                 }
             }
 
-            base.SendMessage(type, message);
+            base.NotifyMessage(type, message);
         }
 
         protected override void OnCommunicateTimer(object sender, System.Timers.ElapsedEventArgs e)
@@ -115,7 +115,7 @@ namespace MTree.Consumer
                     if (ServiceClient.State == CommunicationState.Opened)
                     {
                         LastWcfCommunicateTick = Environment.TickCount;
-                        ServiceClient.SendMessage(MessageTypes.None, string.Empty);
+                        ServiceClient.NotifyMessage(MessageTypes.NoOperation, string.Empty);
                         
                         logger.Trace($"[{GetType().Name}] Keep wcf connection");
                     }

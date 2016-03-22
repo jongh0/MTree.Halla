@@ -14,9 +14,9 @@ namespace MTree.Publisher
     {
         public PublisherClient(InstanceContext callbackInstance, string endpointConfigurationName) : base(callbackInstance, endpointConfigurationName) { }
 
-        public void SendMessage(MessageTypes type, string message)
+        public void NotifyMessage(MessageTypes type, string message)
         {
-            base.Channel.SendMessage(type, message);
+            base.Channel.NotifyMessage(type, message);
         }
 
         public void RegisterContract(Guid clientId, PublishContract contract)

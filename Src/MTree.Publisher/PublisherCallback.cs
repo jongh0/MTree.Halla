@@ -11,7 +11,7 @@ namespace MTree.Publisher
 {
     public class PublisherCallback : RealTimeBase, IRealTimePublisherCallback
     {
-        public virtual void SendMessage(MessageTypes type, string message)
+        public virtual void NotifyMessage(MessageTypes type, string message)
         {
         }
 
@@ -25,7 +25,7 @@ namespace MTree.Publisher
             return null;
         }
 
-        public virtual List<Candle> GetChart(string code, DateTime startDate, DateTime endDate, ChartTypes chartType)
+        public virtual List<Candle> GetChart(string code, DateTime startDate, DateTime endDate, CandleTypes chartType)
         {
             return null;
         }

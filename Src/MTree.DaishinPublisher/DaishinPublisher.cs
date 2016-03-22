@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.ServiceModel;
 using System.Diagnostics;
+using MTree.RealTimeProvider;
+using System.Threading.Tasks;
 
 namespace MTree.DaishinPublisher
 {
@@ -17,6 +19,7 @@ namespace MTree.DaishinPublisher
 
         #region Daishin Specific
         private CpCybosClass sessionObj;
+        private CpCodeMgrClass codeMgrObj;
         private StockMstClass stockMstObj;
         private StockCurClass stockCurObj;
         private StockJpbidClass stockJpbidObj;
@@ -31,6 +34,8 @@ namespace MTree.DaishinPublisher
 
                 sessionObj = new CpCybosClass();
                 sessionObj.OnDisconnect += sessionObj_OnDisconnect;
+
+                codeMgrObj = new CpCodeMgrClass();
 
                 stockMstObj = new StockMstClass();
                 stockMstObj.Received += stockMstObj_Received;
@@ -74,14 +79,12 @@ namespace MTree.DaishinPublisher
 
             try
             {
-                var codeMgr = new CpCodeMgrClass();
-
                 #region Index
-                foreach (string fullCode in (object[])codeMgr.GetIndustryList())
+                foreach (string fullCode in (object[])codeMgrObj.GetIndustryList())
                 {
                     var codeEntity = new CodeEntity();
                     codeEntity.Code = CodeEntity.RemovePrefix(fullCode);
-                    codeEntity.Name = codeMgr.GetIndustryName(fullCode);
+                    codeEntity.Name = codeMgrObj.GetIndustryName(fullCode);
                     codeEntity.MarketType = MarketTypes.INDEX;
 
                     if (codeList.ContainsKey(codeEntity.Code) == false)
@@ -90,11 +93,11 @@ namespace MTree.DaishinPublisher
                         logger.Error($"{codeEntity.Code} code already exists");
                 }
 
-                foreach (string fullCode in (object[])codeMgr.GetKosdaqIndustry1List())
+                foreach (string fullCode in (object[])codeMgrObj.GetKosdaqIndustry1List())
                 {
                     var codeEntity = new CodeEntity();
                     codeEntity.Code = CodeEntity.RemovePrefix(fullCode);
-                    codeEntity.Name = codeMgr.GetIndustryName(fullCode);
+                    codeEntity.Name = codeMgrObj.GetIndustryName(fullCode);
                     codeEntity.MarketType = MarketTypes.INDEX;
 
                     if (codeList.ContainsKey(codeEntity.Code) == false)
@@ -103,11 +106,11 @@ namespace MTree.DaishinPublisher
                         logger.Error($"{codeEntity.Code} code already exists");
                 }
 
-                foreach (string fullCode in (object[])codeMgr.GetKosdaqIndustry2List())
+                foreach (string fullCode in (object[])codeMgrObj.GetKosdaqIndustry2List())
                 {
                     var codeEntity = new CodeEntity();
                     codeEntity.Code = CodeEntity.RemovePrefix(fullCode);
-                    codeEntity.Name = codeMgr.GetIndustryName(fullCode);
+                    codeEntity.Name = codeMgrObj.GetIndustryName(fullCode);
                     codeEntity.MarketType = MarketTypes.INDEX;
 
                     if (codeList.ContainsKey(codeEntity.Code) == false)
@@ -118,13 +121,13 @@ namespace MTree.DaishinPublisher
                 #endregion
 
                 #region KOSPI & ETF & ETN
-                foreach (string fullCode in (object[])codeMgr.GetStockListByMarket(CPE_MARKET_KIND.CPC_MARKET_KOSPI))
+                foreach (string fullCode in (object[])codeMgrObj.GetStockListByMarket(CPE_MARKET_KIND.CPC_MARKET_KOSPI))
                 {
                     var codeEntity = new CodeEntity();
                     codeEntity.Code = CodeEntity.RemovePrefix(fullCode);
-                    codeEntity.Name = codeMgr.CodeToName(fullCode);
+                    codeEntity.Name = codeMgrObj.CodeToName(fullCode);
 
-                    if (codeMgr.GetStockSectionKind(fullCode) == CPE_KSE_SECTION_KIND.CPC_KSE_SECTION_KIND_ETF)
+                    if (codeMgrObj.GetStockSectionKind(fullCode) == CPE_KSE_SECTION_KIND.CPC_KSE_SECTION_KIND_ETF)
                         codeEntity.MarketType = MarketTypes.ETF;
                     else if (fullCode[0] == 'Q')
                         codeEntity.MarketType = MarketTypes.ETN;
@@ -139,11 +142,11 @@ namespace MTree.DaishinPublisher
                 #endregion
 
                 #region KOSDAQ
-                foreach (string fullCode in (object[])codeMgr.GetStockListByMarket(CPE_MARKET_KIND.CPC_MARKET_KOSDAQ))
+                foreach (string fullCode in (object[])codeMgrObj.GetStockListByMarket(CPE_MARKET_KIND.CPC_MARKET_KOSDAQ))
                 {
                     var codeEntity = new CodeEntity();
                     codeEntity.Code = CodeEntity.RemovePrefix(fullCode);
-                    codeEntity.Name = codeMgr.CodeToName(fullCode);
+                    codeEntity.Name = codeMgrObj.CodeToName(fullCode);
                     codeEntity.MarketType = MarketTypes.KOSDAQ;
 
                     if (codeList.ContainsKey(codeEntity.Code) == false)
@@ -154,11 +157,11 @@ namespace MTree.DaishinPublisher
                 #endregion
 
                 #region KONEX
-                foreach (string fullCode in (object[])codeMgr.GetStockListByMarket((CPE_MARKET_KIND)5))
+                foreach (string fullCode in (object[])codeMgrObj.GetStockListByMarket((CPE_MARKET_KIND)5))
                 {
                     var codeEntity = new CodeEntity();
                     codeEntity.Code = CodeEntity.RemovePrefix(fullCode);
-                    codeEntity.Name = codeMgr.CodeToName(fullCode);
+                    codeEntity.Name = codeMgrObj.CodeToName(fullCode);
                     codeEntity.MarketType = MarketTypes.KONEX;
 
                     if (codeList.ContainsKey(codeEntity.Code) == false)
@@ -169,11 +172,11 @@ namespace MTree.DaishinPublisher
                 #endregion
 
                 #region Freeboard
-                foreach (string fullCode in (object[])codeMgr.GetStockListByMarket(CPE_MARKET_KIND.CPC_MARKET_FREEBOARD))
+                foreach (string fullCode in (object[])codeMgrObj.GetStockListByMarket(CPE_MARKET_KIND.CPC_MARKET_FREEBOARD))
                 {
                     var codeEntity = new CodeEntity();
                     codeEntity.Code = CodeEntity.RemovePrefix(fullCode);
-                    codeEntity.Name = codeMgr.CodeToName(fullCode);
+                    codeEntity.Name = codeMgrObj.CodeToName(fullCode);
                     codeEntity.MarketType = MarketTypes.FREEBOARD;
 
                     if (codeList.ContainsKey(codeEntity.Code) == false)
@@ -194,7 +197,7 @@ namespace MTree.DaishinPublisher
 
                     var codeEntity = new CodeEntity();
                     codeEntity.Code = CodeEntity.RemovePrefix(fullCode);
-                    codeEntity.Name = codeMgr.CodeToName(fullCode);
+                    codeEntity.Name = codeMgrObj.CodeToName(fullCode);
                     codeEntity.MarketType = MarketTypes.ELW;
 
                     if (codeList.ContainsKey(codeEntity.Code) == false)
@@ -255,6 +258,28 @@ namespace MTree.DaishinPublisher
         {
             int remainCount = sessionObj.GetLimitRemainCount(LIMIT_TYPE.LT_SUBSCRIBE);
             return remainCount > 0;
+        }
+
+        public override void NotifyMessage(MessageTypes type, string message)
+        {
+            if (type == MessageTypes.MarketStartTime)
+            {
+                Task.Run(() =>
+                {
+                    short time = codeMgrObj.GetMarketStartTime();
+                    ServiceClient.NotifyMessage(MessageTypes.MarketStartTime, time.ToString());
+                });
+            }
+            else if (type == MessageTypes.MarketEndTime)
+            {
+                Task.Run(() =>
+                {
+                    short time = codeMgrObj.GetMarketEndTime();
+                    ServiceClient.NotifyMessage(MessageTypes.MarketEndTime, time.ToString());
+                });
+            }
+
+            base.NotifyMessage(type, message);
         }
     }
 }

@@ -484,12 +484,12 @@ namespace MTree.KiwoomPublisher
             base.ServiceClient_Opened(sender, e);
         }
 
-        public override void SendMessage(MessageTypes type, string message)
+        public override void NotifyMessage(MessageTypes type, string message)
         {
-            if (type == MessageTypes.Close)
+            if (type == MessageTypes.CloseClient)
                 Logout();
 
-            base.SendMessage(type, message);
+            base.NotifyMessage(type, message);
         }
     }
 }

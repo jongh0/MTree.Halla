@@ -305,7 +305,7 @@ namespace MTree.RealTimeProvider
                 {
                     foreach (var contract in contracts)
                     {
-                        contract.Callback.SendMessage(MessageTypes.Close, string.Empty);
+                        contract.Callback.NotifyMessage(MessageTypes.CloseClient, string.Empty);
                     }
                 }
             }

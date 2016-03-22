@@ -12,7 +12,7 @@ namespace MTree.Consumer
 {
     public class ConsumerCallback : RealTimeBase, IRealTimeConsumerCallback
     {
-        public virtual void SendMessage(MessageTypes type, string message)
+        public virtual void NotifyMessage(MessageTypes type, string message)
         {
             LastWcfCommunicateTick = Environment.TickCount;
         }
