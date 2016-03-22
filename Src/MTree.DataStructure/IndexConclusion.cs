@@ -10,7 +10,7 @@ namespace MTree.DataStructure
     [Serializable]
     public class IndexConclusion : Conclusion
     {
-        [BsonElement("Va")]
+        [BsonElement("MC")]
         public long MarketCapitalization { get; set; }
 
         [BsonElement("ULIC")]

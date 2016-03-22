@@ -30,7 +30,7 @@ namespace MTree.DataStructure
         public string Name { get; set; }
 
         [BsonElement("MT")]
-        public MarketTypes MarketType { get; set; } = MarketTypes.Unknown;
+        public MarketTypes MarketType { get; set; }
 
         // 결산월(Daishin)
         [BsonElement("SM")]
@@ -138,11 +138,11 @@ namespace MTree.DataStructure
         public bool UnfairAnnouncement { get; set; }
 
         // 단기과열(Ebest)
-        [BsonElement("OH")]
+        [BsonElement("Ov")]
         public bool Overheated { get; set; }
 
         // 단기과열지정예고(Ebest)
-        [BsonElement("OHN")]
+        [BsonElement("ON")]
         public bool OverheatNoticed { get; set; }
 
         // 정리매매(Ebest)
@@ -158,7 +158,7 @@ namespace MTree.DataStructure
         public bool CallingAttention { get; set; }
 
         // 자산(Kiwoom & Daishin)
-        [BsonElement("A")]
+        [BsonElement("As")]
         public double Asset { get; set; }
 
         // Bookvalue Per Share (Kiwoom)
