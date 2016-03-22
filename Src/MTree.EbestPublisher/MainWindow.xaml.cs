@@ -32,17 +32,29 @@ namespace MTree.EbestPublisher
 #if false
             Task.Run(() =>
             {
-                Publisher.GetStockCodeList();
+                //Publisher.GetStockCodeList();
                 DataStructure.StockMaster master = new DataStructure.StockMaster();
+                
                 //for (int i = 0; i < 100; i++)
                 {
                     int startTick = Environment.TickCount;
-                    bool result = Publisher.GetQuote("000020", ref master);
-                    Trace.WriteLine(result + ">>>>>>>>>>>>>>> " + (Environment.TickCount - startTick));
+                    //bool result = Publisher.GetQuote("001000", ref master);
+                    master = Publisher.GetStockMaster("000020");
+                    //Trace.WriteLine(result + ">>>>>>>>>>>>>>> " + (Environment.TickCount - startTick));
                 }
                 Debugger.Break();
             });
 #endif
+#if false
+            Task.Run(() => {
+                Dictionary<string, string>  list = Publisher.GetStockCodeList();
+                foreach (KeyValuePair<string, string> code in list)
+                {
+                    Publisher.SubscribeCircuitBreak(code.Key);
+                }
+            });
+#endif
+      
         }
     }
 }

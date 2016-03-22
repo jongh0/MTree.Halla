@@ -11,6 +11,7 @@ using MTree.Utility;
 using System.Timers;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace MTree.EbestPublisher
 {
@@ -48,8 +49,10 @@ namespace MTree.EbestPublisher
         
         private XARealClass indexSubscribingObj;
         private XARealClass viSubscribingObj;
+        private XARealClass dviSubscribingObj;
 
         private XAQueryClass indexListObj;
+        private XAQueryClass codeListObj;
         private XAQueryClass indexQuotingObj;
         private XAQueryClass stockQuotingObj;
 
@@ -58,9 +61,14 @@ namespace MTree.EbestPublisher
         #endregion
 
         private Dictionary<string, string> industryDictionary = new Dictionary<string, string>();
+        private Dictionary<string, string> stockDictionary = new Dictionary<string, string>();
+
         private Dictionary<string, List<string>> warningListDic;
         private string currentUpdatingWarningType;
-        private bool isWarningListUpdatedDone;
+
+        private ManualResetEvent WarningListUpdatedEvent { get; } = new ManualResetEvent(false);
+        private int WarningListUpdateTimeout { get; } = 1000 * 30;
+
         public EbestPublisher() : base()
         {
             try
@@ -80,6 +88,10 @@ namespace MTree.EbestPublisher
                 viSubscribingObj = new XARealClass();
                 viSubscribingObj.ReceiveRealData += realObj_ReceiveRealData;
                 viSubscribingObj.ResFileName = resFilePath + "\\VI_.res";
+
+                dviSubscribingObj = new XARealClass();
+                dviSubscribingObj.ReceiveRealData += realObj_ReceiveRealData;
+                dviSubscribingObj.ResFileName = resFilePath + "\\DVI.res";
                 #endregion
 
                 #region XAQuery
@@ -88,7 +100,13 @@ namespace MTree.EbestPublisher
                 indexListObj.ReceiveChartRealData += queryObj_ReceiveChartRealData;
                 indexListObj.ReceiveData += queryObj_ReceiveData;
                 indexListObj.ReceiveMessage += queryObj_ReceiveMessage;
-                
+
+                codeListObj = new XAQueryClass();
+                codeListObj.ResFileName = resFilePath + "\\t8430.res";
+                codeListObj.ReceiveChartRealData += queryObj_ReceiveChartRealData;
+                codeListObj.ReceiveData += queryObj_ReceiveData;
+                codeListObj.ReceiveMessage += queryObj_ReceiveMessage;
+
                 indexQuotingObj = new XAQueryClass();
                 indexQuotingObj.ResFileName = resFilePath + "\\t1511.res";
                 indexQuotingObj.ReceiveChartRealData += queryObj_ReceiveChartRealData;
@@ -137,7 +155,6 @@ namespace MTree.EbestPublisher
                 #endregion
 
                 //StartIndexConclusionQueueTask();
-
             }
             catch (Exception ex)
             {
@@ -147,7 +164,8 @@ namespace MTree.EbestPublisher
             #region Warning List Update
             var tast = Task.Run(() =>
             {
-                isWarningListUpdatedDone = false;
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
                 foreach (WarningTypes1 warningType in Enum.GetValues(typeof(WarningTypes1)))
                 {
                     GetWarningList(warningType);
@@ -157,7 +175,9 @@ namespace MTree.EbestPublisher
                 {
                     GetWarningList(warningType);
                 }
-                isWarningListUpdatedDone = true;
+                SetWarninglistUpdated();
+                sw.Stop();
+                logger.Trace(sw.Elapsed);
             });
             #endregion
         }
@@ -182,6 +202,8 @@ namespace MTree.EbestPublisher
                 IndexMasterReceived();
             else if (szTrCode == "t8424")
                 IndexListReceived();
+            else if (szTrCode == "t8430")
+                StockListReceived();
             else if (szTrCode == "t1404")
                 WarningType1ListReceived();
             else if (szTrCode == "t1405")
@@ -204,6 +226,8 @@ namespace MTree.EbestPublisher
                 IndexConclusionReceived(szTrCode);
             else if (szTrCode == "VI_")
                 VolatilityInterruptionReceived(szTrCode);
+            else if (szTrCode == "DVI")
+                AfterVolatilityInterruptionReceived(szTrCode);
         }
         #endregion
 
@@ -447,8 +471,12 @@ namespace MTree.EbestPublisher
             {
                 viSubscribingObj.SetFieldData("InBlock", "shcode", code);
                 viSubscribingObj.AdviseRealData();
-
                 subscribeCount++;
+
+                dviSubscribingObj.SetFieldData("InBlock", "shcode", code);
+                dviSubscribingObj.AdviseRealData();
+                subscribeCount++;
+
                 logger.Info($"Subscribe circuit break success, Code: {code}");
                 return true;
             }
@@ -466,6 +494,7 @@ namespace MTree.EbestPublisher
             try
             {
                 CircuitBreak circuitBreak = new CircuitBreak();
+                circuitBreak.Time = DateTime.Now;
                 circuitBreak.Code = viSubscribingObj.GetFieldData("OutBlock", "shcode");
                 circuitBreak.CircuitBreakType = (CircuitBreakTypes)Convert.ToInt32(viSubscribingObj.GetFieldData("OutBlock", "vi_gubun"));
 
@@ -486,9 +515,35 @@ namespace MTree.EbestPublisher
             }
         }
 
+        private void AfterVolatilityInterruptionReceived(string szTrCode)
+        {
+            try
+            {
+                CircuitBreak circuitBreak = new CircuitBreak();
+                circuitBreak.Time = DateTime.Now;
+                circuitBreak.Code = dviSubscribingObj.GetFieldData("OutBlock", "shcode");
+                circuitBreak.CircuitBreakType = (CircuitBreakTypes)Convert.ToInt32(dviSubscribingObj.GetFieldData("OutBlock", "vi_gubun"));
+
+                if (circuitBreak.CircuitBreakType == CircuitBreakTypes.StaticInvoke)
+                    circuitBreak.BasePrice = Convert.ToSingle(dviSubscribingObj.GetFieldData("OutBlock", "svi_recprice"));
+                else if (circuitBreak.CircuitBreakType == CircuitBreakTypes.DynamicInvoke)
+                    circuitBreak.BasePrice = Convert.ToSingle(dviSubscribingObj.GetFieldData("OutBlock", "dvi_recprice"));
+                else
+                    circuitBreak.BasePrice = 0;
+
+                circuitBreak.InvokePrice = Convert.ToSingle(dviSubscribingObj.GetFieldData("OutBlock", "vi_trgprice"));
+                
+                ServiceClient.PublishCircuitBreak(circuitBreak);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
         public bool GetQuote(string code, ref StockMaster stockMaster)
         {
-            if(isWarningListUpdatedDone == false)
+            if(WaitWarninglistUpdated() == false)
             {
                 logger.Error($"Quoting failed, Code: {code}, Warning list update is not done yet.");
                 return false;
@@ -513,9 +568,10 @@ namespace MTree.EbestPublisher
                 }
 
                 WaitQuoteInterval();
-
+                
                 logger.Info($"Start quoting, Code: {code}");
                 QuotingStockMaster = stockMaster;
+                QuotingStockMaster.Code = code;
 
                 stockQuotingObj.SetFieldData("t1102InBlock", "shcode", 0, code);
                 ret = stockQuotingObj.Request(false);
@@ -627,6 +683,13 @@ namespace MTree.EbestPublisher
                     logger.Error($"Stock master circulating volume error, {cvStr}");
 
                 QuotingStockMaster.CirculatingVolume = cv * 1000;  //유통주식수
+
+                string listDateStr = stockQuotingObj.GetFieldData("t1102OutBlock", "listdate", 0); // 상장일
+                int listDate = 0;
+                if (int.TryParse(listDateStr, out listDate) == true)
+                {
+                    QuotingStockMaster.ListedDate = new DateTime(listDate / 10000, listDate / 100 % 100, listDate % 100);
+                }
 
                 string valueAltered = stockQuotingObj.GetFieldData("t1102OutBlock", "info1", 0);
                 if (valueAltered == "권배락")         QuotingStockMaster.ValueAlteredType = ValueAlteredTypes.ExRightDividend;
@@ -770,15 +833,13 @@ namespace MTree.EbestPublisher
 
         public  Dictionary<string, string> GetIndexCodeList()
         {
-            Dictionary<string, string> list = new Dictionary<string, string>();
-
             int ret = -1;
             try
             {
                 if (WaitLogin() == false)
                 {
                     logger.Error($"Get industry list fail. Not loggedin state");
-                    return list;
+                    return null;
                 }
 
                 WaitQuoteInterval();
@@ -808,9 +869,87 @@ namespace MTree.EbestPublisher
             return industryDictionary;
         }
 
+        public Dictionary<string, string> GetStockCodeList()
+        {
+            int ret = -1;
+            try
+            {
+                if (WaitLogin() == false)
+                {
+                    logger.Error($"Get stock list fail. Not loggedin state");
+                    return null;
+                }
+
+                WaitQuoteInterval();
+
+                codeListObj.SetFieldData("t8430InBlock", "gubun", 0, "0");
+                ret = codeListObj.Request(false);
+
+                if (ret > 0)
+                {
+                    if (WaitQuoting() == true)
+                    {
+                        logger.Error("Quoting stock list success");
+                    }
+
+                    logger.Error("Quoting stock list fail");
+                }
+                else
+                {
+                    logger.Error($"Quoting stock list fail. Quoting result: {ret}");
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+
+            return stockDictionary;
+        }
+
+        public override Dictionary<string, CodeEntity> GetCodeList()
+        {
+            var codeList = new Dictionary<string, CodeEntity>();
+
+            try
+            {
+                foreach (KeyValuePair<string, string> code in GetIndexCodeList())
+                {
+                    var codeEntity = new CodeEntity();
+                    codeEntity.Code = code.Key;
+                    codeEntity.Name = code.Value;
+                    codeEntity.MarketType = MarketTypes.INDEX;
+                    if (codeList.ContainsKey(codeEntity.Code) == false)
+                        codeList.Add(codeEntity.Code, codeEntity);
+                    else
+                        logger.Error($"{codeEntity.Code} code already exists");
+
+                }
+
+                foreach (KeyValuePair<string, string> code in GetStockCodeList())
+                {
+                    var codeEntity = new CodeEntity();
+                    codeEntity.Code = code.Key;
+                    codeEntity.Name = code.Value;
+                    codeEntity.MarketType = MarketTypes.Unknown;
+                    if (codeList.ContainsKey(codeEntity.Code) == false)
+                        codeList.Add(codeEntity.Code, codeEntity);
+                    else
+                        logger.Error($"{codeEntity.Code} code already exists");
+                }
+
+                logger.Info($"Code list query done, Count: {codeList.Count}");
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+
+            return codeList;
+        }
+
         private void IndexListReceived()
         {
-
             int cnt = indexListObj.GetBlockCount("t8424OutBlock");
             for (int i = 0; i < cnt; i++)
             {
@@ -818,7 +957,18 @@ namespace MTree.EbestPublisher
             }
             SetQuoting();
         }
-        
+
+        private void StockListReceived()
+        {
+            int cnt = codeListObj.GetBlockCount("t8430OutBlock");
+           
+            for (int i = 0; i < cnt; i++)
+            {
+                stockDictionary.Add(codeListObj.GetFieldData("t8430OutBlock", "shcode", i), codeListObj.GetFieldData("t8430OutBlock", "hname", i));
+            }
+            SetQuoting();
+        }
+
         private bool GetWarningList(WarningTypes1 warningType)
         {
             if (Monitor.TryEnter(QuoteLock, QuoteLockTimeout) == false)
@@ -856,7 +1006,7 @@ namespace MTree.EbestPublisher
                 {
                     if (WaitQuoting() == true)
                     {
-                        logger.Info($"Updating {warningType.ToString()} list done");
+                        logger.Info($"Updating {warningType.ToString()} list done. count:{warningListDic[warningType.ToString()].Count}");
                     }
                     else
                     {
@@ -913,7 +1063,7 @@ namespace MTree.EbestPublisher
                 {
                     if (WaitQuoting() == true)
                     {
-                        logger.Info($"Updating {warningType.ToString()} list done");
+                        logger.Info($"Updating {warningType.ToString()} list done. count:{warningListDic[warningType.ToString()].Count}");
                     }
                     else
                     {
@@ -971,10 +1121,21 @@ namespace MTree.EbestPublisher
             }
         }
 
+        protected bool WaitWarninglistUpdated()
+        {
+            return WarningListUpdatedEvent.WaitOne(WarningListUpdateTimeout);
+        }
+
+        protected void SetWarninglistUpdated()
+        {
+            WarningListUpdatedEvent.Set();
+        }
+        
         protected override void ServiceClient_Opened(object sender, EventArgs e)
         {
             // Login이 완료된 후에 Publisher contract 등록
-            WaitLogin(); 
+            WaitLogin();
+            WaitWarninglistUpdated();
             base.ServiceClient_Opened(sender, e);
         }
 

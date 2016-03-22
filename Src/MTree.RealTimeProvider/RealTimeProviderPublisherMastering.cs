@@ -38,6 +38,7 @@ namespace MTree.RealTimeProvider
                     var mastering = new StockMastering();
                     mastering.Stock.Code = codeEntity.Code;
                     mastering.Stock.Name = codeEntity.Name;
+                    mastering.Stock.MarketType = codeEntity.MarketType;
                     mastering.Stock.Time = new DateTime(now.Year, now.Month, now.Day);
 
                     StockMasteringList.Add(mastering);
@@ -432,7 +433,22 @@ namespace MTree.RealTimeProvider
                         return;
                     }
 
-                    //dest.PreviousVolume = source.PreviousVolume; // => Daishin에서 조회
+                    dest.TradingSuspend = source.TradingHalt;
+                    dest.AdministrativeIssue = source.AdministrativeIssue;
+                    dest.UnfairAnnouncement = source.UnfairAnnouncement;
+                    dest.InvestAttention = source.InvestAttention;
+                    dest.CallingAttention = source.CallingAttention;
+                    dest.InvestWarning = source.InvestWarning;
+                    dest.TradingHalt = source.TradingHalt;
+                    dest.CleaningTrade = source.CleaningTrade;
+                    dest.InvestCaution = source.InvestCaution;
+                    dest.InvestmentRisk = source.InvestmentRisk;
+                    dest.InvestmentRiskNoticed = source.InvestmentRiskNoticed;
+                    dest.Overheated = source.Overheated;
+                    dest.OverheatNoticed = source.OverheatNoticed;
+
+                    dest.ListedDate = source.ListedDate;
+                    
                     dest.CirculatingVolume = source.CirculatingVolume;
                     dest.ValueAlteredType = source.ValueAlteredType;
 
