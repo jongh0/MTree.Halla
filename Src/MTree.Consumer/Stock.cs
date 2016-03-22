@@ -1,6 +1,8 @@
-﻿using MTree.DataStructure;
+﻿using MTree.Configuration;
+using MTree.DataStructure;
 using System;
 using System.Collections.Concurrent;
+using System.Text;
 
 namespace MTree.Consumer
 {
@@ -12,28 +14,25 @@ namespace MTree.Consumer
 
         public string Code { get; set; }
 
-        public DateTime LastConcludedTime { get; set; }
+        public DateTime LastTime { get; set; }
 
         public float LastValue { get; set; }
 
         public MarketTypes MarketType { get; set; }
-
-        public Stock()
-        {
-        }
 
         public Stock(string code)
         {
             Code = code;
         }
 
-        public Chart GetChart(ChartTypes chartType, DateTime target, TimeSpan interval)
+        public Chart GetChart(ChartTypes chartType, DateTime startDate, DateTime endDate)
         {
-            throw new NotImplementedException();
+            return new Chart(chartType, startDate, endDate);
         }
 
-        public StockMaster GetMaster(DateTime target)
+        public StockMaster GetMaster(DateTime date)
         {
+            var targetDate = new DateTime(date.Year, date.Month, date.Day);
             throw new NotImplementedException();
         }
 
@@ -56,6 +55,17 @@ namespace MTree.Consumer
             }
 
             return null;
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"{nameof(Code)}: {Code}");
+            sb.AppendLine($"{nameof(LastTime)}: {LastTime}");
+            sb.AppendLine($"{nameof(LastValue)}: {LastValue}");
+            sb.AppendLine($"{nameof(MarketType)}: {MarketType}");
+
+            return sb.ToString();
         }
     }
 }

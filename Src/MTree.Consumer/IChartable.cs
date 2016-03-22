@@ -13,8 +13,8 @@ namespace MTree.Consumer
 
         float LastValue { get; set; }
 
-        DateTime LastConcludedTime { get; set; }
+        DateTime LastTime { get; set; }
 
-        Chart GetChart(ChartTypes chartType, DateTime target, TimeSpan interval);
+        Chart GetChart(ChartTypes chartType, DateTime startDate, DateTime endDate);
     }
 }

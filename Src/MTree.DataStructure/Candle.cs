@@ -17,36 +17,67 @@ namespace MTree.DataStructure
         Month,
     }
 
-    [BsonDiscriminator(RootClass = true)]
     [Serializable]
-    public class Candle
+    public class Candle : Subscribable
     {
-        [BsonId]
-        public ObjectId Id { get; set; }
-
         [BsonElement("CT")]
         public CandleTypes CandleType { get; set; }
 
-        [BsonElement("O")]
+        [BsonElement("Op")]
         public float Open { get; set; }
 
-        [BsonElement("C")]
+        [BsonElement("Cl")]
         public float Close { get; set; }
 
-        [BsonElement("L")]
+        [BsonElement("Lo")]
         public float Low { get; set; }
 
-        [BsonElement("H")]
+        [BsonElement("Hi")]
         public float High { get; set; }
-
-        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
-        [BsonElement("T")]
-        public DateTime Time { get; set; }
 
         [BsonElement("Va")]
         public ulong Value { get; set; }
 
         [BsonElement("Vo")]
         public ulong Volume { get; set; }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(base.ToString());
+            sb.AppendLine($"{nameof(CandleType)}: {CandleType}");
+            sb.AppendLine($"{nameof(Open)}: {Open}");
+            sb.AppendLine($"{nameof(Close)}: {Close}");
+            sb.AppendLine($"{nameof(Low)}: {Low}");
+            sb.AppendLine($"{nameof(High)}: {High}");
+            sb.AppendLine($"{nameof(Value)}: {Value}");
+            sb.AppendLine($"{nameof(Volume)}: {Volume}");
+
+            return sb.ToString();
+        }
+
+        public static char ConvertToCharType(CandleTypes type)
+        {
+            switch (type)
+            {
+                case CandleTypes.Min: return 'm';
+                case CandleTypes.Day: return 'D';
+                case CandleTypes.Week: return 'W';
+                case CandleTypes.Month: return 'M';
+                default: return 'T';
+            }
+        }
+
+        public static CandleTypes ConvertToCandleType(char type)
+        {
+            switch (type)
+            {
+                case 'm': return CandleTypes.Min;
+                case 'D': return CandleTypes.Day;
+                case 'W': return CandleTypes.Week;
+                case 'M': return CandleTypes.Month;
+                default: return CandleTypes.Tick;
+            }
+        }
     }
 }

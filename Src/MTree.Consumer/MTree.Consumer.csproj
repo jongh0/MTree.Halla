@@ -31,6 +31,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MongoDB.Bson, Version=2.2.3.3, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MongoDB.Bson.2.2.3\lib\net45\MongoDB.Bson.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MongoDB.Driver, Version=2.2.3.3, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MongoDB.Driver.2.2.3\lib\net45\MongoDB.Driver.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MongoDB.Driver.Core, Version=2.2.3.3, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MongoDB.Driver.Core.2.2.3\lib\net45\MongoDB.Driver.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.2.3\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
@@ -47,6 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Chart.cs" />
     <Compile Include="Index.cs" />
     <Compile Include="Stock.cs" />
     <Compile Include="ConsumerCallback.cs" />
@@ -61,13 +74,25 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MTree.Configuration\MTree.Configuration.csproj">
+      <Project>{9c52064a-188b-449a-89a1-de3a9dd3f766}</Project>
+      <Name>MTree.Configuration</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MTree.DataStructure\MTree.DataStructure.csproj">
       <Project>{da1959a9-15fa-47aa-98ac-3844a723fea1}</Project>
       <Name>MTree.DataStructure</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MTree.DbProvider\MTree.DbProvider.csproj">
+      <Project>{57195e80-20a3-4fd0-83c8-92af91784dda}</Project>
+      <Name>MTree.DbProvider</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MTree.RealTimeProvider\MTree.RealTimeProvider.csproj">
       <Project>{c9620f6e-d254-45f4-81c1-f33b0855fadc}</Project>
       <Name>MTree.RealTimeProvider</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MTree.Utility\MTree.Utility.csproj">
+      <Project>{d8291168-4d81-4acd-81c4-da122a249102}</Project>
+      <Name>MTree.Utility</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

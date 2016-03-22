@@ -30,7 +30,8 @@ namespace MTree.DataStructure
 
     [BsonDiscriminator(RootClass = true)]
     [BsonKnownTypes(typeof(BiddingPrice), 
-                    typeof(CircuitBreak), 
+                    typeof(CircuitBreak),
+                    typeof(Candle),
                     typeof(IndexConclusion), 
                     typeof(StockConclusion), 
                     typeof(StockMaster),

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 
 namespace MTree.Configuration
 {
@@ -14,6 +15,9 @@ namespace MTree.Configuration
 
         [JsonIgnore]
         public string DateTimeFormat { get; } = "yyyy-MM-dd HH:mm:ss.fff";
+
+        [JsonIgnore]
+        public DateTime DefaultStartDate { get; } = new DateTime(2016, 1, 1);
 
         public bool OfflineMode { get; set; } = false;
 
