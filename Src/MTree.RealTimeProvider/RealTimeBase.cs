@@ -11,8 +11,10 @@ namespace MTree.RealTimeProvider
 {
     public enum MessageTypes
     {
-        None,
-        Close,
+        NoOperation,
+        CloseClient,
+        MarketStartTime,
+        MarketEndTime,
     }
 
     public class RealTimeBase

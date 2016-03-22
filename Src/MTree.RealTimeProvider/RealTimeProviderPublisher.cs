@@ -139,13 +139,16 @@ namespace MTree.RealTimeProvider
                     else
                     {
                         bool isMasterProcess = (contract.Type == ProcessTypes.DaishinMaster);
-                        //if (contract.Type == ProcessTypes.DaishinMaster) contract.Type = ProcessTypes.Daishin;
+                        if (contract.Type == ProcessTypes.DaishinMaster) contract.Type = ProcessTypes.Daishin;
 
                         PublishContracts.TryAdd(clientId, contract);
                         logger.Info($"{contract.ToString()} contract registered / {clientId}");
 
                         if (isMasterProcess == true)
                         {
+                            contract.Callback.NotifyMessage(MessageTypes.MarketStartTime, string.Empty);
+                            contract.Callback.NotifyMessage(MessageTypes.MarketEndTime, string.Empty);
+
                             var codeList = contract.Callback.GetCodeList();
 
                             foreach (KeyValuePair<string, CodeEntity> codeEntity in codeList)
