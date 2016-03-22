@@ -215,7 +215,7 @@ namespace MTree.RealTimeProvider
         private void StartCodeDistributing()
         {
             DistributeStockCode();
-            //DistributeIndexCode();
+            DistributeIndexCode();
             DistributeBiddingCode();
         }
 
@@ -308,7 +308,42 @@ namespace MTree.RealTimeProvider
         private void DistributeIndexCode()
         {
             logger.Info("Index code distribution, Start");
-            logger.Info("Index code distribution, Done");
+            int index = 0;
+
+            foreach (var contract in DaishinContracts)
+            {
+                while (true)
+                {
+                    try
+                    {
+                        if (IndexCodeList.Count > index &&
+                            contract.Callback.IsSubscribable() == true)
+                        {
+                            var codeEntity = IndexCodeList.Values.ElementAt(index);
+                            var code = codeEntity.Code;
+
+                            if (contract.Type == ProcessTypes.Daishin)
+                                code = CodeEntity.ConvertToDaishinCode(codeEntity);
+
+                            if (contract.Callback.SubscribeIndex(code) == true)
+                                index++;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error(ex);
+                        break;
+                    }
+                }
+            }
+            if (IndexCodeList.Count == index)
+                logger.Info("Index code distribution, Done");
+            else
+                logger.Error("Index code distribution, Fail");
         }
 
         public void PublishBiddingPrice(BiddingPrice biddingPrice)
