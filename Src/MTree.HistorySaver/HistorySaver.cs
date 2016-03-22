@@ -9,6 +9,8 @@ using MTree.Consumer;
 using MTree.Utility;
 using MTree.RealTimeProvider;
 using System.Collections.Concurrent;
+using MTree.PushService;
+using System.Text;
 
 namespace MTree.HistorySaver
 {
@@ -16,6 +18,12 @@ namespace MTree.HistorySaver
     public class HistorySaver : ConsumerBase
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
+        private int circuitBreakCount = 0;
+        private int biddingPriceCount = 0;
+        private int stockMasterCount = 0;
+        private int stockConclusionCount = 0;
+        private int indexConclusionCount = 0;
 
         #region Lock
         private object ChartLock { get; } = new object();
@@ -89,6 +97,7 @@ namespace MTree.HistorySaver
                     }
 
                     collection?.InsertOne(item);
+                    biddingPriceCount++;
                 }
                 else
                 {
@@ -130,6 +139,7 @@ namespace MTree.HistorySaver
                     }
 
                     collection?.InsertOne(item);
+                    stockConclusionCount++;
                 }
                 else
                 {
@@ -171,6 +181,7 @@ namespace MTree.HistorySaver
                     }
 
                     collection?.InsertOne(item);
+                    indexConclusionCount++;
                 }
                 else
                 {
@@ -205,6 +216,7 @@ namespace MTree.HistorySaver
         {
             base.ConsumeCircuitBreak(circuitBreak);
             MongoDbProvider.Instance.GetDatabase(DbTypes.CircuitBreak).GetCollection<CircuitBreak>(nameof(CircuitBreak)).InsertOne(circuitBreak);
+            circuitBreakCount++;
         }
 
         public override void ConsumeStockMaster(StockMaster stockMaster)
@@ -236,7 +248,9 @@ namespace MTree.HistorySaver
 
                 var filter = Builders<StockMaster>.Filter.Eq(i => i.Time, stockMaster.Time);
                 collection?.DeleteMany(filter);
+
                 collection?.InsertOne(stockMaster);
+                stockMasterCount++;
             }
             catch (Exception ex)
             {
@@ -246,6 +260,32 @@ namespace MTree.HistorySaver
             {
                 logger.Info($"{stockMaster.Code} stock master saved, Tick: {Environment.TickCount - startTick}");
             }
+        }
+
+        public override void NotifyMessage(MessageTypes type, string message)
+        {
+            try
+            {
+                if (type == MessageTypes.CloseClient)
+                {
+                    var sb = new StringBuilder();
+                    sb.AppendLine("<HistorySaver result>");
+                    sb.AppendLine($"StockMaster : {stockMasterCount}");
+                    sb.AppendLine($"StockConclusion : {stockConclusionCount}");
+                    sb.AppendLine($"IndexConclusion : {indexConclusionCount}");
+                    sb.AppendLine($"BiddingPrice : {biddingPriceCount}");
+                    sb.AppendLine($"CircuitBreak : {circuitBreakCount}");
+
+                    logger.Info(sb.ToString());
+                    NotificationHub.Instance.Send(sb.ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+
+            base.NotifyMessage(type, message);
         }
     }
 }

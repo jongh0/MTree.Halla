@@ -139,6 +139,10 @@
       <Project>{57195e80-20a3-4fd0-83c8-92af91784dda}</Project>
       <Name>MTree.DbProvider</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MTree.PushService\MTree.PushService.csproj">
+      <Project>{28bebd63-1709-43b2-a109-2545d65fd7cc}</Project>
+      <Name>MTree.PushService</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MTree.RealTimeProvider\MTree.RealTimeProvider.csproj">
       <Project>{c9620f6e-d254-45f4-81c1-f33b0855fadc}</Project>
       <Name>MTree.RealTimeProvider</Name>
