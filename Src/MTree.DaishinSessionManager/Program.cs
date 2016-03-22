@@ -79,7 +79,7 @@ namespace MTree.DaishinSessionManager
             }
             finally
             {
-                Thread.Sleep(5000);
+                Thread.Sleep(1000 * 20); // Login 완료까지 여유시간
                 logger.Info("Application finished");
             }
         }
