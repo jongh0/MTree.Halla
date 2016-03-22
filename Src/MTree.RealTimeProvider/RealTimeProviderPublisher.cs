@@ -101,7 +101,7 @@ namespace MTree.RealTimeProvider
                 ProcessUtility.Start(ProcessTypes.DaishinPopupStopper);
 
                 // Daishin
-                int daishinProcessCount = (StockCodeList.Count + IndexCodeList.Count) * 2 / 400 + 1;
+                int daishinProcessCount = (StockCodeList.Count + IndexCodeList.Count) * 2 / 400;
                 for (int i = 0; i < daishinProcessCount; i++)
                     ProcessUtility.Start(ProcessTypes.Daishin);
 
