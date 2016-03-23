@@ -8,6 +8,7 @@ using MTree.DataStructure;
 using MTree.Utility;
 using System.Threading;
 using MTree.Configuration;
+using System.IO;
 
 namespace MTree.RealTimeProvider
 {
@@ -109,6 +110,16 @@ namespace MTree.RealTimeProvider
                     logger.Error(ex);
                 }
             }
+
+            Task.Run(() =>
+            {
+                // 당일 수집된 로그를 Zip해서 Email로 전송함
+                LogUtility.SendLogToEmail();
+
+                // 20초후 프로그램 종료
+                Thread.Sleep(1000 * 20);
+                Environment.Exit(0);
+            });
         }
     }
 }

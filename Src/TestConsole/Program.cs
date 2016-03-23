@@ -20,7 +20,7 @@ namespace TestConsole
             Config.Initialize();
 
             //TestPushService();
-            TestEmail();
+            //TestEmail();
 
             Console.ReadLine();
         }
