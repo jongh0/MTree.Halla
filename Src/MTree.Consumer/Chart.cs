@@ -6,6 +6,7 @@ using MTree.Utility;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 
 namespace MTree.Consumer
 {
@@ -23,31 +24,62 @@ namespace MTree.Consumer
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public string Code { get; set; }
+        public string Code { get; private set; }
 
-        public ChartTypes ChartType { get; set; }
+        public ChartTypes ChartType { get; private set; }
 
-        public DateTime StartDate { get; set; }
+        public DateTime StartDate { get; private set; }
 
-        public DateTime EndDate { get; set; }
+        public DateTime EndDate { get; private set; }
 
-        public SortedList<DateTime, Candle> Candles { get; set; } = new SortedList<DateTime, Candle>();
+        public bool Initializing { get; private set; }
+
+        private ManualResetEvent WaitInitializingEvent { get; set; } = new ManualResetEvent(false);
+
+        public SortedList<DateTime, Candle> Candles { get; private set; } = new SortedList<DateTime, Candle>();
 
         public Chart(ChartTypes chartType, DateTime startDate, DateTime endDate)
         {
             ChartType = chartType;
+            SetRange(startDate, endDate);
+        }
 
-            if (startDate == null) startDate = Config.General.DefaultStartDate;
-            if (endDate == null) endDate = DateTime.Now;
+        public void SetRange(DateTime startDate, DateTime endDate)
+        {
+            try
+            {
+                if (startDate == null) startDate = Config.Instance.General.DefaultStartDate;
+                if (endDate == null) endDate = DateTime.Now;
 
-            StartDate = DateTimeUtility.StartDateTime(startDate);
-            EndDate = DateTimeUtility.EndDateTime(endDate);
+                StartDate = DateTimeUtility.StartDateTime(startDate);
+                EndDate = DateTimeUtility.EndDateTime(endDate);
+
+                FillCandles();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
+        public bool WaitInitialing(int timeout = Timeout.Infinite)
+        {
+            if (Initializing == false) return true;
+
+            return WaitInitializingEvent.WaitOne(timeout);
         }
 
         private async void FillCandles()
         {
+            int startTick = Environment.TickCount;
+
             try
             {
+                Initializing = true;
+                WaitInitializingEvent.Reset();
+
+                Candles.Clear();
+
                 IMongoCollection<Candle> collection = MongoDbProvider.Instance.GetDatabase(DbTypes.Chart).GetCollection<Candle>(Code);
 
                 var builder = Builders<Candle>.Filter;
@@ -58,11 +90,21 @@ namespace MTree.Consumer
                 {
                     if (Candles.ContainsKey(candle.Time) == false)
                         Candles.Add(candle.Time, candle);
+                    else
+                        logger.Warn($"Already exists in candle list, {candle.Code}/{candle.Time.ToString(Config.Instance.General.DateTimeFormat)}");
                 }
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
+            }
+            finally
+            {
+                Initializing = false;
+                WaitInitializingEvent.Set();
+
+                var duration = Environment.TickCount - startTick;
+                logger.Info($"Candle list filled, Tick: {duration}, {this.ToString()}");
             }
         }
 
@@ -70,10 +112,36 @@ namespace MTree.Consumer
         {
             if (dateTime == null) return null;
 
-            if (Candles.IndexOfKey(dateTime) == -1)
-                return null;
+            int startTick = Environment.TickCount;
 
-            return Candles[dateTime];
+            try
+            {
+                dateTime = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, dateTime.Hour, dateTime.Minute, 0, 0); // Sec, Milisecond는 버린다
+
+                int index = Candles.IndexOfKey(dateTime);
+                if (index != -1)
+                    return Candles.Values[index];
+
+                for (index = Candles.Count - 1; index >= 0; index--)
+                {
+                    var candle = Candles.Values[index];
+                    if (candle.Time <= dateTime)
+                        return candle;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+            finally
+            {
+                var duration = Environment.TickCount - startTick;
+                if (duration > 100)
+                    logger.Error($"Candle search take long time, {Code}/{ChartType}/{dateTime.ToString(Config.Instance.General.DateTimeFormat)}");
+            }
+
+            logger.Warn($"Can not find candle at {Code}/{dateTime.ToString(Config.Instance.General.DateTimeFormat)}");
+            return null;
         }
 
         public Candle NextCandle(Candle baseCandle)
@@ -91,6 +159,7 @@ namespace MTree.Consumer
                 logger.Error(ex);
             }
 
+            logger.Warn($"Can not find candle next {baseCandle.Code}/{baseCandle.Time.ToString(Config.Instance.General.DateTimeFormat)}");
             return null;
         }
 
@@ -109,41 +178,13 @@ namespace MTree.Consumer
                 logger.Error(ex);
             }
 
+            logger.Warn($"Can not find candle prev {baseCandle.Code}/{baseCandle.Time.ToString(Config.Instance.General.DateTimeFormat)}");
             return null;
         }
-
-        public static CandleTypes ConvertToCandleType(ChartTypes type)
-        {
-            switch (type)
-            {
-                case ChartTypes.Min:    return CandleTypes.Min;
-                case ChartTypes.Day:    return CandleTypes.Day;
-                case ChartTypes.Week:   return CandleTypes.Week;
-                case ChartTypes.Month:  return CandleTypes.Month;
-                default:                return CandleTypes.Tick;
-            }
-        }
-
-        public static ChartTypes ConvertToChartType(CandleTypes type)
-        {
-            switch (type)
-            {
-                case CandleTypes.Min:   return ChartTypes.Min;
-                case CandleTypes.Day:   return ChartTypes.Day;
-                case CandleTypes.Week:  return ChartTypes.Week;
-                case CandleTypes.Month: return ChartTypes.Month;
-                default:                return ChartTypes.Tick;
-            }
-        }
-
+        
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"{nameof(Code)}: {Code}");
-            sb.AppendLine($"{nameof(ChartType)}: {ChartType}");
-            sb.AppendLine($"{nameof(Candles)}: {Candles.Count}");
-
-            return sb.ToString();
+            return $"{Code}/{ChartType}/{StartDate.ToString(Config.Instance.General.DateTimeFormat)}/{EndDate.ToString(Config.Instance.General.DateTimeFormat)}/{Candles.Count}";
         }
     }
 }

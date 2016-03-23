@@ -41,6 +41,15 @@ namespace MTree.DataStructure
         [BsonElement("Vo")]
         public ulong Volume { get; set; }
 
+        public Candle()
+        {
+        }
+
+        public Candle(string code)
+        {
+            Code = code;
+        }
+
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();

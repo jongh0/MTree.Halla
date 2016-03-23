@@ -8,7 +8,8 @@ namespace MTree.DaishinPublisher
 {
     public partial class DaishinPublisher
     {
-        private List<Candle> QuotingCandleList { get; set; }
+        private List<Candle> QuotingCandleList { get; set; } = null;
+        private CandleTypes QuotingCandleType { get; set; }
 
         public override List<Candle> GetChart(string fullCode, DateTime startDate, DateTime endDate, CandleTypes candleType)
         {
@@ -27,6 +28,7 @@ namespace MTree.DaishinPublisher
             {
                 List<Candle> candleList = new List<Candle>();
                 QuotingCandleList = candleList;
+                QuotingCandleType = candleType;
 
                 stockChartObj.SetInputValue(0, fullCode);
                 stockChartObj.SetInputValue(1, '1'); // 1: 기간, 2: 개수
@@ -39,12 +41,6 @@ namespace MTree.DaishinPublisher
                 stockChartObj.SetInputValue(10, 1); // 1: 시간외거래량 모두 포함, 3: 시간외거래량 모두 제외
 
                 stockChartObj.BlockRequest();
-
-                foreach (var candle in candleList)
-                {
-                    candle.CandleType = candleType;
-                }
-
                 return candleList;
             }
             catch (Exception ex)
@@ -65,6 +61,9 @@ namespace MTree.DaishinPublisher
             {
                 if (QuotingCandleList == null) return;
 
+                var tiemForTick = DateTime.Now;
+                tiemForTick = new DateTime(tiemForTick.Year, tiemForTick.Month, tiemForTick.Day, tiemForTick.Hour, tiemForTick.Minute, 0, 0);
+
                 string fullCode = stockChartObj.GetHeaderValue(0).ToString(); // 종목코드
                 string code = CodeEntity.RemovePrefix(fullCode);
 
@@ -72,15 +71,37 @@ namespace MTree.DaishinPublisher
 
                 for (int i = 0; i < count; i++)
                 {
-                    var now = DateTime.Now;
-                    var candle = new Candle();
-
-                    candle.Code = code;
+                    var candle = new Candle(code);
+                    candle.CandleType = QuotingCandleType;
 
                     ulong date = Convert.ToUInt64(stockChartObj.GetDataValue(0, i));
                     long time = Convert.ToInt64(stockChartObj.GetDataValue(1, i));
-                    // DB에서 query 시 Sec, Millisecond가 있어야지 Sorting을 할 수 있다.
-                    candle.Time = new DateTime((int)(date / 10000), (int)(date % 10000 / 100), (int)(date % 100), (int)(time / 100), (int)(time % 100), now.Second, now.Millisecond);
+                    int year = (int)(date / 10000);
+                    int month = (int)(date % 10000 / 100);
+                    int day = (int)(date % 100);
+                    int hour = (int)(time / 100);
+                    int minute = (int)(time % 100);
+
+                    switch (candle.CandleType)
+                    {
+                        case CandleTypes.Month:
+                            candle.Time = new DateTime(year, month, 0);
+                            break;
+
+                        case CandleTypes.Week:
+                        case CandleTypes.Day:
+                            candle.Time = new DateTime(year, month, day);
+                            break;
+
+                        case CandleTypes.Min:
+                            candle.Time = new DateTime(year, month, day, hour, minute, 0);
+                            break;
+
+                        case CandleTypes.Tick: // 틱차트는 Sorting을 위해 임이의 Millisecond를 한개씩 올려서 저장한다
+                            candle.Time = new DateTime(year, month, day, hour, minute, tiemForTick.Second, tiemForTick.Millisecond);
+                            tiemForTick.AddMilliseconds(1);
+                            break;
+                    }
 
                     // 2:시가(long or float)
                     candle.Open = Convert.ToSingle(stockChartObj.GetDataValue(2, i));
