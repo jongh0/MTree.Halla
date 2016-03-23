@@ -80,9 +80,9 @@ namespace MTree.Consumer
 
         public override void NotifyMessage(MessageTypes type, string message)
         {
-            if (type == MessageTypes.CloseClient)
+            try
             {
-                try
+                if (type == MessageTypes.CloseClient)
                 {
                     logger.Info($"[{GetType().Name}] Process will be closed");
 
@@ -92,14 +92,14 @@ namespace MTree.Consumer
 
                     Task.Run(() =>
                     {
-                        Thread.Sleep(1000);
+                        Thread.Sleep(1000 * 10);
                         Environment.Exit(0);
                     });
                 }
-                catch (Exception ex)
-                {
-                    logger.Error(ex);
-                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
             }
 
             base.NotifyMessage(type, message);
