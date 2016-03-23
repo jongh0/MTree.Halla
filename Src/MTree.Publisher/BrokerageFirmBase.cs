@@ -18,7 +18,7 @@ namespace MTree.Publisher
 
         // Login
         protected LoginInfo LoginInstance { get; } = new LoginInfo();
-        private int WaitLoginTimeout { get; } = 1000 * 10;
+        private int WaitLoginTimeout { get; } = 1000 * 15;
         private ManualResetEvent WaitLoginEvent { get; } = new ManualResetEvent(false);
 
         // Last firm communication tick

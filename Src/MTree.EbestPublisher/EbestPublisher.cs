@@ -249,7 +249,7 @@ namespace MTree.EbestPublisher
             LoginInstance.State = LoginStates.Login;
             SetLogin();
 
-            logger.Info($"{LoginInstance.ToString()}nszCode: {szCode}, szMsg: {szMsg}");
+            logger.Info($"{LoginInstance.ToString()}, nszCode: {szCode}, szMsg: {szMsg}");
         }
 
         private void sessionObj_Disconnect()
@@ -322,7 +322,7 @@ namespace MTree.EbestPublisher
         {
             if (WaitLogin() == false)
             {
-                logger.Error("Not loggedin state");
+                logger.Error("Not login state");
                 return false;
             }
 
@@ -348,7 +348,7 @@ namespace MTree.EbestPublisher
         {
             if (WaitLogin() == false)
             {
-                logger.Error("Not loggedin state");
+                logger.Error("Not login state");
                 return false;
             }
 
@@ -463,7 +463,7 @@ namespace MTree.EbestPublisher
         {
             if (WaitLogin() == false)
             {
-                logger.Error("Not loggedin state");
+                logger.Error("Not login state");
                 return false;
             }
 
@@ -563,7 +563,7 @@ namespace MTree.EbestPublisher
             {
                 if (WaitLogin() == false)
                 {
-                    logger.Error($"Quoting failed, Code: {code}, Not loggedin state");
+                    logger.Error($"Quoting failed, Code: {code}, Not login state");
                     return false;
                 }
 
@@ -582,18 +582,18 @@ namespace MTree.EbestPublisher
                     {
                         if (QuotingStockMaster.Code != string.Empty)
                         {
-                            logger.Info($"Quoting done. Code: {code}");
+                            logger.Info($"Quoting done, Code: {code}");
                             return true;
                         }
 
-                        logger.Error($"Quoting fail. Code: {code}");
+                        logger.Error($"Quoting fail, Code: {code}");
                     }
 
-                    logger.Error($"Quoting timeout. Code: {code}");
+                    logger.Error($"Quoting timeout, Code: {code}");
                 }
                 else
                 {
-                    logger.Error($"Quoting request fail. Code: {code}, result: {ret}");
+                    logger.Error($"Quoting request fail, Code: {code}, result: {ret}");
                 }
             }
             catch (Exception ex)
@@ -625,7 +625,7 @@ namespace MTree.EbestPublisher
             {
                 if (WaitLogin() == false)
                 {
-                    logger.Error($"Quoting failed, Code: {code}, Not loggedin state");
+                    logger.Error($"Quoting failed, Code: {code}, Not login state");
                     return false;
                 }
 
@@ -643,18 +643,18 @@ namespace MTree.EbestPublisher
                     {
                         if (QuotingIndexMaster.Code != string.Empty)
                         {
-                            logger.Info($"Quoting done. Code: {code}");
+                            logger.Info($"Quoting done, Code: {code}");
                             return true;
                         }
 
-                        logger.Error($"Quoting fail. Code: {code}");
+                        logger.Error($"Quoting fail, Code: {code}");
                     }
 
-                    logger.Error($"Quoting timeout. Code: {code}");
+                    logger.Error($"Quoting timeout, Code: {code}");
                 }
                 else
                 {
-                    logger.Error($"Quoting request fail. Code: {code}, Quoting result: {ret}");
+                    logger.Error($"Quoting request fail, Code: {code}, Quoting result: {ret}");
                 }
             }
             catch (Exception ex)
@@ -838,7 +838,7 @@ namespace MTree.EbestPublisher
             {
                 if (WaitLogin() == false)
                 {
-                    logger.Error($"Get industry list fail. Not loggedin state");
+                    logger.Error($"Get industry list fail. Not login state");
                     return null;
                 }
 
@@ -876,7 +876,7 @@ namespace MTree.EbestPublisher
             {
                 if (WaitLogin() == false)
                 {
-                    logger.Error($"Get stock list fail. Not loggedin state");
+                    logger.Error($"Get stock list fail. Not login state");
                     return null;
                 }
 
@@ -983,7 +983,7 @@ namespace MTree.EbestPublisher
             {
                 if (WaitLogin() == false)
                 {
-                    logger.Error($"Updating {warningType.ToString()} list fail, Not loggedin state");
+                    logger.Error($"Updating {warningType.ToString()} list fail, Not login state");
                     return false;
                 }
 
@@ -1040,7 +1040,7 @@ namespace MTree.EbestPublisher
             {
                 if (WaitLogin() == false)
                 {
-                    logger.Error($"Updating {warningType.ToString()} list fail, Not loggedin state");
+                    logger.Error($"Updating {warningType.ToString()} list fail, Not login state");
                     return false;
                 }
 

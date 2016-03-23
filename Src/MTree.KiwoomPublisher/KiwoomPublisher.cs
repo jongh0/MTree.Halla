@@ -220,7 +220,7 @@ namespace MTree.KiwoomPublisher
             {
                 if (WaitLogin() == false)
                 {
-                    logger.Error($"Quoting failed, Code: {code}, Not loggedin state");
+                    logger.Error($"Quoting failed, Code: {code}, Not login state");
                     return false;
                 }
 
@@ -239,18 +239,18 @@ namespace MTree.KiwoomPublisher
                     {
                         if (QuotingStockMaster.Code != string.Empty)
                         {
-                            logger.Info($"Quoting done. Code: {code}");
+                            logger.Info($"Quoting done, Code: {code}");
                             return true;
                         }
 
-                        logger.Error($"Quoting fail. Code: {code}");
+                        logger.Error($"Quoting fail, Code: {code}");
                     }
 
-                    logger.Error($"Quoting timeout. Code: {code}");
+                    logger.Error($"Quoting timeout, Code: {code}");
                 }
                 else
                 {
-                    logger.Error($"Quoting request fail. Code: {code}, Quoting result: {ret}. Message:{GetErrorMessage(ret)}");
+                    logger.Error($"Quoting request fail, Code: {code}, Quoting result: {ret}. Message:{GetErrorMessage(ret)}");
                 }
             }
             catch (Exception ex)

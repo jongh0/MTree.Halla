@@ -43,15 +43,15 @@ namespace MTree.DaishinPublisher
                 {
                     if (QuotingStockMaster.Code != string.Empty)
                     {
-                        logger.Info($"Quoting done. Code: {code}");
+                        logger.Info($"Quoting done, Code: {code}");
                         return true;
                     }
 
-                    logger.Error($"Quoting fail. Code: {code}");
+                    logger.Error($"Quoting fail, Code: {code}");
                 }
                 else
                 {
-                    logger.Error($"Quoting request fail. Code: {code}, result: {ret}");
+                    logger.Error($"Quoting request fail, Code: {code}, result: {ret}");
                 }
             }
             catch (Exception ex)
