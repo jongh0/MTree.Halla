@@ -111,14 +111,20 @@ namespace MTree.DaishinPublisher
                 long newReceived;
                 newReceived = conclusion.Amount;
                 conclusion.Amount = conclusion.Amount - prevIndexVolume[conclusion.Code];
-                prevIndexVolume[conclusion.Code] = newReceived;
+                if (!prevIndexVolume.ContainsKey(conclusion.Code))
+                    prevIndexVolume.Add(conclusion.Code, newReceived);
+                else
+                    prevIndexVolume[conclusion.Code] = newReceived;
 
                 // 10 - (long) 누적거래대금
                 conclusion.MarketCapitalization = Convert.ToInt64(stockCurObj.GetHeaderValue(10));
                 
                 newReceived = conclusion.MarketCapitalization;
                 conclusion.MarketCapitalization = conclusion.MarketCapitalization - prevIndexMarketCapitalization[conclusion.Code];
-                prevIndexMarketCapitalization[conclusion.Code] = newReceived;
+                if (!prevIndexMarketCapitalization.ContainsKey(conclusion.Code))
+                    prevIndexMarketCapitalization.Add(conclusion.Code, newReceived);
+                else
+                    prevIndexMarketCapitalization[conclusion.Code] = newReceived;
                 
                 // 20 - (char) 장 구분 플래그
                 char marketTime = Convert.ToChar(stockCurObj.GetHeaderValue(20));
