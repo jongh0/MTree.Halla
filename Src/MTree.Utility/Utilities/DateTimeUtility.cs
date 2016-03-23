@@ -10,14 +10,14 @@ namespace MTree.Utility
     {
         public static DateTime StartDateTime(DateTime dateTime)
         {
-            if (dateTime == null) return DateTime.Now;
+            if (dateTime == null) dateTime = DateTime.Now;
 
             return new DateTime(dateTime.Year, dateTime.Month, dateTime.Day);
         }
 
         public static DateTime EndDateTime(DateTime dateTime)
         {
-            if (dateTime == null) return DateTime.Now;
+            if (dateTime == null) dateTime = DateTime.Now;
 
             return new DateTime(dateTime.Year, dateTime.Month, dateTime.Day).AddDays(1).AddMilliseconds(-1);
         }

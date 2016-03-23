@@ -7,7 +7,7 @@ using MTree.Configuration;
 using System.Threading;
 using MTree.DbProvider;
 using MTree.DataStructure;
-using MTree.PushService;
+using MTree.Utility;
 
 namespace TestConsole
 {
@@ -17,55 +17,14 @@ namespace TestConsole
 
         static void Main(string[] args)
         {
-            CreateConfiguraionFile(); // Configuration 파일들 없으면 자동 생성될 수 있도록
-            
-            //TestPushService();
-            //TestDbSaving();
-        }
+            Config.Initialize();
 
-        private static void CreateConfiguraionFile()
-        {
-            Console.WriteLine(Config.General.TestMode);
-            Console.WriteLine(Config.Ebest.UserId);
-            Console.WriteLine(Config.Daishin.UserId);
-            Console.WriteLine(Config.Database.ConnectionString);
+            //TestPushService();
         }
 
         private static void TestPushService()
         {
-            NotificationHub.Instance.Send("Hello MTree");
-        }
-
-        private static void TestDbSaving()
-        {
-            try
-            {
-                MongoDbProvider.Instance.Connect();
-
-                // stock master
-                var stockMaster = new StockMaster();
-                var stockMasterCollection = MongoDbProvider.Instance.GetDatabase(DbTypes.StockMaster).GetCollection<StockMaster>(Config.Database.TodayCollectionName);
-                stockMasterCollection.InsertOne(stockMaster);
-
-                // stock conclusion
-                var stockConclusion = new StockConclusion();
-                var stockConclusionCollection = MongoDbProvider.Instance.GetDatabase(DbTypes.StockConclusion).GetCollection<StockConclusion>(Config.Database.TodayCollectionName);
-                stockConclusionCollection.InsertOne(stockConclusion);
-
-                // index conclusion
-                var indexConclusion = new IndexConclusion();
-                var indexConclusionCollection = MongoDbProvider.Instance.GetDatabase(DbTypes.IndexConclusion).GetCollection<IndexConclusion>(Config.Database.TodayCollectionName);
-                indexConclusionCollection.InsertOne(indexConclusion);
-
-                // bidding price
-                var biddingPrice = new BiddingPrice();
-                var biddingPriceCollection = MongoDbProvider.Instance.GetDatabase(DbTypes.BiddingPrice).GetCollection<BiddingPrice>(Config.Database.TodayCollectionName);
-                biddingPriceCollection.InsertOne(biddingPrice);
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-            }
+            PushUtility.NotifyMessage("Hello MTree");
         }
     }
 }
