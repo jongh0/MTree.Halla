@@ -44,7 +44,7 @@ namespace MTree.RealTimeProvider
                     int time = int.Parse(message);
 
                     MarketStartTime = new DateTime(now.Year, now.Month, now.Day, time, 0, 0);
-                    logger.Info($"Market start time: {MarketStartTime.ToString(Config.General.TimeFormat)}");
+                    logger.Info($"Market start time: {MarketStartTime.ToString(Config.Instance.General.TimeFormat)}");
                 }
                 else if (type == MessageTypes.MarketEndTime)
                 {
@@ -52,7 +52,7 @@ namespace MTree.RealTimeProvider
                     int time = int.Parse(message);
 
                     MarketEndTime = new DateTime(now.Year, now.Month, now.Day, time, 0, 0);
-                    logger.Info($"Market end time: {MarketEndTime.ToString(Config.General.TimeFormat)}");
+                    logger.Info($"Market end time: {MarketEndTime.ToString(Config.Instance.General.TimeFormat)}");
 
                     if (MarketEndTimer != null)
                     {

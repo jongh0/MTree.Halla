@@ -50,12 +50,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config.cs" />
-    <Compile Include="DaishinConfiguration.cs" />
-    <Compile Include="DatabaseConfiguration.cs" />
-    <Compile Include="PushConfiguration.cs" />
-    <Compile Include="GeneralConfiguration.cs" />
-    <Compile Include="EbestConfiguration.cs" />
+    <Compile Include="Configurations\DaishinConfiguration.cs" />
+    <Compile Include="Configurations\DatabaseConfiguration.cs" />
+    <Compile Include="Configurations\EbestConfiguration.cs" />
+    <Compile Include="Configurations\EmailConfiguration.cs" />
+    <Compile Include="Configurations\GeneralConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Configurations\PushConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

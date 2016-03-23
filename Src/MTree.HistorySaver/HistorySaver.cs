@@ -9,7 +9,6 @@ using MTree.Consumer;
 using MTree.Utility;
 using MTree.RealTimeProvider;
 using System.Collections.Concurrent;
-using MTree.PushService;
 using System.Text;
 
 namespace MTree.HistorySaver
@@ -31,6 +30,7 @@ namespace MTree.HistorySaver
         private object StockMasterLock { get; } = new object();
         private object StockConclusionLock { get; } = new object();
         private object IndexConclusionLock { get; } = new object();
+        private object CircuitBreakLock { get; } = new object();
         #endregion
 
         #region Collections
@@ -96,7 +96,7 @@ namespace MTree.HistorySaver
                         collection = BiddingPriceCollections[item.Code];
                     }
 
-                    collection?.InsertOne(item);
+                    collection.InsertOne(item);
                     biddingPriceCount++;
                 }
                 else
@@ -138,7 +138,7 @@ namespace MTree.HistorySaver
                         collection = StockConclusionCollections[item.Code];
                     }
 
-                    collection?.InsertOne(item);
+                    collection.InsertOne(item);
                     stockConclusionCount++;
                 }
                 else
@@ -180,7 +180,7 @@ namespace MTree.HistorySaver
                         collection = IndexConclusionCollections[item.Code];
                     }
 
-                    collection?.InsertOne(item);
+                    collection.InsertOne(item);
                     indexConclusionCount++;
                 }
                 else
@@ -196,27 +196,56 @@ namespace MTree.HistorySaver
 
         public override void ConsumeBiddingPrice(BiddingPrice biddingPrice)
         {
-            base.ConsumeBiddingPrice(biddingPrice);
             BiddingPriceQueue.Enqueue(biddingPrice);
+            base.ConsumeBiddingPrice(biddingPrice);
         }
 
         public override void ConsumeStockConclusion(StockConclusion conclusion)
         {
-            base.ConsumeStockConclusion(conclusion);
             StockConclusionQueue.Enqueue(conclusion);
+            base.ConsumeStockConclusion(conclusion);
         }
 
         public override void ConsumeIndexConclusion(IndexConclusion conclusion)
         {
-            base.ConsumeIndexConclusion(conclusion);
             IndexConclusionQueue.Enqueue(conclusion);
+            base.ConsumeIndexConclusion(conclusion);
         }
 
-        public override void ConsumeCircuitBreak(CircuitBreak circuitBreak)
+        public override void ConsumeCircuitBreak(CircuitBreak item)
         {
-            base.ConsumeCircuitBreak(circuitBreak);
-            MongoDbProvider.Instance.GetDatabase(DbTypes.CircuitBreak).GetCollection<CircuitBreak>(nameof(CircuitBreak)).InsertOne(circuitBreak);
-            circuitBreakCount++;
+            try
+            {
+                IMongoCollection<CircuitBreak> collection = null;
+
+                if (CircuitBreakCollections.ContainsKey(item.Code) == false)
+                {
+                    lock (CircuitBreakLock)
+                    {
+                        if (collection == null)
+                        {
+                            collection = MongoDbProvider.Instance.GetDatabase(DbTypes.CircuitBreak).GetCollection<CircuitBreak>(item.Code);
+                            var keys = Builders<CircuitBreak>.IndexKeys.Ascending(i => i.Time);
+                            collection.Indexes.CreateOneAsync(keys);
+
+                            CircuitBreakCollections.TryAdd(item.Code, collection);
+                        }
+                    }
+                }
+                else
+                {
+                    collection = CircuitBreakCollections[item.Code];
+                }
+
+                collection.InsertOne(item);
+                circuitBreakCount++;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+
+            base.ConsumeCircuitBreak(item);
         }
 
         public override void ConsumeStockMaster(StockMaster stockMaster)
@@ -247,9 +276,9 @@ namespace MTree.HistorySaver
                 }
 
                 var filter = Builders<StockMaster>.Filter.Eq(i => i.Time, stockMaster.Time);
-                collection?.DeleteMany(filter);
+                collection.DeleteMany(filter);
 
-                collection?.InsertOne(stockMaster);
+                collection.InsertOne(stockMaster);
                 stockMasterCount++;
             }
             catch (Exception ex)
@@ -277,7 +306,7 @@ namespace MTree.HistorySaver
                     sb.AppendLine($"CircuitBreak : {circuitBreakCount}");
 
                     logger.Info(sb.ToString());
-                    NotificationHub.Instance.Send(sb.ToString());
+                    PushUtility.NotifyMessage(sb.ToString());
                 }
             }
             catch (Exception ex)

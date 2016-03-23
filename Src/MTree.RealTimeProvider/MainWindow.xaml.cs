@@ -56,6 +56,9 @@ namespace MTree.RealTimeProvider
 
             Task.Run(() =>
             {
+                // 추가된 설정들을 파일에 저장하기 위해서 호출
+                Config.Initialize();
+
                 // Daishin CybosPlus 실행
                 if (ProcessUtility.Exists(ProcessUtility.CybosStarterName) == false)
                 {
@@ -64,7 +67,7 @@ namespace MTree.RealTimeProvider
                 }
 
                 // Daishin Master 실행
-                if (Config.General.OfflineMode == false)
+                if (Config.Instance.General.OfflineMode == false)
                     ProcessUtility.Start(ProcessTypes.DaishinMaster);
             });
         }

@@ -7,109 +7,44 @@ namespace MTree.Configuration
 {
     public class Config
     {
+        public GeneralConfiguration General { get; set; } = new GeneralConfiguration();
+        public PushConfiguration Push { get; set; } = new PushConfiguration();
+        public DatabaseConfiguration Database { get; set; } = new DatabaseConfiguration();
+        public DaishinConfiguration Daishin { get; set; } = new DaishinConfiguration();
+        public EbestConfiguration Ebest { get; set; } = new EbestConfiguration();
+        public EmailConfiguration Email { get; set; } = new EmailConfiguration();
+
+
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
+        public static readonly string FileName = "Config.MTree.json";
 
         private static object lockObject = new object();
 
-        #region General
-        private static GeneralConfiguration _general;
-        public static GeneralConfiguration General
+        #region Instance
+        private static Config _instance;
+        public static Config Instance
         {
             get
             {
-                if (_general == null)
+                if (_instance == null)
                 {
                     lock (lockObject)
                     {
-                        if (_general == null)
-                            LoadConfiguration(ref _general, GeneralConfiguration.FileName);
+                        if (_instance == null)
+                            LoadConfiguration(ref _instance, FileName);
                     }
                 }
 
-                return _general;
+                return _instance;
             }
-        }
+        } 
         #endregion
 
-        #region Ebest
-        private static EbestConfiguration _ebest;
-        public static EbestConfiguration Ebest
+        public static void Initialize()
         {
-            get
-            {
-                if (_ebest == null)
-                {
-                    lock (lockObject)
-                    {
-                        if (_ebest == null)
-                            LoadConfiguration(ref _ebest, EbestConfiguration.FileName);
-                    }
-                }
-
-                return _ebest;
-            }
+            SaveConfiguration(Instance, FileName);
         }
-        #endregion
-
-        #region Daishin
-        private static DaishinConfiguration _daishin;
-        public static DaishinConfiguration Daishin
-        {
-            get
-            {
-                if (_daishin == null)
-                {
-                    lock (lockObject)
-                    {
-                        if (_daishin == null)
-                            LoadConfiguration(ref _daishin, DaishinConfiguration.FileName);
-                    }
-                }
-
-                return _daishin;
-            }
-        }
-        #endregion
-
-        #region Database
-        private static DatabaseConfiguration _database;
-        public static DatabaseConfiguration Database
-        {
-            get
-            {
-                if (_database == null)
-                {
-                    lock (lockObject)
-                    {
-                        if (_database == null)
-                            LoadConfiguration(ref _database, DatabaseConfiguration.FileName);
-                    }
-                }
-
-                return _database;
-            }
-        }
-        #endregion
-
-        #region Push
-        private static PushConfiguration _push;
-        public static PushConfiguration Push
-        {
-            get
-            {
-                if (_push == null)
-                {
-                    lock (lockObject)
-                    {
-                        if (_push == null)
-                            LoadConfiguration(ref _push, PushConfiguration.FileName);
-                    }
-                }
-
-                return _push;
-            }
-        }
-        #endregion
 
         #region Load / Save
         private static void LoadConfiguration<T>(ref T config, string filePath)
@@ -120,7 +55,15 @@ namespace MTree.Configuration
             {
                 if (fileExist == true)
                 {
-                    config = JsonConvert.DeserializeObject<T>(File.ReadAllText(filePath));
+                    config = JsonConvert.DeserializeObject<T>(File.ReadAllText(filePath), new JsonSerializerSettings
+                    {
+                        Error = (sender, args) =>
+                        {
+                            logger.Error($"Configuration deserialize error, {args.ErrorContext.Error.Message}");
+                            args.ErrorContext.Handled = true;
+                        }
+                    });
+
                     logger.Info($"{Path.GetFileName(filePath)} loaded");
                 }
                 else
@@ -133,7 +76,7 @@ namespace MTree.Configuration
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(ex);
+                logger.Error(ex);
             }
         }
 
@@ -152,7 +95,7 @@ namespace MTree.Configuration
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(ex);
+                logger.Error(ex);
             }
         }
         #endregion

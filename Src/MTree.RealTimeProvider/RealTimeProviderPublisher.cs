@@ -88,25 +88,36 @@ namespace MTree.RealTimeProvider
         {
             try
             {
-                // HistorySaver
+#if true // HistorySaver
                 ProcessUtility.Start(ProcessTypes.HistorySaver);
+#endif
 
-#if true
-                // Kiwoom
-                if (Config.General.SkipMastering == false)
+
+#if true // Kiwoom
+
+                if (Config.Instance.General.SkipMastering == false)
                     ProcessUtility.Start(ProcessTypes.Kiwoom);
 #endif
 
-                // Daishin popup stopper
-                ProcessUtility.Start(ProcessTypes.DaishinPopupStopper);
 
-                // Daishin
-                int daishinProcessCount = (StockCodeList.Count + IndexCodeList.Count) * 2 / 400;
+#if true // Daishin popup stopper
+                ProcessUtility.Start(ProcessTypes.DaishinPopupStopper);
+#endif
+
+
+#if true // Daishin
+                int daishinProcessCount;
+                if (Config.Instance.General.SkipBiddingPrice == true)
+                    daishinProcessCount = (StockCodeList.Count + IndexCodeList.Count) / 400;
+                else
+                    daishinProcessCount = (StockCodeList.Count * 2 + IndexCodeList.Count) / 400;
+
                 for (int i = 0; i < daishinProcessCount; i++)
                     ProcessUtility.Start(ProcessTypes.Daishin);
+#endif
 
-#if true
-                // Ebest
+
+#if true // Ebest
                 int ebestProcessCount = 3;
                 for (int i = 0; i < ebestProcessCount; i++)
                     ProcessUtility.Start(ProcessTypes.Ebest);
@@ -168,7 +179,7 @@ namespace MTree.RealTimeProvider
 
                             LaunchClientProcess();
 
-                            if (Config.General.SkipMastering == true)
+                            if (Config.Instance.General.SkipMastering == true)
                             {
                                 Task.Run(() =>
                                 {
@@ -216,7 +227,8 @@ namespace MTree.RealTimeProvider
         {
             DistributeStockCode();
             DistributeIndexCode();
-            DistributeBiddingCode();
+            if (Config.Instance.General.SkipBiddingPrice == false)
+                DistributeBiddingCode();
         }
 
         private void DistributeBiddingCode()

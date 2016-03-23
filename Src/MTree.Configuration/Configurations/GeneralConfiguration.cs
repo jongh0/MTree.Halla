@@ -5,8 +5,6 @@ namespace MTree.Configuration
 {
     public class GeneralConfiguration
     {
-        public static readonly string FileName = "Config.General.json";
-
         [JsonIgnore]
         public string DateFormat { get; } = "yyyy-MM-dd";
 
@@ -24,5 +22,7 @@ namespace MTree.Configuration
         public bool TestMode { get; set; } = false;
 
         public bool SkipMastering { get; set; } = false;
+
+        public bool SkipBiddingPrice { get; set; } = false;
     }
 }
