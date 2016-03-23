@@ -61,14 +61,17 @@ namespace MTree.RealTimeProvider
                         MarketEndTimer = null;
                     }
 
-                    TimeSpan interval = (MarketEndTime - now).Add(TimeSpan.FromHours(1)); // 장종료 1시간 후 프로그램 종료
+                    if (MarketEndTime > now)
+                    {
+                        TimeSpan interval = (MarketEndTime - now).Add(TimeSpan.FromHours(1)); // 장종료 1시간 후 프로그램 종료
 
-                    MarketEndTimer = new System.Timers.Timer();
-                    MarketEndTimer.Interval = interval.TotalMilliseconds;
-                    MarketEndTimer.Elapsed += MarketEndTimer_Elapsed;
-                    MarketEndTimer.Start();
+                        MarketEndTimer = new System.Timers.Timer();
+                        MarketEndTimer.Interval = interval.TotalMilliseconds;
+                        MarketEndTimer.Elapsed += MarketEndTimer_Elapsed;
+                        MarketEndTimer.Start();
 
-                    logger.Info($"Program will be closed after {interval.Hours}:{interval.Minutes}:{interval.Seconds}");
+                        logger.Info($"Program will be closed after {interval.Hours}:{interval.Minutes}:{interval.Seconds}");
+                    }
                 }
             }
             catch (Exception ex)
