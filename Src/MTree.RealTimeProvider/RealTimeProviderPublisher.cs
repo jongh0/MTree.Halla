@@ -225,13 +225,14 @@ namespace MTree.RealTimeProvider
 
         private void StartCodeDistributing()
         {
-            DistributeStockCode();
-            DistributeIndexCode();
+            DistributeStockConclusionSubscribingCode();
+            DistributeIndexConclusionSubscribingCode();
             if (Config.Instance.General.SkipBiddingPrice == false)
-                DistributeBiddingCode();
+                DistributeBiddingSubscribingCode();
+            DistributeCircuitBreakSubscribingCode();
         }
 
-        private void DistributeBiddingCode()
+        private void DistributeBiddingSubscribingCode()
         {
             logger.Info("Bidding code distribution, Start");
 
@@ -274,9 +275,9 @@ namespace MTree.RealTimeProvider
                 logger.Error("Bidding code distribution, Fail");
         }
 
-        private void DistributeStockCode()
+        private void DistributeStockConclusionSubscribingCode()
         {
-            logger.Info("Stock code distribution, Start");
+            logger.Info("Stock conclusion code distribution, Start");
 
             int index = 0;
 
@@ -317,9 +318,9 @@ namespace MTree.RealTimeProvider
                 logger.Error("Stock code distribution, Fail");
         }
 
-        private void DistributeIndexCode()
+        private void DistributeIndexConclusionSubscribingCode()
         {
-            logger.Info("Index code distribution, Start");
+            logger.Info("Index conclusion code distribution, Start");
             int index = 0;
 
             foreach (var contract in DaishinContracts)
@@ -358,6 +359,35 @@ namespace MTree.RealTimeProvider
                 logger.Error("Index code distribution, Fail");
         }
 
+        private void DistributeCircuitBreakSubscribingCode()
+        {
+            logger.Info("Circuite break code distribution, Start");
+            int errorCnt = 0;
+            for (int i = 0; i < StockCodeList.Count;i++)
+            {
+                var codeEntity = StockCodeList.Values.ElementAt(i);
+                var code = codeEntity.Code;
+
+                var contract = EbestContracts[i % EbestContracts.Count];
+                if (contract.Type == ProcessTypes.Daishin)
+                    code = CodeEntity.ConvertToDaishinCode(codeEntity);
+
+                if (contract.Callback.SubscribeCircuitBreak(code) == false)
+                {
+                    logger.Error($"Circuite break code distribution fail. code:{code}");
+                    i--;
+                    errorCnt++;
+                    if (errorCnt > 10)
+                        break;
+                }
+            }
+            if(errorCnt > 10)
+                logger.Error($"Circuite break code distribution, Fail. error count:{errorCnt}");
+            else
+                logger.Info("Circuite break code distribution, Done");
+            
+        }
+
         public void PublishBiddingPrice(BiddingPrice biddingPrice)
         {
             BiddingPriceQueue.Enqueue(biddingPrice);
@@ -365,7 +395,7 @@ namespace MTree.RealTimeProvider
 
         public void PublishCircuitBreak(CircuitBreak circuitBreak)
         {
-            logger.Warn($"Circuit break!!!!!, {circuitBreak.ToString()}");
+            //logger.Warn($"Circuit break!!!!!, {circuitBreak.ToString()}");
             ProcessCircuitBreak(circuitBreak);
         }
 

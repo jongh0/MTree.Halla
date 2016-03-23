@@ -64,5 +64,16 @@ namespace MTree.Publisher
         {
             return false;
         }
+
+        public virtual bool SubscribeCircuitBreak(string code)
+        {
+            return false;
+        }
+
+
+        public virtual bool UnsubscribeCircuitBreak(string code)
+        {
+            return false;
+        }
     }
 }

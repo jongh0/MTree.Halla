@@ -64,5 +64,12 @@ namespace MTree.RealTimeProvider
 
         [OperationContract]
         bool UnsubscribeBidding(string code);
+
+
+        [OperationContract]
+        bool SubscribeCircuitBreak(string code);
+
+        [OperationContract]
+        bool UnsubscribeCircuitBreak(string code);
     }
 }

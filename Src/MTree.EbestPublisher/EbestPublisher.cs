@@ -458,12 +458,13 @@ namespace MTree.EbestPublisher
                 logger.Error(ex);
             }
         }
-
-        public bool SubscribeCircuitBreak(string code)
+        
+        
+        public override bool SubscribeCircuitBreak(string code)
         {
             if (WaitLogin() == false)
             {
-                logger.Error("Not login state");
+                logger.Error("Not loggedin state");
                 return false;
             }
 
@@ -475,6 +476,37 @@ namespace MTree.EbestPublisher
 
                 dviSubscribingObj.SetFieldData("InBlock", "shcode", code);
                 dviSubscribingObj.AdviseRealData();
+                subscribeCount++;
+
+                logger.Info($"Subscribe circuit break success, Code: {code}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+
+            logger.Error($"Subscribe circuit break fail, Code: {code}");
+            return false;
+        }
+
+        public override bool UnsubscribeCircuitBreak(string code)
+        {
+
+            if (WaitLogin() == false)
+            {
+                logger.Error("Not loggedin state");
+                return false;
+            }
+
+            try
+            {
+                viSubscribingObj.SetFieldData("InBlock", "shcode", code);
+                viSubscribingObj.UnadviseRealData();
+                subscribeCount++;
+
+                dviSubscribingObj.SetFieldData("InBlock", "shcode", code);
+                dviSubscribingObj.UnadviseRealData();
                 subscribeCount++;
 
                 logger.Info($"Subscribe circuit break success, Code: {code}");
@@ -563,7 +595,7 @@ namespace MTree.EbestPublisher
             {
                 if (WaitLogin() == false)
                 {
-                    logger.Error($"Quoting failed, Code: {code}, Not login state");
+                    logger.Error($"Quoting failed, Code: {code}, Not loggedin state");
                     return false;
                 }
 
@@ -625,7 +657,7 @@ namespace MTree.EbestPublisher
             {
                 if (WaitLogin() == false)
                 {
-                    logger.Error($"Quoting failed, Code: {code}, Not login state");
+                    logger.Error($"Quoting failed, Code: {code}, Not loggedin state");
                     return false;
                 }
 
@@ -838,7 +870,7 @@ namespace MTree.EbestPublisher
             {
                 if (WaitLogin() == false)
                 {
-                    logger.Error($"Get industry list fail. Not login state");
+                    logger.Error($"Get industry list fail. Not loggedin state");
                     return null;
                 }
 
@@ -876,7 +908,7 @@ namespace MTree.EbestPublisher
             {
                 if (WaitLogin() == false)
                 {
-                    logger.Error($"Get stock list fail. Not login state");
+                    logger.Error($"Get stock list fail. Not loggedin state");
                     return null;
                 }
 
@@ -983,7 +1015,7 @@ namespace MTree.EbestPublisher
             {
                 if (WaitLogin() == false)
                 {
-                    logger.Error($"Updating {warningType.ToString()} list fail, Not login state");
+                    logger.Error($"Updating {warningType.ToString()} list fail, Not loggedin state");
                     return false;
                 }
 
@@ -1040,7 +1072,7 @@ namespace MTree.EbestPublisher
             {
                 if (WaitLogin() == false)
                 {
-                    logger.Error($"Updating {warningType.ToString()} list fail, Not login state");
+                    logger.Error($"Updating {warningType.ToString()} list fail, Not loggedin state");
                     return false;
                 }
 

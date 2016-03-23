@@ -220,7 +220,7 @@ namespace MTree.KiwoomPublisher
             {
                 if (WaitLogin() == false)
                 {
-                    logger.Error($"Quoting failed, Code: {code}, Not login state");
+                    logger.Error($"Quoting failed, Code: {code}, Not loggedin state");
                     return false;
                 }
 
