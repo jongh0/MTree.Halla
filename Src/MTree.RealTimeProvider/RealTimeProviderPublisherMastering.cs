@@ -1,5 +1,4 @@
 ﻿using MTree.DataStructure;
-using MTree.PushService;
 using MTree.Utility;
 using System;
 using System.Collections.Concurrent;
@@ -62,14 +61,14 @@ namespace MTree.RealTimeProvider
                 if (masteringRet == true)
                 {
                     logger.Info($"Stock mastering done, Elapsed time: {sw.Elapsed.ToString()}");
-                    NotificationHub.Instance.Send("Stock mastering success");
+                    PushUtility.NotifyMessage("Stock mastering success");
 
                     Task.Run(() => StartStockMasterPublishing());
                 }
                 else
                 {
                     logger.Info("Stock mastering failed");
-                    NotificationHub.Instance.Send("Stock mastering fail");
+                    PushUtility.NotifyMessage("Stock mastering fail");
                 }
                 
                 Task.Run(() => StartCodeDistributing());
