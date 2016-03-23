@@ -20,6 +20,15 @@ namespace TestConsole
             Config.Initialize();
 
             //TestPushService();
+            TestEmail();
+
+            Console.ReadLine();
+        }
+
+        private static void TestEmail()
+        {
+            //EmailUtility.SendEmail("vvvv", "vvvv", @"D:\Documents\GitHub\MTree.Halla\Src\bin\Debug\Logs\MTree.All.2016-03-23.zip");
+            EmailUtility.SendEmail("vvv", "vvvvv");
         }
 
         private static void TestPushService()
