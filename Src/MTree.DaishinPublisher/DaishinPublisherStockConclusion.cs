@@ -100,6 +100,10 @@ namespace MTree.DaishinPublisher
                 // 17 - (long) 순간체결수량
                 conclusion.Amount = Convert.ToInt64(stockCurObj.GetHeaderValue(17));
 
+                // 19 - (char) 예상 체결가 구분 플래그
+                char isExpected = Convert.ToChar(stockCurObj.GetHeaderValue(19));
+                if (isExpected == '1') logger.Trace($"Received expected price for {conclusion.Code}, price:{conclusion.Amount}");
+                
                 // 20 - (char) 장 구분 플래그
                 char marketTime = Convert.ToChar(stockCurObj.GetHeaderValue(20));
                 if (marketTime == '1') conclusion.MarketTimeType = MarketTimeTypes.BeforeExpect;
