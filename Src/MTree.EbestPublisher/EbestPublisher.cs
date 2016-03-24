@@ -168,11 +168,7 @@ namespace MTree.EbestPublisher
                     return;
                 }
                 #endregion
-<<<<<<< HEAD
-                
-=======
 
->>>>>>> origin/master
                 // Warning List Update
                 Task.Run(() => UpdateWarningList());
 
@@ -275,23 +271,10 @@ namespace MTree.EbestPublisher
                 }
 
                 logger.Info("Server connected");
-
-<<<<<<< HEAD
-                    if (ret == true)
-                    {
-                        logger.Info($"Try login with id:{LoginInstance.UserId}");
-                    }
-                    else
-                    {
-                        logger.Error("Login error");
-                    }
-                }
-                else
-=======
+                
                 int serverType = LoginInstance.ServerType == ServerTypes.Real ? (int)XA_SERVER_TYPE.XA_REAL_SERVER : (int)XA_SERVER_TYPE.XA_SIMUL_SERVER;
 
                 if (sessionObj.Login(LoginInstance.UserId, LoginInstance.UserPw, LoginInstance.CertPw, serverType, true) == true)
->>>>>>> origin/master
                 {
                     logger.Info($"Try login with id: {LoginInstance.UserId}");
                     CommunTimer.Start();
