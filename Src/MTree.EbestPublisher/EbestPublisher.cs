@@ -165,37 +165,19 @@ namespace MTree.EbestPublisher
                 }
                 #endregion
 
-                StartIndexConclusionQueueTask();
-                StartCircuitBreakQueueTask();
-
                 CommunTimer = new System.Timers.Timer(MaxCommunInterval);
                 CommunTimer.Elapsed += OnCommunTimer;
                 CommunTimer.AutoReset = true;
+
+                // Warning List Update
+                Task.Run(() => UpdateWarningList());
+
+                StartCircuitBreakQueueTask();
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
             }
-
-            #region Warning List Update
-            var tast = Task.Run(() =>
-            {
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
-                foreach (WarningTypes1 warningType in Enum.GetValues(typeof(WarningTypes1)))
-                {
-                    GetWarningList(warningType);
-                }
-
-                foreach (WarningTypes2 warningType in Enum.GetValues(typeof(WarningTypes2)))
-                {
-                    GetWarningList(warningType);
-                }
-                SetWarninglistUpdated();
-                sw.Stop();
-                logger.Trace(sw.Elapsed);
-            });
-            #endregion
         }
 
         #region XAQuery
@@ -339,7 +321,37 @@ namespace MTree.EbestPublisher
         }
         #endregion
 
-        public  Dictionary<string, string> GetIndexCodeList()
+        private void UpdateWarningList()
+        {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
+            try
+            {
+                foreach (WarningTypes1 warningType in Enum.GetValues(typeof(WarningTypes1)))
+                {
+                    GetWarningList(warningType);
+                }
+
+                foreach (WarningTypes2 warningType in Enum.GetValues(typeof(WarningTypes2)))
+                {
+                    GetWarningList(warningType);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+            finally
+            {
+                SetWarningListUpdated();
+
+                sw.Stop();
+                logger.Trace(sw.Elapsed);
+            }
+        }
+
+        public Dictionary<string, string> GetIndexCodeList()
         {
             int ret = -1;
             try
@@ -652,7 +664,7 @@ namespace MTree.EbestPublisher
             return WarningListUpdatedEvent.WaitOne(WarningListUpdateTimeout);
         }
 
-        protected void SetWarninglistUpdated()
+        protected void SetWarningListUpdated()
         {
             WarningListUpdatedEvent.Set();
         }
