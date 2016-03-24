@@ -219,7 +219,7 @@ namespace MTree.DaishinPublisher
 
         private void sessionObj_OnDisconnect()
         {
-            logger.Info("Disconnected");
+            logger.Error("Disconnected");
         }
 
         private void stockMstObj_Received()

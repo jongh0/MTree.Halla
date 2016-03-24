@@ -21,6 +21,12 @@ namespace MTree.DaishinPublisher
 
         public bool GetQuote(string code, ref StockMaster stockMaster)
         {
+            if (sessionObj.IsConnect != 1)
+            {
+                logger.Error("Quoting failed, session not connected");
+                return false;
+            }
+
             if (Monitor.TryEnter(QuoteLock, QuoteLockTimeout) == false)
             {
                 logger.Error($"Quoting failed, Code: {code}, Can't obtaion lock object");

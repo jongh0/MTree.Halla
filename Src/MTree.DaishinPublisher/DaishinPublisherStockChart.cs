@@ -13,14 +13,21 @@ namespace MTree.DaishinPublisher
 
         public override List<Candle> GetChart(string fullCode, DateTime startDate, DateTime endDate, CandleTypes candleType)
         {
-            if (string.IsNullOrEmpty(fullCode) == true)
+            if (sessionObj.IsConnect != 1)
             {
-                logger.Error("Code error");
+                logger.Error("Get chart, session not connected");
                 return null;
             }
-            else if (startDate == null || endDate == null || startDate > endDate)
+
+            if (string.IsNullOrEmpty(fullCode) == true)
             {
-                logger.Error("DateTime error");
+                logger.Error("Get chart, Code error");
+                return null;
+            }
+
+            if (startDate == null || endDate == null || startDate > endDate)
+            {
+                logger.Error("Get chart, DateTime error");
                 return null;
             }
 
