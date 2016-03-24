@@ -21,9 +21,6 @@ namespace MTree.Publisher
         private int WaitLoginTimeout { get; } = 1000 * 15;
         private ManualResetEvent WaitLoginEvent { get; } = new ManualResetEvent(false);
 
-        // Last firm communication tick
-        protected int LastFirmCommunicateTick { get; set; } = Environment.TickCount;
-
         // TestMode Lock
         protected object ConclusionLock { get; } = new object();
         protected object BiddingLock { get; } = new object();
@@ -54,6 +51,11 @@ namespace MTree.Publisher
             TaskUtility.Run($"{GetType().Name}.BiddingPriceQueue", QueueTaskCancelToken, ProcessBiddingPriceQueue);
         }
 
+        protected void StartCircuitBreakQueueTask()
+        {
+            TaskUtility.Run($"{GetType().Name}.CircuitBreakQueue", QueueTaskCancelToken, ProcessCircuitBreakQueue);
+        }
+
         protected void StartStockConclusionQueueTask()
         {
             TaskUtility.Run($"{GetType().Name}.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
@@ -72,8 +74,28 @@ namespace MTree.Publisher
                 if (ServiceClient.State == CommunicationState.Opened &&
                     BiddingPriceQueue.TryDequeue(out biddingPrice) == true)
                 {
-                    LastWcfCommunicateTick = Environment.TickCount;
                     ServiceClient.PublishBiddingPrice(biddingPrice);
+                }
+                else
+                {
+                    Thread.Sleep(10);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
+        private void ProcessCircuitBreakQueue()
+        {
+            try
+            {
+                CircuitBreak circuitBreak;
+                if (ServiceClient.State == CommunicationState.Opened &&
+                    CircuitBreakQueue.TryDequeue(out circuitBreak) == true)
+                {
+                    ServiceClient.PublishCircuitBreak(circuitBreak);
                 }
                 else
                 {
@@ -94,7 +116,6 @@ namespace MTree.Publisher
                 if (ServiceClient.State == CommunicationState.Opened &&
                     StockConclusionQueue.TryDequeue(out conclusion) == true)
                 {
-                    LastWcfCommunicateTick = Environment.TickCount;
                     ServiceClient.PublishStockConclusion(conclusion);
                 }
                 else
@@ -116,7 +137,6 @@ namespace MTree.Publisher
                 if (ServiceClient.State == CommunicationState.Opened &&
                     IndexConclusionQueue.TryDequeue(out conclusion) == true)
                 {
-                    LastWcfCommunicateTick = Environment.TickCount;
                     ServiceClient.PublishIndexConclusion(conclusion);
                 }
                 else
@@ -154,21 +174,6 @@ namespace MTree.Publisher
         {
             if (QuoteInterval > 0)
                 Thread.Sleep(QuoteInterval);
-        }
-
-        protected override void OnCommunicateTimer(object sender, ElapsedEventArgs e)
-        {
-            if ((Environment.TickCount - LastFirmCommunicateTick) > MaxCommunicateInterval)
-            {
-                LastFirmCommunicateTick = Environment.TickCount;
-
-                string code = GetType().Name.Equals("DaishinPublisher") ? "A000020" : "000020";
-                GetStockMaster(code);
-
-                logger.Info($"[{GetType().Name}] Keep firm connection");
-            }
-
-            base.OnCommunicateTimer(sender, e);
         }
     }
 }

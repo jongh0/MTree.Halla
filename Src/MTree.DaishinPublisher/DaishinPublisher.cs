@@ -224,33 +224,26 @@ namespace MTree.DaishinPublisher
 
         private void stockMstObj_Received()
         {
-            LastFirmCommunicateTick = Environment.TickCount;
             StockMasterReceived();
         }
 
         private void stockCurObj_Received()
         {
-            LastFirmCommunicateTick = Environment.TickCount;
             string fullcode = stockCurObj.GetHeaderValue(0).ToString();
+
             if (fullcode[0] == 'U')
-            {
                 IndexConclusionReceived();
-            }
             else
-            {
                 StockConclusionReceived();
-            }
         }
 
         private void stockJpbidObj_Received()
         {
-            LastFirmCommunicateTick = Environment.TickCount;
             BiddingPriceReceived();
         }
 
         private void stockChartObj_Received()
         {
-            LastFirmCommunicateTick = Environment.TickCount;
             StockChartReceived();
         }
 

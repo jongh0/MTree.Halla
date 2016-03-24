@@ -18,11 +18,11 @@ namespace MTree.RealTimeProvider
 
         public IRealTimePublisherCallback Callback { get; set; } = null;
 
-        public bool NowOperating { get; set; } = false;
+        public bool IsOperating { get; set; } = false;
 
         public override string ToString()
         {
-            return $"{Type}/{Id}/{NowOperating}";
+            return $"{Type}/{Id}/{IsOperating}";
         }
 
         public static ProcessTypes ConvertToType(string value)

@@ -26,7 +26,7 @@ namespace MTree.RealTimeProvider
 
         private PublishContract DaishinContractForMastering
         {
-            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == ProcessTypes.Daishin && c.NowOperating == false); }
+            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == ProcessTypes.Daishin && c.IsOperating == false); }
         }
 
         private PublishContract DaishinContractMaster
@@ -43,7 +43,7 @@ namespace MTree.RealTimeProvider
 
         private PublishContract EbestContractForMastering
         {
-            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == ProcessTypes.Ebest && c.NowOperating == false); }
+            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == ProcessTypes.Ebest && c.IsOperating == false); }
         }
         #endregion
 
@@ -55,7 +55,7 @@ namespace MTree.RealTimeProvider
 
         private PublishContract KiwoomContractForMastering
         {
-            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == ProcessTypes.Kiwoom && c.NowOperating == false); }
+            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == ProcessTypes.Kiwoom && c.IsOperating == false); }
         }
         #endregion
 
@@ -67,7 +67,7 @@ namespace MTree.RealTimeProvider
 
         private PublishContract KrxContractForMastering
         {
-            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == ProcessTypes.Krx && c.NowOperating == false); }
+            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == ProcessTypes.Krx && c.IsOperating == false); }
         }
         #endregion
 
@@ -79,7 +79,7 @@ namespace MTree.RealTimeProvider
 
         private PublishContract NaverContractForMastering
         {
-            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == ProcessTypes.Naver && c.NowOperating == false); }
+            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == ProcessTypes.Naver && c.IsOperating == false); }
         }
         #endregion
         #endregion
@@ -88,24 +88,17 @@ namespace MTree.RealTimeProvider
         {
             try
             {
-#if true // HistorySaver
+                // HistorySaver
                 ProcessUtility.Start(ProcessTypes.HistorySaver);
-#endif
 
-
-#if true // Kiwoom
-
+                // Kiwoom
                 if (Config.Instance.General.SkipMastering == false)
                     ProcessUtility.Start(ProcessTypes.Kiwoom);
-#endif
 
-
-#if true // Daishin popup stopper
+                // Daishin popup stopper
                 ProcessUtility.Start(ProcessTypes.DaishinPopupStopper);
-#endif
 
-
-#if true // Daishin
+                // Daishin
                 int daishinProcessCount;
                 if (Config.Instance.General.SkipBiddingPrice == true)
                     daishinProcessCount = (StockCodeList.Count + IndexCodeList.Count) / 400;
@@ -114,14 +107,11 @@ namespace MTree.RealTimeProvider
 
                 for (int i = 0; i < daishinProcessCount; i++)
                     ProcessUtility.Start(ProcessTypes.Daishin);
-#endif
 
-
-#if true // Ebest
+                // Ebest
                 int ebestProcessCount = 3;
                 for (int i = 0; i < ebestProcessCount; i++)
                     ProcessUtility.Start(ProcessTypes.Ebest);
-#endif
             }
             catch (Exception ex)
             {
@@ -395,8 +385,7 @@ namespace MTree.RealTimeProvider
 
         public void PublishCircuitBreak(CircuitBreak circuitBreak)
         {
-            //logger.Warn($"Circuit break!!!!!, {circuitBreak.ToString()}");
-            ProcessCircuitBreak(circuitBreak);
+            CircuitBreakQueue.Enqueue(circuitBreak);
         }
 
         public void PublishIndexConclusion(IndexConclusion conclusion)

@@ -100,8 +100,6 @@ namespace MTree.KiwoomPublisher
 
         private void OnEventConnect(object sender, AxKHOpenAPILib._DKHOpenAPIEvents_OnEventConnectEvent e)
         {
-            LastFirmCommunicateTick = Environment.TickCount;
-
             try
             {
                 if (e.nErrCode == 0)
@@ -268,8 +266,6 @@ namespace MTree.KiwoomPublisher
 
         private void OnReceiveTrData(object sender, AxKHOpenAPILib._DKHOpenAPIEvents_OnReceiveTrDataEvent e)
         {
-            LastFirmCommunicateTick = Environment.TickCount;
-
             // OPT1001 : 주식기본정보
             if (e?.sRQName == "주식기본정보")
             {

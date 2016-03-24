@@ -11,6 +11,7 @@ namespace MTree.Utility
     public enum ProcessTypes
     {
         None,
+        Test,
         Daishin,
         DaishinMaster,
         DaishinPopupStopper,
@@ -20,62 +21,52 @@ namespace MTree.Utility
         Krx,
         Naver,
         HistorySaver,
+        RealTimeProvider,
+        CybosStarter,
     }
 
     public class ProcessUtility
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public static string CybosStarterName = "CpStart";
+        private static Dictionary<ProcessTypes, string> ProcessList { get; set; }
 
-        public static Process Start(ProcessTypes type)
+        static ProcessUtility()
         {
-            var windowStyle = ProcessWindowStyle.Minimized;
+            ProcessList = new Dictionary<ProcessTypes, string>();
+            ProcessList.Add(ProcessTypes.Daishin, "MTree.DaishinPublisher");
+            ProcessList.Add(ProcessTypes.DaishinMaster, "MTree.DaishinPublisher");
+            ProcessList.Add(ProcessTypes.DaishinPopupStopper, "MTree.DaishinPopupStopper");
+            ProcessList.Add(ProcessTypes.DaishinSessionManager, "MTree.DaishinSessionManager");
+            ProcessList.Add(ProcessTypes.Kiwoom, "MTree.KiwoomPublisher");
+            ProcessList.Add(ProcessTypes.Ebest, "MTree.EbestPublisher");
+            ProcessList.Add(ProcessTypes.Krx, "MTree.KrxPublisher");
+            ProcessList.Add(ProcessTypes.Naver, "MTree.NaverPublisher");
+            ProcessList.Add(ProcessTypes.HistorySaver, "MTree.HistorySaver");
+            ProcessList.Add(ProcessTypes.RealTimeProvider, "MTree.RealTimeProvider");
+            ProcessList.Add(ProcessTypes.CybosStarter, "CpStart");
+            ProcessList.Add(ProcessTypes.Test, "Notepad");
+        }
 
-            switch (type)
-            {
-                case ProcessTypes.Daishin:
-                case ProcessTypes.DaishinMaster:
-                    return Start("MTree.DaishinPublisher.exe", type.ToString(), windowStyle: windowStyle);
+        public static Process Start(ProcessTypes type, ProcessWindowStyle windowStyle = ProcessWindowStyle.Minimized)
+        {
+            if (ProcessList.ContainsKey(type) == true)
+                return Start(ProcessList[type] + ".exe", type.ToString(), windowStyle: windowStyle);
 
-                case ProcessTypes.Ebest:
-                    return Start("MTree.EbestPublisher.exe", type.ToString(), windowStyle: windowStyle);
-
-                case ProcessTypes.Kiwoom:
-                    return Start("MTree.KiwoomPublisher.exe", type.ToString(), windowStyle: windowStyle);
-
-                case ProcessTypes.Krx:
-                    return Start("MTree.KrxPublisher.exe", type.ToString(), windowStyle: windowStyle);
-
-                case ProcessTypes.Naver:
-                    return Start("MTree.NaverPublisher.exe", type.ToString(), windowStyle: windowStyle);
-
-                case ProcessTypes.DaishinPopupStopper:
-                    return Start("MTree.DaishinPopupStopper.exe", windowStyle: windowStyle);
-
-                case ProcessTypes.HistorySaver:
-                    return Start("MTree.HistorySaver.exe", windowStyle: windowStyle);
-
-                case ProcessTypes.DaishinSessionManager:
-                    return Start("MTree.DaishinSessionManager.exe", windowStyle: windowStyle);
-
-                default:
-                    return null;
-            }
+            return null;
         }
 
         public static Process Start(string filePath, string arguments = "", ProcessWindowStyle windowStyle = ProcessWindowStyle.Normal)
         {
             try
             {
-                logger.Info($"{Path.GetFileName(filePath)} {arguments} process start");
-
                 var process = new Process();
                 process.StartInfo.FileName = filePath;
                 process.StartInfo.Arguments = arguments;
                 process.StartInfo.WindowStyle = windowStyle;
                 process.Start();
 
+                logger.Info($"{Path.GetFileName(filePath)} {arguments} process started");
                 return process;
             }
             catch (Exception ex)
@@ -84,6 +75,12 @@ namespace MTree.Utility
             }
 
             return null;
+        }
+
+        public static void Kill(ProcessTypes type)
+        {
+            if (ProcessList.ContainsKey(type) == true)
+                Kill(ProcessList[type]);
         }
 
         public static void Kill(string processName, int excludeId = -1)
@@ -107,6 +104,14 @@ namespace MTree.Utility
                     logger.Error(ex);
                 }
             }
+        }
+
+        public static bool Exists(ProcessTypes type)
+        {
+            if (ProcessList.ContainsKey(type) == true)
+                return Exists(ProcessList[type]);
+
+            return false;
         }
 
         public static bool Exists(string processName)

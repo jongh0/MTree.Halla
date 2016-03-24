@@ -42,7 +42,6 @@ namespace TestConsumer
 
         public void StopConsume()
         {
-            StopCommunicateTimer();
             StopQueueTask();
             CloseChannel();
         }

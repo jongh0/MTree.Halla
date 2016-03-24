@@ -10,6 +10,7 @@ namespace MTree.RealTimeProvider
     {
         StockMaster,
         BiddingPrice,
+        CircuitBreak,
         StockConclusion,
         IndexConclusion,
     }

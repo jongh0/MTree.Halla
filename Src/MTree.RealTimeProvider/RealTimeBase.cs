@@ -21,13 +21,12 @@ namespace MTree.RealTimeProvider
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        protected int MaxCommunicateInterval { get; } = 1000 * 60 * 5;
-        protected int LastWcfCommunicateTick { get; set; } = Environment.TickCount; // 마지막으로 WCF 통신을 한 시간
-        protected System.Timers.Timer CommunicateTimer { get; set; }
-
+        #region Queue
         protected ConcurrentQueue<BiddingPrice> BiddingPriceQueue { get; } = new ConcurrentQueue<BiddingPrice>();
+        protected ConcurrentQueue<CircuitBreak> CircuitBreakQueue { get; } = new ConcurrentQueue<CircuitBreak>();
         protected ConcurrentQueue<StockConclusion> StockConclusionQueue { get; } = new ConcurrentQueue<StockConclusion>();
-        protected ConcurrentQueue<IndexConclusion> IndexConclusionQueue { get; } = new ConcurrentQueue<IndexConclusion>();
+        protected ConcurrentQueue<IndexConclusion> IndexConclusionQueue { get; } = new ConcurrentQueue<IndexConclusion>(); 
+        #endregion
 
         protected CancellationTokenSource QueueTaskCancelSource { get; } = new CancellationTokenSource();
         protected CancellationToken QueueTaskCancelToken { get; set; }
@@ -35,26 +34,12 @@ namespace MTree.RealTimeProvider
         public RealTimeBase()
         {
             QueueTaskCancelToken = QueueTaskCancelSource.Token;
-
-            CommunicateTimer = new System.Timers.Timer(MaxCommunicateInterval);
-            CommunicateTimer.Elapsed += OnCommunicateTimer;
-            CommunicateTimer.AutoReset = true;
         }
 
         protected void StopQueueTask()
         {
             QueueTaskCancelSource.Cancel();
             logger.Info($"[{GetType().Name}] Queue task stopped");
-        }
-
-        protected void StopCommunicateTimer()
-        {
-            CommunicateTimer.Stop();
-            logger.Info($"[{GetType().Name}] Communicate timer stopped");
-        }
-
-        protected virtual void OnCommunicateTimer(object sender, System.Timers.ElapsedEventArgs e)
-        {
         }
     }
 }

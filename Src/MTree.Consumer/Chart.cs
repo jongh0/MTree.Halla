@@ -32,7 +32,7 @@ namespace MTree.Consumer
 
         public DateTime EndDate { get; private set; }
 
-        public bool Initializing { get; private set; }
+        public bool IsInitializing { get; private set; }
 
         private ManualResetEvent WaitInitializingEvent { get; set; } = new ManualResetEvent(false);
 
@@ -64,28 +64,38 @@ namespace MTree.Consumer
 
         public bool WaitInitialing(int timeout = Timeout.Infinite)
         {
-            if (Initializing == false) return true;
+            if (IsInitializing == false) return true;
 
             return WaitInitializingEvent.WaitOne(timeout);
         }
 
+        /// <summary>
+        /// Async로 동작하며 Initializing, WaitInitialing()를 사용해서 동작중인지 확인해야 한다
+        /// </summary>
         private async void FillCandles()
         {
             int startTick = Environment.TickCount;
 
             try
             {
-                Initializing = true;
+                IsInitializing = true;
                 WaitInitializingEvent.Reset();
 
+                // Candle 리스트 초기화
                 Candles.Clear();
 
                 IMongoCollection<Candle> collection = MongoDbProvider.Instance.GetDatabase(DbTypes.Chart).GetCollection<Candle>(Code);
 
+                // CandleType, Time으로 Query 생성
                 var builder = Builders<Candle>.Filter;
-                var filter = builder.Gte(i => i.Time, StartDate) & builder.Lte(i => i.Time, EndDate);
+                var filter = builder.Eq(i => i.CandleType, ConvertToCandleType(ChartType)) & 
+                             builder.Gte(i => i.Time, StartDate) & 
+                             builder.Lte(i => i.Time, EndDate);
+
+                // Async Query 수행
                 var result = await collection.Find(filter).ToListAsync();
 
+                // Candle 리스트에 삽입
                 foreach (var candle in result)
                 {
                     if (Candles.ContainsKey(candle.Time) == false)
@@ -100,7 +110,7 @@ namespace MTree.Consumer
             }
             finally
             {
-                Initializing = false;
+                IsInitializing = false;
                 WaitInitializingEvent.Set();
 
                 var duration = Environment.TickCount - startTick;
@@ -116,12 +126,14 @@ namespace MTree.Consumer
 
             try
             {
-                dateTime = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, dateTime.Hour, dateTime.Minute, 0, 0); // Sec, Milisecond는 버린다
+                // Sec, Milisecond는 버리고 검색한다
+                dateTime = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, dateTime.Hour, dateTime.Minute, 0, 0);
 
                 int index = Candles.IndexOfKey(dateTime);
                 if (index != -1)
                     return Candles.Values[index];
 
+                // Index로 못 찾으면 해당 시간 바로 이전의 Candle을 리턴한다
                 for (index = Candles.Count - 1; index >= 0; index--)
                 {
                     var candle = Candles.Values[index];
@@ -150,6 +162,7 @@ namespace MTree.Consumer
 
             try
             {
+                // Index로 검색해서 바로 다음 Index Candle을 리턴한다
                 int index = Candles.IndexOfValue(baseCandle);
                 if (index >= 0 && Candles.Count > index + 1)
                     return Candles.Values[index + 1];
@@ -169,6 +182,7 @@ namespace MTree.Consumer
 
             try
             {
+                // Index로 검색해서 바로 이전 Index Candle을 리턴한다
                 int index = Candles.IndexOfValue(baseCandle);
                 if (index > 0)
                     return Candles.Values[index - 1];
@@ -181,10 +195,22 @@ namespace MTree.Consumer
             logger.Warn($"Can not find candle prev {baseCandle.Code}/{baseCandle.Time.ToString(Config.Instance.General.DateTimeFormat)}");
             return null;
         }
-        
+
         public override string ToString()
         {
             return $"{Code}/{ChartType}/{StartDate.ToString(Config.Instance.General.DateTimeFormat)}/{EndDate.ToString(Config.Instance.General.DateTimeFormat)}/{Candles.Count}";
+        }
+
+        public static CandleTypes ConvertToCandleType(ChartTypes chartType)
+        {
+            switch (chartType)
+            {
+                case ChartTypes.Min:    return CandleTypes.Min;
+                case ChartTypes.Day:    return CandleTypes.Day;
+                case ChartTypes.Week:   return CandleTypes.Week;
+                case ChartTypes.Month:  return CandleTypes.Month;
+                default:                return CandleTypes.Tick;
+            }
         }
     }
 }

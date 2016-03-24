@@ -31,6 +31,7 @@ namespace MTree.RealTimeProvider
         public RealTimeProvider()
         {
             TaskUtility.Run("RealTimeProvider.BiddingPriceQueue", QueueTaskCancelToken, ProcessBiddingPriceQueue);
+            TaskUtility.Run("RealTimeProvider.CircuitBreakQueue", QueueTaskCancelToken, ProcessCircuitBreakQueue);
             TaskUtility.Run("RealTimeProvider.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
             TaskUtility.Run("RealTimeProvider.IndexConclusionQueue", QueueTaskCancelToken, ProcessIndexConclusionQueue);
         }
@@ -52,7 +53,7 @@ namespace MTree.RealTimeProvider
                     var now = DateTime.Now;
                     int time = int.Parse(message);
 
-                    MarketEndTime = new DateTime(now.Year, now.Month, now.Day, time, 0, 0);
+                    MarketEndTime = new DateTime(now.Year, now.Month, now.Day, time, 0, 0).AddHours(3); // 장외 3시간 추가
                     logger.Info($"Market end time: {MarketEndTime.ToString(Config.Instance.General.TimeFormat)}");
 
                     if (MarketEndTimer != null)
@@ -69,9 +70,10 @@ namespace MTree.RealTimeProvider
                         MarketEndTimer = new System.Timers.Timer();
                         MarketEndTimer.Interval = interval.TotalMilliseconds;
                         MarketEndTimer.Elapsed += MarketEndTimer_Elapsed;
+                        MarketEndTimer.AutoReset = false;
                         MarketEndTimer.Start();
 
-                        logger.Info($"Program will be closed after {interval.Hours}:{interval.Minutes}:{interval.Seconds}");
+                        logger.Info($"Market end timer will be triggered after {interval.Hours}:{interval.Minutes}:{interval.Seconds}");
                     }
                 }
             }
@@ -85,11 +87,12 @@ namespace MTree.RealTimeProvider
         {
             logger.Info("Market end timer elapsed");
 
+            // Publisher 종료
             foreach (var contract in PublishContracts)
             {
                 try
                 {
-                    logger.Info($"Close client. {contract.ToString()}");
+                    logger.Info($"Close publisher client, {contract.ToString()}");
                     contract.Value.Callback.NotifyMessage(MessageTypes.CloseClient, string.Empty);
                 }
                 catch (Exception ex)
@@ -98,11 +101,12 @@ namespace MTree.RealTimeProvider
                 }
             }
 
+            // Consumer 종료
             foreach (var contract in ConsumerContracts)
             {
                 try
                 {
-                    logger.Info($"Close client. {contract.ToString()}");
+                    logger.Info($"Close consumer client, {contract.ToString()}");
                     contract.Value.Callback.NotifyMessage(MessageTypes.CloseClient, string.Empty);
                 }
                 catch (Exception ex)
@@ -113,10 +117,14 @@ namespace MTree.RealTimeProvider
 
             Task.Run(() =>
             {
+                // CybosStarter 종료
+                ProcessUtility.Kill(ProcessTypes.CybosStarter);
+
                 // 당일 수집된 로그를 Zip해서 Email로 전송함
                 LogUtility.SendLogToEmail();
 
                 // 20초후 프로그램 종료
+                logger.Info("Program will be closed after 20sec");
                 Thread.Sleep(1000 * 20);
                 Environment.Exit(0);
             });

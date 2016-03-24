@@ -57,6 +57,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KillAll", "KillAll\KillAll.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.RealTimeProviderTests", "MTree.RealTimeProviderTests\MTree.RealTimeProviderTests.csproj", "{D49C549F-53FE-4F57-9618-5A039F23142C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.AutoLauncher", "MTree.AutoLauncher\MTree.AutoLauncher.csproj", "{F8DEB19B-AD50-46E8-B89F-890B8033C1D2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -155,6 +157,10 @@ Global
 		{D49C549F-53FE-4F57-9618-5A039F23142C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D49C549F-53FE-4F57-9618-5A039F23142C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D49C549F-53FE-4F57-9618-5A039F23142C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8DEB19B-AD50-46E8-B89F-890B8033C1D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8DEB19B-AD50-46E8-B89F-890B8033C1D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8DEB19B-AD50-46E8-B89F-890B8033C1D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8DEB19B-AD50-46E8-B89F-890B8033C1D2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -178,5 +184,6 @@ Global
 		{FBF6C623-2091-4DD7-8967-5CD6F3FD19B0} = {45A22074-BF98-4455-B6DE-D6B8CF4ADF18}
 		{FCF497F9-45F2-4F00-A190-79FBFF189AA0} = {C22A1011-FE40-49F1-AB42-3CBF4921ACBD}
 		{D49C549F-53FE-4F57-9618-5A039F23142C} = {1D8D58CC-80C5-42F1-B88E-27295B31EF8C}
+		{F8DEB19B-AD50-46E8-B89F-890B8033C1D2} = {C22A1011-FE40-49F1-AB42-3CBF4921ACBD}
 	EndGlobalSection
 EndGlobal

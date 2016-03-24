@@ -147,7 +147,7 @@ namespace MTree.RealTimeProvider
                                 contract = DaishinContractForMastering;
                                 if (contract != null)
                                 {
-                                    contract.NowOperating = true;
+                                    contract.IsOperating = true;
                                     break;
                                 }
                             }
@@ -171,6 +171,8 @@ namespace MTree.RealTimeProvider
             {
                 sw.Stop();
                 logger.Info($"Daishin stock mastering done, Elapsed time: {sw.Elapsed.ToString()}");
+
+                ProcessUtility.Kill(ProcessTypes.DaishinPopupStopper);
             }
         }
 
@@ -211,7 +213,7 @@ namespace MTree.RealTimeProvider
                                 contract = EbestContractForMastering;
                                 if (contract != null)
                                 {
-                                    contract.NowOperating = true;
+                                    contract.IsOperating = true;
                                     break;
                                 }
                             }
@@ -275,7 +277,7 @@ namespace MTree.RealTimeProvider
                                 contract = KiwoomContractForMastering;
                                 if (contract != null)
                                 {
-                                    contract.NowOperating = true;
+                                    contract.IsOperating = true;
                                     break;
                                 }
                             }
@@ -351,17 +353,17 @@ namespace MTree.RealTimeProvider
                 if (contract.Type == ProcessTypes.Daishin)
                 {
                     lock (daishinMasteringLock)
-                        contract.NowOperating = false;
+                        contract.IsOperating = false;
                 }
                 else if (contract.Type == ProcessTypes.Ebest)
                 {
                     lock (ebestMasteringLock)
-                        contract.NowOperating = false;
+                        contract.IsOperating = false;
                 }
                 else if (contract.Type == ProcessTypes.Kiwoom)
                 {
                     lock (kiwoomMasteringLock)
-                        contract.NowOperating = false;
+                        contract.IsOperating = false;
                 }
             }
         }

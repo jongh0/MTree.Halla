@@ -17,6 +17,8 @@ namespace MTree.Utility
         {
             try
             {
+                logger.Info("Send log to email");
+
                 var date = DateTime.Now.ToString(Config.Instance.General.DateFormat);
                 var logFolder = Path.Combine(Environment.CurrentDirectory, "Logs");
                 var targetFile = $"MTree.Log.{date}.zip";

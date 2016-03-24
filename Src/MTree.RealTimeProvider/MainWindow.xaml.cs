@@ -60,7 +60,7 @@ namespace MTree.RealTimeProvider
                 Config.Initialize();
 
                 // Daishin CybosPlus 실행
-                if (ProcessUtility.Exists(ProcessUtility.CybosStarterName) == false)
+                if (ProcessUtility.Exists(ProcessTypes.CybosStarter) == false)
                 {
                     logger.Info("Daishin starter not exists");
                     ProcessUtility.Start(ProcessTypes.DaishinSessionManager)?.WaitForExit();

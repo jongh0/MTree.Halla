@@ -71,7 +71,6 @@ namespace MTree.Publisher
             try
             {
                 logger.Info($"[{GetType().Name}] Keep connection");
-                CommunicateTimer.Start();
 
                 Task.Run(() =>
                 {
@@ -100,7 +99,6 @@ namespace MTree.Publisher
         protected virtual void ServiceClient_Closed(object sender, EventArgs e)
         {
             logger.Info($"[{GetType().Name}] Channel closed");
-            CommunicateTimer.Stop();
         }
 
         public override void NotifyMessage(MessageTypes type, string message)
@@ -111,7 +109,6 @@ namespace MTree.Publisher
                 {
                     logger.Info($"[{GetType().Name}] Process will be closed");
 
-                    StopCommunicateTimer();
                     StopQueueTask();
                     CloseChannel();
 
@@ -120,28 +117,6 @@ namespace MTree.Publisher
                         Thread.Sleep(1000 * 10);
                         Environment.Exit(0);
                     });
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-            }
-        }
-
-        protected override void OnCommunicateTimer(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            try
-            {
-                if (ServiceClient?.State == CommunicationState.Opened &&
-                    (Environment.TickCount - LastWcfCommunicateTick) > MaxCommunicateInterval)
-                {
-                    if (ServiceClient.State == CommunicationState.Opened)
-                    {
-                        LastWcfCommunicateTick = Environment.TickCount;
-                        ServiceClient.NotifyMessage(MessageTypes.NoOperation, string.Empty);
-                        
-                        logger.Trace($"[{GetType().Name}] Keep wcf connection");
-                    }
                 }
             }
             catch (Exception ex)
