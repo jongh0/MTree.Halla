@@ -528,7 +528,23 @@ namespace MTree.EbestPublisher
                 CircuitBreak circuitBreak = new CircuitBreak();
                 circuitBreak.Time = DateTime.Now;
                 circuitBreak.Code = viSubscribingObj.GetFieldData("OutBlock", "shcode");
-                circuitBreak.CircuitBreakType = (CircuitBreakTypes)Convert.ToInt32(viSubscribingObj.GetFieldData("OutBlock", "vi_gubun"));
+                
+                int cbType = Convert.ToInt32(viSubscribingObj.GetFieldData("OutBlock", "vi_gubun"));
+                switch (cbType)
+                {
+                    case 0:
+                        circuitBreak.CircuitBreakType = CircuitBreakTypes.Clear;
+                        break;
+                    case 1:
+                        circuitBreak.CircuitBreakType = CircuitBreakTypes.StaticInvoke;
+                        break;
+                    case 2:
+                        circuitBreak.CircuitBreakType = CircuitBreakTypes.DynamicInvoke;
+                        break;
+                    default:
+                        logger.Error($"Invalid circuit break type. cbtype:{cbType}/{viSubscribingObj.GetFieldData("OutBlock", "vi_gubun")}");
+                        return;
+                }
 
                 if (circuitBreak.CircuitBreakType == CircuitBreakTypes.StaticInvoke)
                     circuitBreak.BasePrice = Convert.ToSingle(viSubscribingObj.GetFieldData("OutBlock", "svi_recprice"));
@@ -554,7 +570,23 @@ namespace MTree.EbestPublisher
                 CircuitBreak circuitBreak = new CircuitBreak();
                 circuitBreak.Time = DateTime.Now;
                 circuitBreak.Code = dviSubscribingObj.GetFieldData("OutBlock", "shcode");
-                circuitBreak.CircuitBreakType = (CircuitBreakTypes)Convert.ToInt32(dviSubscribingObj.GetFieldData("OutBlock", "vi_gubun"));
+                
+                int cbType = Convert.ToInt32(dviSubscribingObj.GetFieldData("OutBlock", "vi_gubun"));
+                switch (cbType)
+                {
+                    case 0:
+                        circuitBreak.CircuitBreakType = CircuitBreakTypes.Clear;
+                        break;
+                    case 1:
+                        circuitBreak.CircuitBreakType = CircuitBreakTypes.StaticInvoke;
+                        break;
+                    case 2:
+                        circuitBreak.CircuitBreakType = CircuitBreakTypes.DynamicInvoke;
+                        break;
+                    default:
+                        logger.Error($"Invalid circuit break type. cbtype:{cbType}/{dviSubscribingObj.GetFieldData("OutBlock", "vi_gubun")}");
+                        return;
+                }
 
                 if (circuitBreak.CircuitBreakType == CircuitBreakTypes.StaticInvoke)
                     circuitBreak.BasePrice = Convert.ToSingle(dviSubscribingObj.GetFieldData("OutBlock", "svi_recprice"));
