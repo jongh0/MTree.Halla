@@ -247,8 +247,6 @@ namespace MTree.EbestPublisher
             LoginInstance.State = LoginStates.Login;
             SetLogin();
 
-            CommunTimer.Start();
-
             logger.Info($"{LoginInstance.ToString()}, nszCode: {szCode}, szMsg: {szMsg}");
         }
 
