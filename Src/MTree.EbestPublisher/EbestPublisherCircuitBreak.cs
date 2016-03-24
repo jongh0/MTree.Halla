@@ -37,7 +37,6 @@ namespace MTree.EbestPublisher
 
         public override bool UnsubscribeCircuitBreak(string code)
         {
-
             if (WaitLogin() == false)
             {
                 logger.Error("Not loggedin state");
@@ -70,7 +69,7 @@ namespace MTree.EbestPublisher
         {
             try
             {
-                CircuitBreak circuitBreak = new CircuitBreak();
+                var circuitBreak = new CircuitBreak();
                 circuitBreak.Time = DateTime.Now;
                 circuitBreak.Code = viSubscribingObj.GetFieldData("OutBlock", "shcode");
 
@@ -113,7 +112,7 @@ namespace MTree.EbestPublisher
         {
             try
             {
-                CircuitBreak circuitBreak = new CircuitBreak();
+                var circuitBreak = new CircuitBreak();
                 circuitBreak.Time = DateTime.Now;
                 circuitBreak.Code = dviSubscribingObj.GetFieldData("OutBlock", "shcode");
 

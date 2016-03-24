@@ -62,7 +62,7 @@ namespace MTree.EbestPublisher
             try
             {
                 var now = DateTime.Now;
-                IndexConclusion conclusion = new IndexConclusion();
+                var conclusion = new IndexConclusion();
 
                 string temp = indexSubscribingObj.GetFieldData("OutBlock", "upcode");
                 conclusion.Code = temp;

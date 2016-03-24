@@ -1,20 +1,7 @@
-﻿using MTree.Configuration;
-using MTree.Utility;
+﻿using MTree.Utility;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace MTree.AutoLauncher
 {
@@ -71,5 +58,10 @@ namespace MTree.AutoLauncher
                 PropertyChanged(this, new PropertyChangedEventArgs(name));
         }
         #endregion
+
+        private void LaunchNow_Clicked(object sender, RoutedEventArgs e)
+        {
+            launcher.LaunchNow();
+        }
     }
 }

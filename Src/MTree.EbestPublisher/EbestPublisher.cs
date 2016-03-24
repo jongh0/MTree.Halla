@@ -168,7 +168,11 @@ namespace MTree.EbestPublisher
                     return;
                 }
                 #endregion
+<<<<<<< HEAD
                 
+=======
+
+>>>>>>> origin/master
                 // Warning List Update
                 Task.Run(() => UpdateWarningList());
 
@@ -262,19 +266,17 @@ namespace MTree.EbestPublisher
         #region Login / Logout
         public bool Login()
         {
-            bool ret = false;
-
             try
             {
-                if (sessionObj.ConnectServer(LoginInstance.ServerAddress, LoginInstance.ServerPort) == true)
+                if (sessionObj.ConnectServer(LoginInstance.ServerAddress, LoginInstance.ServerPort) == false)
                 {
-                    logger.Info("Server connected");
+                    logger.Error("Server connection fail");
+                    return false;
+                }
 
-                    if (LoginInstance.ServerType == ServerTypes.Real)
-                        ret = sessionObj.Login(LoginInstance.UserId, LoginInstance.UserPw, LoginInstance.CertPw, (int)XA_SERVER_TYPE.XA_REAL_SERVER, true);
-                    else
-                        ret = sessionObj.Login(LoginInstance.UserId, LoginInstance.UserPw, LoginInstance.CertPw, (int)XA_SERVER_TYPE.XA_SIMUL_SERVER, true);
+                logger.Info("Server connected");
 
+<<<<<<< HEAD
                     if (ret == true)
                     {
                         logger.Info($"Try login with id:{LoginInstance.UserId}");
@@ -285,16 +287,25 @@ namespace MTree.EbestPublisher
                     }
                 }
                 else
+=======
+                int serverType = LoginInstance.ServerType == ServerTypes.Real ? (int)XA_SERVER_TYPE.XA_REAL_SERVER : (int)XA_SERVER_TYPE.XA_SIMUL_SERVER;
+
+                if (sessionObj.Login(LoginInstance.UserId, LoginInstance.UserPw, LoginInstance.CertPw, serverType, true) == true)
+>>>>>>> origin/master
                 {
-                    logger.Error("Server connection fail");
+                    logger.Info($"Try login with id: {LoginInstance.UserId}");
+                    CommunTimer.Start();
+                    return true;
                 }
+
+                logger.Error("Login error");
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
             }
 
-            return ret;
+            return false;
         }
 
         public bool Logout()
@@ -311,14 +322,14 @@ namespace MTree.EbestPublisher
                 sessionObj.DisconnectServer();
 
                 logger.Info("Logout success");
+                return true;
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
-                return false;
             }
 
-            return true;
+            return false;
         }
         #endregion
 
