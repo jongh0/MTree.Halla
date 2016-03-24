@@ -12,7 +12,8 @@ namespace MTree.DataStructure
     {
         Clear,
         StaticInvoke,
-        DynamicInvoke
+        DynamicInvoke,
+        Unknown,
     } 
     #endregion
 
