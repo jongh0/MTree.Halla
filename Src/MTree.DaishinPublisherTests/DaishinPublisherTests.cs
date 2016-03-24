@@ -55,5 +55,13 @@ namespace MTree.DaishinPublisher.Tests
             publisher.IsSubscribable();
             Assert.Fail();
         }
+
+        [TestMethod()]
+        public void SubscribeIndexTest()
+        {
+            DaishinPublisher publisher = new DaishinPublisher();
+            publisher.SubscribeIndex("001");
+            while (true) ;
+        }
     }
 }

@@ -107,25 +107,30 @@ namespace MTree.DaishinPublisher
 
                 // 9 - (long) 누적거래량
                 conclusion.Amount = Convert.ToInt64(stockCurObj.GetHeaderValue(9));
-                
-                long newReceived;
-                newReceived = conclusion.Amount;
-                conclusion.Amount = conclusion.Amount - prevIndexVolume[conclusion.Code];
-                if (!prevIndexVolume.ContainsKey(conclusion.Code))
-                    prevIndexVolume.Add(conclusion.Code, newReceived);
-                else
+                if (prevIndexVolume.ContainsKey(conclusion.Code))
+                {
+                    long newReceived = conclusion.Amount;
+                    conclusion.Amount = conclusion.Amount - prevIndexVolume[conclusion.Code];
                     prevIndexVolume[conclusion.Code] = newReceived;
+                }
+                else
+                {
+                    prevIndexVolume.Add(conclusion.Code, conclusion.Amount);
+                }
 
                 // 10 - (long) 누적거래대금
                 conclusion.MarketCapitalization = Convert.ToInt64(stockCurObj.GetHeaderValue(10));
-                
-                newReceived = conclusion.MarketCapitalization;
-                conclusion.MarketCapitalization = conclusion.MarketCapitalization - prevIndexMarketCapitalization[conclusion.Code];
-                if (!prevIndexMarketCapitalization.ContainsKey(conclusion.Code))
-                    prevIndexMarketCapitalization.Add(conclusion.Code, newReceived);
-                else
+                if (prevIndexMarketCapitalization.ContainsKey(conclusion.Code))
+                {
+                    long newReceived = conclusion.MarketCapitalization;
+                    conclusion.MarketCapitalization = conclusion.MarketCapitalization - prevIndexMarketCapitalization[conclusion.Code];
                     prevIndexMarketCapitalization[conclusion.Code] = newReceived;
-                
+                }
+                else
+                {
+                    prevIndexMarketCapitalization.Add(conclusion.Code, conclusion.MarketCapitalization);
+                }
+
                 // 20 - (char) 장 구분 플래그
                 char marketTime = Convert.ToChar(stockCurObj.GetHeaderValue(20));
                 if (marketTime == '1') conclusion.MarketTimeType = MarketTimeTypes.BeforeExpect;
