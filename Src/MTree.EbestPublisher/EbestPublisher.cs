@@ -334,10 +334,6 @@ namespace MTree.EbestPublisher
                 logger.Error(ex);
                 return false;
             }
-            finally
-            {
-                CommunTimer.Stop();
-            }
 
             return true;
         }
