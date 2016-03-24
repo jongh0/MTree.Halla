@@ -84,6 +84,10 @@ namespace MTree.EbestPublisher
         {
             try
             {
+                CommunTimer = new System.Timers.Timer(MaxCommunInterval);
+                CommunTimer.Elapsed += OnCommunTimer;
+                CommunTimer.AutoReset = true;
+
                 #region XASession
                 sessionObj = new XASessionClass();
                 sessionObj.Disconnect += sessionObj_Disconnect;
@@ -164,10 +168,6 @@ namespace MTree.EbestPublisher
                     return;
                 }
                 #endregion
-
-                CommunTimer = new System.Timers.Timer(MaxCommunInterval);
-                CommunTimer.Elapsed += OnCommunTimer;
-                CommunTimer.AutoReset = true;
 
                 // Warning List Update
                 Task.Run(() => UpdateWarningList());
@@ -260,40 +260,33 @@ namespace MTree.EbestPublisher
         #region Login / Logout
         public bool Login()
         {
-            bool ret = false;
-
             try
             {
-                if (sessionObj.ConnectServer(LoginInstance.ServerAddress, LoginInstance.ServerPort) == true)
-                {
-                    logger.Info("Server connected");
-
-                    if (LoginInstance.ServerType == ServerTypes.Real)
-                        ret = sessionObj.Login(LoginInstance.UserId, LoginInstance.UserPw, LoginInstance.CertPw, (int)XA_SERVER_TYPE.XA_REAL_SERVER, true);
-                    else
-                        ret = sessionObj.Login(LoginInstance.UserId, LoginInstance.UserPw, LoginInstance.CertPw, (int)XA_SERVER_TYPE.XA_SIMUL_SERVER, true);
-
-                    if (ret == true)
-                    {
-                        logger.Info($"Try login with id:{LoginInstance.UserId}");
-                        CommunTimer.Start();
-                    }
-                    else
-                    {
-                        logger.Error("Login error");
-                    }
-                }
-                else
+                if (sessionObj.ConnectServer(LoginInstance.ServerAddress, LoginInstance.ServerPort) == false)
                 {
                     logger.Error("Server connection fail");
+                    return false;
                 }
+
+                logger.Info("Server connected");
+
+                int serverType = LoginInstance.ServerType == ServerTypes.Real ? (int)XA_SERVER_TYPE.XA_REAL_SERVER : (int)XA_SERVER_TYPE.XA_SIMUL_SERVER;
+
+                if (sessionObj.Login(LoginInstance.UserId, LoginInstance.UserPw, LoginInstance.CertPw, serverType, true) == true)
+                {
+                    logger.Info($"Try login with id: {LoginInstance.UserId}");
+                    CommunTimer.Start();
+                    return true;
+                }
+
+                logger.Error("Login error");
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
             }
 
-            return ret;
+            return false;
         }
 
         public bool Logout()
@@ -310,14 +303,14 @@ namespace MTree.EbestPublisher
                 sessionObj.DisconnectServer();
 
                 logger.Info("Logout success");
+                return true;
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
-                return false;
             }
 
-            return true;
+            return false;
         }
         #endregion
 

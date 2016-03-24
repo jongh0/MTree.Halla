@@ -8,8 +8,8 @@
         Title="AutoLauncher" Height="104.527" Width="428.653" x:Name="_this" ResizeMode="NoResize">
     <Grid>
         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-            <TextBox Width="300" Height="25" TextAlignment="Center" TextWrapping="Wrap" Text="{Binding ElementName=_this, Path=LauncherInfo}" IsReadOnly="True" FontSize="12"/>
-            <Button Content="LaunchNow" Width="Auto" Margin="5,0,0,0" FontSize="12" Padding="5,0,5,0"/>
+            <TextBox Width="300" Height="25" TextAlignment="Center" TextWrapping="Wrap" Text="{Binding ElementName=_this, Path=LauncherInfo}" IsReadOnly="True" FontSize="12" Padding="5,3,5,0"/>
+            <Button Content="LaunchNow" Width="Auto" Margin="5,0,0,0" FontSize="12" Padding="5,0,5,0" Click="LaunchNow_Clicked"/>
         </StackPanel>
     </Grid>
 </Window>

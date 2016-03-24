@@ -7,20 +7,11 @@ namespace MTree.DaishinPublisher
 {
     public partial class DaishinPublisher
     {
-        private Dictionary<String, long> prevIndexVolume;
-        private Dictionary<String, long> prevIndexMarketCapitalization;
+        private Dictionary<string, long> PrevIndexVolume { get; set; } = new Dictionary<string, long>();
+        private Dictionary<string, long> PrevIndexMarketCapitalization { get; set; } = new Dictionary<string, long>();
 
         public override bool SubscribeIndex(string code)
         {
-            if (prevIndexVolume == null)
-            {
-                prevIndexVolume = new Dictionary<string, long>();
-            }
-            if (prevIndexMarketCapitalization == null)
-            {
-                prevIndexMarketCapitalization = new Dictionary<string, long>();
-            }
-
             short status = 1;
 
             try
@@ -107,28 +98,28 @@ namespace MTree.DaishinPublisher
 
                 // 9 - (long) 누적거래량
                 conclusion.Amount = Convert.ToInt64(stockCurObj.GetHeaderValue(9));
-                if (prevIndexVolume.ContainsKey(conclusion.Code))
+                if (PrevIndexVolume.ContainsKey(conclusion.Code))
                 {
                     long newReceived = conclusion.Amount;
-                    conclusion.Amount = conclusion.Amount - prevIndexVolume[conclusion.Code];
-                    prevIndexVolume[conclusion.Code] = newReceived;
+                    conclusion.Amount = conclusion.Amount - PrevIndexVolume[conclusion.Code];
+                    PrevIndexVolume[conclusion.Code] = newReceived;
                 }
                 else
                 {
-                    prevIndexVolume.Add(conclusion.Code, conclusion.Amount);
+                    PrevIndexVolume.Add(conclusion.Code, conclusion.Amount);
                 }
 
                 // 10 - (long) 누적거래대금
                 conclusion.MarketCapitalization = Convert.ToInt64(stockCurObj.GetHeaderValue(10));
-                if (prevIndexMarketCapitalization.ContainsKey(conclusion.Code))
+                if (PrevIndexMarketCapitalization.ContainsKey(conclusion.Code))
                 {
                     long newReceived = conclusion.MarketCapitalization;
-                    conclusion.MarketCapitalization = conclusion.MarketCapitalization - prevIndexMarketCapitalization[conclusion.Code];
-                    prevIndexMarketCapitalization[conclusion.Code] = newReceived;
+                    conclusion.MarketCapitalization = conclusion.MarketCapitalization - PrevIndexMarketCapitalization[conclusion.Code];
+                    PrevIndexMarketCapitalization[conclusion.Code] = newReceived;
                 }
                 else
                 {
-                    prevIndexMarketCapitalization.Add(conclusion.Code, conclusion.MarketCapitalization);
+                    PrevIndexMarketCapitalization.Add(conclusion.Code, conclusion.MarketCapitalization);
                 }
 
                 // 20 - (char) 장 구분 플래그
