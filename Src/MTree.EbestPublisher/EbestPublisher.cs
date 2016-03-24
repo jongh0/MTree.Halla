@@ -84,6 +84,10 @@ namespace MTree.EbestPublisher
         {
             try
             {
+                CommunTimer = new System.Timers.Timer(MaxCommunInterval);
+                CommunTimer.Elapsed += OnCommunTimer;
+                CommunTimer.AutoReset = true;
+
                 #region XASession
                 sessionObj = new XASessionClass();
                 sessionObj.Disconnect += sessionObj_Disconnect;
@@ -164,11 +168,7 @@ namespace MTree.EbestPublisher
                     return;
                 }
                 #endregion
-
-                CommunTimer = new System.Timers.Timer(MaxCommunInterval);
-                CommunTimer.Elapsed += OnCommunTimer;
-                CommunTimer.AutoReset = true;
-
+                
                 // Warning List Update
                 Task.Run(() => UpdateWarningList());
 
@@ -247,6 +247,8 @@ namespace MTree.EbestPublisher
             LoginInstance.State = LoginStates.Login;
             SetLogin();
 
+            CommunTimer.Start();
+
             logger.Info($"{LoginInstance.ToString()}, nszCode: {szCode}, szMsg: {szMsg}");
         }
 
@@ -276,7 +278,6 @@ namespace MTree.EbestPublisher
                     if (ret == true)
                     {
                         logger.Info($"Try login with id:{LoginInstance.UserId}");
-                        CommunTimer.Start();
                     }
                     else
                     {

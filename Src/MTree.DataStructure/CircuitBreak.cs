@@ -13,7 +13,7 @@ namespace MTree.DataStructure
         Clear,
         StaticInvoke,
         DynamicInvoke,
-        Unknown,
+        Unknown
     } 
     #endregion
 
