@@ -280,14 +280,12 @@ namespace MTree.HistorySaver
 
                 collection.InsertOne(stockMaster);
                 stockMasterCount++;
+                logger.Info($"{stockMaster.Code} stock master saved, Tick: {Environment.TickCount - startTick}");
             }
             catch (Exception ex)
             {
+                logger.Error($"{stockMaster.Code} stock master saving fail.");
                 logger.Error(ex);
-            }
-            finally
-            {
-                logger.Info($"{stockMaster.Code} stock master saved, Tick: {Environment.TickCount - startTick}");
             }
         }
 
