@@ -119,11 +119,11 @@ namespace MTree.DataStructure
 
         // 위험예고(Ebest)
         [BsonElement("IRN")]
-        public bool InvestmentRiskNoticed { get; set; }
+        public bool InvestRiskNoticed { get; set; }
 
         // 위험(Ebest)
         [BsonElement("IR")]
-        public bool InvestmentRisk { get; set; }
+        public bool InvestRisk { get; set; }
 
         // 매매정지(Ebest)
         [BsonElement("TH")]
@@ -216,8 +216,8 @@ namespace MTree.DataStructure
                 sb.AppendLine($"{nameof(AdministrativeIssue)}: {AdministrativeIssue}");
                 sb.AppendLine($"{nameof(InvestCaution)}: {InvestCaution}");
                 sb.AppendLine($"{nameof(InvestWarning)}: {InvestWarning}");
-                sb.AppendLine($"{nameof(InvestmentRiskNoticed)}: {InvestmentRiskNoticed}");
-                sb.AppendLine($"{nameof(InvestmentRisk)}: {InvestmentRisk}");
+                sb.AppendLine($"{nameof(InvestRiskNoticed)}: {InvestRiskNoticed}");
+                sb.AppendLine($"{nameof(InvestRisk)}: {InvestRisk}");
                 sb.AppendLine($"{nameof(TradingHalt)}: {TradingHalt}");
                 sb.AppendLine($"{nameof(TradingSuspend)}: {TradingSuspend}");
                 sb.AppendLine($"{nameof(UnfairAnnouncement)}: {UnfairAnnouncement}");

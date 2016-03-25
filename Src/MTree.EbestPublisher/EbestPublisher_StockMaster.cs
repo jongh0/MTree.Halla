@@ -118,8 +118,10 @@ namespace MTree.EbestPublisher
                 else QuotingStockMaster.ValueAlteredType = ValueAlteredTypes.None;
 
                 string suspended = stockQuotingObj.GetFieldData("t1102OutBlock", "info3", 0);
-                if (suspended == "suspended") QuotingStockMaster.TradingSuspend = true;
-                else QuotingStockMaster.TradingSuspend = false;
+                if (suspended == "suspended")
+                    QuotingStockMaster.TradingSuspend = true;
+                else
+                    QuotingStockMaster.TradingSuspend = false;
 
                 // 관리
                 if (WarningList["AdministrativeIssue"].Contains(QuotingStockMaster.Code))
@@ -171,15 +173,15 @@ namespace MTree.EbestPublisher
 
                 // 위험
                 if (WarningList["InvestmentRisk"].Contains(QuotingStockMaster.Code))
-                    QuotingStockMaster.InvestmentRisk = true;
+                    QuotingStockMaster.InvestRisk = true;
                 else
-                    QuotingStockMaster.InvestmentRisk = false;
+                    QuotingStockMaster.InvestRisk = false;
 
                 // 위험예고
                 if (WarningList["InvestmentRiskNoticed"].Contains(QuotingStockMaster.Code))
-                    QuotingStockMaster.InvestmentRiskNoticed = true;
+                    QuotingStockMaster.InvestRiskNoticed = true;
                 else
-                    QuotingStockMaster.InvestmentRiskNoticed = false;
+                    QuotingStockMaster.InvestRiskNoticed = false;
 
                 // 단기과열
                 if (WarningList["Overheated"].Contains(QuotingStockMaster.Code))

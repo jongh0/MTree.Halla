@@ -9,6 +9,8 @@ using System.ServiceModel;
 using System.Diagnostics;
 using MTree.RealTimeProvider;
 using System.Threading.Tasks;
+using System.Threading;
+using System.Windows;
 
 namespace MTree.DaishinPublisher
 {
@@ -255,7 +257,16 @@ namespace MTree.DaishinPublisher
 
         public override void NotifyMessage(MessageTypes type, string message)
         {
-            if (type == MessageTypes.MarketStartTime)
+            if (type == MessageTypes.CloseClient)
+            {
+                Task.Run(() =>
+                {
+                    logger.Info("Process will be closed");
+                    Thread.Sleep(1000 * 10);
+                    Application.Current.Shutdown();
+                });
+            }
+            else if (type == MessageTypes.MarketStartTime)
             {
                 Task.Run(() =>
                 {

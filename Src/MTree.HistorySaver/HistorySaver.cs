@@ -10,6 +10,8 @@ using MTree.Utility;
 using MTree.RealTimeProvider;
 using System.Collections.Concurrent;
 using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
 
 namespace MTree.HistorySaver
 {
@@ -130,17 +132,7 @@ namespace MTree.HistorySaver
 
         public override void ConsumeStockMaster(StockMaster stockMaster)
         {
-            try
-            {
-                var filter = Builders<StockMaster>.Filter.Eq(i => i.Time, stockMaster.Time);
-                DbAgent.Instance.Delete(stockMaster.Code, filter);
-
-                DbAgent.Instance.Insert(stockMaster);
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-            }
+            DbAgent.Instance.Insert(stockMaster);
         }
 
         public override void NotifyMessage(MessageTypes type, string message)
@@ -149,6 +141,14 @@ namespace MTree.HistorySaver
             {
                 if (type == MessageTypes.CloseClient)
                 {
+                    Task.Run(() =>
+                    {
+                        DbAgent.Instance.CreateIndex();
+
+                        logger.Info("Process will be closed");
+                        Thread.Sleep(1000 * 10);
+                        Application.Current.Shutdown();
+                    });
                 }
             }
             catch (Exception ex)

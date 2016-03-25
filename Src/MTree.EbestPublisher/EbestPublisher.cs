@@ -12,6 +12,7 @@ using System.Timers;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Windows;
 
 namespace MTree.EbestPublisher
 {
@@ -673,7 +674,16 @@ namespace MTree.EbestPublisher
         public override void NotifyMessage(MessageTypes type, string message)
         {
             if (type == MessageTypes.CloseClient)
+            {
                 Logout();
+
+                Task.Run(() =>
+                {
+                    logger.Info("Process will be closed");
+                    Thread.Sleep(1000 * 10);
+                    Application.Current.Shutdown();
+                });
+            }
 
             base.NotifyMessage(type, message);
         }

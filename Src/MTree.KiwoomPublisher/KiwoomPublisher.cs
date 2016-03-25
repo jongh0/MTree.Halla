@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using MTree.RealTimeProvider;
+using System.Windows.Forms;
 
 namespace MTree.KiwoomPublisher
 {
@@ -483,7 +484,16 @@ namespace MTree.KiwoomPublisher
         public override void NotifyMessage(MessageTypes type, string message)
         {
             if (type == MessageTypes.CloseClient)
+            {
                 Logout();
+
+                Task.Run(() =>
+                {
+                    logger.Info("Process will be closed");
+                    Thread.Sleep(1000 * 10);
+                    Application.Exit();
+                });
+            }
 
             base.NotifyMessage(type, message);
         }

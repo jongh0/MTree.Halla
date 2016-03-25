@@ -38,12 +38,12 @@ namespace MTree.DbProvider
 
         public MongoDbProvider DbProvider { get; set; } = new MongoDbProvider();
 
-        private IMongoDatabase CandleDb { get; set; }
-        private IMongoDatabase BiddingPriceDb { get; set; }
-        private IMongoDatabase CircuitBreakDb { get; set; }
-        private IMongoDatabase StockMasterDb { get; set; }
-        private IMongoDatabase StockConclusionDb { get; set; }
-        private IMongoDatabase IndexConclusionDb { get; set; }
+        public IMongoDatabase CandleDb { get; set; }
+        public IMongoDatabase BiddingPriceDb { get; set; }
+        public IMongoDatabase CircuitBreakDb { get; set; }
+        public IMongoDatabase StockMasterDb { get; set; }
+        public IMongoDatabase StockConclusionDb { get; set; }
+        public IMongoDatabase IndexConclusionDb { get; set; }
 
         public DbAgent()
         {
@@ -65,6 +65,8 @@ namespace MTree.DbProvider
                     return (IMongoCollection<T>)StockMasterDb.GetCollection<StockMaster>(collectionName);
                 else if (typeof(T) == typeof(BiddingPrice))
                     return (IMongoCollection<T>)BiddingPriceDb.GetCollection<BiddingPrice>(collectionName);
+                else if (typeof(T) == typeof(CircuitBreak))
+                    return (IMongoCollection<T>)CircuitBreakDb.GetCollection<CircuitBreak>(collectionName);
                 else if (typeof(T) == typeof(StockConclusion))
                     return (IMongoCollection<T>)StockConclusionDb.GetCollection<StockConclusion>(collectionName);
                 else if (typeof(T) == typeof(IndexConclusion))
@@ -146,6 +148,106 @@ namespace MTree.DbProvider
             }
 
             return null;
+        }
+
+        public void CreateIndex(bool recreate = false)
+        {
+            try
+            {
+                using (var cursor = CandleDb.ListCollections())
+                {
+                    foreach (var doc in cursor.ToList())
+                    {
+                        var collectionName = doc.GetElement("name").Value.ToString();
+                        var collection = GetCollection<Candle>(collectionName);
+                        var keys = Builders<Candle>.IndexKeys.Ascending(i => i.CandleType).Ascending(i => i.Time);
+
+                        if (recreate == true)
+                            collection.Indexes.DropAll();
+
+                        collection.Indexes.CreateOne(keys);
+                    }
+                }
+
+                using (var cursor = BiddingPriceDb.ListCollections())
+                {
+                    foreach (var doc in cursor.ToList())
+                    {
+                        var collectionName = doc.GetElement("name").Value.ToString();
+                        var collection = GetCollection<BiddingPrice>(collectionName);
+                        var keys = Builders<BiddingPrice>.IndexKeys.Ascending(i => i.Time);
+
+                        if (recreate == true)
+                            collection.Indexes.DropAll();
+
+                        collection.Indexes.CreateOne(keys);
+                    }
+                }
+
+                using (var cursor = CircuitBreakDb.ListCollections())
+                {
+                    foreach (var doc in cursor.ToList())
+                    {
+                        var collectionName = doc.GetElement("name").Value.ToString();
+                        var collection = GetCollection<CircuitBreak>(collectionName);
+                        var keys = Builders<CircuitBreak>.IndexKeys.Ascending(i => i.Time);
+
+                        if (recreate == true)
+                            collection.Indexes.DropAll();
+
+                        collection.Indexes.CreateOne(keys);
+                    }
+                }
+
+                using (var cursor = StockMasterDb.ListCollections())
+                {
+                    foreach (var doc in cursor.ToList())
+                    {
+                        var collectionName = doc.GetElement("name").Value.ToString();
+                        var collection = GetCollection<StockMaster>(collectionName);
+                        var keys = Builders<StockMaster>.IndexKeys.Ascending(i => i.Time);
+
+                        if (recreate == true)
+                            collection.Indexes.DropAll();
+
+                        collection.Indexes.CreateOne(keys);
+                    }
+                }
+
+                using (var cursor = StockConclusionDb.ListCollections())
+                {
+                    foreach (var doc in cursor.ToList())
+                    {
+                        var collectionName = doc.GetElement("name").Value.ToString();
+                        var collection = GetCollection<StockConclusion>(collectionName);
+                        var keys = Builders<StockConclusion>.IndexKeys.Ascending(i => i.Time);
+
+                        if (recreate == true)
+                            collection.Indexes.DropAll();
+
+                        collection.Indexes.CreateOne(keys);
+                    }
+                }
+
+                using (var cursor = IndexConclusionDb.ListCollections())
+                {
+                    foreach (var doc in cursor.ToList())
+                    {
+                        var collectionName = doc.GetElement("name").Value.ToString();
+                        var collection = GetCollection<IndexConclusion>(collectionName);
+                        var keys = Builders<IndexConclusion>.IndexKeys.Ascending(i => i.Time);
+
+                        if (recreate == true)
+                            collection.Indexes.DropAll();
+
+                        collection.Indexes.CreateOne(keys);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
         }
     }
 }

@@ -82,16 +82,8 @@ namespace MTree.Consumer
             {
                 if (type == MessageTypes.CloseClient)
                 {
-                    logger.Info($"[{GetType().Name}] Process will be closed");
-
                     StopQueueTask();
                     CloseChannel();
-
-                    Task.Run(() =>
-                    {
-                        Thread.Sleep(1000 * 10);
-                        Environment.Exit(0);
-                    });
                 }
             }
             catch (Exception ex)

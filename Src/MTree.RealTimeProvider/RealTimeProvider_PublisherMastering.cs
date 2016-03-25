@@ -443,8 +443,8 @@ namespace MTree.RealTimeProvider
                     dest.TradingHalt = source.TradingHalt;
                     dest.CleaningTrade = source.CleaningTrade;
                     dest.InvestCaution = source.InvestCaution;
-                    dest.InvestmentRisk = source.InvestmentRisk;
-                    dest.InvestmentRiskNoticed = source.InvestmentRiskNoticed;
+                    dest.InvestRisk = source.InvestRisk;
+                    dest.InvestRiskNoticed = source.InvestRiskNoticed;
                     dest.Overheated = source.Overheated;
                     dest.OverheatNoticed = source.OverheatNoticed;
 

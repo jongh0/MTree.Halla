@@ -101,5 +101,20 @@ namespace MTree.KrxPublisher
 
             return stockMaster;
         }
+
+        public override void NotifyMessage(MessageTypes type, string message)
+        {
+            if (type == MessageTypes.CloseClient)
+            {
+                Task.Run(() =>
+                {
+                    logger.Info("Process will be closed");
+                    Thread.Sleep(1000 * 10);
+                    Application.Exit();
+                });
+            }
+
+            base.NotifyMessage(type, message);
+        }
     }
 }
