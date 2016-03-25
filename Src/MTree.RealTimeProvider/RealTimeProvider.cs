@@ -124,7 +124,10 @@ namespace MTree.RealTimeProvider
                 LogUtility.SendLogToEmail();
 
                 // 20초후 프로그램 종료
-                logger.Info("Program will be closed after 20sec");
+                var msg = "RealTimeProvider will be closed after 20sec";
+                logger.Info(msg);
+                PushUtility.NotifyMessage(msg);
+
                 Thread.Sleep(1000 * 20);
                 Environment.Exit(0);
             });

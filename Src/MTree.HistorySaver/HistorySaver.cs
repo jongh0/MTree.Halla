@@ -144,6 +144,7 @@ namespace MTree.HistorySaver
                     Task.Run(() =>
                     {
                         DbAgent.Instance.CreateIndex();
+                        DbAgent.Instance.Footprint();
 
                         logger.Info("Process will be closed");
                         Thread.Sleep(1000 * 10);

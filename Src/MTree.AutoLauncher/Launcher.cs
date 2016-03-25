@@ -46,7 +46,7 @@ namespace MTree.AutoLauncher
             {
                 if (Time == null)
                 {
-                    logger.Error($"[{LaunchProcess}] time not set");
+                    logger.Error($"{LaunchProcess} time not set");
                     return;
                 }
 
@@ -60,7 +60,9 @@ namespace MTree.AutoLauncher
                 LaunchTimer.Interval = (Time - now).TotalMilliseconds;
                 LaunchTimer.Start();
 
-                logger.Info($"[{LaunchProcess}] Launcher started, will be triggered at {Time.ToString()}");
+                var msg = $"{LaunchProcess} will be launched at {Time.ToString()}";
+                logger.Info(msg);
+                PushUtility.NotifyMessage(msg);
             }
             catch (Exception ex)
             {
@@ -73,7 +75,7 @@ namespace MTree.AutoLauncher
             if (LaunchTimer?.Enabled == true)
             {
                 LaunchTimer.Stop();
-                logger.Info($"[{LaunchProcess}] Launcher stopped");
+                logger.Info($"{LaunchProcess} launcher stopped");
             }
         }
 
@@ -85,14 +87,14 @@ namespace MTree.AutoLauncher
                 {
                     if (KillIfExists == true)
                     {
-                        logger.Info($"[{LaunchProcess}] Exists and will be killed");
+                        logger.Info($"{LaunchProcess} exists and will be killed");
 
                         ProcessUtility.Kill(LaunchProcess);
                         Thread.Sleep(1000 * 5);
                     }
                     else
                     {
-                        logger.Error($"[{LaunchProcess}] Exists");
+                        logger.Error($"{LaunchProcess} already exists, not launched");
                         return;
                     }
                 }
@@ -104,7 +106,8 @@ namespace MTree.AutoLauncher
 
                 ProcessUtility.Start(LaunchProcess);
 
-                logger.Info($"[{LaunchProcess}] Launched");
+                logger.Info($"{LaunchProcess} launched");
+                PushUtility.NotifyMessage($"{LaunchProcess} launched");
             }
             catch (Exception ex)
             {
@@ -114,7 +117,6 @@ namespace MTree.AutoLauncher
 
         public void LaunchNow()
         {
-            logger.Info($"[{LaunchProcess}] Launch now");
             Launch();
         }
 
@@ -122,7 +124,7 @@ namespace MTree.AutoLauncher
         {
             try
             {
-                logger.Info($"[{LaunchProcess}] Launcher elapsed");
+                logger.Info($"{LaunchProcess} launcher timer elapsed");
                 Launch();
             }
             catch (Exception ex)

@@ -2,6 +2,7 @@
 using MTree.Configuration;
 using MTree.DataStructure;
 using MTree.DbProvider;
+using MTree.Utility;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -243,6 +244,105 @@ namespace MTree.DbProvider
                         collection.Indexes.CreateOne(keys);
                     }
                 }
+
+                logger.Info("Database indexing done");
+                PushUtility.NotifyMessage("Database indexing done");
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
+        public void Footprint()
+        {
+            try
+            {
+                var startDate = DateTimeUtility.StartDateTime(DateTime.Now);
+                var endDate = DateTimeUtility.EndDateTime(DateTime.Now);
+
+                long biddingCount = 0;
+                long circuitCount = 0;
+                long stockMasterCount = 0;
+                long stockConclusionCount = 0;
+                long indexConclusionCount = 0;
+
+                using (var cursor = BiddingPriceDb.ListCollections())
+                {
+                    foreach (var doc in cursor.ToList())
+                    {
+                        var collectionName = doc.GetElement("name").Value.ToString();
+                        var collection = GetCollection<BiddingPrice>(collectionName);
+
+                        var builder = Builders<BiddingPrice>.Filter;
+                        var filter = builder.Gte(i => i.Time, startDate) & builder.Lte(i => i.Time, endDate);
+                        biddingCount += collection.Find(filter).Count();
+                    }
+                }
+
+                logger.Info($"Db Statistics, BiddingPrice: {biddingCount}");
+
+                using (var cursor = CircuitBreakDb.ListCollections())
+                {
+                    foreach (var doc in cursor.ToList())
+                    {
+                        var collectionName = doc.GetElement("name").Value.ToString();
+                        var collection = GetCollection<CircuitBreak>(collectionName);
+
+                        var builder = Builders<CircuitBreak>.Filter;
+                        var filter = builder.Gte(i => i.Time, startDate) & builder.Lte(i => i.Time, endDate);
+                        circuitCount += collection.Find(filter).Count();
+                    }
+                }
+
+                logger.Info($"Db Statistics, CircuitBreak: {circuitCount}");
+
+                using (var cursor = StockMasterDb.ListCollections())
+                {
+                    foreach (var doc in cursor.ToList())
+                    {
+                        var collectionName = doc.GetElement("name").Value.ToString();
+                        var collection = GetCollection<StockMaster>(collectionName);
+
+                        var builder = Builders<StockMaster>.Filter;
+                        var filter = builder.Gte(i => i.Time, startDate) & builder.Lte(i => i.Time, endDate);
+                        stockMasterCount += collection.Find(filter).Count();
+                    }
+                }
+
+                logger.Info($"Db Statistics, StockMaster: {stockMasterCount}");
+
+                using (var cursor = StockConclusionDb.ListCollections())
+                {
+                    foreach (var doc in cursor.ToList())
+                    {
+                        var collectionName = doc.GetElement("name").Value.ToString();
+                        var collection = GetCollection<StockConclusion>(collectionName);
+
+                        var builder = Builders<StockConclusion>.Filter;
+                        var filter = builder.Gte(i => i.Time, startDate) & builder.Lte(i => i.Time, endDate);
+                        stockConclusionCount += collection.Find(filter).Count();
+                    }
+                }
+
+                logger.Info($"Db Statistics, StockConclusion: {stockConclusionCount}");
+
+                using (var cursor = IndexConclusionDb.ListCollections())
+                {
+                    foreach (var doc in cursor.ToList())
+                    {
+                        var collectionName = doc.GetElement("name").Value.ToString();
+                        var collection = GetCollection<IndexConclusion>(collectionName);
+
+                        var builder = Builders<IndexConclusion>.Filter;
+                        var filter = builder.Gte(i => i.Time, startDate) & builder.Lte(i => i.Time, endDate);
+                        indexConclusionCount += collection.Find(filter).Count();
+                    }
+                }
+
+                logger.Info($"Db Statistics, IndexConclusion: {indexConclusionCount}");
+
+                PushUtility.NotifyMessage($"Db Statistics, BP:{biddingCount}, CB:{circuitCount}, SM:{stockMasterCount}, SC:{stockConclusionCount}, IC:{indexConclusionCount}");
             }
             catch (Exception ex)
             {
