@@ -10,6 +10,9 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import com.microsoft.windowsazure.notifications.NotificationsHandler;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class MyHandler extends NotificationsHandler {
     public static final int NOTIFICATION_ID = 1;
     private NotificationManager mNotificationManager;
@@ -24,8 +27,18 @@ public class MyHandler extends NotificationsHandler {
         String nhMessage = bundle.getString("message");
 
         sendNotification(nhMessage);
+
+        long now = System.currentTimeMillis();
+        Date date = new Date(now);
+        SimpleDateFormat sdfNow = new SimpleDateFormat("MM/dd HH:mm:ss");
+        String strNow = sdfNow.format(date);
+
+        String message = strNow + "\r\n" + nhMessage;
+
         if (mainActivity != null)
-            mainActivity.ToastNotify(nhMessage);
+            mainActivity.AddToListView(message);
+        else
+            MainActivity.tempList.add(message);
     }
 
     private void sendNotification(String msg) {
@@ -41,7 +54,8 @@ public class MyHandler extends NotificationsHandler {
                         .setContentTitle("MTree")
                         .setStyle(new NotificationCompat.BigTextStyle()
                                 .bigText(msg))
-                        .setContentText(msg);
+                        .setContentText(msg)
+                        .setVibrate(new long[] {100,200,300,400});
 
         mBuilder.setContentIntent(contentIntent);
         mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());

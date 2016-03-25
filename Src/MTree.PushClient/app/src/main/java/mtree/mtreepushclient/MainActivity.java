@@ -8,7 +8,13 @@ import android.os.AsyncTask;
 import com.google.android.gms.gcm.*;
 import com.microsoft.windowsazure.messaging.*;
 import com.microsoft.windowsazure.notifications.NotificationsManager;
+
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
     private String HubName = "MTreeNotificationHub";
     private String HubListenConnectionString = "Endpoint=sb://mtreenotificationspace.servicebus.windows.net/;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=RQDGxAhXvvS/Mgg5AYwx5FfecJifbIEadaWu/44LzOo=";
     private static Boolean isVisible = false;
+    public static List<String> tempList = new ArrayList<String>();
+    private ArrayAdapter<String> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +37,17 @@ public class MainActivity extends AppCompatActivity {
         gcm = GoogleCloudMessaging.getInstance(this);
         hub = new NotificationHub(HubName, HubListenConnectionString, this);
         registerWithNotificationHubs();
+
+        // ListView
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
+        for (String s : tempList) {
+            adapter.insert(s, 0);
+        }
+
+        tempList.clear();
+
+        ListView listView = (ListView)findViewById(R.id.listView);
+        listView.setAdapter(adapter);
     }
 
     @Override
@@ -64,6 +83,11 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, notificationMessage, Toast.LENGTH_LONG).show();
                 }
             });
+    }
+
+    public void AddToListView(final String message)
+    {
+        adapter.insert(message, 0);
     }
 
     @SuppressWarnings("unchecked")
