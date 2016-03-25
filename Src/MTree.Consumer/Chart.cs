@@ -84,7 +84,7 @@ namespace MTree.Consumer
                 // Candle 리스트 초기화
                 Candles.Clear();
 
-                IMongoCollection<Candle> collection = MongoDbProvider.Instance.GetDatabase(DbTypes.Chart).GetCollection<Candle>(Code);
+                IMongoCollection<Candle> collection = DbAgent.Instance.GetCollection<Candle>(Code);
 
                 // CandleType, Time으로 Query 생성
                 var builder = Builders<Candle>.Filter;

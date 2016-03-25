@@ -19,10 +19,39 @@ namespace TestConsole
         {
             Config.Initialize();
 
+            TestDbAgent();
             //TestPushService();
             //TestEmail();
 
             Console.ReadLine();
+        }
+
+        private static void TestDbAgent()
+        {
+            var item = new StockMaster();
+            item.Code = "000020";
+            item.Time = DateTime.Now;
+            item.Asset = 10;
+
+            int startTick = Environment.TickCount;
+            DbAgent.Instance.InsertItem(item);
+            Console.WriteLine($"db insert tick : {Environment.TickCount - startTick}");
+
+            startTick = Environment.TickCount;
+            item.Id = new MongoDB.Bson.ObjectId();
+            DbAgent.Instance.InsertItem(item);
+            Console.WriteLine($"db insert tick : {Environment.TickCount - startTick}");
+
+            startTick = Environment.TickCount;
+            item.Id = new MongoDB.Bson.ObjectId();
+            item.Code = "000030";
+            DbAgent.Instance.InsertItem(item);
+            Console.WriteLine($"db insert tick : {Environment.TickCount - startTick}");
+
+            startTick = Environment.TickCount;
+            item.Id = new MongoDB.Bson.ObjectId();
+            DbAgent.Instance.InsertItem(item);
+            Console.WriteLine($"db insert tick : {Environment.TickCount - startTick}");
         }
 
         private static void TestEmail()
