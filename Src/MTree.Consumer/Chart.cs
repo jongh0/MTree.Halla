@@ -84,8 +84,6 @@ namespace MTree.Consumer
                 // Candle 리스트 초기화
                 Candles.Clear();
 
-                IMongoCollection<Candle> collection = DbAgent.Instance.GetCollection<Candle>(Code);
-
                 // CandleType, Time으로 Query 생성
                 var builder = Builders<Candle>.Filter;
                 var filter = builder.Eq(i => i.CandleType, ConvertToCandleType(ChartType)) & 
@@ -93,7 +91,7 @@ namespace MTree.Consumer
                              builder.Lte(i => i.Time, EndDate);
 
                 // Async Query 수행
-                var result = await collection.Find(filter).ToListAsync();
+                var result = await DbAgent.Instance.Find(Code, filter).ToListAsync();
 
                 // Candle 리스트에 삽입
                 foreach (var candle in result)

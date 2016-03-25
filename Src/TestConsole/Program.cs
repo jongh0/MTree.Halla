@@ -8,6 +8,7 @@ using System.Threading;
 using MTree.DbProvider;
 using MTree.DataStructure;
 using MTree.Utility;
+using MongoDB.Driver;
 
 namespace TestConsole
 {
@@ -19,7 +20,7 @@ namespace TestConsole
         {
             Config.Initialize();
 
-            //TestDbAgent();
+            TestDbAgent();
             //TestPushService();
             //TestEmail();
 
@@ -29,28 +30,47 @@ namespace TestConsole
         private static void TestDbAgent()
         {
             var item = new StockMaster();
-            item.Code = "000020";
-            item.Time = DateTime.Now;
+            item.Code = "000020b";
+            item.Time = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
             item.Asset = 10;
 
             int startTick = Environment.TickCount;
-            DbAgent.Instance.InsertItem(item);
+            item.Id = new MongoDB.Bson.ObjectId();
+            DbAgent.Instance.Insert(item);
             Console.WriteLine($"db insert tick : {Environment.TickCount - startTick}");
 
             startTick = Environment.TickCount;
             item.Id = new MongoDB.Bson.ObjectId();
-            DbAgent.Instance.InsertItem(item);
+            DbAgent.Instance.Insert(item);
             Console.WriteLine($"db insert tick : {Environment.TickCount - startTick}");
 
             startTick = Environment.TickCount;
             item.Id = new MongoDB.Bson.ObjectId();
-            item.Code = "000030";
-            DbAgent.Instance.InsertItem(item);
+            item.Code = "000030b";
+            DbAgent.Instance.Insert(item);
             Console.WriteLine($"db insert tick : {Environment.TickCount - startTick}");
 
             startTick = Environment.TickCount;
             item.Id = new MongoDB.Bson.ObjectId();
-            DbAgent.Instance.InsertItem(item);
+            DbAgent.Instance.Insert(item);
+            Console.WriteLine($"db insert tick : {Environment.TickCount - startTick}");
+
+            var filter = Builders<StockMaster>.Filter.Eq(i => i.Time, item.Time);
+            DbAgent.Instance.Delete(item.Code, filter);
+
+            var item2 = new Candle();
+            item2.Code = "000020b";
+            item2.Time = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+            item2.Close = 100;
+
+            startTick = Environment.TickCount;
+            item2.Id = new MongoDB.Bson.ObjectId();
+            DbAgent.Instance.Insert(item2);
+            Console.WriteLine($"db insert tick : {Environment.TickCount - startTick}");
+
+            startTick = Environment.TickCount;
+            item2.Id = new MongoDB.Bson.ObjectId();
+            DbAgent.Instance.Insert(item2);
             Console.WriteLine($"db insert tick : {Environment.TickCount - startTick}");
         }
 

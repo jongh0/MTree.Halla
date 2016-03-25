@@ -98,8 +98,6 @@ namespace MTree.Consumer
             {
                 logger.Error(ex);
             }
-
-            base.NotifyMessage(type, message);
         }
     }
 }

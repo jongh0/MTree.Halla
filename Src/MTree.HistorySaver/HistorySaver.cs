@@ -50,7 +50,7 @@ namespace MTree.HistorySaver
             {
                 BiddingPrice item;
                 if (BiddingPriceQueue.TryDequeue(out item) == true)
-                    DbAgent.Instance.InsertItem(item);
+                    DbAgent.Instance.Insert(item);
                 else
                     Thread.Sleep(10);
             }
@@ -66,7 +66,7 @@ namespace MTree.HistorySaver
             {
                 CircuitBreak item;
                 if (CircuitBreakQueue.TryDequeue(out item) == true)
-                    DbAgent.Instance.InsertItem(item);
+                    DbAgent.Instance.Insert(item);
                 else
                     Thread.Sleep(10);
             }
@@ -82,7 +82,7 @@ namespace MTree.HistorySaver
             {
                 StockConclusion item;
                 if (StockConclusionQueue.TryDequeue(out item) == true)
-                    DbAgent.Instance.InsertItem(item);
+                    DbAgent.Instance.Insert(item);
                 else
                     Thread.Sleep(10);
             }
@@ -98,7 +98,7 @@ namespace MTree.HistorySaver
             {
                 IndexConclusion item;
                 if (IndexConclusionQueue.TryDequeue(out item) == true)
-                    DbAgent.Instance.InsertItem(item);
+                    DbAgent.Instance.Insert(item);
                 else
                     Thread.Sleep(10);
             }
@@ -130,12 +130,12 @@ namespace MTree.HistorySaver
 
         public override void ConsumeStockMaster(StockMaster stockMaster)
         {
-            int startTick = Environment.TickCount;
-
             try
             {
-                DbAgent.Instance.InsertItem(stockMaster);
-                logger.Info($"{stockMaster.Code} stock master saved, Tick: {Environment.TickCount - startTick}");
+                var filter = Builders<StockMaster>.Filter.Eq(i => i.Time, stockMaster.Time);
+                DbAgent.Instance.Delete(stockMaster.Code, filter);
+
+                DbAgent.Instance.Insert(stockMaster);
             }
             catch (Exception ex)
             {
@@ -149,16 +149,6 @@ namespace MTree.HistorySaver
             {
                 if (type == MessageTypes.CloseClient)
                 {
-                    var sb = new StringBuilder();
-                    sb.AppendLine("HistorySaver result");
-                    sb.AppendLine($"StockMaster : {DbAgent.Instance.StockMasterCount}");
-                    sb.AppendLine($"StockConclusion : {DbAgent.Instance.StockConclusionCount}");
-                    sb.AppendLine($"IndexConclusion : {DbAgent.Instance.IndexConclusionCount}");
-                    sb.AppendLine($"BiddingPrice : {DbAgent.Instance.BiddingPriceCount}");
-                    sb.AppendLine($"CircuitBreak : {DbAgent.Instance.CircuitBreakCount}");
-
-                    logger.Info(sb.ToString());
-                    PushUtility.NotifyMessage(sb.ToString());
                 }
             }
             catch (Exception ex)
