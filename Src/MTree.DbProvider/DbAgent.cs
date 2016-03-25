@@ -151,6 +151,10 @@ namespace MTree.DbProvider
             return null;
         }
 
+        /// <summary>
+        /// Database에 Index를 생성한다.
+        /// </summary>
+        /// <param name="recreate">True: 기존 Index를 Drop 후 다시 만든다.</param>
         public void CreateIndex(bool recreate = false)
         {
             try
@@ -254,6 +258,9 @@ namespace MTree.DbProvider
             }
         }
 
+        /// <summary>
+        /// 오늘 Database에 저장된 통계를 로그에 기록한다.
+        /// </summary>
         public void Footprint()
         {
             try

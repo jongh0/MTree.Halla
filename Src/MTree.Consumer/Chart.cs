@@ -44,6 +44,11 @@ namespace MTree.Consumer
             SetRange(startDate, endDate);
         }
 
+        /// <summary>
+        /// Chart 범위 설정을 다시 한다. 기존 데이터는 사라진다.
+        /// </summary>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
         public void SetRange(DateTime startDate, DateTime endDate)
         {
             try
@@ -62,6 +67,11 @@ namespace MTree.Consumer
             }
         }
 
+        /// <summary>
+        /// Candle이 다 채워질 때 까지 대기한다.
+        /// </summary>
+        /// <param name="timeout"></param>
+        /// <returns></returns>
         public bool WaitInitialing(int timeout = Timeout.Infinite)
         {
             if (IsInitializing == false) return true;

@@ -1,5 +1,7 @@
-﻿using MTree.Configuration;
+﻿using MongoDB.Driver;
+using MTree.Configuration;
 using MTree.DataStructure;
+using MTree.DbProvider;
 using System;
 using System.Collections.Concurrent;
 using System.Text;
@@ -32,8 +34,20 @@ namespace MTree.Consumer
 
         public StockMaster GetMaster(DateTime date)
         {
-            var targetDate = new DateTime(date.Year, date.Month, date.Day);
-            throw new NotImplementedException();
+            try
+            {
+                var targetDate = new DateTime(date.Year, date.Month, date.Day);
+                var builder = Builders<StockMaster>.Filter;
+                var filter = builder.Eq(i => i.Time, targetDate);
+
+                return DbAgent.Instance.Find(Code, filter).FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+
+            return null;
         }
 
         public static Stock GetStock(string code)
