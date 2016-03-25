@@ -61,15 +61,6 @@ namespace MTree.DbProvider
         private ConcurrentDictionary<string, IMongoCollection<IndexConclusion>> IndexConclusionCollections { get; set; } = new ConcurrentDictionary<string, IMongoCollection<IndexConclusion>>();
         #endregion
 
-        #region Lock
-        private object CandleLock { get; } = new object();
-        private object BiddingPriceLock { get; } = new object();
-        private object CircuitBreakLock { get; } = new object();
-        private object StockMasterLock { get; } = new object();
-        private object StockConclusionLock { get; } = new object();
-        private object IndexConclusionLock { get; } = new object();
-        #endregion
-
         public DbAgent()
         {
             CandleDb = DbProvider.GetDatabase(DbTypes.Candle);
@@ -84,6 +75,7 @@ namespace MTree.DbProvider
         {
             try
             {
+                #region Candle
                 if (typeof(T) == typeof(Candle))
                 {
                     IMongoCollection<Candle> collection = null;
@@ -113,6 +105,8 @@ namespace MTree.DbProvider
 
                     return (IMongoCollection<T>)collection;
                 }
+                #endregion
+                #region StockMaster
                 else if (typeof(T) == typeof(StockMaster))
                 {
                     IMongoCollection<StockMaster> collection = null;
@@ -142,6 +136,8 @@ namespace MTree.DbProvider
 
                     return (IMongoCollection<T>)collection;
                 }
+                #endregion
+                #region BiddingPrice
                 else if (typeof(T) == typeof(BiddingPrice))
                 {
                     IMongoCollection<BiddingPrice> collection = null;
@@ -171,6 +167,8 @@ namespace MTree.DbProvider
 
                     return (IMongoCollection<T>)collection;
                 }
+                #endregion
+                #region StockConclusion
                 else if (typeof(T) == typeof(StockConclusion))
                 {
                     IMongoCollection<StockConclusion> collection = null;
@@ -200,6 +198,8 @@ namespace MTree.DbProvider
 
                     return (IMongoCollection<T>)collection;
                 }
+                #endregion
+                #region IndexConclusion
                 else if (typeof(T) == typeof(IndexConclusion))
                 {
                     IMongoCollection<IndexConclusion> collection = null;
@@ -228,7 +228,8 @@ namespace MTree.DbProvider
                     }
 
                     return (IMongoCollection<T>)collection;
-                }
+                } 
+                #endregion
                 else
                 {
                     logger.Error($"Can't find collection, type: {typeof(T)}");
@@ -242,6 +243,7 @@ namespace MTree.DbProvider
             return null;
         }
 
+        #region Insert
         public void InsertItem(Candle item)
         {
             try
@@ -372,6 +374,7 @@ namespace MTree.DbProvider
             {
                 logger.Error(ex);
             }
-        }
+        } 
+        #endregion
     }
 }

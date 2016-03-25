@@ -85,10 +85,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="EbestPublisher.cs" />
-    <Compile Include="EbestPublisherCircuitBreak.cs" />
-    <Compile Include="EbestPublisherIndexConclusion.cs" />
-    <Compile Include="EbestPublisherIndexMaster.cs" />
-    <Compile Include="EbestPublisherStockMaster.cs" />
+    <Compile Include="EbestPublisher_CircuitBreak.cs" />
+    <Compile Include="EbestPublisher_IndexConclusion.cs" />
+    <Compile Include="EbestPublisher_IndexMaster.cs" />
+    <Compile Include="EbestPublisher_StockMaster.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

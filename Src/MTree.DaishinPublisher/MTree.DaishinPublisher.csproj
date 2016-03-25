@@ -89,11 +89,11 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DaishinPublisher.cs" />
-    <Compile Include="DaishinPublisherBiddingPrice.cs" />
-    <Compile Include="DaishinPublisherIndexConclusion.cs" />
-    <Compile Include="DaishinPublisherStockChart.cs" />
-    <Compile Include="DaishinPublisherStockConclusion.cs" />
-    <Compile Include="DaishinPublisherStockMaster.cs" />
+    <Compile Include="DaishinPublisher_BiddingPrice.cs" />
+    <Compile Include="DaishinPublisher_IndexConclusion.cs" />
+    <Compile Include="DaishinPublisher_StockChart.cs" />
+    <Compile Include="DaishinPublisher_StockConclusion.cs" />
+    <Compile Include="DaishinPublisher_StockMaster.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
