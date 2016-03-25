@@ -20,6 +20,7 @@ namespace TestConsole
         {
             Config.Initialize();
 
+            //TestCreateIndex();
             //TestDbAgent();
             //TestPushService();
             //TestEmail();
