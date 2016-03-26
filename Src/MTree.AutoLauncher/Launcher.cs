@@ -12,15 +12,15 @@ namespace MTree.AutoLauncher
 
         public bool KillIfExists { get; set; } = false;
 
+        public string LauncherInfo
+        {
+            get { return $"{LaunchProcess} | {Time.ToString()}"; }
+        }
+
         #region Launch Time
         private TimeSpan Interval { get; } = new TimeSpan(1, 0, 0, 0); // 1 Day interval
 
-        private DateTime _time;
-        public DateTime Time
-        {
-            get { return _time; }
-            set { _time = value; NotifyPropertyChanged(nameof(Time)); }
-        }
+        public DateTime Time { get; set; }
 
         private System.Timers.Timer LaunchTimer { get; set; }
         #endregion
@@ -59,6 +59,8 @@ namespace MTree.AutoLauncher
                 LaunchTimer.Stop();
                 LaunchTimer.Interval = (Time - now).TotalMilliseconds;
                 LaunchTimer.Start();
+
+                NotifyPropertyChanged(nameof(LauncherInfo));
 
                 var msg = $"{LaunchProcess} will be launched at {Time.ToString()}";
                 logger.Info(msg);
