@@ -12,7 +12,7 @@
                 <Setter Property="FontSize" Value="20"/>
             </Style>
         </Grid.Resources>
-        <StackPanel Orientation="Horizontal" Margin="10">
+        <StackPanel Orientation="Horizontal" Margin="10" VerticalAlignment="Center">
             <StackPanel Orientation="Vertical">
                 <TextBlock Text="StockMaster : " TextAlignment="Right"/>
                 <TextBlock Text="BiddingPrice : " TextAlignment="Right"/>
