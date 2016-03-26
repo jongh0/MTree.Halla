@@ -18,7 +18,7 @@ namespace MTree.AutoLauncher
         }
 
         #region Launch Time
-        private TimeSpan Interval { get; } = new TimeSpan(1, 0, 0, 0); // 1 Day interval
+        private TimeSpan LaunchInterval { get; } = TimeSpan.FromDays(1); // 1 Day interval
 
         public DateTime Time { get; set; }
 
@@ -54,7 +54,7 @@ namespace MTree.AutoLauncher
                 Time = new DateTime(now.Year, now.Month, now.Day, Time.Hour, Time.Minute, Time.Second);
 
                 while (Time <= now || Time.DayOfWeek == DayOfWeek.Saturday || Time.DayOfWeek == DayOfWeek.Sunday)
-                    Time = Time.Add(Interval);
+                    Time = Time.Add(LaunchInterval);
 
                 LaunchTimer.Stop();
                 LaunchTimer.Interval = (Time - now).TotalMilliseconds;

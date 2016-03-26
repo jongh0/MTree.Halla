@@ -5,8 +5,28 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MTree.HistorySaver"
         mc:Ignorable="d"
-        Title="HistorySaver" Height="350" Width="525">
+        Title="HistorySaver" Height="192.815" Width="303.892" ResizeMode="NoResize">
     <Grid>
-        
+        <Grid.Resources>
+            <Style TargetType="TextBlock">
+                <Setter Property="FontSize" Value="20"/>
+            </Style>
+        </Grid.Resources>
+        <StackPanel Orientation="Horizontal" Margin="10">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="StockMaster : " TextAlignment="Right"/>
+                <TextBlock Text="BiddingPrice : " TextAlignment="Right"/>
+                <TextBlock Text="CircuitBreak : " TextAlignment="Right"/>
+                <TextBlock Text="StockConclusion : " TextAlignment="Right"/>
+                <TextBlock Text="IndexConclusion : " TextAlignment="Right"/>
+            </StackPanel>
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="{Binding Path=StockMasterCount, Mode=OneWay}"/>
+                <TextBlock Text="{Binding Path=BiddingPriceCount, Mode=OneWay}"/>
+                <TextBlock Text="{Binding Path=CircuitBreakCount, Mode=OneWay}"/>
+                <TextBlock Text="{Binding Path=StockConclusionCount, Mode=OneWay}"/>
+                <TextBlock Text="{Binding Path=IndexConclusionCount, Mode=OneWay}"/>
+            </StackPanel>
+        </StackPanel>
     </Grid>
 </Window>

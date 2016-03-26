@@ -1,24 +1,40 @@
 ﻿using System;
 using System.ServiceModel;
-using MongoDB.Driver;
 using MTree.DbProvider;
 using System.Threading;
 using MTree.DataStructure;
-using MTree.Configuration;
 using MTree.Consumer;
 using MTree.Utility;
 using MTree.RealTimeProvider;
-using System.Collections.Concurrent;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.ComponentModel;
 
 namespace MTree.HistorySaver
 {
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
-    public class HistorySaver : ConsumerBase
+    public class HistorySaver : ConsumerBase, INotifyPropertyChanged
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
+        #region Counter property
+        private int stockMasterCount = 0;
+        public string StockMasterCount { get { return stockMasterCount.ToString(); } }
+
+        private int biddingPriceCount = 0;
+        public string BiddingPriceCount { get { return biddingPriceCount.ToString(); } }
+
+        private int circuitBreakCount = 0;
+        public string CircuitBreakCount { get { return circuitBreakCount.ToString(); } }
+
+        private int stockConclusionCount = 0;
+        public string StockConclusionCount { get { return stockConclusionCount.ToString(); } }
+
+        private int indexConclusionCount = 0;
+        public string IndexConclusionCount { get { return indexConclusionCount.ToString(); } }
+
+        private System.Timers.Timer CountTimer { get; set; }
+        #endregion
 
         public HistorySaver()
         {
@@ -28,12 +44,37 @@ namespace MTree.HistorySaver
                 TaskUtility.Run("HistorySaver.CircuitBreakQueue", QueueTaskCancelToken, ProcessCircuitBreakQueue);
                 TaskUtility.Run("HistorySaver.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
                 TaskUtility.Run("HistorySaver.IndexConclusionQueue", QueueTaskCancelToken, ProcessIndexConclusionQueue);
+
+                CountTimer = new System.Timers.Timer();
+                CountTimer.AutoReset = true;
+                CountTimer.Interval = TimeSpan.FromSeconds(1).TotalMilliseconds;
+                CountTimer.Elapsed += CountTimer_Elapsed;
+                CountTimer.Start();
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
             }
         }
+
+        private void CountTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            NotifyPropertyChanged(nameof(StockMasterCount));
+            NotifyPropertyChanged(nameof(BiddingPriceCount));
+            NotifyPropertyChanged(nameof(CircuitBreakCount));
+            NotifyPropertyChanged(nameof(StockConclusionCount));
+            NotifyPropertyChanged(nameof(IndexConclusionCount));
+        }
+
+        #region INotifyPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged(string name)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(name));
+        }
+        #endregion
 
         protected override void ServiceClient_Opened(object sender, EventArgs e)
         {
@@ -125,21 +166,25 @@ namespace MTree.HistorySaver
         public override void ConsumeStockConclusion(StockConclusion conclusion)
         {
             StockConclusionQueue.Enqueue(conclusion);
+            stockConclusionCount++;
         }
 
         public override void ConsumeIndexConclusion(IndexConclusion conclusion)
         {
             IndexConclusionQueue.Enqueue(conclusion);
+            indexConclusionCount++;
         }
 
         public override void ConsumeCircuitBreak(CircuitBreak circuitBreak)
         {
             CircuitBreakQueue.Enqueue(circuitBreak);
+            circuitBreakCount++;
         }
 
         public override void ConsumeStockMaster(StockMaster stockMaster)
         {
             DbAgent.Instance.Insert(stockMaster);
+            stockMasterCount++;
         }
 
         public override void NotifyMessage(MessageTypes type, string message)
@@ -148,6 +193,8 @@ namespace MTree.HistorySaver
             {
                 if (type == MessageTypes.CloseClient)
                 {
+                    CountTimer?.Stop();
+
                     Task.Run(() =>
                     {
                         DbAgent.Instance.CreateIndex();

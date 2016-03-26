@@ -26,11 +26,8 @@ namespace MTree.HistorySaver
         {
             InitializeComponent();
 
-            // DB 초기화에 시간이 오래걸려서 Task 사용
-            Task.Run(() =>
-            {
-                Consumer = new HistorySaver();
-            });
+            Consumer = new HistorySaver();
+            this.DataContext = Consumer;
         }
     }
 }
