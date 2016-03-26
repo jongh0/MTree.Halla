@@ -51,6 +51,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.RealTimeProviderTests
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.AutoLauncher", "MTree.AutoLauncher\MTree.AutoLauncher.csproj", "{F8DEB19B-AD50-46E8-B89F-890B8033C1D2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.Strategy", "MTree.Strategy\MTree.Strategy.csproj", "{F21CCFA2-C902-4C2E-BE2C-D9353B23965C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -137,6 +139,10 @@ Global
 		{F8DEB19B-AD50-46E8-B89F-890B8033C1D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F8DEB19B-AD50-46E8-B89F-890B8033C1D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F8DEB19B-AD50-46E8-B89F-890B8033C1D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F21CCFA2-C902-4C2E-BE2C-D9353B23965C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F21CCFA2-C902-4C2E-BE2C-D9353B23965C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F21CCFA2-C902-4C2E-BE2C-D9353B23965C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F21CCFA2-C902-4C2E-BE2C-D9353B23965C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
