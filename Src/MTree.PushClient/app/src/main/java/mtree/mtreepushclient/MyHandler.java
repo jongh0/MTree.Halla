@@ -35,10 +35,10 @@ public class MyHandler extends NotificationsHandler {
 
         String message = strNow + "\r\n" + nhMessage;
 
+        MainActivity.tempList.add(message);
+
         if (mainActivity != null)
             mainActivity.AddToListView(message);
-        else
-            MainActivity.tempList.add(message);
     }
 
     private void sendNotification(String msg) {

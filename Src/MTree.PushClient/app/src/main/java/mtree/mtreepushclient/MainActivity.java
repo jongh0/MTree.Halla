@@ -44,8 +44,6 @@ public class MainActivity extends AppCompatActivity {
             adapter.insert(s, 0);
         }
 
-        tempList.clear();
-
         ListView listView = (ListView)findViewById(R.id.listView);
         listView.setAdapter(adapter);
     }
@@ -97,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
             protected Object doInBackground(Object... params) {
                 try {
                     String regid = gcm.register(SENDER_ID);
-                    ToastNotify("Registered Successfully - RegId : " + hub.register(regid).getRegistrationId());
+                    //ToastNotify("Registered Successfully - RegId : " + hub.register(regid).getRegistrationId());
                 } catch (Exception e) {
                     ToastNotify("Registration Exception Message - " + e.getMessage());
                     return e;
