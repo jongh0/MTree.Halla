@@ -30,6 +30,11 @@ namespace MTree.Publisher
             return null;
         }
 
+        public virtual string GetMarketInfo(MarketInfoTypes type)
+        {
+            return string.Empty;
+        }
+
         public virtual bool IsSubscribable()
         {
             return false;

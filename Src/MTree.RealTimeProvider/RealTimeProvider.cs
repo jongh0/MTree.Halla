@@ -40,42 +40,6 @@ namespace MTree.RealTimeProvider
         {
             try
             {
-                if (type == MessageTypes.MarketStartTime)
-                {
-                    var now = DateTime.Now;
-                    int time = int.Parse(message);
-
-                    MarketStartTime = new DateTime(now.Year, now.Month, now.Day, time, 0, 0);
-                    logger.Info($"Market start time: {MarketStartTime.ToString(Config.Instance.General.TimeFormat)}");
-                }
-                else if (type == MessageTypes.MarketEndTime)
-                {
-                    var now = DateTime.Now;
-                    int time = int.Parse(message);
-
-                    MarketEndTime = new DateTime(now.Year, now.Month, now.Day, time, 0, 0).AddHours(3); // 장외 3시간 추가
-                    logger.Info($"Market end time: {MarketEndTime.ToString(Config.Instance.General.TimeFormat)}");
-
-                    if (MarketEndTimer != null)
-                    {
-                        MarketEndTimer.Stop();
-                        MarketEndTimer.Dispose();
-                        MarketEndTimer = null;
-                    }
-
-                    if (MarketEndTime > now)
-                    {
-                        TimeSpan interval = (MarketEndTime - now).Add(TimeSpan.FromHours(1)); // 장종료 1시간 후 프로그램 종료
-
-                        MarketEndTimer = new System.Timers.Timer();
-                        MarketEndTimer.Interval = interval.TotalMilliseconds;
-                        MarketEndTimer.Elapsed += MarketEndTimer_Elapsed;
-                        MarketEndTimer.AutoReset = false;
-                        MarketEndTimer.Start();
-
-                        logger.Info($"Market end timer will be triggered after {interval.Hours}:{interval.Minutes}:{interval.Seconds}");
-                    }
-                }
             }
             catch (Exception ex)
             {

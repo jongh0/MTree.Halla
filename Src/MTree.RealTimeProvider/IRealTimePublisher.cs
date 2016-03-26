@@ -45,6 +45,9 @@ namespace MTree.RealTimeProvider
         List<Candle> GetChart(string code, DateTime startDate, DateTime endDate, CandleTypes candleType);
 
         [OperationContract]
+        string GetMarketInfo(MarketInfoTypes type);
+
+        [OperationContract]
         bool IsSubscribable();
 
         [OperationContract]

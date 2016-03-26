@@ -193,7 +193,7 @@ namespace MTree.EbestPublisher
         private void queryObj_ReceiveData(string szTrCode)
         {
             LastCommunTick = Environment.TickCount;
-            logger.Info($"szTrCode: {szTrCode}");
+            logger.Trace($"szTrCode: {szTrCode}");
 
             if (szTrCode == "t1102")
                 StockMasterReceived();
@@ -212,7 +212,7 @@ namespace MTree.EbestPublisher
         private void queryObj_ReceiveChartRealData(string szTrCode)
         {
             LastCommunTick = Environment.TickCount;
-            logger.Info($"szTrCode: {szTrCode}");
+            logger.Trace($"szTrCode: {szTrCode}");
         }
         #endregion
 

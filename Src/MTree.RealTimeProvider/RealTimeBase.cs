@@ -13,8 +13,13 @@ namespace MTree.RealTimeProvider
     {
         NoOperation,
         CloseClient,
-        MarketStartTime,
-        MarketEndTime,
+    }
+
+    public enum MarketInfoTypes
+    {
+        WorkDate,
+        StartTime,
+        EndTime,
     }
 
     public class RealTimeBase

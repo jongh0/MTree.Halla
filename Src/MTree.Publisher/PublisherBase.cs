@@ -70,8 +70,6 @@ namespace MTree.Publisher
         {
             try
             {
-                logger.Info($"[{GetType().Name}] Keep connection");
-
                 Task.Run(() =>
                 {
                     var args = Environment.GetCommandLineArgs();

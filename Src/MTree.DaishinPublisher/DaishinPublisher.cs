@@ -266,24 +266,36 @@ namespace MTree.DaishinPublisher
                     Application.Current.Shutdown();
                 });
             }
-            else if (type == MessageTypes.MarketStartTime)
-            {
-                Task.Run(() =>
-                {
-                    short time = codeMgrObj.GetMarketStartTime();
-                    ServiceClient.NotifyMessage(MessageTypes.MarketStartTime, time.ToString());
-                });
-            }
-            else if (type == MessageTypes.MarketEndTime)
-            {
-                Task.Run(() =>
-                {
-                    short time = codeMgrObj.GetMarketEndTime();
-                    ServiceClient.NotifyMessage(MessageTypes.MarketEndTime, time.ToString());
-                });
-            }
 
             base.NotifyMessage(type, message);
+        }
+
+        public override string GetMarketInfo(MarketInfoTypes type)
+        {
+            try
+            {
+                if (type == MarketInfoTypes.WorkDate)
+                {
+                    var date = codeMgrObj.GetWorkDate();
+                    return date;
+                }
+                else if (type == MarketInfoTypes.StartTime)
+                {
+                    var time = codeMgrObj.GetMarketStartTime();
+                    return time.ToString();
+                }
+                else if (type == MarketInfoTypes.EndTime)
+                {
+                    var time = codeMgrObj.GetMarketEndTime();
+                    return time.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+
+            return base.GetMarketInfo(type);
         }
     }
 }
