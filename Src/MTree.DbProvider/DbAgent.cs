@@ -90,7 +90,7 @@ namespace MTree.DbProvider
                 if (collection != null)
                     collection.InsertOne(item);
                 else
-                    logger.Error($"Insert error, {subscribable.Code}/{subscribable.Time.ToString(Config.Instance.General.DateTimeFormat)}");
+                    logger.Error($"Insert error, {subscribable.Code}/{subscribable.Time.ToString(Config.General.DateTimeFormat)}");
             }
             catch (Exception ex)
             {

@@ -9,6 +9,7 @@ using MTree.RealTimeProvider;
 using System.Threading.Tasks;
 using System.Windows;
 using System.ComponentModel;
+using MTree.Configuration;
 
 namespace MTree.HistorySaver
 {
@@ -19,22 +20,22 @@ namespace MTree.HistorySaver
 
         #region Counter property
         private int stockMasterCount = 0;
-        public string StockMasterCount { get { return stockMasterCount.ToString(); } }
+        public string StockMasterCount { get { return stockMasterCount.ToString(Config.General.CurrencyFormat); } }
 
         private int biddingPriceCount = 0;
-        public string BiddingPriceCount { get { return biddingPriceCount.ToString(); } }
+        public string BiddingPriceCount { get { return biddingPriceCount.ToString(Config.General.CurrencyFormat); } }
 
         private int circuitBreakCount = 0;
-        public string CircuitBreakCount { get { return circuitBreakCount.ToString(); } }
+        public string CircuitBreakCount { get { return circuitBreakCount.ToString(Config.General.CurrencyFormat); } }
 
         private int stockConclusionCount = 0;
-        public string StockConclusionCount { get { return stockConclusionCount.ToString(); } }
+        public string StockConclusionCount { get { return stockConclusionCount.ToString(Config.General.CurrencyFormat); } }
 
         private int indexConclusionCount = 0;
-        public string IndexConclusionCount { get { return indexConclusionCount.ToString(); } }
-
-        private System.Timers.Timer CountTimer { get; set; }
+        public string IndexConclusionCount { get { return indexConclusionCount.ToString(Config.General.CurrencyFormat); } }
         #endregion
+
+        private System.Timers.Timer RefreshTimer { get; set; }
 
         public HistorySaver()
         {
@@ -45,36 +46,13 @@ namespace MTree.HistorySaver
                 TaskUtility.Run("HistorySaver.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
                 TaskUtility.Run("HistorySaver.IndexConclusionQueue", QueueTaskCancelToken, ProcessIndexConclusionQueue);
 
-                CountTimer = new System.Timers.Timer();
-                CountTimer.AutoReset = true;
-                CountTimer.Interval = TimeSpan.FromSeconds(1).TotalMilliseconds;
-                CountTimer.Elapsed += CountTimer_Elapsed;
-                CountTimer.Start();
+                StartRefreshTimer();
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
             }
         }
-
-        private void CountTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            NotifyPropertyChanged(nameof(StockMasterCount));
-            NotifyPropertyChanged(nameof(BiddingPriceCount));
-            NotifyPropertyChanged(nameof(CircuitBreakCount));
-            NotifyPropertyChanged(nameof(StockConclusionCount));
-            NotifyPropertyChanged(nameof(IndexConclusionCount));
-        }
-
-        #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void NotifyPropertyChanged(string name)
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(name));
-        }
-        #endregion
 
         protected override void ServiceClient_Opened(object sender, EventArgs e)
         {
@@ -193,7 +171,7 @@ namespace MTree.HistorySaver
             {
                 if (type == MessageTypes.CloseClient)
                 {
-                    CountTimer?.Stop();
+                    StopRefreshTimer();
 
                     Task.Run(() =>
                     {
@@ -213,5 +191,42 @@ namespace MTree.HistorySaver
 
             base.NotifyMessage(type, message);
         }
+
+        private void StartRefreshTimer()
+        {
+            if (RefreshTimer == null)
+            {
+                RefreshTimer = new System.Timers.Timer();
+                RefreshTimer.AutoReset = true;
+                RefreshTimer.Interval = 1000;
+                RefreshTimer.Elapsed += RefreshTimer_Elapsed;
+            }
+
+            RefreshTimer.Start();
+        }
+
+        private void StopRefreshTimer()
+        {
+            RefreshTimer?.Stop();
+        }
+
+        private void RefreshTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            NotifyPropertyChanged(nameof(StockMasterCount));
+            NotifyPropertyChanged(nameof(BiddingPriceCount));
+            NotifyPropertyChanged(nameof(CircuitBreakCount));
+            NotifyPropertyChanged(nameof(StockConclusionCount));
+            NotifyPropertyChanged(nameof(IndexConclusionCount));
+        }
+
+        #region INotifyPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged(string name)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(name));
+        }
+        #endregion
     }
 }

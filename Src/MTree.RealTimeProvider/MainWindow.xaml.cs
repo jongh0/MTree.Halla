@@ -67,7 +67,7 @@ namespace MTree.RealTimeProvider
                 }
 
                 // Daishin Master 실행
-                if (Config.Instance.General.OfflineMode == false)
+                if (Config.General.OfflineMode == false)
                     ProcessUtility.Start(ProcessTypes.DaishinMaster);
             });
         }

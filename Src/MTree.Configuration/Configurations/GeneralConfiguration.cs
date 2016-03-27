@@ -15,6 +15,9 @@ namespace MTree.Configuration
         public string DateTimeFormat { get; } = "yyyy-MM-dd HH:mm:ss.fff";
 
         [JsonIgnore]
+        public string CurrencyFormat { get; } = "#,##0";
+
+        [JsonIgnore]
         public DateTime DefaultStartDate { get; } = new DateTime(2016, 1, 1);
 
         public bool OfflineMode { get; set; } = false;

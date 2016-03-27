@@ -149,13 +149,13 @@ namespace MTree.EbestPublisher
                 #endregion
 
                 #region Login
-                LoginInstance.UserId = Config.Instance.Ebest.UserId;
-                LoginInstance.UserPw = Config.Instance.Ebest.UserPw;
-                LoginInstance.CertPw = Config.Instance.Ebest.CertPw;
-                LoginInstance.AccountPw = Config.Instance.Ebest.AccountPw;
-                LoginInstance.ServerType = Config.Instance.Ebest.ServerType;
-                LoginInstance.ServerAddress = Config.Instance.Ebest.ServerAddress;
-                LoginInstance.ServerPort = Config.Instance.Ebest.ServerPort;
+                LoginInstance.UserId = Config.Ebest.UserId;
+                LoginInstance.UserPw = Config.Ebest.UserPw;
+                LoginInstance.CertPw = Config.Ebest.CertPw;
+                LoginInstance.AccountPw = Config.Ebest.AccountPw;
+                LoginInstance.ServerType = Config.Ebest.ServerType;
+                LoginInstance.ServerAddress = Config.Ebest.ServerAddress;
+                LoginInstance.ServerPort = Config.Ebest.ServerPort;
 
                 if (string.IsNullOrEmpty(LoginInstance.UserId) == false &&
                     string.IsNullOrEmpty(LoginInstance.UserPw) == false &&

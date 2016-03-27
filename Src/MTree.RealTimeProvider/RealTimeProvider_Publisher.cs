@@ -92,7 +92,7 @@ namespace MTree.RealTimeProvider
                 ProcessUtility.Start(ProcessTypes.HistorySaver);
 
                 // Kiwoom
-                if (Config.Instance.General.SkipMastering == false)
+                if (Config.General.SkipMastering == false)
                     ProcessUtility.Start(ProcessTypes.Kiwoom);
 
                 // Daishin popup stopper
@@ -100,7 +100,7 @@ namespace MTree.RealTimeProvider
 
                 // Daishin
                 int daishinProcessCount;
-                if (Config.Instance.General.SkipBiddingPrice == true)
+                if (Config.General.SkipBiddingPrice == true)
                     daishinProcessCount = (StockCodeList.Count + IndexCodeList.Count) / 400;
                 else
                     daishinProcessCount = (StockCodeList.Count * 2 + IndexCodeList.Count) / 400;
@@ -157,7 +157,7 @@ namespace MTree.RealTimeProvider
                                 {
                                     Thread.Sleep(1000 * 15);
 
-                                    if (Config.Instance.General.SkipMastering == true)
+                                    if (Config.General.SkipMastering == true)
                                         StartCodeDistributing();
                                     else
                                         StartStockMastering();
@@ -241,7 +241,7 @@ namespace MTree.RealTimeProvider
                     MarketStartTime = new DateTime(now.Year, now.Month, now.Day, 9, 0, 0);
                 }
 
-                logger.Info($"Market start time: {MarketStartTime.ToString(Config.Instance.General.TimeFormat)}");
+                logger.Info($"Market start time: {MarketStartTime.ToString(Config.General.TimeFormat)}");
 
                 // Market end time
                 var endTimeStr = contract.Callback.GetMarketInfo(MarketInfoTypes.EndTime);
@@ -257,7 +257,7 @@ namespace MTree.RealTimeProvider
                     MarketStartTime = new DateTime(now.Year, now.Month, now.Day, 15, 0, 0);
                 }
 
-                logger.Info($"Market end time: {MarketEndTime.ToString(Config.Instance.General.TimeFormat)}");
+                logger.Info($"Market end time: {MarketEndTime.ToString(Config.General.TimeFormat)}");
 
                 if (MarketEndTimer != null)
                 {
@@ -311,7 +311,7 @@ namespace MTree.RealTimeProvider
         {
             DistributeStockConclusionSubscribingCode();
             DistributeIndexConclusionSubscribingCode();
-            if (Config.Instance.General.SkipBiddingPrice == false)
+            if (Config.General.SkipBiddingPrice == false)
                 DistributeBiddingSubscribingCode();
             DistributeCircuitBreakSubscribingCode();
         }

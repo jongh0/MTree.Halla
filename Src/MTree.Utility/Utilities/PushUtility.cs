@@ -17,7 +17,7 @@ namespace MTree.Utility
         {
             try
             {
-                var HubClient = NotificationHubClient.CreateClientFromConnectionString(Config.Instance.Push.ConnectionString, Config.Instance.Push.NotificationHubPath);
+                var HubClient = NotificationHubClient.CreateClientFromConnectionString(Config.Push.ConnectionString, Config.Push.NotificationHubPath);
 
                 string json = "{\"data\":{\"message\":\"" + $"[{Environment.MachineName}] {message}" + "\"}}";
                 string jsonPayload = JObject.Parse(json).ToString();

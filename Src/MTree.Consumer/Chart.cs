@@ -53,7 +53,7 @@ namespace MTree.Consumer
         {
             try
             {
-                if (startDate == null) startDate = Config.Instance.General.DefaultStartDate;
+                if (startDate == null) startDate = Config.General.DefaultStartDate;
                 if (endDate == null) endDate = DateTime.Now;
 
                 StartDate = DateTimeUtility.StartDateTime(startDate);
@@ -109,7 +109,7 @@ namespace MTree.Consumer
                     if (Candles.ContainsKey(candle.Time) == false)
                         Candles.Add(candle.Time, candle);
                     else
-                        logger.Warn($"Already exists in candle list, {candle.Code}/{candle.Time.ToString(Config.Instance.General.DateTimeFormat)}");
+                        logger.Warn($"Already exists in candle list, {candle.Code}/{candle.Time.ToString(Config.General.DateTimeFormat)}");
                 }
             }
             catch (Exception ex)
@@ -157,10 +157,10 @@ namespace MTree.Consumer
             {
                 var duration = Environment.TickCount - startTick;
                 if (duration > 100)
-                    logger.Error($"Candle search take long time, {Code}/{ChartType}/{dateTime.ToString(Config.Instance.General.DateTimeFormat)}");
+                    logger.Error($"Candle search take long time, {Code}/{ChartType}/{dateTime.ToString(Config.General.DateTimeFormat)}");
             }
 
-            logger.Warn($"Can not find candle at {Code}/{dateTime.ToString(Config.Instance.General.DateTimeFormat)}");
+            logger.Warn($"Can not find candle at {Code}/{dateTime.ToString(Config.General.DateTimeFormat)}");
             return null;
         }
 
@@ -180,7 +180,7 @@ namespace MTree.Consumer
                 logger.Error(ex);
             }
 
-            logger.Warn($"Can not find candle next {baseCandle.Code}/{baseCandle.Time.ToString(Config.Instance.General.DateTimeFormat)}");
+            logger.Warn($"Can not find candle next {baseCandle.Code}/{baseCandle.Time.ToString(Config.General.DateTimeFormat)}");
             return null;
         }
 
@@ -200,13 +200,13 @@ namespace MTree.Consumer
                 logger.Error(ex);
             }
 
-            logger.Warn($"Can not find candle prev {baseCandle.Code}/{baseCandle.Time.ToString(Config.Instance.General.DateTimeFormat)}");
+            logger.Warn($"Can not find candle prev {baseCandle.Code}/{baseCandle.Time.ToString(Config.General.DateTimeFormat)}");
             return null;
         }
 
         public override string ToString()
         {
-            return $"{Code}/{ChartType}/{StartDate.ToString(Config.Instance.General.DateTimeFormat)}/{EndDate.ToString(Config.Instance.General.DateTimeFormat)}/{Candles.Count}";
+            return $"{Code}/{ChartType}/{StartDate.ToString(Config.General.DateTimeFormat)}/{EndDate.ToString(Config.General.DateTimeFormat)}/{Candles.Count}";
         }
 
         public static CandleTypes ConvertToCandleType(ChartTypes chartType)

@@ -21,9 +21,9 @@ namespace MTree.DaishinSessionManager
             {
                 logger.Info("Application Started");
 
-                if (string.IsNullOrEmpty(Config.Instance.Daishin.UserId) == true ||
-                    string.IsNullOrEmpty(Config.Instance.Daishin.UserPw) == true ||
-                    string.IsNullOrEmpty(Config.Instance.Daishin.CertPw) == true)
+                if (string.IsNullOrEmpty(Config.Daishin.UserId) == true ||
+                    string.IsNullOrEmpty(Config.Daishin.UserPw) == true ||
+                    string.IsNullOrEmpty(Config.Daishin.CertPw) == true)
                 {
                     logger.Error("Check Daishin configuration");
                     return;
@@ -105,7 +105,7 @@ namespace MTree.DaishinSessionManager
         {
             try
             {
-                string userPw = Config.Instance.Daishin.UserPw;
+                string userPw = Config.Daishin.UserPw;
                 if (string.IsNullOrWhiteSpace(userPw) == false)
                 {
                     foreach (var c in userPw.ToCharArray())
@@ -128,7 +128,7 @@ namespace MTree.DaishinSessionManager
         {
             try
             {
-                string certPw = Config.Instance.Daishin.CertPw;
+                string certPw = Config.Daishin.CertPw;
                 if (string.IsNullOrWhiteSpace(certPw) == false)
                 {
                     foreach (var c in certPw.ToCharArray())

@@ -21,7 +21,7 @@ namespace MTree.DbProvider
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private readonly string connectionString = Config.Instance.Database.ConnectionString;
+        private readonly string connectionString = Config.Database.ConnectionString;
         private readonly string candleDbString = "MTree_Candle";
         private readonly string biddingPriceDbString = "MTree_BiddingPrice";
         private readonly string stockMasterDbString = "MTree_StockMaster";

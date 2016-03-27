@@ -30,13 +30,13 @@ namespace MTree.Utility
                     client.UseDefaultCredentials = false; // 시스템에 설정된 인증 정보를 사용하지 않는다
                     client.EnableSsl = true;
                     client.DeliveryMethod = SmtpDeliveryMethod.Network; // 이걸 하지 않으면 Gmail에 인증을 받지 못한다
-                    client.Credentials = new System.Net.NetworkCredential(Config.Instance.Email.UserId, Config.Instance.Email.UserPw);
+                    client.Credentials = new System.Net.NetworkCredential(Config.Email.UserId, Config.Email.UserPw);
 
                     using (var message = new MailMessage())
                     {
-                        message.From = new MailAddress(Config.Instance.Email.UserId, "MTree", Encoding.UTF8);
+                        message.From = new MailAddress(Config.Email.UserId, "MTree", Encoding.UTF8);
 
-                        foreach (var to in Config.Instance.Email.MailTo)
+                        foreach (var to in Config.Email.MailTo)
                         {
                             message.To.Add(new MailAddress(to));
                         }

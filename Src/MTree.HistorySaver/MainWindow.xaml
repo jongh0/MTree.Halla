@@ -9,23 +9,40 @@
     <Grid>
         <Grid.Resources>
             <Style TargetType="TextBlock">
-                <Setter Property="FontSize" Value="20"/>
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="Width" Value="150"/>
+                <Setter Property="Height" Value="25"/>
+                <Setter Property="TextAlignment" Value="Right"/>
+            </Style>
+            <Style TargetType="TextBox">
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="Width" Value="100"/>
+                <Setter Property="Height" Value="20"/>
+                <Setter Property="IsReadOnly" Value="True"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="Padding" Value="2,-1,2,0"/>
             </Style>
         </Grid.Resources>
-        <StackPanel Orientation="Horizontal" Margin="10" VerticalAlignment="Center">
-            <StackPanel Orientation="Vertical">
-                <TextBlock Text="StockMaster : " TextAlignment="Right"/>
-                <TextBlock Text="BiddingPrice : " TextAlignment="Right"/>
-                <TextBlock Text="CircuitBreak : " TextAlignment="Right"/>
-                <TextBlock Text="StockConclusion : " TextAlignment="Right"/>
-                <TextBlock Text="IndexConclusion : " TextAlignment="Right"/>
+        <StackPanel Orientation="Vertical" Margin="10" VerticalAlignment="Center">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="StockMaster : "/>
+                <TextBox Text="{Binding Path=StockMasterCount, Mode=OneWay}"/>
             </StackPanel>
-            <StackPanel Orientation="Vertical">
-                <TextBlock Text="{Binding Path=StockMasterCount, Mode=OneWay}"/>
-                <TextBlock Text="{Binding Path=BiddingPriceCount, Mode=OneWay}"/>
-                <TextBlock Text="{Binding Path=CircuitBreakCount, Mode=OneWay}"/>
-                <TextBlock Text="{Binding Path=StockConclusionCount, Mode=OneWay}"/>
-                <TextBlock Text="{Binding Path=IndexConclusionCount, Mode=OneWay}"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="BiddingPrice : "/>
+                <TextBox Text="{Binding Path=BiddingPriceCount, Mode=OneWay}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="CircuitBreak : "/>
+                <TextBox Text="{Binding Path=CircuitBreakCount, Mode=OneWay}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="StockConclusion : "/>
+                <TextBox Text="{Binding Path=StockConclusionCount, Mode=OneWay}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="IndexConclusion : "/>
+                <TextBox Text="{Binding Path=IndexConclusionCount, Mode=OneWay}"/>
             </StackPanel>
         </StackPanel>
     </Grid>

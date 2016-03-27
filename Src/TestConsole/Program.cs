@@ -20,12 +20,18 @@ namespace TestConsole
         {
             Config.Initialize();
 
+            TestConfig();
             //TestCreateIndex();
             //TestDbAgent();
             //TestPushService();
             //TestEmail();
 
             Console.ReadLine();
+        }
+
+        private static void TestConfig()
+        {
+            Console.WriteLine(Config.Database.ConnectionString);
         }
 
         private static void TestCreateIndex()
