@@ -11,7 +11,10 @@ namespace MTree.Utility
     public enum ProcessTypes
     {
         None,
-        Test,
+        CybosStarter,
+        TestConsole,
+        TestConsumer,
+        TestPublisher,
         Daishin,
         DaishinMaster,
         DaishinPopupStopper,
@@ -19,10 +22,9 @@ namespace MTree.Utility
         Kiwoom,
         Ebest,
         Krx,
-        Naver,
         HistorySaver,
         RealTimeProvider,
-        CybosStarter,
+        DashBoard,
     }
 
     public class ProcessUtility
@@ -34,6 +36,10 @@ namespace MTree.Utility
         static ProcessUtility()
         {
             ProcessList = new Dictionary<ProcessTypes, string>();
+            ProcessList.Add(ProcessTypes.CybosStarter, "CpStart");
+            ProcessList.Add(ProcessTypes.TestConsole, "TestConsole");
+            ProcessList.Add(ProcessTypes.TestConsumer, "TestConsumer");
+            ProcessList.Add(ProcessTypes.TestPublisher, "TestPublisher");
             ProcessList.Add(ProcessTypes.Daishin, "MTree.DaishinPublisher");
             ProcessList.Add(ProcessTypes.DaishinMaster, "MTree.DaishinPublisher");
             ProcessList.Add(ProcessTypes.DaishinPopupStopper, "MTree.DaishinPopupStopper");
@@ -41,11 +47,9 @@ namespace MTree.Utility
             ProcessList.Add(ProcessTypes.Kiwoom, "MTree.KiwoomPublisher");
             ProcessList.Add(ProcessTypes.Ebest, "MTree.EbestPublisher");
             ProcessList.Add(ProcessTypes.Krx, "MTree.KrxPublisher");
-            ProcessList.Add(ProcessTypes.Naver, "MTree.NaverPublisher");
             ProcessList.Add(ProcessTypes.HistorySaver, "MTree.HistorySaver");
             ProcessList.Add(ProcessTypes.RealTimeProvider, "MTree.RealTimeProvider");
-            ProcessList.Add(ProcessTypes.CybosStarter, "CpStart");
-            ProcessList.Add(ProcessTypes.Test, "Notepad");
+            ProcessList.Add(ProcessTypes.DashBoard, "MTree.DashBoard");
         }
 
         public static Process Start(ProcessTypes type, ProcessWindowStyle windowStyle = ProcessWindowStyle.Minimized)

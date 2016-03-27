@@ -70,18 +70,6 @@ namespace MTree.RealTimeProvider
             get { return PublishContracts.Values.FirstOrDefault(c => c.Type == ProcessTypes.Krx && c.IsOperating == false); }
         }
         #endregion
-
-        #region Naver
-        private List<PublishContract> NaverContracts
-        {
-            get { return PublishContracts.Values.Where(c => c.Type == ProcessTypes.Naver).ToList(); }
-        }
-
-        private PublishContract NaverContractForMastering
-        {
-            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == ProcessTypes.Naver && c.IsOperating == false); }
-        }
-        #endregion
         #endregion
 
         private void LaunchClientProcess()
@@ -96,7 +84,8 @@ namespace MTree.RealTimeProvider
                     ProcessUtility.Start(ProcessTypes.Kiwoom);
 
                 // Daishin popup stopper
-                ProcessUtility.Start(ProcessTypes.DaishinPopupStopper);
+                if (Config.General.SkipMastering == false)
+                    ProcessUtility.Start(ProcessTypes.DaishinPopupStopper);
 
                 // Daishin
                 int daishinProcessCount;
@@ -147,15 +136,16 @@ namespace MTree.RealTimeProvider
 
                         if (isMasterProcess == true)
                         {
-                            if (CheckMarketDate(contract) == true)
+                            if (CheckMarketWorkDate(contract) == true)
                             {
                                 CheckMarketTime(contract);
                                 CheckCodeList(contract);
+
                                 LaunchClientProcess();
 
                                 Task.Run(() =>
                                 {
-                                    Thread.Sleep(1000 * 15);
+                                    Thread.Sleep(1000 * 20);
 
                                     if (Config.General.SkipMastering == true)
                                         StartCodeDistributing();
@@ -202,7 +192,7 @@ namespace MTree.RealTimeProvider
             }
         }
 
-        private bool CheckMarketDate(PublishContract contract)
+        private bool CheckMarketWorkDate(PublishContract contract)
         {
             try
             {

@@ -1,7 +1,7 @@
-﻿<Application x:Class="MTree.DashBoard.App"
+﻿<Application x:Class="MTree.Dashboard.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:MTree.DashBoard"
+             xmlns:local="clr-namespace:MTree.Dashboard"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
          

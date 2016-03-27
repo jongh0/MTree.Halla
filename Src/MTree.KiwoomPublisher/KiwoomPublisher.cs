@@ -120,12 +120,7 @@ namespace MTree.KiwoomPublisher
             finally
             {
                 ClosePopup();
-
-                Task.Run(() =>
-                {
-                    Thread.Sleep(5000); // Login 시간이 오래걸려서 대기
-                    SetLogin();
-                });
+                SetLogin();
             }
         }
 

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace MTree.DashBoard
+namespace MTree.Dashboard
 {
     /// <summary>
     /// Interaction logic for App.xaml
