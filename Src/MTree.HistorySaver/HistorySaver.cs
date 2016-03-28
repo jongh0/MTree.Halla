@@ -19,20 +19,11 @@ namespace MTree.HistorySaver
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         #region Counter property
-        private int stockMasterCount = 0;
-        public string StockMasterCount { get { return stockMasterCount.ToString(Config.General.CurrencyFormat); } }
-
-        private int biddingPriceCount = 0;
-        public string BiddingPriceCount { get { return biddingPriceCount.ToString(Config.General.CurrencyFormat); } }
-
-        private int circuitBreakCount = 0;
-        public string CircuitBreakCount { get { return circuitBreakCount.ToString(Config.General.CurrencyFormat); } }
-
-        private int stockConclusionCount = 0;
-        public string StockConclusionCount { get { return stockConclusionCount.ToString(Config.General.CurrencyFormat); } }
-
-        private int indexConclusionCount = 0;
-        public string IndexConclusionCount { get { return indexConclusionCount.ToString(Config.General.CurrencyFormat); } }
+        public int StockMasterCount { get; set; } = 0;
+        public int BiddingPriceCount { get; set; } = 0;
+        public int CircuitBreakCount { get; set; } = 0;
+        public int StockConclusionCount { get; set; } = 0;
+        public int IndexConclusionCount { get; set; } = 0;
         #endregion
 
         private System.Timers.Timer RefreshTimer { get; set; }
@@ -76,9 +67,9 @@ namespace MTree.HistorySaver
         {
             try
             {
-                BiddingPrice item;
-                if (BiddingPriceQueue.TryDequeue(out item) == true)
-                    DbAgent.Instance.Insert(item);
+                BiddingPrice biddingPrice;
+                if (BiddingPriceQueue.TryDequeue(out biddingPrice) == true)
+                    DbAgent.Instance.Insert(biddingPrice);
                 else
                     Thread.Sleep(10);
             }
@@ -92,9 +83,9 @@ namespace MTree.HistorySaver
         {
             try
             {
-                CircuitBreak item;
-                if (CircuitBreakQueue.TryDequeue(out item) == true)
-                    DbAgent.Instance.Insert(item);
+                CircuitBreak circuitBreak;
+                if (CircuitBreakQueue.TryDequeue(out circuitBreak) == true)
+                    DbAgent.Instance.Insert(circuitBreak);
                 else
                     Thread.Sleep(10);
             }
@@ -108,9 +99,9 @@ namespace MTree.HistorySaver
         {
             try
             {
-                StockConclusion item;
-                if (StockConclusionQueue.TryDequeue(out item) == true)
-                    DbAgent.Instance.Insert(item);
+                StockConclusion conclusion;
+                if (StockConclusionQueue.TryDequeue(out conclusion) == true)
+                    DbAgent.Instance.Insert(conclusion);
                 else
                     Thread.Sleep(10);
             }
@@ -124,9 +115,9 @@ namespace MTree.HistorySaver
         {
             try
             {
-                IndexConclusion item;
-                if (IndexConclusionQueue.TryDequeue(out item) == true)
-                    DbAgent.Instance.Insert(item);
+                IndexConclusion conclusion;
+                if (IndexConclusionQueue.TryDequeue(out conclusion) == true)
+                    DbAgent.Instance.Insert(conclusion);
                 else
                     Thread.Sleep(10);
             }
@@ -139,30 +130,31 @@ namespace MTree.HistorySaver
         public override void ConsumeBiddingPrice(BiddingPrice biddingPrice)
         {
             BiddingPriceQueue.Enqueue(biddingPrice);
+            BiddingPriceCount++;
         }
 
         public override void ConsumeStockConclusion(StockConclusion conclusion)
         {
             StockConclusionQueue.Enqueue(conclusion);
-            stockConclusionCount++;
+            StockConclusionCount++;
         }
 
         public override void ConsumeIndexConclusion(IndexConclusion conclusion)
         {
             IndexConclusionQueue.Enqueue(conclusion);
-            indexConclusionCount++;
+            IndexConclusionCount++;
         }
 
         public override void ConsumeCircuitBreak(CircuitBreak circuitBreak)
         {
             CircuitBreakQueue.Enqueue(circuitBreak);
-            circuitBreakCount++;
+            CircuitBreakCount++;
         }
 
         public override void ConsumeStockMaster(StockMaster stockMaster)
         {
             DbAgent.Instance.Insert(stockMaster);
-            stockMasterCount++;
+            StockMasterCount++;
         }
 
         public override void NotifyMessage(MessageTypes type, string message)
@@ -176,11 +168,12 @@ namespace MTree.HistorySaver
                     Task.Run(() =>
                     {
                         DbAgent.Instance.CreateIndex();
-                        DbAgent.Instance.Footprint();
+                        DbAgent.Instance.SaveStatisticLog();
 
                         logger.Info("Process will be closed");
                         Thread.Sleep(1000 * 10);
-                        Application.Current.Shutdown();
+                        //Application.Current.Shutdown();
+                        Environment.Exit(0);
                     });
                 }
             }

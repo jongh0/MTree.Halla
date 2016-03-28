@@ -30,7 +30,7 @@ namespace MTree.Dashboard
             get { return _price; }
             set { _price = value; NotifyPropertyChanged(nameof(Price)); }
         }
-
+        
         private long _volume;
         public long Volume
         {
@@ -50,6 +50,15 @@ namespace MTree.Dashboard
         {
             get { return _previousVolume; }
             set { _previousVolume = value; NotifyPropertyChanged(nameof(PreviousVolume)); }
+        }
+
+        public DashboardItem()
+        {
+        }
+
+        public DashboardItem(string code)
+        {
+            Code = code;
         }
 
         #region INotifyPropertyChanged

@@ -110,7 +110,8 @@ namespace MTree.KrxPublisher
                 {
                     logger.Info("Process will be closed");
                     Thread.Sleep(1000 * 10);
-                    Application.Exit();
+                    //Application.Exit();
+                    Environment.Exit(0);
                 });
             }
 

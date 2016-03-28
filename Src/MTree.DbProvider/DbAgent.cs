@@ -4,6 +4,7 @@ using MTree.DataStructure;
 using MTree.Utility;
 using System;
 using System.Linq;
+using System.Text;
 
 namespace MTree.DbProvider
 {
@@ -256,7 +257,7 @@ namespace MTree.DbProvider
         /// <summary>
         /// 오늘 Database에 저장된 통계를 로그에 기록한다.
         /// </summary>
-        public void Footprint()
+        public void SaveStatisticLog()
         {
             try
             {
@@ -344,7 +345,14 @@ namespace MTree.DbProvider
 
                 logger.Info($"Db Statistics, IndexConclusion: {indexConclusionCount}");
 
-                PushUtility.NotifyMessage($"Db Statistics, BP:{biddingCount}, CB:{circuitCount}, SM:{stockMasterCount}, SC:{stockConclusionCount}, IC:{indexConclusionCount}");
+                var sb = new StringBuilder();
+                sb.AppendLine("Db Statistics");
+                sb.AppendLine($"BP:{biddingCount.ToString(Config.General.CurrencyFormat)}");
+                sb.AppendLine($"CB:{circuitCount.ToString(Config.General.CurrencyFormat)}");
+                sb.AppendLine($"SM:{stockMasterCount.ToString(Config.General.CurrencyFormat)}");
+                sb.AppendLine($"SC:{stockConclusionCount.ToString(Config.General.CurrencyFormat)}");
+                sb.AppendLine($"IC:{indexConclusionCount.ToString(Config.General.CurrencyFormat)}");
+                PushUtility.NotifyMessage(sb.ToString());
             }
             catch (Exception ex)
             {

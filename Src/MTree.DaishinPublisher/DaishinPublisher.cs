@@ -263,7 +263,8 @@ namespace MTree.DaishinPublisher
                 {
                     logger.Info("Process will be closed");
                     Thread.Sleep(1000 * 10);
-                    Application.Current.Shutdown();
+                    //Application.Current.Shutdown();
+                    Environment.Exit(0);
                 });
             }
 

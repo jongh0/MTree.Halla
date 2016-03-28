@@ -4,70 +4,25 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MTree.Dashboard"
+        xmlns:utility="clr-namespace:MTree.Utility;assembly=MTree.Utility"
         mc:Ignorable="d"
-        Title="Dashboard" Height="372.006" Width="876.048">
+        Title="Dashboard" Height="500" Width="880">
     <Grid>
         <Grid.Resources>
-            <Style TargetType="TextBlock" x:Key="CurrencyTextBlock">
-                <Setter Property="TextAlignment" Value="Right"/>
-            </Style>
-            <Style TargetType="ListViewItem">
-                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-            </Style>
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <ResourceDictionary Source="ListStyle.xaml"/>
+                </ResourceDictionary.MergedDictionaries>
+            </ResourceDictionary>
         </Grid.Resources>
-        <ListView ItemsSource="{Binding Path=DashboardItems}" Margin="5">
-            <ListView.View>
-                <GridView>
-                    <!--Code-->
-                    <GridViewColumn Header="Code" Width="80">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Path=Code}"/>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <!--Name-->
-                    <GridViewColumn Header="Name" Width="100">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Path=Name}"/>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <!--Price-->
-                    <GridViewColumn Header="Price" Width="100">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Path=Price}" Style="{StaticResource CurrencyTextBlock}"/>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <!--Volume-->
-                    <GridViewColumn Header="Volume" Width="100">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Path=Volume}" Style="{StaticResource CurrencyTextBlock}"/>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <!--PreviousClosedPrice-->
-                    <GridViewColumn Header="PrevPrice" Width="100">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Path=PreviousClosedPrice}" Style="{StaticResource CurrencyTextBlock}"/>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <!--PreviousVolume-->
-                    <GridViewColumn Header="PrevVolume" Width="100">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Path=PreviousVolume}" Style="{StaticResource CurrencyTextBlock}"/>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                </GridView>
-            </ListView.View>
-        </ListView>
+
+        <TabControl Margin="5">
+            <TabItem Header="GridView">
+                <ListView ItemsSource="{Binding Path=DashboardItems.Values}" Margin="5" Style="{StaticResource GridViewStyle}" utility:GridViewSort.AutoSort="True"/>
+            </TabItem>
+            <TabItem Header="PanelView">
+                <ListBox ItemsSource="{Binding Path=DashboardItems.Values}" Margin="5" Style="{StaticResource PanelViewStyle}"/>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>

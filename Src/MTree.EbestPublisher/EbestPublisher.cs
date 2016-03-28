@@ -235,6 +235,8 @@ namespace MTree.EbestPublisher
         {
             LastCommunTick = Environment.TickCount;
 
+            CommunTimer?.Stop();
+
             LoginInstance.State = LoginStates.Logout;
             logger.Info(LoginInstance.ToString());
         }
@@ -681,7 +683,8 @@ namespace MTree.EbestPublisher
                 {
                     logger.Info("Process will be closed");
                     Thread.Sleep(1000 * 10);
-                    Application.Current.Shutdown();
+                    //Application.Current.Shutdown();
+                    Environment.Exit(0);
                 });
             }
 
@@ -699,7 +702,6 @@ namespace MTree.EbestPublisher
             {
                 LastCommunTick = Environment.TickCount;
                 logger.Info($"[{GetType().Name}] Keep firm connection");
-
                 GetStockMaster("000020");
             }
         }

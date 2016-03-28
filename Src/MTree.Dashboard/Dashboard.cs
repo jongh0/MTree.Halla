@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ServiceModel;
-using MTree.DbProvider;
 using System.Threading;
 using MTree.DataStructure;
 using MTree.Consumer;
@@ -8,9 +7,7 @@ using MTree.Utility;
 using MTree.RealTimeProvider;
 using System.Threading.Tasks;
 using System.Windows;
-using System.ComponentModel;
-using MTree.Configuration;
-using System.Collections.ObjectModel;
+using System.Collections.Concurrent;
 
 namespace MTree.Dashboard
 {
@@ -19,7 +16,7 @@ namespace MTree.Dashboard
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public ObservableCollection<DashboardItem> DashboardItems { get; set; } = new ObservableCollection<DashboardItem>();
+        public ObservableConcurrentDictionary<string, DashboardItem> DashboardItems { get; set; } = new ObservableConcurrentDictionary<string, DashboardItem>();
 
         public Dashboard()
         {
@@ -27,7 +24,7 @@ namespace MTree.Dashboard
             {
                 TaskUtility.Run("HistorySaver.CircuitBreakQueue", QueueTaskCancelToken, ProcessCircuitBreakQueue);
                 TaskUtility.Run("HistorySaver.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
-                TaskUtility.Run("HistorySaver.IndexConclusionQueue", QueueTaskCancelToken, ProcessIndexConclusionQueue);
+                //TaskUtility.Run("HistorySaver.IndexConclusionQueue", QueueTaskCancelToken, ProcessIndexConclusionQueue);
             }
             catch (Exception ex)
             {
@@ -44,7 +41,7 @@ namespace MTree.Dashboard
                 ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.StockMaster));
                 ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.CircuitBreak));
                 ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.StockConclusion));
-                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.IndexConclusion));
+                //ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.IndexConclusion));
             }
             catch (Exception ex)
             {
@@ -56,11 +53,14 @@ namespace MTree.Dashboard
         {
             try
             {
-                CircuitBreak item;
-                if (CircuitBreakQueue.TryDequeue(out item) == true)
-                    ;
+                CircuitBreak circuitBreak;
+                if (CircuitBreakQueue.TryDequeue(out circuitBreak) == true)
+                {
+                }
                 else
+                {
                     Thread.Sleep(10);
+                }
             }
             catch (Exception ex)
             {
@@ -72,11 +72,20 @@ namespace MTree.Dashboard
         {
             try
             {
-                StockConclusion item;
-                if (StockConclusionQueue.TryDequeue(out item) == true)
-                    ;
+                StockConclusion conclusion;
+                if (StockConclusionQueue.TryDequeue(out conclusion) == true)
+                {
+                    if (DashboardItems.ContainsKey(conclusion.Code) == false)
+                        DashboardItems.Add(conclusion.Code, new DashboardItem(conclusion.Code));
+
+                    var item = DashboardItems[conclusion.Code];
+                    item.Price = conclusion.Price;
+                    item.Volume += conclusion.Amount;
+                }
                 else
+                {
                     Thread.Sleep(10);
+                }
             }
             catch (Exception ex)
             {
@@ -88,21 +97,19 @@ namespace MTree.Dashboard
         {
             try
             {
-                IndexConclusion item;
-                if (IndexConclusionQueue.TryDequeue(out item) == true)
-                    ;
+                IndexConclusion conclusion;
+                if (IndexConclusionQueue.TryDequeue(out conclusion) == true)
+                {
+                }
                 else
+                {
                     Thread.Sleep(10);
+                }
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
             }
-        }
-
-        public override void ConsumeBiddingPrice(BiddingPrice biddingPrice)
-        {
-            BiddingPriceQueue.Enqueue(biddingPrice);
         }
 
         public override void ConsumeStockConclusion(StockConclusion conclusion)
@@ -122,6 +129,21 @@ namespace MTree.Dashboard
 
         public override void ConsumeStockMaster(StockMaster stockMaster)
         {
+            try
+            {
+                if (DashboardItems.ContainsKey(stockMaster.Code) == false)
+                    DashboardItems.Add(stockMaster.Code, new DashboardItem(stockMaster.Code));
+
+                var item = DashboardItems[stockMaster.Code];
+                item.Name = stockMaster.Name;
+                item.Price = stockMaster.BasisPrice;
+                item.PreviousClosedPrice = stockMaster.PreviousClosedPrice;
+                item.PreviousVolume = stockMaster.PreviousVolume;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
         }
 
         public override void NotifyMessage(MessageTypes type, string message)
@@ -134,7 +156,8 @@ namespace MTree.Dashboard
                     {
                         logger.Info("Process will be closed");
                         Thread.Sleep(1000 * 10);
-                        Application.Current.Shutdown();
+                        //Application.Current.Shutdown();
+                        Environment.Exit(0);
                     });
                 }
             }
