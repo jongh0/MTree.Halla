@@ -31,7 +31,7 @@ namespace MTree.Dashboard
             set { _price = value; NotifyPropertyChanged(nameof(Price)); }
         }
         
-        private long _volume;
+        private long _volume = 0;
         public long Volume
         {
             get { return _volume; }

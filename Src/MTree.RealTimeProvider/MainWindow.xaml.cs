@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MTree.Utility;
 using MTree.Configuration;
+using System.Diagnostics;
 
 namespace MTree.RealTimeProvider
 {
@@ -63,12 +64,12 @@ namespace MTree.RealTimeProvider
                 if (ProcessUtility.Exists(ProcessTypes.CybosStarter) == false)
                 {
                     logger.Info("Daishin starter not exists");
-                    ProcessUtility.Start(ProcessTypes.DaishinSessionManager)?.WaitForExit();
+                    ProcessUtility.Start(ProcessTypes.DaishinSessionManager, ProcessWindowStyle.Minimized)?.WaitForExit();
                 }
 
                 // Daishin Master 실행
                 if (Config.General.OfflineMode == false)
-                    ProcessUtility.Start(ProcessTypes.DaishinMaster);
+                    ProcessUtility.Start(ProcessTypes.DaishinMaster, ProcessWindowStyle.Minimized);
             });
         }
     }

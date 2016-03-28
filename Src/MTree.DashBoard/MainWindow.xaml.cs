@@ -28,7 +28,7 @@ namespace MTree.Dashboard
             InitializeComponent();
 
             Consumer = new Dashboard();
-            TestData();
+            //TestData();
 
             this.DataContext = Consumer;
         }

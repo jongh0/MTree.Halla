@@ -37,7 +37,7 @@
             <Setter.Value>
                 <DataTemplate>
                     <Border BorderBrush="Gainsboro" BorderThickness="1">
-                        <StackPanel Orientation="Vertical" Width="130" Margin="2">
+                        <StackPanel Orientation="Vertical" Width="150" Margin="2">
                             <!--Code-->
                             <DockPanel LastChildFill="True">
                                 <TextBlock Text="Code" Style="{StaticResource PanelTitleTextBlock}"/>
@@ -90,7 +90,7 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                     <!--Name-->
-                    <GridViewColumn Header="Name" Width="100" utility:GridViewSort.PropertyName="Name">
+                    <GridViewColumn Header="Name" Width="130" utility:GridViewSort.PropertyName="Name">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Path=Name}" TextAlignment="Center"/>

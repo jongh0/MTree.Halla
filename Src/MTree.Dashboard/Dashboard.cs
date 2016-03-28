@@ -132,13 +132,15 @@ namespace MTree.Dashboard
             try
             {
                 if (DashboardItems.ContainsKey(stockMaster.Code) == false)
-                    DashboardItems.Add(stockMaster.Code, new DashboardItem(stockMaster.Code));
+                {
+                    var item = new DashboardItem(stockMaster.Code);
+                    item.Name = stockMaster.Name;
+                    item.Price = stockMaster.BasisPrice;
+                    item.PreviousClosedPrice = stockMaster.PreviousClosedPrice;
+                    item.PreviousVolume = stockMaster.PreviousVolume;
 
-                var item = DashboardItems[stockMaster.Code];
-                item.Name = stockMaster.Name;
-                item.Price = stockMaster.BasisPrice;
-                item.PreviousClosedPrice = stockMaster.PreviousClosedPrice;
-                item.PreviousVolume = stockMaster.PreviousVolume;
+                    DashboardItems.Add(item.Code, item);
+                }
             }
             catch (Exception ex)
             {

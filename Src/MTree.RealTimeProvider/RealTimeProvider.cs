@@ -50,6 +50,12 @@ namespace MTree.RealTimeProvider
         private void MarketEndTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             logger.Info("Market end timer elapsed");
+            ExitProgram();
+        }
+
+        private void ExitProgram()
+        {
+            logger.Info("Exit program");
 
             // Publisher 종료
             foreach (var contract in PublishContracts)

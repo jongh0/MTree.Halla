@@ -32,6 +32,7 @@ namespace TestConsole
         private static void TestConfig()
         {
             Console.WriteLine(Config.Database.ConnectionString);
+            Console.WriteLine(Config.General.TestMode);
         }
 
         private static void TestCreateIndex()

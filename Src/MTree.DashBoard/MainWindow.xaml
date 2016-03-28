@@ -16,13 +16,14 @@
             </ResourceDictionary>
         </Grid.Resources>
 
-        <TabControl Margin="5">
+        <ListView ItemsSource="{Binding Path=DashboardItems.Values}" Margin="10" Style="{StaticResource GridViewStyle}" utility:GridViewSort.AutoSort="True"/>
+        <!--<TabControl Margin="5">
             <TabItem Header="GridView">
                 <ListView ItemsSource="{Binding Path=DashboardItems.Values}" Margin="5" Style="{StaticResource GridViewStyle}" utility:GridViewSort.AutoSort="True"/>
             </TabItem>
             <TabItem Header="PanelView">
                 <ListBox ItemsSource="{Binding Path=DashboardItems.Values}" Margin="5" Style="{StaticResource PanelViewStyle}"/>
             </TabItem>
-        </TabControl>
+        </TabControl>-->
     </Grid>
 </Window>

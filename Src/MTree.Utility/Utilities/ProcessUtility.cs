@@ -24,7 +24,7 @@ namespace MTree.Utility
         Krx,
         HistorySaver,
         RealTimeProvider,
-        DashBoard,
+        Dashboard,
     }
 
     public class ProcessUtility
@@ -49,10 +49,10 @@ namespace MTree.Utility
             ProcessList.Add(ProcessTypes.Krx, "MTree.KrxPublisher");
             ProcessList.Add(ProcessTypes.HistorySaver, "MTree.HistorySaver");
             ProcessList.Add(ProcessTypes.RealTimeProvider, "MTree.RealTimeProvider");
-            ProcessList.Add(ProcessTypes.DashBoard, "MTree.DashBoard");
+            ProcessList.Add(ProcessTypes.Dashboard, "MTree.Dashboard");
         }
 
-        public static Process Start(ProcessTypes type, ProcessWindowStyle windowStyle = ProcessWindowStyle.Minimized)
+        public static Process Start(ProcessTypes type, ProcessWindowStyle windowStyle = ProcessWindowStyle.Normal)
         {
             if (ProcessList.ContainsKey(type) == true)
                 return Start(ProcessList[type] + ".exe", type.ToString(), windowStyle: windowStyle);

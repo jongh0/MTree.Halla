@@ -32,6 +32,7 @@ namespace MTree.AutoLauncher
                 launcher.KillProcesses.Add(ProcessTypes.Kiwoom);
                 launcher.KillProcesses.Add(ProcessTypes.Daishin);
                 launcher.KillProcesses.Add(ProcessTypes.HistorySaver);
+                launcher.KillProcesses.Add(ProcessTypes.Dashboard);
 
                 this.DataContext = launcher;
                 launcher.Start();

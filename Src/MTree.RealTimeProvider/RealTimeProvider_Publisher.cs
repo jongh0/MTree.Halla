@@ -79,13 +79,17 @@ namespace MTree.RealTimeProvider
                 // HistorySaver
                 ProcessUtility.Start(ProcessTypes.HistorySaver);
 
-                // Kiwoom
-                if (Config.General.SkipMastering == false)
-                    ProcessUtility.Start(ProcessTypes.Kiwoom);
+                // Dashboard
+                ProcessUtility.Start(ProcessTypes.Dashboard);
 
-                // Daishin popup stopper
                 if (Config.General.SkipMastering == false)
-                    ProcessUtility.Start(ProcessTypes.DaishinPopupStopper);
+                {
+                    // Kiwoom
+                    ProcessUtility.Start(ProcessTypes.Kiwoom, ProcessWindowStyle.Minimized);
+
+                    // Daishin popup stopper
+                    ProcessUtility.Start(ProcessTypes.DaishinPopupStopper, ProcessWindowStyle.Minimized);
+                }
 
                 // Daishin
                 int daishinProcessCount;
@@ -95,12 +99,12 @@ namespace MTree.RealTimeProvider
                     daishinProcessCount = (StockCodeList.Count * 2 + IndexCodeList.Count) / 400;
 
                 for (int i = 0; i < daishinProcessCount; i++)
-                    ProcessUtility.Start(ProcessTypes.Daishin);
+                    ProcessUtility.Start(ProcessTypes.Daishin, ProcessWindowStyle.Minimized);
 
                 // Ebest
                 int ebestProcessCount = 3;
                 for (int i = 0; i < ebestProcessCount; i++)
-                    ProcessUtility.Start(ProcessTypes.Ebest);
+                    ProcessUtility.Start(ProcessTypes.Ebest, ProcessWindowStyle.Minimized);
             }
             catch (Exception ex)
             {
@@ -128,33 +132,53 @@ namespace MTree.RealTimeProvider
                     }
                     else
                     {
-                        bool isMasterProcess = (contract.Type == ProcessTypes.DaishinMaster);
+                        bool isMasterContract = (contract.Type == ProcessTypes.DaishinMaster);
                         if (contract.Type == ProcessTypes.DaishinMaster) contract.Type = ProcessTypes.Daishin;
 
                         PublishContracts.TryAdd(clientId, contract);
                         logger.Info($"{contract.ToString()} contract registered / {clientId}");
 
-                        if (isMasterProcess == true)
-                        {
-                            if (CheckMarketWorkDate(contract) == true)
-                            {
-                                CheckMarketTime(contract);
-                                CheckCodeList(contract);
-
-                                LaunchClientProcess();
-
-                                Task.Run(() =>
-                                {
-                                    Thread.Sleep(1000 * 20);
-
-                                    if (Config.General.SkipMastering == true)
-                                        StartCodeDistributing();
-                                    else
-                                        StartStockMastering();
-                                });
-                            }
-                        }
+                        if (isMasterContract == true)
+                            ProcessMasterContract(contract);
                     }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
+        private void ProcessMasterContract(PublishContract contract)
+        {
+            try
+            {
+                logger.Info("Process master contrace");
+
+                if (CheckMarketWorkDate(contract) == true)
+                {
+                    CheckMarketTime(contract);
+                    CheckCodeList(contract);
+
+                    LaunchClientProcess();
+
+                    Task.Run(() =>
+                    {
+                        Thread.Sleep(1000 * 20);
+
+                        if (Config.General.SkipMastering == true)
+                            StartCodeDistributing();
+                        else
+                            StartStockMastering();
+                    });
+                }
+                else
+                {
+                    Task.Run(() =>
+                    {
+                        Thread.Sleep(1000 * 5);
+                        ExitProgram();
+                    });
                 }
             }
             catch (Exception ex)
@@ -196,17 +220,37 @@ namespace MTree.RealTimeProvider
         {
             try
             {
-                logger.Info("Check market date");
+                logger.Info("Check market work date");
 
                 var workDate = contract.Callback.GetMarketInfo(MarketInfoTypes.WorkDate);
-                logger.Info($"Work date: {workDate}");
+                logger.Info($"Market work date: {workDate}");
+
+                int workDateTime = 0;
+                if (int.TryParse(workDate, out workDateTime) == true)
+                {
+                    int year = workDateTime / 10000;
+                    int month = workDateTime % 10000 / 100;
+                    int day = workDateTime % 100;
+
+                    var now = DateTime.Now;
+                    if (now.Year == year && now.Month == month && now.Day == day)
+                    {
+                        logger.Info("Market opened");
+                        return true;
+                    }
+                }
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
             }
 
+#if DEBUG
             return true;
+#else
+            logger.Info("Market closed");
+            return false;
+#endif
         }
 
         private void CheckMarketTime(PublishContract contract)
