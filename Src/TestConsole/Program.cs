@@ -20,13 +20,24 @@ namespace TestConsole
         {
             Config.Initialize();
 
-            TestConfig();
+            TestLogging();
+            //TestConfig();
             //TestCreateIndex();
             //TestDbAgent();
             //TestPushService();
             //TestEmail();
 
             Console.ReadLine();
+        }
+
+        private static void TestLogging()
+        {
+            logger.Info("log test Info");
+            logger.Trace("log test Trace");
+            logger.Debug("log test Debug");
+            logger.Warn("log test Warn");
+            logger.Error("log test Error");
+            logger.Fatal("log test Fatal");
         }
 
         private static void TestConfig()
