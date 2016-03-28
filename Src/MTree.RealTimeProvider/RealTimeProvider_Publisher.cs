@@ -149,6 +149,11 @@ namespace MTree.RealTimeProvider
             }
         }
 
+        /// <summary>
+        /// DaishinMaster Client가 접속 시 순차적으로 Code 리스트 확인, Mastering, Code Distributing을 수행한다.
+        /// 장이 열리지 않는 날이면 Program을 종료시킨다. (DEBUG Mode 제외)
+        /// </summary>
+        /// <param name="contract"></param>
         private void ProcessMasterContract(PublishContract contract)
         {
             try
@@ -216,6 +221,12 @@ namespace MTree.RealTimeProvider
             }
         }
 
+        /// <summary>
+        /// 오늘 장이 열리면 true, 아니면 false를 리턴한다.
+        /// DEBUG Mode는 항상 true를 리턴한다.
+        /// </summary>
+        /// <param name="contract"></param>
+        /// <returns></returns>
         private bool CheckMarketWorkDate(PublishContract contract)
         {
             try

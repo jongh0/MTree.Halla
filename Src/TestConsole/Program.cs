@@ -20,7 +20,7 @@ namespace TestConsole
         {
             Config.Initialize();
 
-            TestLogging();
+            //TestLogging();
             //TestConfig();
             //TestCreateIndex();
             //TestDbAgent();
