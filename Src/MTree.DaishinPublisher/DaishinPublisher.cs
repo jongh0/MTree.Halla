@@ -25,8 +25,11 @@ namespace MTree.DaishinPublisher
         private StockMstClass stockMstObj;
         private StockMstClass indexMstObj;
         private StockCurClass stockCurObj;
+        private StockOutCurClass stockOutCurObj;
         private StockJpbidClass stockJpbidObj;
         private StockChartClass stockChartObj;
+        private CpSvr8091SClass memberTrendObj;
+
         #endregion
 
         public DaishinPublisher() : base()
@@ -49,11 +52,17 @@ namespace MTree.DaishinPublisher
                 stockCurObj = new StockCurClass();
                 stockCurObj.Received += stockCurObj_Received;
 
+                stockOutCurObj = new StockOutCurClass();
+                stockOutCurObj.Received += StockOutCurObj_Received;
+
                 stockJpbidObj = new StockJpbidClass();
                 stockJpbidObj.Received += stockJpbidObj_Received;
 
                 stockChartObj = new StockChartClass();
                 stockChartObj.Received += stockChartObj_Received;
+
+                memberTrendObj = new CpSvr8091SClass();
+                memberTrendObj.Received += MemberTrendObj_Received;
 
                 if (sessionObj.IsConnect != 1)
                 {
@@ -72,6 +81,14 @@ namespace MTree.DaishinPublisher
                 logger.Info($"Candle count: {chart.Count}");
                 Debugger.Break();
 #endif
+#if false // Member Subscribing test
+                if (Environment.GetCommandLineArgs()[1] == "DaishinMaster")
+                {
+                    memberTrendObj.SetInputValue(0, "*");
+                    memberTrendObj.SetInputValue(1, "*");
+                    memberTrendObj.Subscribe();
+                }
+#endif
             }
             catch (Exception ex)
             {
@@ -79,6 +96,17 @@ namespace MTree.DaishinPublisher
             }
         }
         
+        int cnt = 0;
+        private void MemberTrendObj_Received()
+        {
+            cnt++;
+            string str = $"Time:{memberTrendObj.GetHeaderValue(0)},Member:{memberTrendObj.GetHeaderValue(1)},Code:{memberTrendObj.GetHeaderValue(2)},Name:{memberTrendObj.GetHeaderValue(3)},Sell/Buy:{memberTrendObj.GetHeaderValue(4)},Amount: { memberTrendObj.GetHeaderValue(5)},Accum Amount:{ memberTrendObj.GetHeaderValue(6)},Sign: { memberTrendObj.GetHeaderValue(7)},Forien: { memberTrendObj.GetHeaderValue(8)}";
+            if (cnt % 100 == 0)
+            {
+                logger.Info(str);
+            }
+        }
+
         public override Dictionary<string, CodeEntity> GetCodeList()
         {
             var codeList = new Dictionary<string, CodeEntity>();

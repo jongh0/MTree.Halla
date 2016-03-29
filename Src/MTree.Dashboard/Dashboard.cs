@@ -171,8 +171,7 @@ namespace MTree.Dashboard
                     item.Name = indexMaster.Name;
                     item.Price = indexMaster.BasisPrice;
                     item.BasisPrice = indexMaster.BasisPrice;
-                    item.PreviousVolume = indexMaster.PreviousVolume;
-
+                    
                     IndexItems.Add(item.Code, item);
                 }
             }

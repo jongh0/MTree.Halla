@@ -12,6 +12,18 @@ namespace MTree.DaishinPublisher
 
             try
             {
+                stockOutCurObj.SetInputValue(0, code);
+                stockOutCurObj.Subscribe();
+
+                while (true)
+                {
+                    status = stockCurObj.GetDibStatus();
+                    if (status != 1) // 1 - 수신대기
+                        break;
+
+                    Thread.Sleep(10);
+                }
+
                 stockCurObj.SetInputValue(0, code);
                 stockCurObj.Subscribe();
 
@@ -70,6 +82,56 @@ namespace MTree.DaishinPublisher
             }
 
             return (status == 0);
+        }
+
+        private void StockOutCurObj_Received()
+        {
+            try
+            {
+#if false
+                logger.Info($"Code:{stockOutCurObj.GetHeaderValue(0).ToString()}");
+                logger.Info($"Time:{stockOutCurObj.GetHeaderValue(1).ToString()}");
+                logger.Info($"Current:{stockOutCurObj.GetHeaderValue(5).ToString()}");
+                logger.Info($"Concluded:{stockOutCurObj.GetHeaderValue(6).ToString()}");
+                logger.Info($"Accum Amount:{stockOutCurObj.GetHeaderValue(7).ToString()}");
+                logger.Info($"Sell/Buy:{stockOutCurObj.GetHeaderValue(9).ToString()}");
+                logger.Info($"Amount:{stockOutCurObj.GetHeaderValue(10).ToString()}");
+                logger.Info($"Flag:{stockOutCurObj.GetHeaderValue(11).ToString()}");
+                logger.Info($"Capital:{stockOutCurObj.GetHeaderValue(12).ToString()}");
+#endif
+                var now = DateTime.Now;
+                var conclusion = new StockConclusion();
+
+                // 0 - (string) 종목 코드
+                string fullCode = stockOutCurObj.GetHeaderValue(0).ToString();
+                conclusion.Code = CodeEntity.RemovePrefix(fullCode);
+
+                // 1 - (long) 시간 (초)
+                long time = Convert.ToInt64(stockOutCurObj.GetHeaderValue(1));
+                conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100, now.Millisecond); // Daishin doesn't provide milisecond 
+
+                // 5 - (long) 현재가
+                conclusion.Price = Convert.ToSingle(stockOutCurObj.GetHeaderValue(5));
+                if (conclusion.Price <= 0)
+                    logger.Error($"Stock conclusion price error, {conclusion.Price}/{stockOutCurObj.GetHeaderValue(5)}");
+
+                // 9 - (char)체결 상태
+                char type = Convert.ToChar(stockOutCurObj.GetHeaderValue(9));
+                if (type == '1') conclusion.ConclusionType = ConclusionTypes.Buy;
+                else conclusion.ConclusionType = ConclusionTypes.Sell;
+
+                // 10 - (long) 순간체결수량
+                conclusion.Amount = Convert.ToInt64(stockOutCurObj.GetHeaderValue(17));
+                
+                // 장 구분 플래그
+                conclusion.MarketTimeType = MarketTimeTypes.BeforeOffTheClock;
+
+                StockConclusionQueue.Enqueue(conclusion);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
         }
 
         private void StockConclusionReceived()

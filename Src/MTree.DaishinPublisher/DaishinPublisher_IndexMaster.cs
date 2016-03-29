@@ -84,13 +84,7 @@ namespace MTree.DaishinPublisher
                 QuotingIndexMaster.Name = indexMstObj.GetHeaderValue(1).ToString();
 
                 // 10 - (long) 전일종가
-                QuotingIndexMaster.PreviousClosedPrice = (int)indexMstObj.GetHeaderValue(10);
-
-                // 27 - (long) basis price (기준가)
-                QuotingIndexMaster.BasisPrice = (int)indexMstObj.GetHeaderValue(27);
-
-                // 46 - (long) 전일 거래량
-                QuotingIndexMaster.PreviousVolume = Convert.ToInt64(indexMstObj.GetHeaderValue(46));
+                QuotingIndexMaster.BasisPrice = (int)indexMstObj.GetHeaderValue(10);
             }
             catch (Exception ex)
             {

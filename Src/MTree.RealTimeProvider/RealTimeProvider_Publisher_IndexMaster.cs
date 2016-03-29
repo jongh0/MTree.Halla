@@ -214,9 +214,7 @@ namespace MTree.RealTimeProvider
 
                     //dest.Name = source.Name;
                     dest.BasisPrice = source.BasisPrice;
-                    dest.PreviousClosedPrice = source.PreviousClosedPrice;
-                    dest.PreviousVolume = source.PreviousVolume;
-
+                    
                     state = MasteringStates.Finished;
                 }
             }

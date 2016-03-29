@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MTree.DataStructure;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,7 +29,14 @@ namespace MTree.DaishinPublisher
 
             Publisher = new DaishinPublisher();
             //Publisher.SubscribeWorldStock("ENXH");
-            //bool result = Publisher.SubscribeStock("051910");
+            //bool result = Publisher.SubscribeStock("A005930");
+			/*
+            Dictionary<string, CodeEntity> list = Publisher.GetCodeList();
+            for (int i = 0; i < 200; i++)
+            {
+                bool result = Publisher.SubscribeStock("A" + list.ToArray()[i].Key);
+            }
+			*/
         }
     }
 }
