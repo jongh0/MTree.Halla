@@ -23,6 +23,7 @@ namespace MTree.DaishinPublisher
         private CpCybosClass sessionObj;
         private CpCodeMgrClass codeMgrObj;
         private StockMstClass stockMstObj;
+        private StockMstClass indexMstObj;
         private StockCurClass stockCurObj;
         private StockJpbidClass stockJpbidObj;
         private StockChartClass stockChartObj;
@@ -41,6 +42,9 @@ namespace MTree.DaishinPublisher
 
                 stockMstObj = new StockMstClass();
                 stockMstObj.Received += stockMstObj_Received;
+
+                indexMstObj = new StockMstClass();
+                indexMstObj.Received += IndexMasterReceived;
 
                 stockCurObj = new StockCurClass();
                 stockCurObj.Received += stockCurObj_Received;

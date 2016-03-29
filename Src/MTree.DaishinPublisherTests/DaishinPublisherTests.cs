@@ -35,7 +35,7 @@ namespace MTree.DaishinPublisher.Tests
                 bool result = publisher.SubscribeStock("A" + list.ToArray()[i].Key);
                 Assert.IsTrue(result);
             }
-            
+
             while (true) ;
         }
 
@@ -61,6 +61,14 @@ namespace MTree.DaishinPublisher.Tests
         {
             DaishinPublisher publisher = new DaishinPublisher();
             publisher.SubscribeIndex("001");
+            while (true) ;
+        }
+
+        [TestMethod()]
+        public void GetIndexMasterTest()
+        {
+            DaishinPublisher publisher = new DaishinPublisher();
+            publisher.GetIndexMaster("001");
             while (true) ;
         }
     }

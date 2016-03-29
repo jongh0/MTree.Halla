@@ -42,8 +42,8 @@ namespace MTree.DaishinPublisher
                 logger.Info($"Start quoting, Code: {code}");
                 QuotingIndexMaster = master;
 
-                stockMstObj.SetInputValue(0, code);
-                ret = stockMstObj.BlockRequest();
+                indexMstObj.SetInputValue(0, code);
+                ret = indexMstObj.BlockRequest();
 
                 if (ret == 0)
                 {
@@ -81,16 +81,16 @@ namespace MTree.DaishinPublisher
                     return;
 
                 // 1 - (string) 종목 명
-                QuotingIndexMaster.Name = stockMstObj.GetHeaderValue(1).ToString();
+                QuotingIndexMaster.Name = indexMstObj.GetHeaderValue(1).ToString();
 
                 // 10 - (long) 전일종가
-                QuotingIndexMaster.PreviousClosedPrice = (int)stockMstObj.GetHeaderValue(10);
+                QuotingIndexMaster.PreviousClosedPrice = (int)indexMstObj.GetHeaderValue(10);
 
                 // 27 - (long) basis price (기준가)
-                QuotingIndexMaster.BasisPrice = (int)stockMstObj.GetHeaderValue(27);
+                QuotingIndexMaster.BasisPrice = (int)indexMstObj.GetHeaderValue(27);
 
                 // 46 - (long) 전일 거래량
-                QuotingIndexMaster.PreviousVolume = Convert.ToInt64(stockMstObj.GetHeaderValue(46));
+                QuotingIndexMaster.PreviousVolume = Convert.ToInt64(indexMstObj.GetHeaderValue(46));
             }
             catch (Exception ex)
             {
