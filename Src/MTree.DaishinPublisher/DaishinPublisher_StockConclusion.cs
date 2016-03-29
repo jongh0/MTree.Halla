@@ -17,7 +17,7 @@ namespace MTree.DaishinPublisher
 
                 while (true)
                 {
-                    status = stockCurObj.GetDibStatus();
+                    status = stockOutCurObj.GetDibStatus();
                     if (status != 1) // 1 - 수신대기
                         break;
 
