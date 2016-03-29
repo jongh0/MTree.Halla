@@ -84,7 +84,7 @@ namespace MTree.DaishinPublisher
                 QuotingIndexMaster.Name = indexMstObj.GetHeaderValue(1).ToString();
 
                 // 10 - (long) 전일종가
-                QuotingIndexMaster.BasisPrice = (int)indexMstObj.GetHeaderValue(10);
+                QuotingIndexMaster.BasisPrice = Convert.ToSingle(indexMstObj.GetHeaderValue(10)) / 100;
             }
             catch (Exception ex)
             {

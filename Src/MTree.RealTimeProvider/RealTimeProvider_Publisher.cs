@@ -97,7 +97,7 @@ namespace MTree.RealTimeProvider
                 if (Config.General.SkipBiddingPrice == true)
                     daishinProcessCount = (StockCodeList.Count + IndexCodeList.Count) / 400;
                 else
-                    daishinProcessCount = (StockCodeList.Count * 2 + IndexCodeList.Count) / 400;
+                    daishinProcessCount = (StockCodeList.Count * 3 + IndexCodeList.Count) / 400;
 
                 for (int i = 0; i < daishinProcessCount; i++)
                     ProcessUtility.Start(ProcessTypes.Daishin, ProcessWindowStyle.Minimized);
