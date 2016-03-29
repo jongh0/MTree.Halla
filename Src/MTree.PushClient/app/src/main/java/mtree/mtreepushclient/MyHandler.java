@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
+
 import com.microsoft.windowsazure.notifications.NotificationsHandler;
 
 import java.text.SimpleDateFormat;
@@ -35,10 +37,12 @@ public class MyHandler extends NotificationsHandler {
 
         String message = strNow + "\r\n" + nhMessage;
 
-        MainActivity.tempList.add(message);
-
-        if (mainActivity != null)
-            mainActivity.AddToListView(message);
+        if (mainActivity != null) {
+            mainActivity.insetDb(message);
+        } else {
+            MainActivity.tempList.add(message);
+            Log.i("MTree", ">>>>>>>>>>>>>>>>> tempList inserted");
+        }
     }
 
     private void sendNotification(String msg) {
