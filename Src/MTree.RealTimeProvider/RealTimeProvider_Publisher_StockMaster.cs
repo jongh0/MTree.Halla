@@ -38,7 +38,7 @@ namespace MTree.RealTimeProvider
                     mastering.Stock.Code = codeEntity.Code;
                     mastering.Stock.Name = codeEntity.Name;
                     mastering.Stock.MarketType = codeEntity.MarketType;
-                    mastering.Stock.Time = new DateTime(now.Year, now.Month, now.Day); // StockMaster는 날짜까지만 사용한다
+                    mastering.Stock.Time = new DateTime(now.Year, now.Month, now.Day); // 날짜까지만 사용한다
 
                     StockMasteringList.Add(mastering);
                 }

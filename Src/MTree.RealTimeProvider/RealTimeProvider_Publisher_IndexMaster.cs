@@ -32,7 +32,7 @@ namespace MTree.RealTimeProvider
                     var mastering = new IndexMastering();
                     mastering.Index.Code = codeEntity.Code;
                     mastering.Index.Name = codeEntity.Name;
-                    mastering.Index.Time = new DateTime(now.Year, now.Month, now.Day); // IndexMaster는 날짜까지만 사용한다
+                    mastering.Index.Time = new DateTime(now.Year, now.Month, now.Day); // 날짜까지만 사용한다
 
                     IndexMasteringList.Add(mastering);
                 }

@@ -303,26 +303,19 @@ namespace MTree.RealTimeProvider
 
                 if (int.TryParse(endTimeStr, out endTime) == true)
                 {
-                    MarketEndTime = new DateTime(now.Year, now.Month, now.Day, endTime, 0, 0).AddHours(3); // 장외 3시간 추가
+                    MarketEndTime = new DateTime(now.Year, now.Month, now.Day, endTime, 0, 0).AddHours(3); // 시간외 3시간 추가
                 }
                 else
                 {
                     logger.Error("Market end time parsing error");
-                    MarketStartTime = new DateTime(now.Year, now.Month, now.Day, 15, 0, 0);
+                    MarketStartTime = new DateTime(now.Year, now.Month, now.Day, 15, 0, 0).AddHours(3); // 시간외 3시간 추가
                 }
 
                 logger.Info($"Market end time: {MarketEndTime.ToString(Config.General.TimeFormat)}");
 
-                if (MarketEndTimer != null)
-                {
-                    MarketEndTimer.Stop();
-                    MarketEndTimer.Dispose();
-                    MarketEndTimer = null;
-                }
-
                 if (MarketEndTime > now)
                 {
-                    TimeSpan interval = (MarketEndTime - now).Add(TimeSpan.FromHours(1)); // 장종료 1시간 후 프로그램 종료
+                    TimeSpan interval = (MarketEndTime - now).Add(TimeSpan.FromMinutes(30)); // 장종료 30분 후 프로그램 종료
 
                     MarketEndTimer = new System.Timers.Timer();
                     MarketEndTimer.Interval = interval.TotalMilliseconds;

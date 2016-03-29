@@ -62,7 +62,7 @@ namespace MTree.AutoLauncher
 
                 NotifyPropertyChanged(nameof(LauncherInfo));
 
-                var msg = $"{LaunchProcess} will be launched at {Time.ToString()}";
+                var msg = $"{LaunchProcess} next launch at {Time.ToString()}";
                 logger.Info(msg);
                 PushUtility.NotifyMessage(msg);
             }

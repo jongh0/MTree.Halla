@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace MTree.EbestPublisher
 {
@@ -683,8 +684,10 @@ namespace MTree.EbestPublisher
                 {
                     logger.Info("Process will be closed");
                     Thread.Sleep(1000 * 10);
+
+                    Dispatcher.CurrentDispatcher.Invoke(() => Application.Current.Shutdown());
                     //Application.Current.Shutdown();
-                    Environment.Exit(0);
+                    //Environment.Exit(0);
                 });
             }
 

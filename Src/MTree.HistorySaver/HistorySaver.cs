@@ -19,12 +19,13 @@ namespace MTree.HistorySaver
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         #region Counter property
-        public int StockMasterCount { get; set; } = 0;
         public int BiddingPriceCount { get; set; } = 0;
         public int CircuitBreakCount { get; set; } = 0;
+        public int StockMasterCount { get; set; } = 0;
+        public int IndexMasterCount { get; set; } = 0;
         public int StockConclusionCount { get; set; } = 0;
         public int IndexConclusionCount { get; set; } = 0;
-        public int TotalCount { get { return StockMasterCount + BiddingPriceCount + CircuitBreakCount + StockConclusionCount + IndexConclusionCount; } }
+        public int TotalCount { get { return StockMasterCount + IndexMasterCount + BiddingPriceCount + CircuitBreakCount + StockConclusionCount + IndexConclusionCount; } }
         #endregion
 
         private System.Timers.Timer RefreshTimer { get; set; }
@@ -158,6 +159,12 @@ namespace MTree.HistorySaver
             StockMasterCount++;
         }
 
+        public override void ConsumeIndexMaster(IndexMaster indexMaster)
+        {
+            DbAgent.Instance.Insert(indexMaster);
+            IndexMasterCount++;
+        }
+
         public override void NotifyMessage(MessageTypes type, string message)
         {
             try
@@ -206,11 +213,13 @@ namespace MTree.HistorySaver
 
         private void RefreshTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            NotifyPropertyChanged(nameof(StockMasterCount));
             NotifyPropertyChanged(nameof(BiddingPriceCount));
             NotifyPropertyChanged(nameof(CircuitBreakCount));
+            NotifyPropertyChanged(nameof(StockMasterCount));
+            NotifyPropertyChanged(nameof(IndexMasterCount));
             NotifyPropertyChanged(nameof(StockConclusionCount));
             NotifyPropertyChanged(nameof(IndexConclusionCount));
+            NotifyPropertyChanged(nameof(TotalCount));
         }
 
         #region INotifyPropertyChanged

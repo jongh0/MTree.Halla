@@ -39,6 +39,7 @@ namespace MTree.DbProvider
         public IMongoDatabase BiddingPriceDb { get; set; }
         public IMongoDatabase CircuitBreakDb { get; set; }
         public IMongoDatabase StockMasterDb { get; set; }
+        public IMongoDatabase IndexMasterDb { get; set; }
         public IMongoDatabase StockConclusionDb { get; set; }
         public IMongoDatabase IndexConclusionDb { get; set; }
 
@@ -48,6 +49,7 @@ namespace MTree.DbProvider
             BiddingPriceDb = DbProvider.GetDatabase(DbTypes.BiddingPrice);
             CircuitBreakDb = DbProvider.GetDatabase(DbTypes.CircuitBreak);
             StockMasterDb = DbProvider.GetDatabase(DbTypes.StockMaster);
+            IndexMasterDb = DbProvider.GetDatabase(DbTypes.IndexMaster);
             StockConclusionDb = DbProvider.GetDatabase(DbTypes.StockConclusion);
             IndexConclusionDb = DbProvider.GetDatabase(DbTypes.IndexConclusion);
         }
@@ -58,12 +60,14 @@ namespace MTree.DbProvider
             {
                 if (typeof(T) == typeof(Candle))
                     return (IMongoCollection<T>)CandleDb.GetCollection<Candle>(collectionName);
-                else if (typeof(T) == typeof(StockMaster))
-                    return (IMongoCollection<T>)StockMasterDb.GetCollection<StockMaster>(collectionName);
                 else if (typeof(T) == typeof(BiddingPrice))
                     return (IMongoCollection<T>)BiddingPriceDb.GetCollection<BiddingPrice>(collectionName);
                 else if (typeof(T) == typeof(CircuitBreak))
                     return (IMongoCollection<T>)CircuitBreakDb.GetCollection<CircuitBreak>(collectionName);
+                else if (typeof(T) == typeof(StockMaster))
+                    return (IMongoCollection<T>)StockMasterDb.GetCollection<StockMaster>(collectionName);
+                else if (typeof(T) == typeof(IndexMaster))
+                    return (IMongoCollection<T>)StockMasterDb.GetCollection<IndexMaster>(collectionName);
                 else if (typeof(T) == typeof(StockConclusion))
                     return (IMongoCollection<T>)StockConclusionDb.GetCollection<StockConclusion>(collectionName);
                 else if (typeof(T) == typeof(IndexConclusion))
@@ -215,6 +219,21 @@ namespace MTree.DbProvider
                     }
                 }
 
+                using (var cursor = IndexMasterDb.ListCollections())
+                {
+                    foreach (var doc in cursor.ToList())
+                    {
+                        var collectionName = doc.GetElement("name").Value.ToString();
+                        var collection = GetCollection<IndexMaster>(collectionName);
+                        var keys = Builders<IndexMaster>.IndexKeys.Ascending(i => i.Time);
+
+                        if (recreate == true)
+                            collection.Indexes.DropAll();
+
+                        collection.Indexes.CreateOne(keys);
+                    }
+                }
+
                 using (var cursor = StockConclusionDb.ListCollections())
                 {
                     foreach (var doc in cursor.ToList())
@@ -267,6 +286,7 @@ namespace MTree.DbProvider
                 long biddingCount = 0;
                 long circuitCount = 0;
                 long stockMasterCount = 0;
+                long indexMasterCount = 0;
                 long stockConclusionCount = 0;
                 long indexConclusionCount = 0;
                 long totalCount = 0;
@@ -310,6 +330,19 @@ namespace MTree.DbProvider
                     }
                 }
 
+                using (var cursor = IndexMasterDb.ListCollections())
+                {
+                    foreach (var doc in cursor.ToList())
+                    {
+                        var collectionName = doc.GetElement("name").Value.ToString();
+                        var collection = GetCollection<IndexMaster>(collectionName);
+
+                        var builder = Builders<IndexMaster>.Filter;
+                        var filter = builder.Gte(i => i.Time, startDate) & builder.Lte(i => i.Time, endDate);
+                        indexMasterCount += collection.Find(filter).Count();
+                    }
+                }
+
                 using (var cursor = StockConclusionDb.ListCollections())
                 {
                     foreach (var doc in cursor.ToList())
@@ -336,13 +369,14 @@ namespace MTree.DbProvider
                     }
                 }
 
-                totalCount = biddingCount + circuitCount + stockMasterCount + indexConclusionCount + stockMasterCount;
+                totalCount = biddingCount + circuitCount + stockMasterCount + indexMasterCount + stockConclusionCount + indexConclusionCount;
 
                 var sb = new StringBuilder();
                 sb.AppendLine("DB Statistics");
-                sb.AppendLine($"StockMaster: {stockMasterCount.ToString(Config.General.CurrencyFormat)}");
                 sb.AppendLine($"CircuitBreak: {circuitCount.ToString(Config.General.CurrencyFormat)}");
                 sb.AppendLine($"BiddingPrice: {biddingCount.ToString(Config.General.CurrencyFormat)}");
+                sb.AppendLine($"StockMaster: {stockMasterCount.ToString(Config.General.CurrencyFormat)}");
+                sb.AppendLine($"IndexMaster: {indexMasterCount.ToString(Config.General.CurrencyFormat)}");
                 sb.AppendLine($"StockConclusion: {stockConclusionCount.ToString(Config.General.CurrencyFormat)}");
                 sb.AppendLine($"IndexConclusion: {indexConclusionCount.ToString(Config.General.CurrencyFormat)}");
                 sb.AppendLine($"Total: {totalCount.ToString(Config.General.CurrencyFormat)}");

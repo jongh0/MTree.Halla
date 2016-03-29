@@ -23,7 +23,7 @@ namespace MTree.AutoLauncher
                 var now = DateTime.Now;
 
                 launcher = new Launcher(ProcessTypes.RealTimeProvider);
-                launcher.Time = new DateTime(now.Year, now.Month, now.Day, 7, 10, 0);
+                launcher.Time = new DateTime(now.Year, now.Month, now.Day, 7, 00, 0);
 
                 launcher.KillProcesses.Add(ProcessTypes.CybosStarter);
                 launcher.KillProcesses.Add(ProcessTypes.DaishinPopupStopper);

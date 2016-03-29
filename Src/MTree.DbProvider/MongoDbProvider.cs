@@ -11,6 +11,7 @@ namespace MTree.DbProvider
         Candle,
         BiddingPrice,
         StockMaster,
+        IndexMaster,
         StockConclusion,
         IndexConclusion,
         CircuitBreak,
@@ -24,10 +25,11 @@ namespace MTree.DbProvider
         private readonly string connectionString = Config.Database.ConnectionString;
         private readonly string candleDbString = "MTree_Candle";
         private readonly string biddingPriceDbString = "MTree_BiddingPrice";
+        private readonly string circuitBreakDbString = "MTree_CircuitBreak";
         private readonly string stockMasterDbString = "MTree_StockMaster";
+        private readonly string indexMasterDbString = "MTree_IndexMaster";
         private readonly string stockConclusionDbString = "MTree_StockConclusion";
         private readonly string indexConclusionDbString = "MTree_IndexConclusion";
-        private readonly string circuitBreakDbString = "MTree_CircuitBreak";
         private readonly string testDbString = "MTree_Test";
 
         private IMongoClient Client { get; set; }
@@ -56,10 +58,11 @@ namespace MTree.DbProvider
             {
                 case DbTypes.Candle:            return Client.GetDatabase(candleDbString);
                 case DbTypes.BiddingPrice:      return Client.GetDatabase(biddingPriceDbString);
+                case DbTypes.CircuitBreak:      return Client.GetDatabase(circuitBreakDbString);
                 case DbTypes.StockMaster:       return Client.GetDatabase(stockMasterDbString);
+                case DbTypes.IndexMaster:       return Client.GetDatabase(indexMasterDbString);
                 case DbTypes.StockConclusion:   return Client.GetDatabase(stockConclusionDbString);
                 case DbTypes.IndexConclusion:   return Client.GetDatabase(indexConclusionDbString);
-                case DbTypes.CircuitBreak:      return Client.GetDatabase(circuitBreakDbString);
                 default:                        return Client.GetDatabase(testDbString);
             }
         }
