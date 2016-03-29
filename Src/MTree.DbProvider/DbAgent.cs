@@ -269,6 +269,7 @@ namespace MTree.DbProvider
                 long stockMasterCount = 0;
                 long stockConclusionCount = 0;
                 long indexConclusionCount = 0;
+                long totalCount = 0;
 
                 using (var cursor = BiddingPriceDb.ListCollections())
                 {
@@ -283,8 +284,6 @@ namespace MTree.DbProvider
                     }
                 }
 
-                logger.Info($"Db Statistics, BiddingPrice: {biddingCount}");
-
                 using (var cursor = CircuitBreakDb.ListCollections())
                 {
                     foreach (var doc in cursor.ToList())
@@ -297,8 +296,6 @@ namespace MTree.DbProvider
                         circuitCount += collection.Find(filter).Count();
                     }
                 }
-
-                logger.Info($"Db Statistics, CircuitBreak: {circuitCount}");
 
                 using (var cursor = StockMasterDb.ListCollections())
                 {
@@ -313,8 +310,6 @@ namespace MTree.DbProvider
                     }
                 }
 
-                logger.Info($"Db Statistics, StockMaster: {stockMasterCount}");
-
                 using (var cursor = StockConclusionDb.ListCollections())
                 {
                     foreach (var doc in cursor.ToList())
@@ -327,8 +322,6 @@ namespace MTree.DbProvider
                         stockConclusionCount += collection.Find(filter).Count();
                     }
                 }
-
-                logger.Info($"Db Statistics, StockConclusion: {stockConclusionCount}");
 
                 using (var cursor = IndexConclusionDb.ListCollections())
                 {
@@ -343,15 +336,18 @@ namespace MTree.DbProvider
                     }
                 }
 
-                logger.Info($"Db Statistics, IndexConclusion: {indexConclusionCount}");
+                totalCount = biddingCount + circuitCount + stockMasterCount + indexConclusionCount + stockMasterCount;
 
                 var sb = new StringBuilder();
-                sb.AppendLine("Db Statistics");
-                sb.AppendLine($"BP:{biddingCount.ToString(Config.General.CurrencyFormat)}");
-                sb.AppendLine($"CB:{circuitCount.ToString(Config.General.CurrencyFormat)}");
-                sb.AppendLine($"SM:{stockMasterCount.ToString(Config.General.CurrencyFormat)}");
-                sb.AppendLine($"SC:{stockConclusionCount.ToString(Config.General.CurrencyFormat)}");
-                sb.AppendLine($"IC:{indexConclusionCount.ToString(Config.General.CurrencyFormat)}");
+                sb.AppendLine("DB Statistics");
+                sb.AppendLine($"StockMaster: {stockMasterCount.ToString(Config.General.CurrencyFormat)}");
+                sb.AppendLine($"CircuitBreak: {circuitCount.ToString(Config.General.CurrencyFormat)}");
+                sb.AppendLine($"BiddingPrice: {biddingCount.ToString(Config.General.CurrencyFormat)}");
+                sb.AppendLine($"StockConclusion: {stockConclusionCount.ToString(Config.General.CurrencyFormat)}");
+                sb.AppendLine($"IndexConclusion: {indexConclusionCount.ToString(Config.General.CurrencyFormat)}");
+                sb.AppendLine($"Total: {totalCount.ToString(Config.General.CurrencyFormat)}");
+
+                logger.Info(sb.ToString());
                 PushUtility.NotifyMessage(sb.ToString());
             }
             catch (Exception ex)

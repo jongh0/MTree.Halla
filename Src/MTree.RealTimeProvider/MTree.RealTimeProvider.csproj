@@ -92,7 +92,8 @@
     <Compile Include="RealTimeProvider_Consumer.cs" />
     <Compile Include="RealTimeProvider.cs" />
     <Compile Include="RealTimeProvider_Publisher.cs" />
-    <Compile Include="RealTimeProvider_PublisherMastering.cs" />
+    <Compile Include="RealTimeProvider_Publisher_IndexMaster.cs" />
+    <Compile Include="RealTimeProvider_Publisher_StockMaster.cs" />
     <Compile Include="StockMastering.cs" />
     <Compile Include="SubscribeContract.cs" />
     <Page Include="MainWindow.xaml">

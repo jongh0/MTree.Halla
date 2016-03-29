@@ -25,6 +25,11 @@ namespace MTree.Publisher
             return null;
         }
 
+        public virtual IndexMaster GetIndexMaster(string code)
+        {
+            return null;
+        }
+
         public virtual List<Candle> GetChart(string code, DateTime startDate, DateTime endDate, CandleTypes chartType)
         {
             return null;

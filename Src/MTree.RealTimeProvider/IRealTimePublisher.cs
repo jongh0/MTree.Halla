@@ -42,6 +42,9 @@ namespace MTree.RealTimeProvider
         StockMaster GetStockMaster(string code);
 
         [OperationContract]
+        IndexMaster GetIndexMaster(string code);
+
+        [OperationContract]
         List<Candle> GetChart(string code, DateTime startDate, DateTime endDate, CandleTypes candleType);
 
         [OperationContract]

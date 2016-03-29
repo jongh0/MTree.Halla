@@ -11,19 +11,18 @@
         <Grid.Resources>
             <ResourceDictionary>
                 <ResourceDictionary.MergedDictionaries>
-                    <ResourceDictionary Source="ListStyle.xaml"/>
+                    <ResourceDictionary Source="ListViewStyle.xaml"/>
                 </ResourceDictionary.MergedDictionaries>
             </ResourceDictionary>
         </Grid.Resources>
 
-        <ListView ItemsSource="{Binding Path=DashboardItems.Values}" Margin="10" Style="{StaticResource GridViewStyle}" utility:GridViewSort.AutoSort="True"/>
-        <!--<TabControl Margin="5">
-            <TabItem Header="GridView">
-                <ListView ItemsSource="{Binding Path=DashboardItems.Values}" Margin="5" Style="{StaticResource GridViewStyle}" utility:GridViewSort.AutoSort="True"/>
+        <TabControl Margin="5">
+            <TabItem Header="Stock">
+                <ListView ItemsSource="{Binding Path=StockItems.Values}" Margin="0" Style="{StaticResource GridViewStyle}" utility:GridViewSort.AutoSort="True"/>
             </TabItem>
-            <TabItem Header="PanelView">
-                <ListBox ItemsSource="{Binding Path=DashboardItems.Values}" Margin="5" Style="{StaticResource PanelViewStyle}"/>
+            <TabItem Header="Index">
+                <ListView ItemsSource="{Binding Path=IndexItems.Values}" Margin="0" Style="{StaticResource GridViewStyle}" utility:GridViewSort.AutoSort="True"/>
             </TabItem>
-        </TabControl>-->
+        </TabControl>
     </Grid>
 </Window>

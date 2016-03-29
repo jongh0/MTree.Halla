@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace MTree.Dashboard
 {
@@ -42,7 +43,23 @@ namespace MTree.Dashboard
                 {
                     _price = value;
                     NotifyPropertyChanged(nameof(Price));
+                    NotifyPropertyChanged(nameof(PriceColor));
                 }
+            }
+        }
+
+        public Brush PriceColor
+        {
+            get
+            {
+                if (BasisPrice == 0)
+                    return Brushes.Black;
+                else if (BasisPrice < Price)
+                    return Brushes.Red;
+                else if (BasisPrice > Price)
+                    return Brushes.Blue;
+                else
+                    return Brushes.Black;
             }
         }
 
@@ -60,16 +77,16 @@ namespace MTree.Dashboard
             }
         }
 
-        private float _previousClosedPrice = 0;
-        public float PreviousClosedPrice
+        private float _basisPrice = 0;
+        public float BasisPrice
         {
-            get { return _previousClosedPrice; }
+            get { return _basisPrice; }
             set
             {
-                if (_previousClosedPrice != value)
+                if (_basisPrice != value)
                 {
-                    _previousClosedPrice = value;
-                    NotifyPropertyChanged(nameof(PreviousClosedPrice));
+                    _basisPrice = value;
+                    NotifyPropertyChanged(nameof(BasisPrice));
                 }
             }
         }
@@ -84,6 +101,20 @@ namespace MTree.Dashboard
                 {
                     _previousVolume = value;
                     NotifyPropertyChanged(nameof(PreviousVolume));
+                }
+            }
+        }
+
+        private CircuitBreakTypes _circuitBreakType = CircuitBreakTypes.Clear;
+        public CircuitBreakTypes CircuitBreakType
+        {
+            get { return _circuitBreakType; }
+            set
+            {
+                if (_circuitBreakType != value)
+                {
+                    _circuitBreakType = value;
+                    NotifyPropertyChanged(nameof(CircuitBreakType));
                 }
             }
         }

@@ -10,10 +10,10 @@ namespace MTree.DataStructure
     #region enum
     public enum CircuitBreakTypes
     {
+        Unknown,
         Clear,
         StaticInvoke,
         DynamicInvoke,
-        Unknown
     } 
     #endregion
 

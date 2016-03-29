@@ -89,6 +89,7 @@ namespace MTree.RealTimeProvider
 
                     // Daishin popup stopper
                     ProcessUtility.Start(ProcessTypes.DaishinPopupStopper, ProcessWindowStyle.Minimized);
+                    ProcessUtility.Start(ProcessTypes.DaishinPopupStopper, ProcessWindowStyle.Minimized);
                 }
 
                 // Daishin
@@ -172,9 +173,17 @@ namespace MTree.RealTimeProvider
                         Thread.Sleep(1000 * 20);
 
                         if (Config.General.SkipMastering == true)
+                        {
                             StartCodeDistributing();
+                        }
                         else
+                        {
                             StartStockMastering();
+                            StartIndexMastering();
+                            StartCodeDistributing();
+
+                            ProcessUtility.Kill(ProcessTypes.DaishinPopupStopper);
+                        }
                     });
                 }
                 else

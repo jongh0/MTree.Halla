@@ -10,11 +10,13 @@ namespace MTree.DataStructure
     #region enum
     public enum MarketTimeTypes
     {
+        Unknown,
         Normal,
+        NormalExpect,
         BeforeOffTheClock,
         BeforeExpect,
-        AfterExpect,
         AfterOffTheClock,
+        AfterExpect,
     } 
     #endregion
 

@@ -14,7 +14,7 @@ namespace MTree.RealTimeProvider
     {
         #region Contracts
         private ConcurrentDictionary<Guid, SubscribeContract> ConsumerContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
-        private ConcurrentDictionary<Guid, SubscribeContract> StockMasterContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
+        private ConcurrentDictionary<Guid, SubscribeContract> MasteringContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
         private ConcurrentDictionary<Guid, SubscribeContract> BiddingPriceContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
         private ConcurrentDictionary<Guid, SubscribeContract> CircuitBreakContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
         private ConcurrentDictionary<Guid, SubscribeContract> StockConclusionContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
@@ -53,7 +53,7 @@ namespace MTree.RealTimeProvider
 
         public void UnregisterContractAll(Guid clientId)
         {
-            UnregisterContract(clientId, SubscribeTypes.StockMaster);
+            UnregisterContract(clientId, SubscribeTypes.Mastering);
             UnregisterContract(clientId, SubscribeTypes.BiddingPrice);
             UnregisterContract(clientId, SubscribeTypes.CircuitBreak);
             UnregisterContract(clientId, SubscribeTypes.StockConclusion);
@@ -81,7 +81,7 @@ namespace MTree.RealTimeProvider
                     logger.Info($"{clientId} / {type} contract not exist");
                 }
 
-                if (StockMasterContracts.ContainsKey(clientId) == false &&
+                if (MasteringContracts.ContainsKey(clientId) == false &&
                     BiddingPriceContracts.ContainsKey(clientId) == false &&
                     CircuitBreakContracts.ContainsKey(clientId) == false &&
                     StockConclusionContracts.ContainsKey(clientId) == false &&
@@ -105,7 +105,7 @@ namespace MTree.RealTimeProvider
         {
             switch (type)
             {
-                case SubscribeTypes.StockMaster:        return StockMasterContracts;
+                case SubscribeTypes.Mastering:          return MasteringContracts;
                 case SubscribeTypes.BiddingPrice:       return BiddingPriceContracts;
                 case SubscribeTypes.CircuitBreak:       return CircuitBreakContracts;
                 case SubscribeTypes.StockConclusion:    return StockConclusionContracts;
@@ -252,7 +252,7 @@ namespace MTree.RealTimeProvider
 
         private void ProcessStockMaster(StockMaster stockMaster)
         {
-            foreach (var contract in StockMasterContracts)
+            foreach (var contract in MasteringContracts)
             {
                 try
                 {

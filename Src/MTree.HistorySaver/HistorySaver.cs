@@ -24,6 +24,7 @@ namespace MTree.HistorySaver
         public int CircuitBreakCount { get; set; } = 0;
         public int StockConclusionCount { get; set; } = 0;
         public int IndexConclusionCount { get; set; } = 0;
+        public int TotalCount { get { return StockMasterCount + BiddingPriceCount + CircuitBreakCount + StockConclusionCount + IndexConclusionCount; } }
         #endregion
 
         private System.Timers.Timer RefreshTimer { get; set; }
@@ -51,7 +52,7 @@ namespace MTree.HistorySaver
 
             try
             {
-                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.StockMaster));
+                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.Mastering));
                 ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.CircuitBreak));
                 ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.BiddingPrice));
                 ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.StockConclusion));

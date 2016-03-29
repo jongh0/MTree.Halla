@@ -132,13 +132,28 @@ namespace MTree.DaishinPublisher
 
                 // 20 - (char) 장 구분 플래그
                 char marketTime = Convert.ToChar(stockCurObj.GetHeaderValue(20));
-                if (marketTime == '1') conclusion.MarketTimeType = MarketTimeTypes.BeforeExpect;
-                else if (marketTime == '2') conclusion.MarketTimeType = MarketTimeTypes.Normal;
-                else if (marketTime == '3') conclusion.MarketTimeType = MarketTimeTypes.BeforeOffTheClock;
-                else if (marketTime == '4') conclusion.MarketTimeType = MarketTimeTypes.AfterOffTheClock;
-                else if (marketTime == '5') conclusion.MarketTimeType = MarketTimeTypes.AfterOffTheClock;
-                else logger.Error($"Stock conclusion market time type error, {stockCurObj.GetHeaderValue(20)}");
-
+                switch (marketTime)
+                {
+                    case '1':
+                        conclusion.MarketTimeType = MarketTimeTypes.BeforeExpect;
+                        break;
+                    case '2':
+                        conclusion.MarketTimeType = MarketTimeTypes.Normal;
+                        break;
+                    case '3':
+                        conclusion.MarketTimeType = MarketTimeTypes.BeforeOffTheClock;
+                        break;
+                    case '4':
+                        conclusion.MarketTimeType = MarketTimeTypes.AfterOffTheClock;
+                        break;
+                    case '5':
+                        conclusion.MarketTimeType = MarketTimeTypes.AfterExpect;
+                        break;
+                    default:
+                        conclusion.MarketTimeType = MarketTimeTypes.Unknown;
+                        logger.Error($"Index conclusion market time type error, {marketTime}");
+                        break;
+                }
 
                 IndexConclusionQueue.Enqueue(conclusion);
             }

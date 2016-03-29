@@ -70,8 +70,6 @@ namespace MTree.RealTimeProvider
                     logger.Info("Stock mastering failed");
                     PushUtility.NotifyMessage("Stock mastering fail");
                 }
-                
-                Task.Run(() => StartCodeDistributing());
             }
         }
 
@@ -86,7 +84,7 @@ namespace MTree.RealTimeProvider
             {
                 foreach (var mastering in StockMasteringList)
                 {
-                    foreach (var contract in StockMasterContracts)
+                    foreach (var contract in MasteringContracts)
                     {
                         try
                         {
@@ -171,8 +169,6 @@ namespace MTree.RealTimeProvider
             {
                 sw.Stop();
                 logger.Info($"Daishin stock mastering done, Elapsed time: {sw.Elapsed.ToString()}");
-
-                ProcessUtility.Kill(ProcessTypes.DaishinPopupStopper);
             }
         }
 
@@ -333,15 +329,6 @@ namespace MTree.RealTimeProvider
                     CopyStockMasterFromKiwoom(mastering, master);
                 else
                     logger.Warn("Wrong contract type for stock mastering");
-
-#if false
-                if (mastering.KiwoomState == MasteringStates.Finished && 
-                    mastering.EbestState == MasteringStates.Finished && 
-                    mastering.DaishinState == MasteringStates.Finished)
-                {
-                    logger.Info(mastering.Stock.ToString());
-                }
-#endif
             }
             catch (Exception ex)
             {
@@ -384,7 +371,7 @@ namespace MTree.RealTimeProvider
                         return;
                     }
 
-                    dest.Name = source.Name;
+                    //dest.Name = source.Name;
                     dest.UpperLimit = source.UpperLimit;
                     dest.LowerLimit = source.LowerLimit;
                     dest.PreviousClosedPrice = source.PreviousClosedPrice;

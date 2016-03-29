@@ -189,6 +189,7 @@ namespace MTree.DaishinPublisher
                 #endregion
 
                 #region ELW
+#if false
                 var elwCodeMgr = new CpElwCodeClass();
                 int cnt = elwCodeMgr.GetCount();
                 for (int i = 0; i < cnt; i++)
@@ -207,6 +208,7 @@ namespace MTree.DaishinPublisher
                     else
                         logger.Error($"{codeEntity.Code} code already exists");
                 }
+#endif
                 #endregion
 
                 logger.Info($"Code list query done, Count: {codeList.Count}");

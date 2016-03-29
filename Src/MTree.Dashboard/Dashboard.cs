@@ -16,7 +16,8 @@ namespace MTree.Dashboard
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public ObservableConcurrentDictionary<string, DashboardItem> DashboardItems { get; set; } = new ObservableConcurrentDictionary<string, DashboardItem>();
+        public ObservableConcurrentDictionary<string, DashboardItem> StockItems { get; set; } = new ObservableConcurrentDictionary<string, DashboardItem>();
+        public ObservableConcurrentDictionary<string, DashboardItem> IndexItems { get; set; } = new ObservableConcurrentDictionary<string, DashboardItem>();
 
         public Dashboard()
         {
@@ -24,7 +25,7 @@ namespace MTree.Dashboard
             {
                 TaskUtility.Run("HistorySaver.CircuitBreakQueue", QueueTaskCancelToken, ProcessCircuitBreakQueue);
                 TaskUtility.Run("HistorySaver.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
-                //TaskUtility.Run("HistorySaver.IndexConclusionQueue", QueueTaskCancelToken, ProcessIndexConclusionQueue);
+                TaskUtility.Run("HistorySaver.IndexConclusionQueue", QueueTaskCancelToken, ProcessIndexConclusionQueue);
             }
             catch (Exception ex)
             {
@@ -38,10 +39,10 @@ namespace MTree.Dashboard
 
             try
             {
-                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.StockMaster));
+                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.Mastering));
                 ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.CircuitBreak));
                 ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.StockConclusion));
-                //ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.IndexConclusion));
+                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.IndexConclusion));
             }
             catch (Exception ex)
             {
@@ -56,6 +57,8 @@ namespace MTree.Dashboard
                 CircuitBreak circuitBreak;
                 if (CircuitBreakQueue.TryDequeue(out circuitBreak) == true)
                 {
+                    if (StockItems.ContainsKey(circuitBreak.Code) == true)
+                        StockItems[circuitBreak.Code].CircuitBreakType = circuitBreak.CircuitBreakType;
                 }
                 else
                 {
@@ -75,10 +78,12 @@ namespace MTree.Dashboard
                 StockConclusion conclusion;
                 if (StockConclusionQueue.TryDequeue(out conclusion) == true)
                 {
-                    if (DashboardItems.ContainsKey(conclusion.Code) == false)
-                        DashboardItems.Add(conclusion.Code, new DashboardItem(conclusion.Code));
+                    if (StockItems.ContainsKey(conclusion.Code) == false)
+                        StockItems.Add(conclusion.Code, new DashboardItem(conclusion.Code));
+                    else
+                        logger.Warn($"Stock code not in mastering data: {conclusion.Code}");
 
-                    var item = DashboardItems[conclusion.Code];
+                    var item = StockItems[conclusion.Code];
                     item.Price = conclusion.Price;
                     item.Volume += conclusion.Amount;
                 }
@@ -100,6 +105,14 @@ namespace MTree.Dashboard
                 IndexConclusion conclusion;
                 if (IndexConclusionQueue.TryDequeue(out conclusion) == true)
                 {
+                    if (IndexItems.ContainsKey(conclusion.Code) == false)
+                        IndexItems.Add(conclusion.Code, new DashboardItem(conclusion.Code));
+                    else
+                        logger.Warn($"Index code not in mastering data: {conclusion.Code}");
+
+                    var item = IndexItems[conclusion.Code];
+                    item.Price = conclusion.Price;
+                    item.Volume += conclusion.Amount;
                 }
                 else
                 {
@@ -131,15 +144,36 @@ namespace MTree.Dashboard
         {
             try
             {
-                if (DashboardItems.ContainsKey(stockMaster.Code) == false)
+                if (StockItems.ContainsKey(stockMaster.Code) == false)
                 {
                     var item = new DashboardItem(stockMaster.Code);
                     item.Name = stockMaster.Name;
                     item.Price = stockMaster.BasisPrice;
-                    item.PreviousClosedPrice = stockMaster.PreviousClosedPrice;
+                    item.BasisPrice = stockMaster.BasisPrice;
                     item.PreviousVolume = stockMaster.PreviousVolume;
 
-                    DashboardItems.Add(item.Code, item);
+                    StockItems.Add(item.Code, item);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
+        public override void ConsumeIndexMaster(IndexMaster indexMaster)
+        {
+            try
+            {
+                if (IndexItems.ContainsKey(indexMaster.Code) == false)
+                {
+                    var item = new DashboardItem(indexMaster.Code);
+                    item.Name = indexMaster.Name;
+                    item.Price = indexMaster.BasisPrice;
+                    item.BasisPrice = indexMaster.BasisPrice;
+                    item.PreviousVolume = indexMaster.PreviousVolume;
+
+                    IndexItems.Add(item.Code, item);
                 }
             }
             catch (Exception ex)

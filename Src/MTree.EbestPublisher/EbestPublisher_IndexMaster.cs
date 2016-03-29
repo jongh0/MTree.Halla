@@ -81,10 +81,6 @@ namespace MTree.EbestPublisher
                 temp = indexQuotingObj.GetFieldData("t1511OutBlock", "jnilvolume", 0);
                 if (temp == "") temp = "0";
                 QuotingIndexMaster.PreviousVolume = Convert.ToInt64(temp); //전일거래량
-
-                temp = indexQuotingObj.GetFieldData("t1511OutBlock", "jnilvalue", 0);
-                if (temp == "") temp = "0";
-                QuotingIndexMaster.PreviousTradeCost = Convert.ToInt64(temp);  //전일거래대금
             }
             catch (Exception ex)
             {

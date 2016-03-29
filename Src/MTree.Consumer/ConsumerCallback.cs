@@ -35,5 +35,9 @@ namespace MTree.Consumer
         public virtual void ConsumeStockMaster(StockMaster stockMaster)
         {
         }
+
+        public virtual void ConsumeIndexMaster(IndexMaster indexMaster)
+        {
+        }
     }
 }

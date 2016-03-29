@@ -39,5 +39,8 @@ namespace MTree.RealTimeProvider
 
         [OperationContract(IsOneWay = true)]
         void ConsumeStockMaster(StockMaster stockMaster);
+
+        [OperationContract(IsOneWay = true)]
+        void ConsumeIndexMaster(IndexMaster indexMaster);
     }
 }

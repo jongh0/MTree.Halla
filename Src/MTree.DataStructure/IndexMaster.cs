@@ -13,22 +13,22 @@ namespace MTree.DataStructure
         [BsonElement("N")]
         public string Name { get; set; }
 
+        [BsonElement("BP")]
+        public float BasisPrice { get; set; }
+
         [BsonElement("PCP")]
         public double PreviousClosedPrice { get; set; }
 
         [BsonElement("PV")]
         public long PreviousVolume { get; set; }
 
-        [BsonElement("PTC")]
-        public long PreviousTradeCost { get; set; }
-
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"{nameof(Name)}: {Name}");
+            sb.AppendLine($"{nameof(BasisPrice)}: {BasisPrice}");
             sb.AppendLine($"{nameof(PreviousClosedPrice)}: {PreviousClosedPrice}");
             sb.AppendLine($"{nameof(PreviousVolume)}: {PreviousVolume}");
-            sb.AppendLine($"{nameof(PreviousTradeCost)}: {PreviousTradeCost}");
 
             return sb.ToString();
         }

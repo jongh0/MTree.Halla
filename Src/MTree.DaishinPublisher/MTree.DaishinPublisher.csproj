@@ -91,6 +91,7 @@
     <Compile Include="DaishinPublisher.cs" />
     <Compile Include="DaishinPublisher_BiddingPrice.cs" />
     <Compile Include="DaishinPublisher_IndexConclusion.cs" />
+    <Compile Include="DaishinPublisher_IndexMaster.cs" />
     <Compile Include="DaishinPublisher_StockChart.cs" />
     <Compile Include="DaishinPublisher_StockConclusion.cs" />
     <Compile Include="DaishinPublisher_StockMaster.cs" />

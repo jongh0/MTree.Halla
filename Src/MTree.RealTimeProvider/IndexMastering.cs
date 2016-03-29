@@ -9,7 +9,7 @@ namespace MTree.RealTimeProvider
 {
     public class IndexMastering
     {
-        public MasteringStates EbestState { get; set; } = MasteringStates.Ready;
+        public MasteringStates DaishinState { get; set; } = MasteringStates.Ready;
 
         public IndexMaster Index { get; } = new IndexMaster();
     }
