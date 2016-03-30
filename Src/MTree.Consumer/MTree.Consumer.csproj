@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Chart.cs" />
+    <Compile Include="CodeMap.cs" />
     <Compile Include="Index.cs" />
     <Compile Include="Stock.cs" />
     <Compile Include="ConsumerCallback.cs" />

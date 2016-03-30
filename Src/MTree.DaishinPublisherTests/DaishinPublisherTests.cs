@@ -71,5 +71,13 @@ namespace MTree.DaishinPublisher.Tests
             publisher.GetIndexMaster("001");
             while (true) ;
         }
+
+        [TestMethod()]
+        public void GetThemeListTest()
+        {
+            DaishinPublisher publisher = new DaishinPublisher();
+            publisher.GetThemeList();
+            while (true) ;
+        }
     }
 }

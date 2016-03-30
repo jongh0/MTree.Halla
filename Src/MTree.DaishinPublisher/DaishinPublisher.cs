@@ -29,6 +29,9 @@ namespace MTree.DaishinPublisher
         private StockJpbidClass stockJpbidObj;
         private StockChartClass stockChartObj;
         private CpSvr8091SClass memberTrendObj;
+        private CpSvr8561Class themeListObj;
+        private CpSvr8561TClass themeTypeObj;
+
 
         #endregion
 
@@ -64,6 +67,9 @@ namespace MTree.DaishinPublisher
                 memberTrendObj = new CpSvr8091SClass();
                 memberTrendObj.Received += MemberTrendObj_Received;
 
+                themeListObj = new CpSvr8561Class();
+                themeTypeObj = new CpSvr8561TClass();
+
                 if (sessionObj.IsConnect != 1)
                 {
                     logger.Error("Session not connected");
@@ -95,7 +101,7 @@ namespace MTree.DaishinPublisher
                 logger.Error(ex);
             }
         }
-        
+
         int cnt = 0;
         private void MemberTrendObj_Received()
         {
@@ -151,7 +157,7 @@ namespace MTree.DaishinPublisher
                         codeList.Add(codeEntity.Code, codeEntity);
                     else
                         logger.Error($"{codeEntity.Code} code already exists");
-                } 
+                }
                 #endregion
 
                 #region KOSPI & ETF & ETN
@@ -251,6 +257,52 @@ namespace MTree.DaishinPublisher
             }
 
             return codeList;
+        }
+
+        public override Dictionary<string, List<string>> GetThemeList()
+        {
+            var themeList = new Dictionary<string, List<string>>();
+
+            try
+            {
+                logger.Info($"Theme list query start");
+
+                short ret = themeListObj.BlockRequest();
+                if (ret == 0)
+                {
+                    short listCount = (short)themeListObj.GetHeaderValue(0);
+                    for (int i = 0; i < listCount; i++)
+                    {
+                        short themeCode = (short)themeListObj.GetDataValue(0, i);
+                        string themeName = (string)themeListObj.GetDataValue(2, i);
+                        themeList.Add(themeName, new List<string>());
+
+                        WaitQuoteInterval();
+                        themeTypeObj.SetInputValue(0, themeCode);
+                        ret = themeTypeObj.BlockRequest();
+                        if (ret == 0)
+                        {
+                            short itemCount = (short)themeTypeObj.GetHeaderValue(1);
+                            for (int j = 0; j < itemCount; j++)
+                            {
+                                string fullcode = (string)themeTypeObj.GetDataValue(0, j);
+                                themeList[themeName].Add(CodeEntity.RemovePrefix(fullcode));
+                            }
+                        }
+                    }
+                    logger.Info($"Theme list query done, theme list count : {listCount}");
+                }
+                else
+                {
+                    logger.Error($"Theme list query fail");
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+            
+            return themeList;
         }
 
         private void sessionObj_OnDisconnect()

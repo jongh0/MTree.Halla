@@ -1,10 +1,12 @@
 ﻿using MTree.Configuration;
 using MTree.DataStructure;
 using MTree.Utility;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.ServiceModel;
 using System.Text;
@@ -213,6 +215,49 @@ namespace MTree.RealTimeProvider
                 }
 
                 logger.Info($"Stock code: {StockCodeList.Count}, Index code: {IndexCodeList.Count}");
+
+                #region Codemap Test
+#if false
+                Dictionary<string, object> codeMapHeader = new Dictionary<string, object>();
+
+                Dictionary<string, object> marketCodeMapHeader = new Dictionary<string, object>();
+                codeMapHeader.Add("MaketType", marketCodeMapHeader);
+
+                foreach (KeyValuePair<string, CodeEntity> codeEntity in codeList)
+                {
+                    if (codeEntity.Value.MarketType != MarketTypes.INDEX &&
+                        codeEntity.Value.MarketType != MarketTypes.ELW)
+                    {
+                        if (!marketCodeMapHeader.ContainsKey(codeEntity.Value.MarketType.ToString()))
+                        {
+                            marketCodeMapHeader.Add(codeEntity.Value.MarketType.ToString(), new List<string>());
+                        }
+
+                        List<string> marketHeader = (List<string>)marketCodeMapHeader[codeEntity.Value.MarketType.ToString()];
+                        marketHeader.Add(codeEntity.Value.Code);
+                    }
+                }
+
+                codeMapHeader.Add("DaishinTheme", contract.Callback.GetThemeList());
+
+                using (StreamWriter stream = File.CreateText("CodeMap.json"))
+                {
+                    JsonSerializer serializer = new JsonSerializer();
+                    serializer.NullValueHandling = NullValueHandling.Ignore;
+                    serializer.Formatting = Formatting.Indented;
+                    serializer.Serialize(stream, codeMapHeader);
+                }
+
+                Dictionary<string, object>  deserialized = JsonConvert.DeserializeObject<Dictionary<string, object>>(File.ReadAllText("CodeMap.json"), new JsonSerializerSettings
+                {
+                    Error = (sender, args) =>
+                    {
+                        logger.Error($"Configuration deserialize error, {args.ErrorContext.Error.Message}");
+                        args.ErrorContext.Handled = true;
+                    }
+                });
+#endif
+                #endregion
             }
             catch (Exception ex)
             {

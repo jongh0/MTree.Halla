@@ -20,6 +20,11 @@ namespace MTree.Publisher
             return null;
         }
 
+        public virtual Dictionary<string, List<string>> GetThemeList()
+        {
+            return null;
+        }
+
         public virtual StockMaster GetStockMaster(string code)
         {
             return null;
