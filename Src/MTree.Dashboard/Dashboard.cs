@@ -82,9 +82,10 @@ namespace MTree.Dashboard
                 if (StockConclusionQueue.TryDequeue(out conclusion) == true)
                 {
                     if (StockItems.ContainsKey(conclusion.Code) == false)
+                    {
                         StockItems.Add(conclusion.Code, new DashboardItem(conclusion.Code));
-                    else
                         logger.Warn($"Stock code not in mastering data: {conclusion.Code}");
+                    }
 
                     var item = StockItems[conclusion.Code];
                     item.Price = conclusion.Price;
@@ -109,9 +110,10 @@ namespace MTree.Dashboard
                 if (IndexConclusionQueue.TryDequeue(out conclusion) == true)
                 {
                     if (IndexItems.ContainsKey(conclusion.Code) == false)
+                    {
                         IndexItems.Add(conclusion.Code, new DashboardItem(conclusion.Code));
-                    else
                         logger.Warn($"Index code not in mastering data: {conclusion.Code}");
+                    }
 
                     var item = IndexItems[conclusion.Code];
                     item.Price = conclusion.Price;
