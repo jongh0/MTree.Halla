@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:MTree.HistorySaver"
         xmlns:utility="clr-namespace:MTree.Utility;assembly=MTree.Utility"
         mc:Ignorable="d"
-        Title="HistorySaver" Height="236.422" Width="303.892" ResizeMode="CanMinimize">
+        Title="HistorySaver" Height="251.526" Width="303.892" ResizeMode="CanMinimize">
     <Grid>
         <Grid.Resources>
             <utility:NumberToCurrencyConverter x:Key="NumberToCurrencyConverter"/>

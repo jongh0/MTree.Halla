@@ -15,11 +15,28 @@ namespace MTree.RealTimeProvider
         #region Contracts
         private ConcurrentDictionary<Guid, SubscribeContract> ConsumerContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
         private ConcurrentDictionary<Guid, SubscribeContract> MasteringContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
+        private ConcurrentDictionary<Guid, SubscribeContract> TodayChartContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
         private ConcurrentDictionary<Guid, SubscribeContract> BiddingPriceContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
         private ConcurrentDictionary<Guid, SubscribeContract> CircuitBreakContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
         private ConcurrentDictionary<Guid, SubscribeContract> StockConclusionContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
         private ConcurrentDictionary<Guid, SubscribeContract> IndexConclusionContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
         #endregion
+
+        public List<Candle> GetChart(string code, DateTime startDate, DateTime endDate, CandleTypes candleType)
+        {
+            try
+            {
+                var contract = DaishinMasterContract;
+                if (contract != null)
+                    return contract.Callback.GetChart(code, startDate, endDate, candleType);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+
+            return null;
+        }
 
         public void RegisterContract(Guid clientId, SubscribeContract contract)
         {
@@ -53,11 +70,10 @@ namespace MTree.RealTimeProvider
 
         public void UnregisterContractAll(Guid clientId)
         {
-            UnregisterContract(clientId, SubscribeTypes.Mastering);
-            UnregisterContract(clientId, SubscribeTypes.BiddingPrice);
-            UnregisterContract(clientId, SubscribeTypes.CircuitBreak);
-            UnregisterContract(clientId, SubscribeTypes.StockConclusion);
-            UnregisterContract(clientId, SubscribeTypes.IndexConclusion);
+            foreach (SubscribeTypes value in Enum.GetValues(typeof(SubscribeTypes)))
+            {
+                UnregisterContract(clientId, value);
+            }
         }
 
         public void UnregisterContract(Guid clientId, SubscribeTypes type)
@@ -82,6 +98,7 @@ namespace MTree.RealTimeProvider
                 }
 
                 if (MasteringContracts.ContainsKey(clientId) == false &&
+                    TodayChartContracts.ContainsKey(clientId) == false &&
                     BiddingPriceContracts.ContainsKey(clientId) == false &&
                     CircuitBreakContracts.ContainsKey(clientId) == false &&
                     StockConclusionContracts.ContainsKey(clientId) == false &&
@@ -106,6 +123,7 @@ namespace MTree.RealTimeProvider
             switch (type)
             {
                 case SubscribeTypes.Mastering:          return MasteringContracts;
+                case SubscribeTypes.TodayChart:         return TodayChartContracts;
                 case SubscribeTypes.BiddingPrice:       return BiddingPriceContracts;
                 case SubscribeTypes.CircuitBreak:       return CircuitBreakContracts;
                 case SubscribeTypes.StockConclusion:    return StockConclusionContracts;
@@ -247,21 +265,6 @@ namespace MTree.RealTimeProvider
             catch (Exception ex)
             {
                 logger.Error(ex);
-            }
-        }
-
-        private void ProcessStockMaster(StockMaster stockMaster)
-        {
-            foreach (var contract in MasteringContracts)
-            {
-                try
-                {
-                    contract.Value.Callback.ConsumeStockMaster(stockMaster);
-                }
-                catch (Exception ex)
-                {
-                    logger.Error(ex);
-                }
             }
         }
     }

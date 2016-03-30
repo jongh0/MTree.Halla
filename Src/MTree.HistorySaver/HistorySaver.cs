@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.ComponentModel;
 using MTree.Configuration;
+using System.Collections.Generic;
 
 namespace MTree.HistorySaver
 {
@@ -54,6 +55,7 @@ namespace MTree.HistorySaver
             try
             {
                 ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.Mastering));
+                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.TodayChart));
                 ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.CircuitBreak));
                 ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.BiddingPrice));
                 ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.StockConclusion));
@@ -153,16 +155,51 @@ namespace MTree.HistorySaver
             CircuitBreakCount++;
         }
 
-        public override void ConsumeStockMaster(StockMaster stockMaster)
+        public override void ConsumeStockMaster(List<StockMaster> stockMasters)
         {
-            DbAgent.Instance.Insert(stockMaster);
-            StockMasterCount++;
+            try
+            {
+                foreach (var stockMaster in stockMasters)
+                {
+                    DbAgent.Instance.Insert(stockMaster);
+                    StockMasterCount++;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
         }
 
-        public override void ConsumeIndexMaster(IndexMaster indexMaster)
+        public override void ConsumeIndexMaster(List<IndexMaster> indexMasters)
         {
-            DbAgent.Instance.Insert(indexMaster);
-            IndexMasterCount++;
+            try
+            {
+                foreach (var indexMaster in indexMasters)
+                {
+                    DbAgent.Instance.Insert(indexMaster);
+                    IndexMasterCount++;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
+        public override void ConsumeChart(List<Candle> candles)
+        {
+            try
+            {
+                foreach (var candle in candles)
+                {
+                    DbAgent.Instance.Insert(candle);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
         }
 
         public override void NotifyMessage(MessageTypes type, string message)
@@ -180,7 +217,7 @@ namespace MTree.HistorySaver
 
                         logger.Info("Process will be closed");
                         Thread.Sleep(1000 * 10);
-                        //Application.Current.Shutdown();
+
                         Environment.Exit(0);
                     });
                 }

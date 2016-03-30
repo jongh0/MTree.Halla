@@ -45,8 +45,8 @@ namespace MTree.RealTimeProvider
 
                 var masteringTask = new List<Task>();
                 masteringTask.Add(Task.Run(() => StartDaishinStockMastering()));
-                masteringTask.Add(Task.Run(() => StartEbestStockMatering()));
-                masteringTask.Add(Task.Run(() => StartKiwoomStockMastering()));
+                //masteringTask.Add(Task.Run(() => StartEbestStockMatering()));
+                //masteringTask.Add(Task.Run(() => StartKiwoomStockMastering()));
 
                 masteringRet = Task.WaitAll(masteringTask.ToArray(), TimeSpan.FromMinutes(30));
             }
@@ -80,20 +80,24 @@ namespace MTree.RealTimeProvider
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
+            var stockMasterList = new List<StockMaster>();
+
             try
             {
                 foreach (var mastering in StockMasteringList)
                 {
-                    foreach (var contract in MasteringContracts)
+                    stockMasterList.Add(mastering.Stock);
+                }
+
+                foreach (var contract in MasteringContracts)
+                {
+                    try
                     {
-                        try
-                        {
-                            contract.Value.Callback.ConsumeStockMaster(mastering.Stock);
-                        }
-                        catch (Exception ex)
-                        {
-                            logger.Error(ex);
-                        }
+                        contract.Value.Callback.ConsumeStockMaster(stockMasterList);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error(ex);
                     }
                 }
             }
@@ -103,6 +107,9 @@ namespace MTree.RealTimeProvider
             }
             finally
             {
+                stockMasterList.Clear();
+                StockMasteringList.Clear();
+
                 sw.Stop();
                 logger.Info($"Stock master publishing done, Elapsed time: {sw.Elapsed.ToString()}");
             }
@@ -136,7 +143,7 @@ namespace MTree.RealTimeProvider
                     
                     if (mastering != null)
                     {
-                        PublishContract contract = null;
+                        PublisherContract contract = null;
 
                         while (true)
                         {
@@ -200,7 +207,7 @@ namespace MTree.RealTimeProvider
 
                     if (mastering != null)
                     {
-                        PublishContract contract = null;
+                        PublisherContract contract = null;
 
                         while (true)
                         {
@@ -264,7 +271,7 @@ namespace MTree.RealTimeProvider
 
                     if (mastering != null)
                     {
-                        PublishContract contract = null;
+                        PublisherContract contract = null;
 
                         while (true)
                         {
@@ -309,7 +316,7 @@ namespace MTree.RealTimeProvider
             }
         }
 
-        private void GetStockMaster(StockMastering mastering, PublishContract contract)
+        private void GetStockMaster(StockMastering mastering, PublisherContract contract)
         {
             try
             {

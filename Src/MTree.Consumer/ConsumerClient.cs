@@ -33,5 +33,10 @@ namespace MTree.Consumer
         {
             base.Channel.UnregisterContract(clientId, type);
         }
+
+        public List<Candle> GetChart(string code, DateTime startDate, DateTime endDate, CandleTypes candleType)
+        {
+            return base.Channel.GetChart(code, startDate, endDate, candleType);
+        }
     }
 }

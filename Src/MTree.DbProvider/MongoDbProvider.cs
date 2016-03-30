@@ -8,7 +8,7 @@ namespace MTree.DbProvider
 {
     public enum DbTypes
     {
-        Candle,
+        Chart,
         BiddingPrice,
         StockMaster,
         IndexMaster,
@@ -23,7 +23,7 @@ namespace MTree.DbProvider
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         private readonly string connectionString = Config.Database.ConnectionString;
-        private readonly string candleDbString = "MTree_Candle";
+        private readonly string chartDbString = "MTree_Chart";
         private readonly string biddingPriceDbString = "MTree_BiddingPrice";
         private readonly string circuitBreakDbString = "MTree_CircuitBreak";
         private readonly string stockMasterDbString = "MTree_StockMaster";
@@ -56,7 +56,7 @@ namespace MTree.DbProvider
         {
             switch (type)
             {
-                case DbTypes.Candle:            return Client.GetDatabase(candleDbString);
+                case DbTypes.Chart:             return Client.GetDatabase(chartDbString);
                 case DbTypes.BiddingPrice:      return Client.GetDatabase(biddingPriceDbString);
                 case DbTypes.CircuitBreak:      return Client.GetDatabase(circuitBreakDbString);
                 case DbTypes.StockMaster:       return Client.GetDatabase(stockMasterDbString);

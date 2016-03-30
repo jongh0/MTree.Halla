@@ -68,6 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="KiwoomPublisher.cs" />
+    <Compile Include="KiwoomPublisher_StockMaster.cs" />
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>

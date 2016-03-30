@@ -77,8 +77,8 @@ namespace MTree.Publisher
                     {
                         logger.Info($"Argument: {string.Join(" ", args)}");
 
-                        var contract = new PublishContract();
-                        contract.Type = PublishContract.ConvertToType(args[1]);
+                        var contract = new PublisherContract();
+                        contract.Type = PublisherContract.ConvertToType(args[1]);
 
                         ServiceClient.RegisterContract(ClientId, contract);
                     }

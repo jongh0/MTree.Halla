@@ -89,15 +89,15 @@ namespace MTree.DaishinPublisher
             try
             {
 #if false
-                logger.Info($"Code:{stockOutCurObj.GetHeaderValue(0).ToString()}");
-                logger.Info($"Time:{stockOutCurObj.GetHeaderValue(1).ToString()}");
-                logger.Info($"Current:{stockOutCurObj.GetHeaderValue(5).ToString()}");
-                logger.Info($"Concluded:{stockOutCurObj.GetHeaderValue(6).ToString()}");
-                logger.Info($"Accum Amount:{stockOutCurObj.GetHeaderValue(7).ToString()}");
-                logger.Info($"Sell/Buy:{stockOutCurObj.GetHeaderValue(9).ToString()}");
-                logger.Info($"Amount:{stockOutCurObj.GetHeaderValue(10).ToString()}");
-                logger.Info($"Flag:{stockOutCurObj.GetHeaderValue(11).ToString()}");
-                logger.Info($"Capital:{stockOutCurObj.GetHeaderValue(12).ToString()}");
+                logger.Info($"Code: {stockOutCurObj.GetHeaderValue(0).ToString()}");
+                logger.Info($"Time: {stockOutCurObj.GetHeaderValue(1).ToString()}");
+                logger.Info($"Current: {stockOutCurObj.GetHeaderValue(5).ToString()}");
+                logger.Info($"Concluded: {stockOutCurObj.GetHeaderValue(6).ToString()}");
+                logger.Info($"Accum Amount: {stockOutCurObj.GetHeaderValue(7).ToString()}");
+                logger.Info($"Sell/Buy: {stockOutCurObj.GetHeaderValue(9).ToString()}");
+                logger.Info($"Amount: {stockOutCurObj.GetHeaderValue(10).ToString()}");
+                logger.Info($"Flag: {stockOutCurObj.GetHeaderValue(11).ToString()}");
+                logger.Info($"Capital: {stockOutCurObj.GetHeaderValue(12).ToString()}");
 #endif
                 var now = DateTime.Now;
                 var conclusion = new StockConclusion();
@@ -117,8 +117,10 @@ namespace MTree.DaishinPublisher
 
                 // 9 - (char)체결 상태
                 char type = Convert.ToChar(stockOutCurObj.GetHeaderValue(9));
-                if (type == '1') conclusion.ConclusionType = ConclusionTypes.Buy;
-                else conclusion.ConclusionType = ConclusionTypes.Sell;
+                if (type == '1')
+                    conclusion.ConclusionType = ConclusionTypes.Buy;
+                else
+                    conclusion.ConclusionType = ConclusionTypes.Sell;
 
                 // 10 - (long) 순간체결수량
                 conclusion.Amount = Convert.ToInt64(stockOutCurObj.GetHeaderValue(17));

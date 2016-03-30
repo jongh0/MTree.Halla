@@ -12,7 +12,7 @@ namespace MTree.RealTimeProvider
         void NotifyMessage(MessageTypes type, string message);
 
         [OperationContract]
-        void RegisterContract(Guid clientId, PublishContract contract);
+        void RegisterContract(Guid clientId, PublisherContract contract);
 
         [OperationContract(IsOneWay = true)]
         void UnregisterContract(Guid clientId);

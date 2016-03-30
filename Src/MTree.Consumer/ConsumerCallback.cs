@@ -32,11 +32,15 @@ namespace MTree.Consumer
         {
         }
 
-        public virtual void ConsumeStockMaster(StockMaster stockMaster)
+        public virtual void ConsumeStockMaster(List<StockMaster> stockMasters)
         {
         }
 
-        public virtual void ConsumeIndexMaster(IndexMaster indexMaster)
+        public virtual void ConsumeIndexMaster(List<IndexMaster> indexMasters)
+        {
+        }
+
+        public virtual void ConsumeChart(List<Candle> candles)
         {
         }
     }

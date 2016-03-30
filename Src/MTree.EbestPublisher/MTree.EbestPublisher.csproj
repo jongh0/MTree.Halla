@@ -86,7 +86,6 @@
     </Compile>
     <Compile Include="EbestPublisher.cs" />
     <Compile Include="EbestPublisher_CircuitBreak.cs" />
-    <Compile Include="EbestPublisher_IndexConclusion.cs" />
     <Compile Include="EbestPublisher_IndexMaster.cs" />
     <Compile Include="EbestPublisher_StockMaster.cs" />
     <Compile Include="MainWindow.xaml.cs">

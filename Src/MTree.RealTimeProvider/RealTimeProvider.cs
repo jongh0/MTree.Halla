@@ -50,7 +50,56 @@ namespace MTree.RealTimeProvider
         private void MarketEndTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             logger.Info("Market end timer elapsed");
+
+            SaveTodayChart();
             ExitProgram();
+        }
+
+        private void SaveTodayChart()
+        {
+            try
+            {
+                logger.Info("Save today chart");
+
+                var publisherContract = DaishinMasterContract;
+                if (publisherContract == null)
+                {
+                    logger.Error("Contract not exists for candles");
+                    return;
+                }
+
+                var today = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+
+                var codeEntityList = new List<CodeEntity>();
+                codeEntityList.AddRange(StockCodeList.Values);
+                codeEntityList.AddRange(IndexCodeList.Values);
+
+                foreach (var codeEntity in codeEntityList)
+                {
+                    var fullCode = CodeEntity.ConvertToDaishinCode(codeEntity);
+
+                    var candleList = publisherContract.Callback.GetChart(fullCode, today, today, CandleTypes.Tick);
+                    if (candleList == null || candleList.Count == 0)
+                    {
+                        logger.Info($"{codeEntity.Code} tick chart not exists");
+                        continue;
+                    }
+
+                    foreach (var consumerContract in TodayChartContracts)
+                    {
+                        consumerContract.Value.Callback.ConsumeChart(candleList);
+                    }
+
+                    candleList.Clear();
+                }
+
+                codeEntityList.Clear();
+                logger.Info("Today chart saving done");
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
         }
 
         private void ExitProgram()
@@ -58,7 +107,7 @@ namespace MTree.RealTimeProvider
             logger.Info("Exit program");
 
             // Publisher 종료
-            foreach (var contract in PublishContracts)
+            foreach (var contract in PublisherContracts)
             {
                 try
                 {

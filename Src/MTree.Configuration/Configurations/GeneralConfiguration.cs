@@ -18,6 +18,9 @@ namespace MTree.Configuration
         public string CurrencyFormat { get; } = "#,###.##";
 
         [JsonIgnore]
+        public string PercentFormat { get; } = "P2";
+
+        [JsonIgnore]
         public DateTime DefaultStartDate { get; } = new DateTime(2016, 1, 1);
 
         public bool OfflineMode { get; set; } = false;

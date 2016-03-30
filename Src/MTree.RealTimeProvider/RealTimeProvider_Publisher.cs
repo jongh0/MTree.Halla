@@ -15,59 +15,47 @@ namespace MTree.RealTimeProvider
 {
     public partial class RealTimeProvider
     {
-        private ConcurrentDictionary<Guid, PublishContract> PublishContracts { get; set; } = new ConcurrentDictionary<Guid, PublishContract>();
+        private ConcurrentDictionary<Guid, PublisherContract> PublisherContracts { get; set; } = new ConcurrentDictionary<Guid, PublisherContract>();
 
         #region Contract Property
         #region Daishin
-        private List<PublishContract> DaishinContracts
+        private List<PublisherContract> DaishinContracts
         {
-            get { return PublishContracts.Values.Where(c => c.Type == ProcessTypes.Daishin).ToList(); }
+            get { return PublisherContracts.Values.Where(c => c.Type == ProcessTypes.Daishin).ToList(); }
         }
 
-        private PublishContract DaishinContractForMastering
+        private PublisherContract DaishinContractForMastering
         {
-            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == ProcessTypes.Daishin && c.IsOperating == false); }
+            get { return PublisherContracts.Values.FirstOrDefault(c => c.Type == ProcessTypes.Daishin && c.IsOperating == false); }
         }
 
-        private PublishContract DaishinContractMaster
+        private PublisherContract DaishinMasterContract
         {
-            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == ProcessTypes.DaishinMaster); }
+            get { return PublisherContracts.Values.FirstOrDefault(c => c.Type == ProcessTypes.DaishinMaster); }
         }
         #endregion
 
         #region Ebest
-        private List<PublishContract> EbestContracts
+        private List<PublisherContract> EbestContracts
         {
-            get { return PublishContracts.Values.Where(c => c.Type == ProcessTypes.Ebest).ToList(); }
+            get { return PublisherContracts.Values.Where(c => c.Type == ProcessTypes.Ebest).ToList(); }
         }
 
-        private PublishContract EbestContractForMastering
+        private PublisherContract EbestContractForMastering
         {
-            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == ProcessTypes.Ebest && c.IsOperating == false); }
+            get { return PublisherContracts.Values.FirstOrDefault(c => c.Type == ProcessTypes.Ebest && c.IsOperating == false); }
         }
         #endregion
 
         #region Kiwoom
-        private List<PublishContract> KiwoomContracts
+        private List<PublisherContract> KiwoomContracts
         {
-            get { return PublishContracts.Values.Where(c => c.Type == ProcessTypes.Kiwoom).ToList(); }
+            get { return PublisherContracts.Values.Where(c => c.Type == ProcessTypes.Kiwoom).ToList(); }
         }
 
-        private PublishContract KiwoomContractForMastering
+        private PublisherContract KiwoomContractForMastering
         {
-            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == ProcessTypes.Kiwoom && c.IsOperating == false); }
-        }
-        #endregion
-
-        #region Krx
-        private List<PublishContract> KrxContracts
-        {
-            get { return PublishContracts.Values.Where(c => c.Type == ProcessTypes.Krx).ToList(); }
-        }
-
-        private PublishContract KrxContractForMastering
-        {
-            get { return PublishContracts.Values.FirstOrDefault(c => c.Type == ProcessTypes.Krx && c.IsOperating == false); }
+            get { return PublisherContracts.Values.FirstOrDefault(c => c.Type == ProcessTypes.Kiwoom && c.IsOperating == false); }
         }
         #endregion
         #endregion
@@ -95,9 +83,9 @@ namespace MTree.RealTimeProvider
                 // Daishin
                 int daishinProcessCount;
                 if (Config.General.SkipBiddingPrice == true)
-                    daishinProcessCount = (StockCodeList.Count + IndexCodeList.Count) / 400;
+                    daishinProcessCount = (StockCodeList.Count + IndexCodeList.Count) / 400 + 1;
                 else
-                    daishinProcessCount = (StockCodeList.Count * 3 + IndexCodeList.Count) / 400;
+                    daishinProcessCount = (StockCodeList.Count * 3 + IndexCodeList.Count) / 400 + 1;
 
                 for (int i = 0; i < daishinProcessCount; i++)
                     ProcessUtility.Start(ProcessTypes.Daishin, ProcessWindowStyle.Minimized);
@@ -113,30 +101,30 @@ namespace MTree.RealTimeProvider
             }
         }
 
-        public void RegisterContract(Guid clientId, PublishContract contract)
+        public void RegisterContract(Guid clientId, PublisherContract contract)
         {
             try
             {
-                if (PublishContracts.ContainsKey(clientId) == true)
+                if (PublisherContracts.ContainsKey(clientId) == true)
                 {
                     logger.Error($"{contract.ToString()} contract exist / {clientId}");
                 }
                 else
                 {
-                    contract.Id = PublishContract.IdNumbering++;
+                    contract.Id = PublisherContract.IdNumbering++;
                     contract.Callback = OperationContext.Current.GetCallbackChannel<IRealTimePublisherCallback>();
 
                     if (contract.Type == ProcessTypes.None)
                     {
-                        PublishContracts.TryAdd(clientId, contract);
+                        PublisherContracts.TryAdd(clientId, contract);
                         logger.Warn($"{contract.ToString()} contract type is not set / {clientId}");
                     }
                     else
                     {
                         bool isMasterContract = (contract.Type == ProcessTypes.DaishinMaster);
-                        if (contract.Type == ProcessTypes.DaishinMaster) contract.Type = ProcessTypes.Daishin;
+                        //if (contract.Type == ProcessTypes.DaishinMaster) contract.Type = ProcessTypes.Daishin;
 
-                        PublishContracts.TryAdd(clientId, contract);
+                        PublisherContracts.TryAdd(clientId, contract);
                         logger.Info($"{contract.ToString()} contract registered / {clientId}");
 
                         if (isMasterContract == true)
@@ -155,7 +143,7 @@ namespace MTree.RealTimeProvider
         /// 장이 열리지 않는 날이면 Program을 종료시킨다. (DEBUG Mode 제외)
         /// </summary>
         /// <param name="contract"></param>
-        private void ProcessMasterContract(PublishContract contract)
+        private void ProcessMasterContract(PublisherContract contract)
         {
             try
             {
@@ -180,7 +168,7 @@ namespace MTree.RealTimeProvider
                         {
                             StartStockMastering();
                             StartIndexMastering();
-                            StartCodeDistributing();
+                            //StartCodeDistributing();
 
                             ProcessUtility.Kill(ProcessTypes.DaishinPopupStopper);
                         }
@@ -201,7 +189,7 @@ namespace MTree.RealTimeProvider
             }
         }
 
-        private void CheckCodeList(PublishContract contract)
+        private void CheckCodeList(PublisherContract contract)
         {
             try
             {
@@ -236,7 +224,7 @@ namespace MTree.RealTimeProvider
         /// </summary>
         /// <param name="contract"></param>
         /// <returns></returns>
-        private bool CheckMarketWorkDate(PublishContract contract)
+        private bool CheckMarketWorkDate(PublisherContract contract)
         {
             try
             {
@@ -273,7 +261,7 @@ namespace MTree.RealTimeProvider
 #endif
         }
 
-        private void CheckMarketTime(PublishContract contract)
+        private void CheckMarketTime(PublisherContract contract)
         {
             try
             {
@@ -336,10 +324,10 @@ namespace MTree.RealTimeProvider
         {
             try
             {
-                if (PublishContracts.ContainsKey(clientId) == true)
+                if (PublisherContracts.ContainsKey(clientId) == true)
                 {
-                    PublishContract temp;
-                    PublishContracts.TryRemove(clientId, out temp);
+                    PublisherContract temp;
+                    PublisherContracts.TryRemove(clientId, out temp);
 
                     logger.Info($"{clientId} / {temp.Type} contract unregistered");
                 }

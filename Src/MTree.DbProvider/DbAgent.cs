@@ -3,6 +3,7 @@ using MTree.Configuration;
 using MTree.DataStructure;
 using MTree.Utility;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -35,7 +36,7 @@ namespace MTree.DbProvider
 
         public MongoDbProvider DbProvider { get; set; } = new MongoDbProvider();
 
-        public IMongoDatabase CandleDb { get; set; }
+        public IMongoDatabase ChartDb { get; set; }
         public IMongoDatabase BiddingPriceDb { get; set; }
         public IMongoDatabase CircuitBreakDb { get; set; }
         public IMongoDatabase StockMasterDb { get; set; }
@@ -45,7 +46,7 @@ namespace MTree.DbProvider
 
         public DbAgent()
         {
-            CandleDb = DbProvider.GetDatabase(DbTypes.Candle);
+            ChartDb = DbProvider.GetDatabase(DbTypes.Chart);
             BiddingPriceDb = DbProvider.GetDatabase(DbTypes.BiddingPrice);
             CircuitBreakDb = DbProvider.GetDatabase(DbTypes.CircuitBreak);
             StockMasterDb = DbProvider.GetDatabase(DbTypes.StockMaster);
@@ -59,7 +60,7 @@ namespace MTree.DbProvider
             try
             {
                 if (typeof(T) == typeof(Candle))
-                    return (IMongoCollection<T>)CandleDb.GetCollection<Candle>(collectionName);
+                    return (IMongoCollection<T>)ChartDb.GetCollection<Candle>(collectionName);
                 else if (typeof(T) == typeof(BiddingPrice))
                     return (IMongoCollection<T>)BiddingPriceDb.GetCollection<BiddingPrice>(collectionName);
                 else if (typeof(T) == typeof(CircuitBreak))
@@ -87,6 +88,8 @@ namespace MTree.DbProvider
         {
             if (item == null) return;
 
+            int startTick = Environment.TickCount;
+
             try
             {
                 var subscribable = item as Subscribable;
@@ -100,6 +103,12 @@ namespace MTree.DbProvider
             catch (Exception ex)
             {
                 logger.Error(ex);
+            }
+            finally
+            {
+                var duration = Environment.TickCount - startTick;
+                if (duration > 100)
+                    logger.Error($"Db insert duration: {duration}, {item.ToString()}");
             }
         }
 
@@ -115,6 +124,8 @@ namespace MTree.DbProvider
         {
             if (string.IsNullOrEmpty(collectionName) == true || filter == null) return;
 
+            int startTick = Environment.TickCount;
+
             try
             {
                 var collection = GetCollection<T>(collectionName);
@@ -128,11 +139,21 @@ namespace MTree.DbProvider
             {
                 logger.Error(ex);
             }
+            finally
+            {
+                var duration = Environment.TickCount - startTick;
+                if (duration > 5000)
+                    logger.Error($"Db delete duration: {duration}, {filter.ToString()}");
+                else if (duration > 2000)
+                    logger.Warn($"Db delete duration: {duration}, {filter.ToString()}");
+            }
         }
 
         public IFindFluent<T, T> Find<T>(string collectionName, FilterDefinition<T> filter)
         {
             if (string.IsNullOrEmpty(collectionName) == true || filter == null) return null;
+
+            int startTick = Environment.TickCount;
 
             try
             {
@@ -147,6 +168,14 @@ namespace MTree.DbProvider
             {
                 logger.Error(ex);
             }
+            finally
+            {
+                var duration = Environment.TickCount - startTick;
+                if (duration > 5000)
+                    logger.Error($"Db find duration: {duration}, {filter.ToString()}");
+                else if (duration > 2000)
+                    logger.Warn($"Db find duration: {duration}, {filter.ToString()}");
+            }
 
             return null;
         }
@@ -157,9 +186,14 @@ namespace MTree.DbProvider
         /// <param name="recreate">True: 기존 Index를 Drop 후 다시 만든다.</param>
         public void CreateIndex(bool recreate = false)
         {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
             try
             {
-                using (var cursor = CandleDb.ListCollections())
+                logger.Info($"Create database index, recreate: {recreate}");
+
+                using (var cursor = ChartDb.ListCollections())
                 {
                     foreach (var doc in cursor.ToList())
                     {
@@ -271,25 +305,49 @@ namespace MTree.DbProvider
             {
                 logger.Error(ex);
             }
+            finally
+            {
+                sw.Stop();
+                logger.Info($"Database indexing Elapsed time: {sw.Elapsed.ToString()}");
+            }
         }
 
         /// <summary>
-        /// 오늘 Database에 저장된 통계를 로그에 기록한다.
+        /// 오늘 Database에 저장된 내용의 통계를 로그에 기록한다.
         /// </summary>
         public void SaveStatisticLog()
         {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
             try
             {
+                logger.Info("Save database statictic");
+
                 var startDate = DateTimeUtility.StartDateTime(DateTime.Now);
                 var endDate = DateTimeUtility.EndDateTime(DateTime.Now);
 
+                long chartCount = 0;
                 long biddingCount = 0;
-                long circuitCount = 0;
+                long circuitBreakCount = 0;
                 long stockMasterCount = 0;
                 long indexMasterCount = 0;
                 long stockConclusionCount = 0;
                 long indexConclusionCount = 0;
                 long totalCount = 0;
+
+                using (var cursor = ChartDb.ListCollections())
+                {
+                    foreach (var doc in cursor.ToList())
+                    {
+                        var collectionName = doc.GetElement("name").Value.ToString();
+                        var collection = GetCollection<Candle>(collectionName);
+
+                        var builder = Builders<Candle>.Filter;
+                        var filter = builder.Gte(i => i.Time, startDate) & builder.Lte(i => i.Time, endDate);
+                        chartCount += collection.Find(filter).Count();
+                    }
+                }
 
                 using (var cursor = BiddingPriceDb.ListCollections())
                 {
@@ -313,7 +371,7 @@ namespace MTree.DbProvider
 
                         var builder = Builders<CircuitBreak>.Filter;
                         var filter = builder.Gte(i => i.Time, startDate) & builder.Lte(i => i.Time, endDate);
-                        circuitCount += collection.Find(filter).Count();
+                        circuitBreakCount += collection.Find(filter).Count();
                     }
                 }
 
@@ -369,11 +427,12 @@ namespace MTree.DbProvider
                     }
                 }
 
-                totalCount = biddingCount + circuitCount + stockMasterCount + indexMasterCount + stockConclusionCount + indexConclusionCount;
+                totalCount = chartCount + biddingCount + circuitBreakCount + stockMasterCount + indexMasterCount + stockConclusionCount + indexConclusionCount;
 
                 var sb = new StringBuilder();
                 sb.AppendLine("DB Statistics");
-                sb.AppendLine($"CircuitBreak: {circuitCount.ToString(Config.General.CurrencyFormat)}");
+                sb.AppendLine($"Chart: {chartCount.ToString(Config.General.CurrencyFormat)}");
+                sb.AppendLine($"CircuitBreak: {circuitBreakCount.ToString(Config.General.CurrencyFormat)}");
                 sb.AppendLine($"BiddingPrice: {biddingCount.ToString(Config.General.CurrencyFormat)}");
                 sb.AppendLine($"StockMaster: {stockMasterCount.ToString(Config.General.CurrencyFormat)}");
                 sb.AppendLine($"IndexMaster: {indexMasterCount.ToString(Config.General.CurrencyFormat)}");
@@ -387,6 +446,11 @@ namespace MTree.DbProvider
             catch (Exception ex)
             {
                 logger.Error(ex);
+            }
+            finally
+            {
+                sw.Stop();
+                logger.Info($"Database statistics Elapsed time: {sw.Elapsed.ToString()}");
             }
         }
     }

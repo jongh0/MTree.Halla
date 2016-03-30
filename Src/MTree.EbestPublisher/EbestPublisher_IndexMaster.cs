@@ -74,9 +74,18 @@ namespace MTree.EbestPublisher
                 if (QuotingIndexMaster == null)
                     return;
 
-                string temp = indexQuotingObj.GetFieldData("t1511OutBlock", "jniljisu", 0);
-                if (temp == "") temp = "0";
-                QuotingIndexMaster.BasisPrice = Convert.ToSingle(temp); // 현재가
+                // 현재가
+                string basisPriceStr = indexQuotingObj.GetFieldData("t1511OutBlock", "jniljisu", 0);
+                float basisPrice = 0;
+                if (float.TryParse(basisPriceStr, out basisPrice) == true)
+                {
+                    QuotingIndexMaster.BasisPrice = basisPrice;
+                }
+                else
+                {
+                    logger.Error($"Basis price error: {basisPriceStr}");
+                    QuotingIndexMaster.BasisPrice = 0;
+                }
             }
             catch (Exception ex)
             {

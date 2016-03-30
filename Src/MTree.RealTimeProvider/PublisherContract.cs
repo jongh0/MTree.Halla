@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace MTree.RealTimeProvider
 {
     [Serializable]
-    public class PublishContract
+    public class PublisherContract
     {
         public static int IdNumbering { get; set; } = 0;
 

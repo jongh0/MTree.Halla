@@ -19,7 +19,7 @@ namespace MTree.Publisher
             base.Channel.NotifyMessage(type, message);
         }
 
-        public void RegisterContract(Guid clientId, PublishContract contract)
+        public void RegisterContract(Guid clientId, PublisherContract contract)
         {
             base.Channel.RegisterContract(clientId, contract);
         }

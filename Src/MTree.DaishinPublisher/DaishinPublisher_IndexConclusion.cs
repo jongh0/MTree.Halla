@@ -102,7 +102,7 @@ namespace MTree.DaishinPublisher
                 // 13 - (long) 현재가
                 conclusion.Price = Convert.ToSingle(stockCurObj.GetHeaderValue(13)) / 100;
                 if (conclusion.Price <= 0)
-                    logger.Error($"Stock conclusion price error, {conclusion.Price}/{stockCurObj.GetHeaderValue(13)}");
+                    logger.Error($"Stock conclusion price error, Price: {conclusion.Price}");
 
                 // 9 - (long) 누적거래량
                 conclusion.Amount = Convert.ToInt64(stockCurObj.GetHeaderValue(9));
@@ -137,21 +137,26 @@ namespace MTree.DaishinPublisher
                     case '1':
                         conclusion.MarketTimeType = MarketTimeTypes.BeforeExpect;
                         break;
+
                     case '2':
                         conclusion.MarketTimeType = MarketTimeTypes.Normal;
                         break;
+
                     case '3':
                         conclusion.MarketTimeType = MarketTimeTypes.BeforeOffTheClock;
                         break;
+
                     case '4':
                         conclusion.MarketTimeType = MarketTimeTypes.AfterOffTheClock;
                         break;
+
                     case '5':
                         conclusion.MarketTimeType = MarketTimeTypes.AfterExpect;
                         break;
+
                     default:
                         conclusion.MarketTimeType = MarketTimeTypes.Unknown;
-                        logger.Error($"Index conclusion market time type error, {marketTime}");
+                        logger.Error($"Index conclusion market time type error, marketTime: {marketTime}");
                         break;
                 }
 

@@ -44,7 +44,19 @@ namespace MTree.Dashboard
                     _price = value;
                     NotifyPropertyChanged(nameof(Price));
                     NotifyPropertyChanged(nameof(PriceColor));
+                    NotifyPropertyChanged(nameof(PricePercent));
                 }
+            }
+        }
+
+        public float PricePercent
+        {
+            get
+            {
+                if (Price == 0 || BasisPrice == 0)
+                    return 0;
+
+                return (Price - BasisPrice) / BasisPrice;
             }
         }
 

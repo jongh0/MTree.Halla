@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ServiceModel;
 using MTree.DataStructure;
+using System.Collections.Generic;
 
 namespace MTree.RealTimeProvider
 {
@@ -18,6 +19,9 @@ namespace MTree.RealTimeProvider
 
         [OperationContract(IsOneWay = true)]
         void UnregisterContract(Guid clientId, SubscribeTypes type);
+
+        [OperationContract]
+        List<Candle> GetChart(string code, DateTime startDate, DateTime endDate, CandleTypes candleType);
     }
 
     public interface IRealTimeConsumerCallback
@@ -38,9 +42,12 @@ namespace MTree.RealTimeProvider
         void ConsumeIndexConclusion(IndexConclusion conclusion);
 
         [OperationContract(IsOneWay = true)]
-        void ConsumeStockMaster(StockMaster stockMaster);
+        void ConsumeStockMaster(List<StockMaster> stockMaster);
 
         [OperationContract(IsOneWay = true)]
-        void ConsumeIndexMaster(IndexMaster indexMaster);
+        void ConsumeIndexMaster(List<IndexMaster> indexMaster);
+
+        [OperationContract(IsOneWay = true)]
+        void ConsumeChart(List<Candle> candles);
     }
 }

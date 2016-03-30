@@ -18,10 +18,10 @@
 
         <TabControl Margin="5">
             <TabItem Header="Stock">
-                <ListView ItemsSource="{Binding Path=StockItems.Values}" Margin="0" Style="{StaticResource GridViewStyle}" utility:GridViewSort.AutoSort="True"/>
+                <ListView ItemsSource="{Binding Path=StockItems.Values}" Margin="0" Style="{StaticResource GridViewStyle}" ItemContainerStyle="{StaticResource GridViewItemStyle}" utility:GridViewSort.AutoSort="True"/>
             </TabItem>
             <TabItem Header="Index">
-                <ListView ItemsSource="{Binding Path=IndexItems.Values}" Margin="0" Style="{StaticResource GridViewStyle}" utility:GridViewSort.AutoSort="True"/>
+                <ListView ItemsSource="{Binding Path=IndexItems.Values}" Margin="0" Style="{StaticResource GridViewStyle}" ItemContainerStyle="{StaticResource GridViewItemStyle}" utility:GridViewSort.AutoSort="True"/>
             </TabItem>
         </TabControl>
     </Grid>

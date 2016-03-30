@@ -72,20 +72,24 @@ namespace MTree.RealTimeProvider
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
+            var indexMasterList = new List<IndexMaster>();
+
             try
             {
                 foreach (var mastering in IndexMasteringList)
                 {
-                    foreach (var contract in MasteringContracts)
+                    indexMasterList.Add(mastering.Index);
+                }
+
+                foreach (var contract in MasteringContracts)
+                {
+                    try
                     {
-                        try
-                        {
-                            contract.Value.Callback.ConsumeIndexMaster(mastering.Index);
-                        }
-                        catch (Exception ex)
-                        {
-                            logger.Error(ex);
-                        }
+                        contract.Value.Callback.ConsumeIndexMaster(indexMasterList);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error(ex);
                     }
                 }
             }
@@ -95,6 +99,9 @@ namespace MTree.RealTimeProvider
             }
             finally
             {
+                indexMasterList.Clear();
+                IndexMasteringList.Clear();
+
                 sw.Stop();
                 logger.Info($"Index master publishing done, Elapsed time: {sw.Elapsed.ToString()}");
             }
@@ -128,7 +135,7 @@ namespace MTree.RealTimeProvider
 
                     if (mastering != null)
                     {
-                        PublishContract contract = null;
+                        PublisherContract contract = null;
 
                         while (true)
                         {
@@ -164,7 +171,7 @@ namespace MTree.RealTimeProvider
             }
         }
 
-        private void GetIndexMaster(IndexMastering mastering, PublishContract contract)
+        private void GetIndexMaster(IndexMastering mastering, PublisherContract contract)
         {
             try
             {

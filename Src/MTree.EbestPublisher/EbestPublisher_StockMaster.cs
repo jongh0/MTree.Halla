@@ -97,104 +97,79 @@ namespace MTree.EbestPublisher
                 if (long.TryParse(cvStr, out cv) == false)
                     logger.Error($"Stock master circulating volume error, {cvStr}");
 
-                QuotingStockMaster.CirculatingVolume = cv * 1000;  //유통주식수
+                //유통주식수
+                QuotingStockMaster.CirculatingVolume = cv * 1000;  
 
-                string listDateStr = stockQuotingObj.GetFieldData("t1102OutBlock", "listdate", 0); // 상장일
+                // 상장일
+                string listDateStr = stockQuotingObj.GetFieldData("t1102OutBlock", "listdate", 0); 
                 int listDate = 0;
                 if (int.TryParse(listDateStr, out listDate) == true)
                 {
                     QuotingStockMaster.ListedDate = new DateTime(listDate / 10000, listDate / 100 % 100, listDate % 100);
                 }
+                else
+                {
+                    logger.Error($"List date error: {listDateStr}");
+                }
 
                 string valueAltered = stockQuotingObj.GetFieldData("t1102OutBlock", "info1", 0);
-                if (valueAltered == "권배락") QuotingStockMaster.ValueAlteredType = ValueAlteredTypes.ExRightDividend;
-                else if (valueAltered == "권리락") QuotingStockMaster.ValueAlteredType = ValueAlteredTypes.ExRight;
-                else if (valueAltered == "배당락") QuotingStockMaster.ValueAlteredType = ValueAlteredTypes.ExDividend;
-                else if (valueAltered == "액면분할") QuotingStockMaster.ValueAlteredType = ValueAlteredTypes.SplitFaceValue;
-                else if (valueAltered == "액면병합") QuotingStockMaster.ValueAlteredType = ValueAlteredTypes.MergeFaceValue;
-                else if (valueAltered == "주식병합") QuotingStockMaster.ValueAlteredType = ValueAlteredTypes.Consolidation;
-                else if (valueAltered == "기업분할") QuotingStockMaster.ValueAlteredType = ValueAlteredTypes.Divestiture;
-                else if (valueAltered == "감자") QuotingStockMaster.ValueAlteredType = ValueAlteredTypes.CapitalReduction;
-                else QuotingStockMaster.ValueAlteredType = ValueAlteredTypes.None;
+                if (valueAltered == "권배락")
+                    QuotingStockMaster.ValueAlteredType = ValueAlteredTypes.ExRightDividend;
+                else if (valueAltered == "권리락")
+                    QuotingStockMaster.ValueAlteredType = ValueAlteredTypes.ExRight;
+                else if (valueAltered == "배당락")
+                    QuotingStockMaster.ValueAlteredType = ValueAlteredTypes.ExDividend;
+                else if (valueAltered == "액면분할")
+                    QuotingStockMaster.ValueAlteredType = ValueAlteredTypes.SplitFaceValue;
+                else if (valueAltered == "액면병합")
+                    QuotingStockMaster.ValueAlteredType = ValueAlteredTypes.MergeFaceValue;
+                else if (valueAltered == "주식병합")
+                    QuotingStockMaster.ValueAlteredType = ValueAlteredTypes.Consolidation;
+                else if (valueAltered == "기업분할")
+                    QuotingStockMaster.ValueAlteredType = ValueAlteredTypes.Divestiture;
+                else if (valueAltered == "감자")
+                    QuotingStockMaster.ValueAlteredType = ValueAlteredTypes.CapitalReduction;
+                else
+                    QuotingStockMaster.ValueAlteredType = ValueAlteredTypes.None;
 
                 string suspended = stockQuotingObj.GetFieldData("t1102OutBlock", "info3", 0);
-                if (suspended == "suspended")
-                    QuotingStockMaster.TradingSuspend = true;
-                else
-                    QuotingStockMaster.TradingSuspend = false;
+                QuotingStockMaster.TradingSuspend = (suspended == "suspended");
 
                 // 관리
-                if (WarningList["AdministrativeIssue"].Contains(QuotingStockMaster.Code))
-                    QuotingStockMaster.AdministrativeIssue = true;
-                else
-                    QuotingStockMaster.AdministrativeIssue = false;
+                QuotingStockMaster.AdministrativeIssue = WarningList[nameof(WarningTypes1.AdministrativeIssue)].Contains(QuotingStockMaster.Code);
 
                 // 불성실공시
-                if (WarningList["UnfairAnnouncement"].Contains(QuotingStockMaster.Code))
-                    QuotingStockMaster.UnfairAnnouncement = true;
-                else
-                    QuotingStockMaster.UnfairAnnouncement = false;
+                QuotingStockMaster.UnfairAnnouncement = WarningList[nameof(WarningTypes1.UnfairAnnouncement)].Contains(QuotingStockMaster.Code);
 
                 // 투자유의
-                if (WarningList["InvestAttention"].Contains(QuotingStockMaster.Code))
-                    QuotingStockMaster.InvestAttention = true;
-                else
-                    QuotingStockMaster.InvestAttention = false;
+                QuotingStockMaster.InvestAttention = WarningList[nameof(WarningTypes1.InvestAttention)].Contains(QuotingStockMaster.Code);
 
                 // 투자환기
-                if (WarningList["CallingAttention"].Contains(QuotingStockMaster.Code))
-                    QuotingStockMaster.CallingAttention = true;
-                else
-                    QuotingStockMaster.CallingAttention = false;
+                QuotingStockMaster.CallingAttention = WarningList[nameof(WarningTypes1.CallingAttention)].Contains(QuotingStockMaster.Code);
 
                 // 경고
-                if (WarningList["InvestWarning"].Contains(QuotingStockMaster.Code))
-                    QuotingStockMaster.InvestWarning = true;
-                else
-                    QuotingStockMaster.InvestWarning = false;
+                QuotingStockMaster.InvestWarning = WarningList[nameof(WarningTypes2.InvestWarning)].Contains(QuotingStockMaster.Code);
 
                 // 매매정지
-                if (WarningList["TradingHalt"].Contains(QuotingStockMaster.Code))
-                    QuotingStockMaster.TradingHalt = true;
-                else
-                    QuotingStockMaster.TradingHalt = false;
+                QuotingStockMaster.TradingHalt = WarningList[nameof(WarningTypes2.TradingHalt)].Contains(QuotingStockMaster.Code);
 
                 // 정리매매
-                if (WarningList["CleaningTrade"].Contains(QuotingStockMaster.Code))
-                    QuotingStockMaster.CleaningTrade = true;
-                else
-                    QuotingStockMaster.CleaningTrade = false;
+                QuotingStockMaster.CleaningTrade = WarningList[nameof(WarningTypes2.CleaningTrade)].Contains(QuotingStockMaster.Code);
 
                 // 주의
-                if (WarningList["InvestCaution"].Contains(QuotingStockMaster.Code))
-                    QuotingStockMaster.InvestCaution = true;
-                else
-                    QuotingStockMaster.InvestCaution = false;
+                QuotingStockMaster.InvestCaution = WarningList[nameof(WarningTypes2.InvestCaution)].Contains(QuotingStockMaster.Code);
 
                 // 위험
-                if (WarningList["InvestmentRisk"].Contains(QuotingStockMaster.Code))
-                    QuotingStockMaster.InvestRisk = true;
-                else
-                    QuotingStockMaster.InvestRisk = false;
+                QuotingStockMaster.InvestRisk = WarningList[nameof(WarningTypes2.InvestRisk)].Contains(QuotingStockMaster.Code);
 
                 // 위험예고
-                if (WarningList["InvestmentRiskNoticed"].Contains(QuotingStockMaster.Code))
-                    QuotingStockMaster.InvestRiskNoticed = true;
-                else
-                    QuotingStockMaster.InvestRiskNoticed = false;
+                QuotingStockMaster.InvestRiskNoticed = WarningList[nameof(WarningTypes2.InvestRiskNoticed)].Contains(QuotingStockMaster.Code);
 
                 // 단기과열
-                if (WarningList["Overheated"].Contains(QuotingStockMaster.Code))
-                    QuotingStockMaster.Overheated = true;
-                else
-                    QuotingStockMaster.Overheated = false;
+                QuotingStockMaster.Overheated = WarningList[nameof(WarningTypes2.Overheated)].Contains(QuotingStockMaster.Code);
 
                 // 단기과열지정예고
-                if (WarningList["OverheatNoticed"].Contains(QuotingStockMaster.Code))
-                    QuotingStockMaster.OverheatNoticed = true;
-                else
-                    QuotingStockMaster.OverheatNoticed = false;
-
+                QuotingStockMaster.OverheatNoticed = WarningList[nameof(WarningTypes2.OverheatNoticed)].Contains(QuotingStockMaster.Code);
             }
             catch (Exception ex)
             {

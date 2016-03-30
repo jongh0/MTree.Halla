@@ -112,14 +112,19 @@ namespace MTree.DaishinPublisher
 
                     // 2:시가(long or float)
                     candle.Open = Convert.ToSingle(stockChartObj.GetDataValue(2, i));
+
                     // 3:고가(long or float)
                     candle.High = Convert.ToSingle(stockChartObj.GetDataValue(3, i));
+
                     // 4:저가(long or float)
                     candle.Low = Convert.ToSingle(stockChartObj.GetDataValue(4, i));
+
                     // 5:종가(long or float)
                     candle.Close = Convert.ToSingle(stockChartObj.GetDataValue(5, i));
+
                     // 8:거래량(ulong or ulonglong) 주) 정밀도 만원 단위
                     candle.Volume = Convert.ToUInt64(stockChartObj.GetDataValue(6, i));
+
                     // 9:거래대금(ulonglong)
                     candle.Value = Convert.ToUInt64(stockChartObj.GetDataValue(7, i));
 

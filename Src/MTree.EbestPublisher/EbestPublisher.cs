@@ -31,8 +31,8 @@ namespace MTree.EbestPublisher
         TradingHalt = 2,            // 매매정지
         CleaningTrade = 3,          // 정리매매
         InvestCaution = 4,          // 주의
-        InvestmentRisk =5 ,         // 위험
-        InvestmentRiskNoticed = 6,  // 위험예고
+        InvestRisk =5 ,             // 위험
+        InvestRiskNoticed = 6,      // 위험예고
         Overheated = 7,             // 단기과열
         OverheatNoticed = 8,        // 단기과열지정예고
     }
@@ -222,12 +222,14 @@ namespace MTree.EbestPublisher
         {
             LastCommunTick = Environment.TickCount;
 
-            if (szTrCode == "IJ_")
-                IndexConclusionReceived(szTrCode);
-            else if (szTrCode == "VI_")
+            if (szTrCode == "VI_")
                 VolatilityInterruptionReceived(szTrCode);
             else if (szTrCode == "DVI")
                 AfterVolatilityInterruptionReceived(szTrCode);
+#if false
+            else if (szTrCode == "IJ_")
+                IndexConclusionReceived(szTrCode); 
+#endif
         }
         #endregion
 
@@ -685,9 +687,7 @@ namespace MTree.EbestPublisher
                     logger.Info("Process will be closed");
                     Thread.Sleep(1000 * 10);
 
-                    Dispatcher.CurrentDispatcher.Invoke(() => Application.Current.Shutdown());
-                    //Application.Current.Shutdown();
-                    //Environment.Exit(0);
+                    Environment.Exit(0);
                 });
             }
 

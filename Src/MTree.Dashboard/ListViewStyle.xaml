@@ -3,6 +3,7 @@
                     xmlns:utility="clr-namespace:MTree.Utility;assembly=MTree.Utility"
                     xmlns:local="clr-namespace:MTree.Dashboard">
     <utility:NumberToCurrencyConverter x:Key="NumberToCurrencyConverter"/>
+    <utility:NumberToPercentConverter x:Key="NumberToPercentConverter"/>
 
     <Style x:Key="BaseTextBlock" TargetType="TextBlock">
         <Setter Property="Foreground" Value="Black"/>
@@ -18,6 +19,17 @@
 
     <Style TargetType="ListViewItem">
         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+    </Style>
+
+    <Style x:Key="GridViewItemStyle" TargetType="ListViewItem" x:Shared="False">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding CircuitBreakType}" Value="StaticInvoke">
+                <Setter Property="Background" Value="PaleGoldenrod"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding CircuitBreakType}" Value="DynamicInvoke">
+                <Setter Property="Background" Value="Yellow"/>
+            </DataTrigger>
+        </Style.Triggers>
     </Style>
 
     <Style x:Key="GridViewStyle" TargetType="ListView" x:Shared="False">
@@ -47,6 +59,14 @@
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Path=Price, Converter={StaticResource NumberToCurrencyConverter}}" Foreground="{Binding Path=PriceColor}" Style="{StaticResource CurrencyTextBlock}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <!--PricePercent-->
+                    <GridViewColumn Header="PricePercent" Width="80" utility:GridViewSort.PropertyName="PricePercent">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=PricePercent, Converter={StaticResource NumberToPercentConverter}}" Foreground="{Binding Path=PriceColor}" Style="{StaticResource CurrencyTextBlock}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>

@@ -8,6 +8,7 @@ using MTree.RealTimeProvider;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace MTree.Dashboard
 {
@@ -59,6 +60,8 @@ namespace MTree.Dashboard
                 {
                     if (StockItems.ContainsKey(circuitBreak.Code) == true)
                         StockItems[circuitBreak.Code].CircuitBreakType = circuitBreak.CircuitBreakType;
+                    else
+                        logger.Warn($"Circuit break code not in mastering data: {circuitBreak.Code}");
                 }
                 else
                 {
@@ -140,19 +143,22 @@ namespace MTree.Dashboard
             CircuitBreakQueue.Enqueue(circuitBreak);
         }
 
-        public override void ConsumeStockMaster(StockMaster stockMaster)
+        public override void ConsumeStockMaster(List<StockMaster> stockMasters)
         {
             try
             {
-                if (StockItems.ContainsKey(stockMaster.Code) == false)
+                foreach (var stockMaster in stockMasters)
                 {
-                    var item = new DashboardItem(stockMaster.Code);
-                    item.Name = stockMaster.Name;
-                    item.Price = stockMaster.BasisPrice;
-                    item.BasisPrice = stockMaster.BasisPrice;
-                    item.PreviousVolume = stockMaster.PreviousVolume;
+                    if (StockItems.ContainsKey(stockMaster.Code) == false)
+                    {
+                        var item = new DashboardItem(stockMaster.Code);
+                        item.Name = stockMaster.Name;
+                        item.Price = stockMaster.BasisPrice;
+                        item.BasisPrice = stockMaster.BasisPrice;
+                        item.PreviousVolume = stockMaster.PreviousVolume;
 
-                    StockItems.Add(item.Code, item);
+                        StockItems.Add(item.Code, item);
+                    }
                 }
             }
             catch (Exception ex)
@@ -161,18 +167,21 @@ namespace MTree.Dashboard
             }
         }
 
-        public override void ConsumeIndexMaster(IndexMaster indexMaster)
+        public override void ConsumeIndexMaster(List<IndexMaster> indexMasters)
         {
             try
             {
-                if (IndexItems.ContainsKey(indexMaster.Code) == false)
+                foreach (var indexMaster in indexMasters)
                 {
-                    var item = new DashboardItem(indexMaster.Code);
-                    item.Name = indexMaster.Name;
-                    item.Price = indexMaster.BasisPrice;
-                    item.BasisPrice = indexMaster.BasisPrice;
-                    
-                    IndexItems.Add(item.Code, item);
+                    if (IndexItems.ContainsKey(indexMaster.Code) == false)
+                    {
+                        var item = new DashboardItem(indexMaster.Code);
+                        item.Name = indexMaster.Name;
+                        item.Price = indexMaster.BasisPrice;
+                        item.BasisPrice = indexMaster.BasisPrice;
+
+                        IndexItems.Add(item.Code, item);
+                    }
                 }
             }
             catch (Exception ex)
@@ -191,7 +200,7 @@ namespace MTree.Dashboard
                     {
                         logger.Info("Process will be closed");
                         Thread.Sleep(1000 * 10);
-                        //Application.Current.Shutdown();
+
                         Environment.Exit(0);
                     });
                 }
