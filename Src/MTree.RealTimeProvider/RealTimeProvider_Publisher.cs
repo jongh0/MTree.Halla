@@ -168,7 +168,7 @@ namespace MTree.RealTimeProvider
                         {
                             StartStockMastering();
                             StartIndexMastering();
-                            //StartCodeDistributing();
+                            StartCodeDistributing();
 
                             ProcessUtility.Kill(ProcessTypes.DaishinPopupStopper);
                         }
