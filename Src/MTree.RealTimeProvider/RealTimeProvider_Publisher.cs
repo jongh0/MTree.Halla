@@ -76,8 +76,8 @@ namespace MTree.RealTimeProvider
                     ProcessUtility.Start(ProcessTypes.Kiwoom, ProcessWindowStyle.Minimized);
 
                     // Daishin popup stopper
-                    ProcessUtility.Start(ProcessTypes.DaishinPopupStopper, ProcessWindowStyle.Minimized);
-                    ProcessUtility.Start(ProcessTypes.DaishinPopupStopper, ProcessWindowStyle.Minimized);
+                    ProcessUtility.Start(ProcessTypes.PopupStopper, ProcessWindowStyle.Minimized);
+                    ProcessUtility.Start(ProcessTypes.PopupStopper, ProcessWindowStyle.Minimized);
                 }
 
                 // Daishin
@@ -172,7 +172,7 @@ namespace MTree.RealTimeProvider
                             StartIndexMastering();
                             StartCodeDistributing();
 
-                            ProcessUtility.Kill(ProcessTypes.DaishinPopupStopper);
+                            ProcessUtility.Kill(ProcessTypes.PopupStopper);
                         }
                     });
                 }

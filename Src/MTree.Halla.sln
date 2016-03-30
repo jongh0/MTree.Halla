@@ -31,7 +31,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Provider", "Provider", "{1D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.Publisher", "MTree.Publisher\MTree.Publisher.csproj", "{891F9BAA-D335-4A1B-8FA3-BB0E4D76410A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.DaishinPopupStopper", "MTree.DaishinPopupStopper\MTree.DaishinPopupStopper.csproj", "{0BD3F8F3-8B8C-4DE2-9934-8849A32CFC9F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.PopupStopper", "MTree.PopupStopper\MTree.PopupStopper.csproj", "{0BD3F8F3-8B8C-4DE2-9934-8849A32CFC9F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utility", "Utility", "{C22A1011-FE40-49F1-AB42-3CBF4921ACBD}"
 EndProject

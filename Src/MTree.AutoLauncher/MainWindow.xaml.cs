@@ -26,7 +26,7 @@ namespace MTree.AutoLauncher
                 launcher.Time = new DateTime(now.Year, now.Month, now.Day, 7, 00, 0);
 
                 launcher.KillProcesses.Add(ProcessTypes.CybosStarter);
-                launcher.KillProcesses.Add(ProcessTypes.DaishinPopupStopper);
+                launcher.KillProcesses.Add(ProcessTypes.PopupStopper);
                 launcher.KillProcesses.Add(ProcessTypes.DaishinSessionManager);
                 launcher.KillProcesses.Add(ProcessTypes.Ebest);
                 launcher.KillProcesses.Add(ProcessTypes.Kiwoom);

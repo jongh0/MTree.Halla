@@ -15,9 +15,9 @@ namespace MTree.Utility
         TestConsole,
         TestConsumer,
         TestPublisher,
+        PopupStopper,
         Daishin,
         DaishinMaster,
-        DaishinPopupStopper,
         DaishinSessionManager,
         Kiwoom,
         Ebest,
@@ -40,9 +40,9 @@ namespace MTree.Utility
             ProcessList.Add(ProcessTypes.TestConsole, "TestConsole");
             ProcessList.Add(ProcessTypes.TestConsumer, "TestConsumer");
             ProcessList.Add(ProcessTypes.TestPublisher, "TestPublisher");
+            ProcessList.Add(ProcessTypes.PopupStopper, "MTree.PopupStopper");
             ProcessList.Add(ProcessTypes.Daishin, "MTree.DaishinPublisher");
             ProcessList.Add(ProcessTypes.DaishinMaster, "MTree.DaishinPublisher");
-            ProcessList.Add(ProcessTypes.DaishinPopupStopper, "MTree.DaishinPopupStopper");
             ProcessList.Add(ProcessTypes.DaishinSessionManager, "MTree.DaishinSessionManager");
             ProcessList.Add(ProcessTypes.Kiwoom, "MTree.KiwoomPublisher");
             ProcessList.Add(ProcessTypes.Ebest, "MTree.EbestPublisher");

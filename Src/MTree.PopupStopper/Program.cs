@@ -9,7 +9,7 @@ using System.IO;
 using System.Threading.Tasks;
 using MTree.Utility;
 
-namespace MTree.DaishinPopupStopper
+namespace MTree.PopupStopper
 {
     class Program
     {

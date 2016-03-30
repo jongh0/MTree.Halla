@@ -19,7 +19,7 @@ namespace KillAll
             "MTree.KiwoomPublisher",
             "MTree.RealTimeProvider",
             "MTree.DaishinSessionManager",
-            "MTree.DaishinPopupStopper",
+            "MTree.PopupStopper",
             "TestConsole",
             "TestConsumer",
             "TestPublisher"

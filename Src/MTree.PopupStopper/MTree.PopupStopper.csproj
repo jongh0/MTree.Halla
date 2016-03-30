@@ -7,8 +7,8 @@
     <ProjectGuid>{0BD3F8F3-8B8C-4DE2-9934-8849A32CFC9F}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MTree.DaishinPopupStopper</RootNamespace>
-    <AssemblyName>MTree.DaishinPopupStopper</AssemblyName>
+    <RootNamespace>MTree.PopupStopper</RootNamespace>
+    <AssemblyName>MTree.PopupStopper</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

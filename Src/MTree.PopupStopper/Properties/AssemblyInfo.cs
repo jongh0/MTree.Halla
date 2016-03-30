@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("MTree.DaishinPopupStopper")]
+[assembly: AssemblyTitle("MTree.PopupStopper")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("MTree")]
-[assembly: AssemblyProduct("MTree.DaishinPopupStopper")]
+[assembly: AssemblyProduct("MTree.PopupStopper")]
 [assembly: AssemblyCopyright("Copyright © MTree 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
