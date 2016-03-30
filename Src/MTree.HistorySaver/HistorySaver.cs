@@ -20,13 +20,14 @@ namespace MTree.HistorySaver
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         #region Counter property
+        public int ChartCount { get; set; } = 0;
         public int BiddingPriceCount { get; set; } = 0;
         public int CircuitBreakCount { get; set; } = 0;
         public int StockMasterCount { get; set; } = 0;
         public int IndexMasterCount { get; set; } = 0;
         public int StockConclusionCount { get; set; } = 0;
         public int IndexConclusionCount { get; set; } = 0;
-        public int TotalCount { get { return StockMasterCount + IndexMasterCount + BiddingPriceCount + CircuitBreakCount + StockConclusionCount + IndexConclusionCount; } }
+        public int TotalCount { get { return ChartCount + StockMasterCount + IndexMasterCount + BiddingPriceCount + CircuitBreakCount + StockConclusionCount + IndexConclusionCount; } }
         #endregion
 
         private System.Timers.Timer RefreshTimer { get; set; }
@@ -194,6 +195,7 @@ namespace MTree.HistorySaver
                 foreach (var candle in candles)
                 {
                     DbAgent.Instance.Insert(candle);
+                    ChartCount++;
                 }
             }
             catch (Exception ex)
@@ -250,6 +252,7 @@ namespace MTree.HistorySaver
 
         private void RefreshTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
+            NotifyPropertyChanged(nameof(ChartCount));
             NotifyPropertyChanged(nameof(BiddingPriceCount));
             NotifyPropertyChanged(nameof(CircuitBreakCount));
             NotifyPropertyChanged(nameof(StockMasterCount));

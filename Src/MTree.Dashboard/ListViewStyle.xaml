@@ -63,10 +63,18 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                     <!--PricePercent-->
-                    <GridViewColumn Header="PricePercent" Width="80" utility:GridViewSort.PropertyName="PricePercent">
+                    <GridViewColumn Header="Price Percent" Width="80" utility:GridViewSort.PropertyName="PricePercent">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Path=PricePercent, Converter={StaticResource NumberToPercentConverter}}" Foreground="{Binding Path=PriceColor}" Style="{StaticResource CurrencyTextBlock}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <!--PreviousClosedPrice-->
+                    <GridViewColumn Header="Basis Price" Width="100" utility:GridViewSort.PropertyName="BasisPrice">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=BasisPrice, Converter={StaticResource NumberToCurrencyConverter}}" Style="{StaticResource CurrencyTextBlock}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -78,16 +86,8 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <!--PreviousClosedPrice-->
-                    <GridViewColumn Header="BasisPrice" Width="100" utility:GridViewSort.PropertyName="BasisPrice">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Path=BasisPrice, Converter={StaticResource NumberToCurrencyConverter}}" Style="{StaticResource CurrencyTextBlock}"/>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
                     <!--PreviousVolume-->
-                    <GridViewColumn Header="PrevVolume" Width="100" utility:GridViewSort.PropertyName="PreviousVolume">
+                    <GridViewColumn Header="Prev Volume" Width="100" utility:GridViewSort.PropertyName="PreviousVolume">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Path=PreviousVolume, Converter={StaticResource NumberToCurrencyConverter}}" Style="{StaticResource CurrencyTextBlock}"/>

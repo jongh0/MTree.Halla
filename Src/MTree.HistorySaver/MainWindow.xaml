@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:MTree.HistorySaver"
         xmlns:utility="clr-namespace:MTree.Utility;assembly=MTree.Utility"
         mc:Ignorable="d"
-        Title="HistorySaver" Height="251.526" Width="303.892" ResizeMode="CanMinimize">
+        Title="HistorySaver" Height="273.526" Width="303.892" ResizeMode="CanMinimize">
     <Grid>
         <Grid.Resources>
             <utility:NumberToCurrencyConverter x:Key="NumberToCurrencyConverter"/>
@@ -27,6 +27,10 @@
             </Style>
         </Grid.Resources>
         <StackPanel Orientation="Vertical" Margin="10" VerticalAlignment="Center">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Chart : "/>
+                <TextBox Text="{Binding Path=ChartCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}"/>
+            </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="CircuitBreak : "/>
                 <TextBox Text="{Binding Path=CircuitBreakCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}"/>

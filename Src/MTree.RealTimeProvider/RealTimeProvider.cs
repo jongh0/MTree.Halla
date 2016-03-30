@@ -9,6 +9,7 @@ using MTree.Utility;
 using System.Threading;
 using MTree.Configuration;
 using System.IO;
+using System.Diagnostics;
 
 namespace MTree.RealTimeProvider
 {
@@ -51,12 +52,15 @@ namespace MTree.RealTimeProvider
         {
             logger.Info("Market end timer elapsed");
 
-            SaveTodayChart();
+            //SaveTodayChart();
             ExitProgram();
         }
 
         private void SaveTodayChart()
         {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
             try
             {
                 logger.Info("Save today chart");
@@ -64,7 +68,7 @@ namespace MTree.RealTimeProvider
                 var publisherContract = DaishinMasterContract;
                 if (publisherContract == null)
                 {
-                    logger.Error("Contract not exists for candles");
+                    logger.Error("Contract not exists for chart");
                     return;
                 }
 
@@ -76,6 +80,8 @@ namespace MTree.RealTimeProvider
 
                 foreach (var codeEntity in codeEntityList)
                 {
+                    //int startTick = Environment.TickCount;
+
                     var fullCode = CodeEntity.ConvertToDaishinCode(codeEntity);
 
                     var candleList = publisherContract.Callback.GetChart(fullCode, today, today, CandleTypes.Tick);
@@ -85,12 +91,17 @@ namespace MTree.RealTimeProvider
                         continue;
                     }
 
+                    //logger.Info($"Save today chart, publisher tick: {Environment.TickCount - startTick} ({candleList.Count})");
+                    //startTick = Environment.TickCount;
+
                     foreach (var consumerContract in TodayChartContracts)
                     {
                         consumerContract.Value.Callback.ConsumeChart(candleList);
                     }
 
                     candleList.Clear();
+
+                    //logger.Info($"Save today chart, consumer tick: {Environment.TickCount - startTick}");
                 }
 
                 codeEntityList.Clear();
@@ -99,6 +110,11 @@ namespace MTree.RealTimeProvider
             catch (Exception ex)
             {
                 logger.Error(ex);
+            }
+            finally
+            {
+                sw.Stop();
+                logger.Info($"Save today chart Elapsed time: {sw.Elapsed.ToString()}");
             }
         }
 
