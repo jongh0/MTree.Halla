@@ -48,9 +48,10 @@ namespace MTree.EbestPublisher
         private readonly string resFilePath = "\\Res";
 
         #region Keep session
-        private int MaxCommunInterval { get; } = 1000 * 60 * 30;
-        private int LastCommunTick { get; set; } = Environment.TickCount;
-        private System.Timers.Timer CommunTimer { get; set; } 
+        private int MaxCommInterval { get; } = 1000 * 60 * 20; // 통신 안한지 20분 넘어가면 Quote 시작
+        private int CommTimerInterval { get; } = 1000 * 60 * 2; // 2분마다 체크
+        private int LastCommTick { get; set; } = Environment.TickCount;
+        private System.Timers.Timer CommTimer { get; set; } 
         #endregion
 
         #region Ebest Specific
@@ -86,9 +87,9 @@ namespace MTree.EbestPublisher
         {
             try
             {
-                CommunTimer = new System.Timers.Timer(MaxCommunInterval);
-                CommunTimer.Elapsed += OnCommunTimer;
-                CommunTimer.AutoReset = true;
+                CommTimer = new System.Timers.Timer(CommTimerInterval);
+                CommTimer.Elapsed += OnCommunTimer;
+                CommTimer.AutoReset = true;
 
                 #region XASession
                 sessionObj = new XASessionClass();
@@ -185,7 +186,7 @@ namespace MTree.EbestPublisher
         #region XAQuery
         private void queryObj_ReceiveMessage(bool bIsSystemError, string nMessageCode, string szMessage)
         {
-            LastCommunTick = Environment.TickCount;
+            LastCommTick = Environment.TickCount;
 
             if (bIsSystemError == true)
                 logger.Error($"bIsSystemError: {bIsSystemError}, nMessageCode: {nMessageCode}, szMessage: {szMessage}");
@@ -193,7 +194,7 @@ namespace MTree.EbestPublisher
 
         private void queryObj_ReceiveData(string szTrCode)
         {
-            LastCommunTick = Environment.TickCount;
+            LastCommTick = Environment.TickCount;
             logger.Trace($"szTrCode: {szTrCode}");
 
             if (szTrCode == "t1102")
@@ -212,7 +213,7 @@ namespace MTree.EbestPublisher
 
         private void queryObj_ReceiveChartRealData(string szTrCode)
         {
-            LastCommunTick = Environment.TickCount;
+            LastCommTick = Environment.TickCount;
             logger.Trace($"szTrCode: {szTrCode}");
         }
         #endregion
@@ -220,7 +221,7 @@ namespace MTree.EbestPublisher
         #region XAReal
         private void realObj_ReceiveRealData(string szTrCode)
         {
-            LastCommunTick = Environment.TickCount;
+            LastCommTick = Environment.TickCount;
 
             if (szTrCode == "VI_")
                 VolatilityInterruptionReceived(szTrCode);
@@ -236,9 +237,9 @@ namespace MTree.EbestPublisher
         #region XASession
         private void sessionObj_Event_Logout()
         {
-            LastCommunTick = Environment.TickCount;
+            LastCommTick = Environment.TickCount;
 
-            CommunTimer?.Stop();
+            CommTimer?.Stop();
 
             LoginInstance.State = LoginStates.Logout;
             logger.Info(LoginInstance.ToString());
@@ -246,7 +247,7 @@ namespace MTree.EbestPublisher
 
         private void sessionObj_Event_Login(string szCode, string szMsg)
         {
-            LastCommunTick = Environment.TickCount;
+            LastCommTick = Environment.TickCount;
 
             QuoteInterval = 1000 / stockQuotingObj.GetTRCountPerSec("t1102");
 
@@ -281,7 +282,7 @@ namespace MTree.EbestPublisher
                 if (sessionObj.Login(LoginInstance.UserId, LoginInstance.UserPw, LoginInstance.CertPw, serverType, true) == true)
                 {
                     logger.Info($"Try login with id: {LoginInstance.UserId}");
-                    CommunTimer.Start();
+                    CommTimer.Start();
                     return true;
                 }
 
@@ -701,9 +702,9 @@ namespace MTree.EbestPublisher
 
         private void OnCommunTimer(object sender, ElapsedEventArgs e)
         {
-            if ((Environment.TickCount - LastCommunTick) > MaxCommunInterval)
+            if ((Environment.TickCount - LastCommTick) > MaxCommInterval)
             {
-                LastCommunTick = Environment.TickCount;
+                LastCommTick = Environment.TickCount;
                 logger.Info($"[{GetType().Name}] Keep firm connection");
                 GetStockMaster("000020");
             }
