@@ -107,8 +107,8 @@ namespace MTree.DbProvider
             finally
             {
                 var duration = Environment.TickCount - startTick;
-                if (duration > 100)
-                    logger.Error($"Db insert duration: {duration}, {item.ToString()}");
+                if (duration > 2000)
+                    logger.Warn($"Db insert duration: {duration}, {item.ToString()}");
             }
         }
 
@@ -438,7 +438,7 @@ namespace MTree.DbProvider
                 sb.AppendLine($"IndexMaster: {indexMasterCount.ToString(Config.General.CurrencyFormat)}");
                 sb.AppendLine($"StockConclusion: {stockConclusionCount.ToString(Config.General.CurrencyFormat)}");
                 sb.AppendLine($"IndexConclusion: {indexConclusionCount.ToString(Config.General.CurrencyFormat)}");
-                sb.AppendLine($"Total: {totalCount.ToString(Config.General.CurrencyFormat)}");
+                sb.Append($"Total: {totalCount.ToString(Config.General.CurrencyFormat)}");
 
                 logger.Info(sb.ToString());
                 PushUtility.NotifyMessage(sb.ToString());

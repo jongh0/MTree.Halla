@@ -157,7 +157,7 @@ namespace MTree.DaishinPublisher
                 catch (ArgumentOutOfRangeException)
                 {
                     conclusion.Time = now;
-                    logger.Error($"Index conclusion time error, time: {time}\n{conclusion.ToString()}");
+                    logger.Warn($"Index conclusion time error, time: {time}, code: {conclusion.Code}");
                 }
 
                 IndexConclusionQueue.Enqueue(conclusion);
