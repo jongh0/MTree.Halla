@@ -37,6 +37,9 @@ namespace MTree.PopupStopper
 
                         cancelToken.ThrowIfCancellationRequested();
                         popupClosed = CheckInvestorInfoPopup();
+
+                        cancelToken.ThrowIfCancellationRequested();
+                        popupClosed = CheckRuntimeError();
                     }
                     catch (OperationCanceledException)
                     {
@@ -49,12 +52,40 @@ namespace MTree.PopupStopper
                     }
 
                     if (popupClosed == false)
-                        Thread.Sleep(500);
+                        Thread.Sleep(100);
                 }
             }, cancelToken);
 
             task.Wait();
             logger.Info("Application finished");
+        }
+
+        private static bool CheckRuntimeError()
+        {
+            try
+            {
+                IntPtr windowH = WindowUtility.FindWindow2("Microsoft Visual C++ Runtime Library", interval: 10, setForeground: false);
+
+                if (windowH != IntPtr.Zero)
+                {
+                    logger.Trace($"Runtime error popup found");
+
+                    IntPtr buttonH = WindowUtility.FindWindowEx2(windowH, "Button", "확인");
+                    if (buttonH != IntPtr.Zero)
+                    {
+                        logger.Trace($"Confirm button clicked");
+                        WindowUtility.SendMessage2(buttonH, WindowUtility.BM_CLICK, 0, 0);
+
+                        return true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+
+            return false;
         }
 
         private static bool CheckDibPopup()
