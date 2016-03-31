@@ -22,6 +22,13 @@
   </PropertyGroup>
   <Import Project="$(VSToolsPath)\ArchitectureTools\Microsoft.VisualStudio.TeamArchitect.ModelingProject.targets" Condition="'$(VSToolsPath)' != ''" />
   <ItemGroup>
+    <Content Include="ChartUsecase.usecasediagram">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="ChartUsecase.usecasediagram.layout">
+      <SubType>Content</SubType>
+      <DependentUpon>ChartUsecase.usecasediagram</DependentUpon>
+    </Content>
     <Content Include="CodeMapObjectDiagram.classdiagram">
       <SubType>Content</SubType>
     </Content>

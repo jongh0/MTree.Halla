@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<modelStoreModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/VisualStudio/TeamArchitect/ComponentDesigner" xmlns:dm9="http://schemas.microsoft.com/dsltools/LogicalClassDesigner"
+<modelStoreModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/LogicalClassDesigner" xmlns:dm9="http://schemas.microsoft.com/dsltools/SimpleShapesModel" xmlns:dm10="http://schemas.microsoft.com/dsltools/UseCaseModel"
   dslVersion="1.0.0.0"
   Id="1daf07bb-4f77-4afe-8f56-ddfa2c1f436c"
   name="HallaModeling" xmlns="http://schemas.microsoft.com/dsltools/ModelStore">
@@ -12318,6 +12318,302 @@ consumer.OnNewTransaactionReceived += OnReceived;
       <undefinedType
         Id="16129a5d-7da9-4b2a-867c-597138269758"
         name="Subscribable)" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <actor
+        Id="7681d027-4c39-4511-95b2-94ef92869506"
+        name="Simul"
+        isAbstract="false"
+        isLeaf="false">
+        <suppliersInternal>
+          <dependency
+            Id="bcd977bf-92f7-4dda-b8f1-4a459ce8d156">
+            <useCaseMoniker
+              Id="0f30b62e-3f26-4f17-bfa7-e9258c2f03d4"
+              LastKnownName="N TickChart"
+              LastKnownLocation="HallaModeling.uml" />
+          </dependency>
+          <dependency
+            Id="513636e5-ead4-46a4-9514-be10da304092">
+            <useCaseMoniker
+              Id="a30f5952-a85c-4348-9ff9-1f354d520fdc"
+              LastKnownName="N MinChart"
+              LastKnownLocation="HallaModeling.uml" />
+          </dependency>
+        </suppliersInternal>
+      </actor>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <actor
+        Id="d53189d8-294c-466f-b002-ed6a163dd2fd"
+        name="Consumer"
+        isAbstract="false"
+        isLeaf="false">
+        <suppliersInternal>
+          <dependency
+            Id="a8d79b2f-c09c-4afd-9bc6-327c2337d5b4">
+            <useCaseMoniker
+              Id="08f27994-b744-43d2-b5d0-6bde68b302d4"
+              LastKnownName="WeekChart"
+              LastKnownLocation="HallaModeling.uml" />
+          </dependency>
+          <dependency
+            Id="616ad198-990b-4993-a11d-a5c6a996b2b2">
+            <useCaseMoniker
+              Id="778c2b6c-275f-4f12-b63c-b6deac302a00"
+              LastKnownName="MonthChart"
+              LastKnownLocation="HallaModeling.uml" />
+          </dependency>
+          <dependency
+            Id="6e8cf555-8ec3-4f2d-9420-07ca1f04301f">
+            <useCaseMoniker
+              Id="a05a2d39-51b4-428a-85f8-1a5a2df3cd04"
+              LastKnownName="YearChart"
+              LastKnownLocation="HallaModeling.uml" />
+          </dependency>
+          <dependency
+            Id="259cde1d-cdf2-446f-b852-a50286f35de9">
+            <useCaseMoniker
+              Id="0f30b62e-3f26-4f17-bfa7-e9258c2f03d4"
+              LastKnownName="N TickChart"
+              LastKnownLocation="HallaModeling.uml" />
+          </dependency>
+          <dependency
+            Id="52305eef-6e2f-447b-ad4f-dde4da8426f8">
+            <useCaseMoniker
+              Id="a30f5952-a85c-4348-9ff9-1f354d520fdc"
+              LastKnownName="N MinChart"
+              LastKnownLocation="HallaModeling.uml" />
+          </dependency>
+          <dependency
+            Id="a6215b24-2905-47bf-97fc-fa51d160cf34">
+            <useCaseMoniker
+              Id="6884aa86-928f-4075-868f-9b4149ca2e18"
+              LastKnownName="DayChart"
+              LastKnownLocation="HallaModeling.uml" />
+          </dependency>
+        </suppliersInternal>
+      </actor>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <subsystem
+        Id="8f242b88-ca51-4d1e-baf9-e88344ada1ee"
+        name="ChartSystem"
+        isAbstract="false"
+        isLeaf="false"
+        isActiveClass="false" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <useCase
+        Id="b8713eed-983a-49b7-8181-f423424e5e0d"
+        name="Conclusion"
+        isAbstract="false"
+        isLeaf="false">
+        <suppliersInternal>
+          <dependency
+            Id="97a29aff-b63a-4265-8ebd-673b2940371f">
+            <useCaseMoniker
+              Id="616d5464-4b0f-49e6-92b1-c0143b230415"
+              LastKnownName="Database"
+              LastKnownLocation="HallaModeling.uml" />
+          </dependency>
+        </suppliersInternal>
+        <subjects>
+          <subsystemMoniker
+            Id="8f242b88-ca51-4d1e-baf9-e88344ada1ee"
+            LastKnownName="ChartSystem"
+            LastKnownLocation="HallaModeling.uml" />
+        </subjects>
+      </useCase>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <useCase
+        Id="0f30b62e-3f26-4f17-bfa7-e9258c2f03d4"
+        name="N TickChart"
+        isAbstract="false"
+        isLeaf="false">
+        <suppliersInternal>
+          <dependency
+            Id="d4eb08cc-5672-4a57-8924-5e500991df62">
+            <useCaseMoniker
+              Id="b8713eed-983a-49b7-8181-f423424e5e0d"
+              LastKnownName="Conclusion"
+              LastKnownLocation="HallaModeling.uml" />
+          </dependency>
+          <dependency
+            Id="cce18da1-9248-40a6-94cd-65a55504bbde">
+            <useCaseMoniker
+              Id="0bc8f948-d771-445a-9a6f-c3b43e327cc8"
+              LastKnownName="DaishinPublisher"
+              LastKnownLocation="HallaModeling.uml" />
+          </dependency>
+        </suppliersInternal>
+        <subjects>
+          <subsystemMoniker
+            Id="8f242b88-ca51-4d1e-baf9-e88344ada1ee"
+            LastKnownName="ChartSystem"
+            LastKnownLocation="HallaModeling.uml" />
+        </subjects>
+      </useCase>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <useCase
+        Id="a30f5952-a85c-4348-9ff9-1f354d520fdc"
+        name="N MinChart"
+        isAbstract="false"
+        isLeaf="false">
+        <suppliersInternal>
+          <dependency
+            Id="c11d6121-a355-4d25-8c6a-193df061b18f">
+            <useCaseMoniker
+              Id="0f30b62e-3f26-4f17-bfa7-e9258c2f03d4"
+              LastKnownName="N TickChart"
+              LastKnownLocation="HallaModeling.uml" />
+          </dependency>
+        </suppliersInternal>
+        <subjects>
+          <subsystemMoniker
+            Id="8f242b88-ca51-4d1e-baf9-e88344ada1ee"
+            LastKnownName="ChartSystem"
+            LastKnownLocation="HallaModeling.uml" />
+        </subjects>
+      </useCase>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <useCase
+        Id="6884aa86-928f-4075-868f-9b4149ca2e18"
+        name="DayChart"
+        isAbstract="false"
+        isLeaf="false">
+        <suppliersInternal>
+          <dependency
+            Id="caee18f5-3513-47cb-8580-8f9e873ac869">
+            <useCaseMoniker
+              Id="616d5464-4b0f-49e6-92b1-c0143b230415"
+              LastKnownName="Database"
+              LastKnownLocation="HallaModeling.uml" />
+          </dependency>
+        </suppliersInternal>
+        <subjects>
+          <subsystemMoniker
+            Id="8f242b88-ca51-4d1e-baf9-e88344ada1ee"
+            LastKnownName="ChartSystem"
+            LastKnownLocation="HallaModeling.uml" />
+        </subjects>
+      </useCase>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <useCase
+        Id="08f27994-b744-43d2-b5d0-6bde68b302d4"
+        name="WeekChart"
+        isAbstract="false"
+        isLeaf="false">
+        <suppliersInternal>
+          <dependency
+            Id="9991665a-cfe8-49d2-9445-491007b9e323">
+            <useCaseMoniker
+              Id="6884aa86-928f-4075-868f-9b4149ca2e18"
+              LastKnownName="DayChart"
+              LastKnownLocation="HallaModeling.uml" />
+          </dependency>
+        </suppliersInternal>
+        <subjects>
+          <subsystemMoniker
+            Id="8f242b88-ca51-4d1e-baf9-e88344ada1ee"
+            LastKnownName="ChartSystem"
+            LastKnownLocation="HallaModeling.uml" />
+        </subjects>
+      </useCase>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <useCase
+        Id="778c2b6c-275f-4f12-b63c-b6deac302a00"
+        name="MonthChart"
+        isAbstract="false"
+        isLeaf="false">
+        <suppliersInternal>
+          <dependency
+            Id="a3f6029e-875a-4ce9-bf47-0f4d0ebc2538">
+            <useCaseMoniker
+              Id="6884aa86-928f-4075-868f-9b4149ca2e18"
+              LastKnownName="DayChart"
+              LastKnownLocation="HallaModeling.uml" />
+          </dependency>
+        </suppliersInternal>
+        <subjects>
+          <subsystemMoniker
+            Id="8f242b88-ca51-4d1e-baf9-e88344ada1ee"
+            LastKnownName="ChartSystem"
+            LastKnownLocation="HallaModeling.uml" />
+        </subjects>
+      </useCase>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <useCase
+        Id="a05a2d39-51b4-428a-85f8-1a5a2df3cd04"
+        name="YearChart"
+        isAbstract="false"
+        isLeaf="false">
+        <suppliersInternal>
+          <dependency
+            Id="370b36f6-733b-4373-9b8b-f71dea2a7cec">
+            <useCaseMoniker
+              Id="6884aa86-928f-4075-868f-9b4149ca2e18"
+              LastKnownName="DayChart"
+              LastKnownLocation="HallaModeling.uml" />
+          </dependency>
+        </suppliersInternal>
+        <subjects>
+          <subsystemMoniker
+            Id="8f242b88-ca51-4d1e-baf9-e88344ada1ee"
+            LastKnownName="ChartSystem"
+            LastKnownLocation="HallaModeling.uml" />
+        </subjects>
+      </useCase>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <useCase
+        Id="9df60740-54b0-4bf1-98db-06f5254cdb2c"
+        name="UseCase1"
+        isAbstract="false"
+        isLeaf="false" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <useCase
+        Id="616d5464-4b0f-49e6-92b1-c0143b230415"
+        name="Database"
+        isAbstract="false"
+        isLeaf="false">
+        <suppliersInternal>
+          <dependency
+            Id="1de8262c-18a6-4122-af40-00afcc1de1ca">
+            <useCaseMoniker
+              Id="0bc8f948-d771-445a-9a6f-c3b43e327cc8"
+              LastKnownName="DaishinPublisher"
+              LastKnownLocation="HallaModeling.uml" />
+          </dependency>
+        </suppliersInternal>
+        <subjects>
+          <subsystemMoniker
+            Id="8f242b88-ca51-4d1e-baf9-e88344ada1ee"
+            LastKnownName="ChartSystem"
+            LastKnownLocation="HallaModeling.uml" />
+        </subjects>
+      </useCase>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <useCase
+        Id="0bc8f948-d771-445a-9a6f-c3b43e327cc8"
+        name="DaishinPublisher"
+        isAbstract="false"
+        isLeaf="false">
+        <subjects>
+          <subsystemMoniker
+            Id="8f242b88-ca51-4d1e-baf9-e88344ada1ee"
+            LastKnownName="ChartSystem"
+            LastKnownLocation="HallaModeling.uml" />
+        </subjects>
+      </useCase>
     </packageHasNamedElement>
   </packagedElements>
   <primitiveType

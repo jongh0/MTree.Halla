@@ -1,0 +1,188 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<useCaseModelRoot xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/ModelStore" xmlns:dm9="http://schemas.microsoft.com/dsltools/LogicalClassDesigner" xmlns:dm10="http://schemas.microsoft.com/dsltools/SimpleShapesModel" dslVersion="1.0.0.0" Id="a821dd46-0448-40aa-826e-c41416175550" name="ChartUsecase" linkedPackageId="f8c298a5-9956-42a6-b0b8-6449628aa9b6" xmlns="http://schemas.microsoft.com/dsltools/UseCaseModel">
+  <profileInstances>
+    <packageHasProfileInstances Id="29b3f829-3dda-482e-a201-c5fb8aef36a0">
+      <profileInstance Id="f6edb45c-49eb-4e88-8240-68fb6665b609" name="StandardProfileL2">
+        <elementDefinition Id="e34d544e-0fea-4ed6-ac5e-1b74119ac791" />
+      </profileInstance>
+      <elementDefinition Id="0caec977-1f8c-4ba3-a7db-8cc9ad9cc73b" />
+    </packageHasProfileInstances>
+    <packageHasProfileInstances Id="094e3cd9-9a6f-417b-b9f1-28ebc4cdd9cd">
+      <profileInstance Id="af0d77ef-c675-448c-b1b3-e1545356fd5d" name="StandardProfileL3">
+        <elementDefinition Id="532ea607-fb19-44b8-8502-3351b05452be" />
+      </profileInstance>
+      <elementDefinition Id="29349502-908c-4fda-9054-c48619c59ed0" />
+    </packageHasProfileInstances>
+    <packageHasProfileInstances Id="3ee2c6e5-6c96-4f39-88a3-3dfd35cb7f1f">
+      <profileInstance Id="8d5d5dcc-7a8d-401b-9dde-fde33fe83266" name="TextTemplateBindings">
+        <elementDefinition Id="0f6be66b-2ae9-4a5a-948c-d9579f5224a0" />
+      </profileInstance>
+      <elementDefinition Id="f272697a-727e-4e60-b8af-24206f289f68" />
+    </packageHasProfileInstances>
+  </profileInstances>
+  <packagedElements>
+    <useCaseModelRootHasTypes>
+      <actor Id="d6dc6f8a-42eb-4852-b807-febedad84682" name="Consumer" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="d53189d8-294c-466f-b002-ed6a163dd2fd" />
+        <suppliersInternal>
+          <dependency Id="30f9f513-ce8a-4ef2-99cf-ed27f0f6056c">
+            <useCaseMoniker Id="c8b22acb-9f61-4083-861e-8fb2419ba01b" LastKnownName="WeekChart" />
+            <elementDefinition Id="a8d79b2f-c09c-4afd-9bc6-327c2337d5b4" />
+          </dependency>
+          <dependency Id="94ad21d8-fdca-40a6-b016-cf9229a5d3a6">
+            <useCaseMoniker Id="057e23a6-84fc-4d43-8ac4-97a2925eb7b8" LastKnownName="MonthChart" />
+            <elementDefinition Id="616ad198-990b-4993-a11d-a5c6a996b2b2" />
+          </dependency>
+          <dependency Id="1c94df53-1517-46cf-a94a-4f9376f65d8d">
+            <useCaseMoniker Id="ce8e577a-eaa0-4911-a267-d2db40c7765c" LastKnownName="YearChart" />
+            <elementDefinition Id="6e8cf555-8ec3-4f2d-9420-07ca1f04301f" />
+          </dependency>
+          <dependency Id="bdd588c1-c6ee-4986-adb1-d612b2f16bd1">
+            <useCaseMoniker Id="9614475b-fff4-4bc3-8b98-c064359b102a" LastKnownName="N TickChart" />
+            <elementDefinition Id="259cde1d-cdf2-446f-b852-a50286f35de9" />
+          </dependency>
+          <dependency Id="662d4e88-6cde-4df6-97d3-e05bcd7d0dd2">
+            <useCaseMoniker Id="57ccda78-9a3d-4f59-8bef-e225aa545fe6" LastKnownName="N MinChart" />
+            <elementDefinition Id="52305eef-6e2f-447b-ad4f-dde4da8426f8" />
+          </dependency>
+          <dependency Id="ece6dba7-d55a-4123-9838-841811b291a3">
+            <useCaseMoniker Id="5f1f3b47-6df9-42eb-9228-1cfe2ac4ecdc" LastKnownName="DayChart" />
+            <elementDefinition Id="a6215b24-2905-47bf-97fc-fa51d160cf34" />
+          </dependency>
+        </suppliersInternal>
+      </actor>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <subsystem Id="1fb0cb7c-b8cb-4ed0-9a5a-30ec45573a64" name="ChartSystem" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="8f242b88-ca51-4d1e-baf9-e88344ada1ee" />
+      </subsystem>
+    </useCaseModelRootHasTypes>
+    <packageHasNamedElement>
+      <useCase Id="786a1b2c-e9de-4aed-b621-b8da5c3b09c1" name="Conclusion" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="b8713eed-983a-49b7-8181-f423424e5e0d" />
+        <suppliersInternal>
+          <dependency Id="1e09087b-a61a-4b13-b171-e64f171a94c0">
+            <useCaseMoniker Id="23ac7d86-4133-47bd-ae84-b999808047fc" LastKnownName="Database" />
+            <elementDefinition Id="97a29aff-b63a-4265-8ebd-673b2940371f" />
+          </dependency>
+        </suppliersInternal>
+        <subjects>
+          <subsystemMoniker Id="1fb0cb7c-b8cb-4ed0-9a5a-30ec45573a64" LastKnownName="ChartSystem" />
+        </subjects>
+      </useCase>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <useCase Id="9614475b-fff4-4bc3-8b98-c064359b102a" name="N TickChart" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="0f30b62e-3f26-4f17-bfa7-e9258c2f03d4" />
+        <suppliersInternal>
+          <dependency Id="8dc170a8-f636-4195-a0eb-468ea09e7047">
+            <useCaseMoniker Id="786a1b2c-e9de-4aed-b621-b8da5c3b09c1" LastKnownName="Conclusion" />
+            <elementDefinition Id="d4eb08cc-5672-4a57-8924-5e500991df62" />
+          </dependency>
+          <dependency Id="f5557ace-877b-45e2-9bf2-ff1c40fd6d72">
+            <useCaseMoniker Id="9edf94ec-e10b-4ff9-ac92-647edd420911" LastKnownName="DaishinPublisher" />
+            <elementDefinition Id="cce18da1-9248-40a6-94cd-65a55504bbde" />
+          </dependency>
+        </suppliersInternal>
+        <subjects>
+          <subsystemMoniker Id="1fb0cb7c-b8cb-4ed0-9a5a-30ec45573a64" LastKnownName="ChartSystem" />
+        </subjects>
+      </useCase>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <useCase Id="57ccda78-9a3d-4f59-8bef-e225aa545fe6" name="N MinChart" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="a30f5952-a85c-4348-9ff9-1f354d520fdc" />
+        <suppliersInternal>
+          <dependency Id="0523bb77-b365-4d3a-a7cb-8e9deabae83d">
+            <useCaseMoniker Id="9614475b-fff4-4bc3-8b98-c064359b102a" LastKnownName="N TickChart" />
+            <elementDefinition Id="c11d6121-a355-4d25-8c6a-193df061b18f" />
+          </dependency>
+        </suppliersInternal>
+        <subjects>
+          <subsystemMoniker Id="1fb0cb7c-b8cb-4ed0-9a5a-30ec45573a64" LastKnownName="ChartSystem" />
+        </subjects>
+      </useCase>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <useCase Id="5f1f3b47-6df9-42eb-9228-1cfe2ac4ecdc" name="DayChart" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="6884aa86-928f-4075-868f-9b4149ca2e18" />
+        <suppliersInternal>
+          <dependency Id="5098ca64-b5c0-41be-8a47-0694bd3d16eb">
+            <useCaseMoniker Id="23ac7d86-4133-47bd-ae84-b999808047fc" LastKnownName="Database" />
+            <elementDefinition Id="caee18f5-3513-47cb-8580-8f9e873ac869" />
+          </dependency>
+        </suppliersInternal>
+        <subjects>
+          <subsystemMoniker Id="1fb0cb7c-b8cb-4ed0-9a5a-30ec45573a64" LastKnownName="ChartSystem" />
+        </subjects>
+      </useCase>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <useCase Id="c8b22acb-9f61-4083-861e-8fb2419ba01b" name="WeekChart" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="08f27994-b744-43d2-b5d0-6bde68b302d4" />
+        <suppliersInternal>
+          <dependency Id="f46d5baf-cf4d-4fd4-8611-9a8c007d303e">
+            <useCaseMoniker Id="5f1f3b47-6df9-42eb-9228-1cfe2ac4ecdc" LastKnownName="DayChart" />
+            <elementDefinition Id="9991665a-cfe8-49d2-9445-491007b9e323" />
+          </dependency>
+        </suppliersInternal>
+        <subjects>
+          <subsystemMoniker Id="1fb0cb7c-b8cb-4ed0-9a5a-30ec45573a64" LastKnownName="ChartSystem" />
+        </subjects>
+      </useCase>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <useCase Id="057e23a6-84fc-4d43-8ac4-97a2925eb7b8" name="MonthChart" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="778c2b6c-275f-4f12-b63c-b6deac302a00" />
+        <suppliersInternal>
+          <dependency Id="b5f9fa63-f907-4797-bee6-0a31583fee4a">
+            <useCaseMoniker Id="5f1f3b47-6df9-42eb-9228-1cfe2ac4ecdc" LastKnownName="DayChart" />
+            <elementDefinition Id="a3f6029e-875a-4ce9-bf47-0f4d0ebc2538" />
+          </dependency>
+        </suppliersInternal>
+        <subjects>
+          <subsystemMoniker Id="1fb0cb7c-b8cb-4ed0-9a5a-30ec45573a64" LastKnownName="ChartSystem" />
+        </subjects>
+      </useCase>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <useCase Id="ce8e577a-eaa0-4911-a267-d2db40c7765c" name="YearChart" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="a05a2d39-51b4-428a-85f8-1a5a2df3cd04" />
+        <suppliersInternal>
+          <dependency Id="2e7bd203-74e9-4f9f-87e7-83d78196ea8c">
+            <useCaseMoniker Id="5f1f3b47-6df9-42eb-9228-1cfe2ac4ecdc" LastKnownName="DayChart" />
+            <elementDefinition Id="370b36f6-733b-4373-9b8b-f71dea2a7cec" />
+          </dependency>
+        </suppliersInternal>
+        <subjects>
+          <subsystemMoniker Id="1fb0cb7c-b8cb-4ed0-9a5a-30ec45573a64" LastKnownName="ChartSystem" />
+        </subjects>
+      </useCase>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <useCase Id="23ac7d86-4133-47bd-ae84-b999808047fc" name="Database" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="616d5464-4b0f-49e6-92b1-c0143b230415" />
+        <suppliersInternal>
+          <dependency Id="a70a2a4c-502d-4203-8820-db0c1b0efb68">
+            <useCaseMoniker Id="9edf94ec-e10b-4ff9-ac92-647edd420911" LastKnownName="DaishinPublisher" />
+            <elementDefinition Id="1de8262c-18a6-4122-af40-00afcc1de1ca" />
+          </dependency>
+        </suppliersInternal>
+        <subjects>
+          <subsystemMoniker Id="1fb0cb7c-b8cb-4ed0-9a5a-30ec45573a64" LastKnownName="ChartSystem" />
+        </subjects>
+      </useCase>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <useCase Id="9edf94ec-e10b-4ff9-ac92-647edd420911" name="DaishinPublisher" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="0bc8f948-d771-445a-9a6f-c3b43e327cc8" />
+        <subjects>
+          <subsystemMoniker Id="1fb0cb7c-b8cb-4ed0-9a5a-30ec45573a64" LastKnownName="ChartSystem" />
+        </subjects>
+      </useCase>
+    </packageHasNamedElement>
+  </packagedElements>
+  <package Id="f8c298a5-9956-42a6-b0b8-6449628aa9b6" name="HallaModeling">
+    <elementDefinition Id="1daf07bb-4f77-4afe-8f56-ddfa2c1f436c" />
+  </package>
+</useCaseModelRoot>
