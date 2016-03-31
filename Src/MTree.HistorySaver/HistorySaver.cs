@@ -192,11 +192,12 @@ namespace MTree.HistorySaver
         {
             try
             {
-                foreach (var candle in candles)
-                {
-                    DbAgent.Instance.Insert(candle);
-                    ChartCount++;
-                }
+                var code = candles[0].Code;
+                DbAgent.Instance.ChartDb.DropCollection(code);
+
+                var collection = DbAgent.Instance.ChartDb.GetCollection<Candle>(code);
+                collection.InsertManyAsync(candles);
+                ChartCount += candles.Count;
             }
             catch (Exception ex)
             {

@@ -52,7 +52,7 @@ namespace MTree.PopupStopper
                     }
 
                     if (popupClosed == false)
-                        Thread.Sleep(500);
+                        Thread.Sleep(100);
                 }
             }, cancelToken);
 

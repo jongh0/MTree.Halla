@@ -55,6 +55,7 @@ namespace MTree.RealTimeProvider
         {
             logger.Info("Market end timer elapsed");
 
+            SaveDayChart();
             ExitProgram();
         }
 
@@ -67,16 +68,15 @@ namespace MTree.RealTimeProvider
             {
                 logger.Info("Save chart");
 
-                var publisherContract = DaishinMasterContract;
-                if (publisherContract == null)
-                {
-                    logger.Error("Contract not exists for chart");
-                    return;
-                }
+                var daishinContracts = DaishinContracts;
+                var daishinContractCount = daishinContracts.Count;
 
                 #region Save stock chart
-                foreach (var mastering in StockMasteringList)
+                var stockCount = StockMasteringList.Count;
+
+                for (int i = 0; i < stockCount; i++)
                 {
+                    var mastering = StockMasteringList[i];
                     var startDate = mastering.Stock.ListedDate;
                     var endDate = DateTime.Now;
                     var code = mastering.Stock.Code;
@@ -84,10 +84,10 @@ namespace MTree.RealTimeProvider
 
                     int startTick = Environment.TickCount;
 
-                    var candleList = publisherContract.Callback.GetChart(fullCode, startDate, endDate, CandleTypes.Day);
+                    var candleList = daishinContracts[i % daishinContractCount].Callback.GetChart(fullCode, startDate, endDate, CandleTypes.Day);
                     if (candleList == null || candleList.Count == 0)
                     {
-                        logger.Info($"{code} chart not exists");
+                        logger.Info($"{code} stock chart not exists");
                         continue;
                     }
 
@@ -101,15 +101,18 @@ namespace MTree.RealTimeProvider
 
                     int consumerTick = Environment.TickCount - startTick;
 
-                    logger.Info($"Save chart {code}/{startDate.ToShortDateString()}~{endDate.ToShortDateString()}, candle count: {candleList.Count}, publisher tick: {publisherTick}, consumer tick: {consumerTick}");
+                    logger.Info($"Save stock chart {i}/{stockCount}, {code}, {startDate.ToShortDateString()}, candle count: {candleList.Count}, publisher tick: {publisherTick}, consumer tick: {consumerTick}");
 
                     candleList.Clear();
-                } 
+                }
                 #endregion
 
                 #region Save index chart
-                foreach (var mastering in IndexMasteringList)
+                var indexCount = IndexMasteringList.Count;
+
+                for (int i = 0; i < indexCount; i++)
                 {
+                    var mastering = IndexMasteringList[i];
                     var startDate = Config.General.DefaultStartDate;
                     var endDate = DateTime.Now;
                     var code = mastering.Index.Code;
@@ -117,10 +120,10 @@ namespace MTree.RealTimeProvider
 
                     int startTick = Environment.TickCount;
 
-                    var candleList = publisherContract.Callback.GetChart(fullCode, startDate, endDate, CandleTypes.Day);
+                    var candleList = daishinContracts[i % daishinContractCount].Callback.GetChart(fullCode, startDate, endDate, CandleTypes.Day);
                     if (candleList == null || candleList.Count == 0)
                     {
-                        logger.Info($"{code} chart not exists");
+                        logger.Info($"{code} index chart not exists");
                         continue;
                     }
 
@@ -134,7 +137,7 @@ namespace MTree.RealTimeProvider
 
                     int consumerTick = Environment.TickCount - startTick;
 
-                    logger.Info($"Save chart {code}/{startDate.ToShortDateString()}~{endDate.ToShortDateString()}, candle count: {candleList.Count}, publisher tick: {publisherTick}, consumer tick: {consumerTick}");
+                    logger.Info($"Save index chart {i}/{indexCount}, {code}, {startDate.ToShortDateString()}, candle count: {candleList.Count}, publisher tick: {publisherTick}, consumer tick: {consumerTick}");
 
                     candleList.Clear();
                 } 
@@ -201,6 +204,10 @@ namespace MTree.RealTimeProvider
                 PushUtility.NotifyMessage(msg);
 
                 Thread.Sleep(1000 * 20);
+
+                // PopupStopper 종료
+                ProcessUtility.Kill(ProcessTypes.PopupStopper);
+
                 Environment.Exit(0);
             });
         }

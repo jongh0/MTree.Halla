@@ -17,6 +17,7 @@ namespace MTree.RealTimeProvider
 {
     public partial class RealTimeProvider
     {
+        public int PublisherContractCount { get { return PublisherContracts.Count; } }
         private ConcurrentDictionary<Guid, PublisherContract> PublisherContracts { get; set; } = new ConcurrentDictionary<Guid, PublisherContract>();
 
         #region Contract Property
@@ -79,15 +80,14 @@ namespace MTree.RealTimeProvider
 
                     // Daishin popup stopper
                     ProcessUtility.Start(ProcessTypes.PopupStopper, ProcessWindowStyle.Minimized);
-                    ProcessUtility.Start(ProcessTypes.PopupStopper, ProcessWindowStyle.Minimized);
                 }
 
                 // Daishin
                 int daishinProcessCount;
                 if (Config.General.SkipBiddingPrice == true)
-                    daishinProcessCount = (StockCodeList.Count + IndexCodeList.Count) / 400 + 1;
+                    daishinProcessCount = (StockCodeList.Count + IndexCodeList.Count) / 400;
                 else
-                    daishinProcessCount = (StockCodeList.Count * 3 + IndexCodeList.Count) / 400 + 1;
+                    daishinProcessCount = (StockCodeList.Count * 3 + IndexCodeList.Count) / 400;
 
                 for (int i = 0; i < daishinProcessCount; i++)
                     ProcessUtility.Start(ProcessTypes.Daishin, ProcessWindowStyle.Minimized);
@@ -124,7 +124,7 @@ namespace MTree.RealTimeProvider
                     else
                     {
                         bool isMasterContract = (contract.Type == ProcessTypes.DaishinMaster);
-                        //if (contract.Type == ProcessTypes.DaishinMaster) contract.Type = ProcessTypes.Daishin;
+                        if (contract.Type == ProcessTypes.DaishinMaster) contract.Type = ProcessTypes.Daishin;
 
                         PublisherContracts.TryAdd(clientId, contract);
                         logger.Info($"{contract.ToString()} contract registered / {clientId}");
@@ -137,6 +137,10 @@ namespace MTree.RealTimeProvider
             catch (Exception ex)
             {
                 logger.Error(ex);
+            }
+            finally
+            {
+                NotifyPropertyChanged(nameof(PublisherContractCount));
             }
         }
 
@@ -170,9 +174,12 @@ namespace MTree.RealTimeProvider
                         {
                             StartStockMastering();
                             StartIndexMastering();
-                            StartCodeDistributing();
 
-                            ProcessUtility.Kill(ProcessTypes.PopupStopper);
+#if false // Test code
+                            SaveDayChart();
+                            return;
+#endif
+                            StartCodeDistributing();
                         }
                     });
                 }
@@ -188,6 +195,10 @@ namespace MTree.RealTimeProvider
             catch (Exception ex)
             {
                 logger.Error(ex);
+            }
+            finally
+            {
+                NotifyPropertyChanged(nameof(PublisherContractCount));
             }
         }
 

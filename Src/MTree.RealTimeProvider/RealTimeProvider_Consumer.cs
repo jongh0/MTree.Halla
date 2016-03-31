@@ -13,6 +13,7 @@ namespace MTree.RealTimeProvider
     public partial class RealTimeProvider
     {
         #region Contracts
+        public int ConsumerContractCount { get { return ConsumerContracts.Count; } }
         private ConcurrentDictionary<Guid, SubscribeContract> ConsumerContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
         private ConcurrentDictionary<Guid, SubscribeContract> MasteringContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
         private ConcurrentDictionary<Guid, SubscribeContract> ChartContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
@@ -66,6 +67,10 @@ namespace MTree.RealTimeProvider
             {
                 logger.Error(ex);
             }
+            finally
+            {
+                NotifyPropertyChanged(nameof(ConsumerContractCount));
+            }
         }
 
         public void UnregisterContractAll(Guid clientId)
@@ -115,6 +120,10 @@ namespace MTree.RealTimeProvider
             catch (Exception ex)
             {
                 logger.Error(ex);
+            }
+            finally
+            {
+                NotifyPropertyChanged(nameof(ConsumerContractCount));
             }
         }
 
