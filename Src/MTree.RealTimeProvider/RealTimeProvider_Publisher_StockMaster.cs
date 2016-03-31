@@ -108,7 +108,7 @@ namespace MTree.RealTimeProvider
             finally
             {
                 stockMasterList.Clear();
-                StockMasteringList.Clear();
+                //StockMasteringList.Clear();
 
                 sw.Stop();
                 logger.Info($"Stock master publishing done, Elapsed time: {sw.Elapsed.ToString()}");

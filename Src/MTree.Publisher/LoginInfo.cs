@@ -1,6 +1,7 @@
 ﻿using MTree.Configuration;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,15 +22,45 @@ namespace MTree.Publisher
         Kiwoom,
     }
 
-    public class LoginInfo
+    public class LoginInfo : INotifyPropertyChanged
     {
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        public LoginStates State { get; set; } = LoginStates.Disconnect;
-        public FirmTypes FirmType { get; set; } = FirmTypes.Ebest;
-        public ServerTypes ServerType { get; set; } = ServerTypes.Real;
+        private LoginStates _State = LoginStates.Disconnect;
+        public LoginStates State
+        {
+            get { return _State; }
+            set
+            {
+                _State = value;
+                NotifyPropertyChanged(nameof(State));
+            }
+        }
 
-        public string UserId { get; set; }
+        public FirmTypes FirmType { get; set; } = FirmTypes.Ebest;
+
+        private ServerTypes _ServerType = ServerTypes.Real;
+        public ServerTypes ServerType
+        {
+            get { return _ServerType; }
+            set
+            {
+                _ServerType = value;
+                NotifyPropertyChanged(nameof(ServerType));
+            }
+        }
+
+        private string _UserId;
+        public string UserId
+        {
+            get { return _UserId; }
+            set
+            {
+                _UserId = value;
+                NotifyPropertyChanged(nameof(UserId));
+            }
+        }
+
         public string UserPw { get; set; }
         public string CertPw { get; set; }
         public string AccountPw { get; set; }
@@ -41,5 +72,15 @@ namespace MTree.Publisher
         {
             return $"{State}/{FirmType}/{ServerAddress}/{ServerPort}/{UserId}/{Id}";
         }
+
+        #region INotifyPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged(string name)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(name));
+        }
+        #endregion
     }
 }

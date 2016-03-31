@@ -28,6 +28,8 @@ namespace MTree.DaishinPublisher
             InitializeComponent();
 
             Publisher = new DaishinPublisher();
+            this.DataContext = Publisher;
+
             //Publisher.SubscribeWorldStock("ENXH");
             //bool result = Publisher.SubscribeStock("A005930");
 			/*

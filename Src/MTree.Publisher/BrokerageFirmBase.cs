@@ -17,7 +17,7 @@ namespace MTree.Publisher
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         // Login
-        protected LoginInfo LoginInstance { get; } = new LoginInfo();
+        public LoginInfo LoginInstance { get; } = new LoginInfo();
         private int WaitLoginTimeout { get; } = 1000 * 15;
         private ManualResetEvent WaitLoginEvent { get; } = new ManualResetEvent(false);
 

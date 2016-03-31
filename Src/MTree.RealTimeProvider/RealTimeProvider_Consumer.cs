@@ -15,7 +15,7 @@ namespace MTree.RealTimeProvider
         #region Contracts
         private ConcurrentDictionary<Guid, SubscribeContract> ConsumerContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
         private ConcurrentDictionary<Guid, SubscribeContract> MasteringContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
-        private ConcurrentDictionary<Guid, SubscribeContract> TodayChartContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
+        private ConcurrentDictionary<Guid, SubscribeContract> ChartContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
         private ConcurrentDictionary<Guid, SubscribeContract> BiddingPriceContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
         private ConcurrentDictionary<Guid, SubscribeContract> CircuitBreakContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
         private ConcurrentDictionary<Guid, SubscribeContract> StockConclusionContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
@@ -98,7 +98,7 @@ namespace MTree.RealTimeProvider
                 }
 
                 if (MasteringContracts.ContainsKey(clientId) == false &&
-                    TodayChartContracts.ContainsKey(clientId) == false &&
+                    ChartContracts.ContainsKey(clientId) == false &&
                     BiddingPriceContracts.ContainsKey(clientId) == false &&
                     CircuitBreakContracts.ContainsKey(clientId) == false &&
                     StockConclusionContracts.ContainsKey(clientId) == false &&
@@ -123,7 +123,7 @@ namespace MTree.RealTimeProvider
             switch (type)
             {
                 case SubscribeTypes.Mastering:          return MasteringContracts;
-                case SubscribeTypes.TodayChart:         return TodayChartContracts;
+                case SubscribeTypes.Chart:              return ChartContracts;
                 case SubscribeTypes.BiddingPrice:       return BiddingPriceContracts;
                 case SubscribeTypes.CircuitBreak:       return CircuitBreakContracts;
                 case SubscribeTypes.StockConclusion:    return StockConclusionContracts;

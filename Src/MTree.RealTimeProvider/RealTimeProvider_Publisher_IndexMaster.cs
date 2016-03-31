@@ -100,7 +100,7 @@ namespace MTree.RealTimeProvider
             finally
             {
                 indexMasterList.Clear();
-                IndexMasteringList.Clear();
+                //IndexMasteringList.Clear();
 
                 sw.Stop();
                 logger.Info($"Index master publishing done, Elapsed time: {sw.Elapsed.ToString()}");

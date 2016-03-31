@@ -10,11 +10,14 @@ using System.Threading;
 using MTree.Configuration;
 using System.IO;
 using System.Diagnostics;
+using GalaSoft.MvvmLight.Command;
+using System.Windows.Input;
+using System.ComponentModel;
 
 namespace MTree.RealTimeProvider
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
-    public partial class RealTimeProvider : RealTimeBase, IRealTimePublisher, IRealTimeConsumer
+    public partial class RealTimeProvider : RealTimeBase, IRealTimePublisher, IRealTimeConsumer, INotifyPropertyChanged
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -52,18 +55,17 @@ namespace MTree.RealTimeProvider
         {
             logger.Info("Market end timer elapsed");
 
-            //SaveTodayChart();
             ExitProgram();
         }
 
-        private void SaveTodayChart()
+        private void SaveDayChart()
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
             try
             {
-                logger.Info("Save today chart");
+                logger.Info("Save chart");
 
                 var publisherContract = DaishinMasterContract;
                 if (publisherContract == null)
@@ -72,40 +74,73 @@ namespace MTree.RealTimeProvider
                     return;
                 }
 
-                var today = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
-
-                var codeEntityList = new List<CodeEntity>();
-                codeEntityList.AddRange(StockCodeList.Values);
-                codeEntityList.AddRange(IndexCodeList.Values);
-
-                foreach (var codeEntity in codeEntityList)
+                #region Save stock chart
+                foreach (var mastering in StockMasteringList)
                 {
-                    //int startTick = Environment.TickCount;
+                    var startDate = mastering.Stock.ListedDate;
+                    var endDate = DateTime.Now;
+                    var code = mastering.Stock.Code;
+                    var fullCode = CodeEntity.ConvertToDaishinCode(StockCodeList[code]);
 
-                    var fullCode = CodeEntity.ConvertToDaishinCode(codeEntity);
+                    int startTick = Environment.TickCount;
 
-                    var candleList = publisherContract.Callback.GetChart(fullCode, today, today, CandleTypes.Tick);
+                    var candleList = publisherContract.Callback.GetChart(fullCode, startDate, endDate, CandleTypes.Day);
                     if (candleList == null || candleList.Count == 0)
                     {
-                        logger.Info($"{codeEntity.Code} tick chart not exists");
+                        logger.Info($"{code} chart not exists");
                         continue;
                     }
 
-                    //logger.Info($"Save today chart, publisher tick: {Environment.TickCount - startTick} ({candleList.Count})");
-                    //startTick = Environment.TickCount;
+                    int publisherTick = Environment.TickCount - startTick;
+                    startTick = Environment.TickCount;
 
-                    foreach (var consumerContract in TodayChartContracts)
+                    foreach (var consumerContract in ChartContracts)
                     {
                         consumerContract.Value.Callback.ConsumeChart(candleList);
                     }
 
+                    int consumerTick = Environment.TickCount - startTick;
+
+                    logger.Info($"Save chart {code}/{startDate.ToShortDateString()}~{endDate.ToShortDateString()}, candle count: {candleList.Count}, publisher tick: {publisherTick}, consumer tick: {consumerTick}");
+
                     candleList.Clear();
+                } 
+                #endregion
 
-                    //logger.Info($"Save today chart, consumer tick: {Environment.TickCount - startTick}");
-                }
+                #region Save index chart
+                foreach (var mastering in IndexMasteringList)
+                {
+                    var startDate = Config.General.DefaultStartDate;
+                    var endDate = DateTime.Now;
+                    var code = mastering.Index.Code;
+                    var fullCode = CodeEntity.ConvertToDaishinCode(IndexCodeList[code]);
 
-                codeEntityList.Clear();
-                logger.Info("Today chart saving done");
+                    int startTick = Environment.TickCount;
+
+                    var candleList = publisherContract.Callback.GetChart(fullCode, startDate, endDate, CandleTypes.Day);
+                    if (candleList == null || candleList.Count == 0)
+                    {
+                        logger.Info($"{code} chart not exists");
+                        continue;
+                    }
+
+                    int publisherTick = Environment.TickCount - startTick;
+                    startTick = Environment.TickCount;
+
+                    foreach (var consumerContract in ChartContracts)
+                    {
+                        consumerContract.Value.Callback.ConsumeChart(candleList);
+                    }
+
+                    int consumerTick = Environment.TickCount - startTick;
+
+                    logger.Info($"Save chart {code}/{startDate.ToShortDateString()}~{endDate.ToShortDateString()}, candle count: {candleList.Count}, publisher tick: {publisherTick}, consumer tick: {consumerTick}");
+
+                    candleList.Clear();
+                } 
+                #endregion
+
+                logger.Info("Chart saving done");
             }
             catch (Exception ex)
             {
@@ -114,7 +149,7 @@ namespace MTree.RealTimeProvider
             finally
             {
                 sw.Stop();
-                logger.Info($"Save today chart Elapsed time: {sw.Elapsed.ToString()}");
+                logger.Info($"Save chart Elapsed time: {sw.Elapsed.ToString()}");
             }
         }
 
@@ -122,7 +157,7 @@ namespace MTree.RealTimeProvider
         {
             logger.Info("Exit program");
 
-            // Publisher 종료
+            #region Publisher 종료
             foreach (var contract in PublisherContracts)
             {
                 try
@@ -135,8 +170,9 @@ namespace MTree.RealTimeProvider
                     logger.Error(ex);
                 }
             }
+            #endregion
 
-            // Consumer 종료
+            #region Consumer 종료
             foreach (var contract in ConsumerContracts)
             {
                 try
@@ -148,7 +184,8 @@ namespace MTree.RealTimeProvider
                 {
                     logger.Error(ex);
                 }
-            }
+            } 
+            #endregion
 
             Task.Run(() =>
             {
@@ -167,5 +204,50 @@ namespace MTree.RealTimeProvider
                 Environment.Exit(0);
             });
         }
+
+        #region Command
+        RelayCommand _SendLogCommand;
+        public ICommand SendLogCommand
+        {
+            get
+            {
+                if (_SendLogCommand == null)
+                    _SendLogCommand = new RelayCommand(() => ExecuteSendLog(), () => CanExecuteSendLog);
+
+                return _SendLogCommand;
+            }
+        }
+
+        public void ExecuteSendLog()
+        {
+            Task.Run(() =>
+            {
+                CanExecuteSendLog = false;
+                LogUtility.SendLogToEmail();
+                CanExecuteSendLog = true;
+            });
+        }
+
+        private bool _CanExecuteSendLog = true;
+        public bool CanExecuteSendLog
+        {
+            get { return _CanExecuteSendLog; }
+            set
+            {
+                _CanExecuteSendLog = value;
+                NotifyPropertyChanged(nameof(CanExecuteSendLog));
+            }
+        }
+        #endregion
+
+        #region INotifyPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged(string name)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(name));
+        }
+        #endregion
     }
 }

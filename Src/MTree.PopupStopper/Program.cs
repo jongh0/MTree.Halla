@@ -33,13 +33,13 @@ namespace MTree.PopupStopper
                     try
                     {
                         cancelToken.ThrowIfCancellationRequested();
-                        popupClosed = CheckDibPopup();
+                        popupClosed |= CheckDibPopup();
 
                         cancelToken.ThrowIfCancellationRequested();
-                        popupClosed = CheckInvestorInfoPopup();
+                        popupClosed |= CheckInvestorInfoPopup();
 
                         cancelToken.ThrowIfCancellationRequested();
-                        popupClosed = CheckRuntimeError();
+                        popupClosed |= CheckRuntimeError();
                     }
                     catch (OperationCanceledException)
                     {
@@ -52,7 +52,7 @@ namespace MTree.PopupStopper
                     }
 
                     if (popupClosed == false)
-                        Thread.Sleep(100);
+                        Thread.Sleep(500);
                 }
             }, cancelToken);
 

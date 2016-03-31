@@ -9,7 +9,7 @@ namespace MTree.RealTimeProvider
     public enum SubscribeTypes
     {
         Mastering,
-        TodayChart,
+        Chart,
         BiddingPrice,
         CircuitBreak,
         StockConclusion,

@@ -39,11 +39,13 @@ namespace MTree.RealTimeProvider
             RealTimeHost.Closed += RealTimeHost_Closed;
             RealTimeHost.Faulted += RealTimeHost_Faulted;
             RealTimeHost.Open();
+
+            this.DataContext = instance;
         }
 
         private void RealTimeHost_Faulted(object sender, System.EventArgs e)
         {
-            logger.Info("RealTimeHost faulted");
+            logger.Error("RealTimeHost faulted");
         }
 
         private void RealTimeHost_Closed(object sender, System.EventArgs e)

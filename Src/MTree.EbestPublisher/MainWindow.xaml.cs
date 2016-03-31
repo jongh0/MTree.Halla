@@ -28,6 +28,7 @@ namespace MTree.EbestPublisher
             InitializeComponent();
 
             Publisher = new EbestPublisher();
+            this.DataContext = Publisher;
 
 #if false
             Task.Run(() =>

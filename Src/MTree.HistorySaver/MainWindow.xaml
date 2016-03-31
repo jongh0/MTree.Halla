@@ -12,7 +12,7 @@
             <utility:NumberToCurrencyConverter x:Key="NumberToCurrencyConverter"/>
             <Style TargetType="TextBlock">
                 <Setter Property="FontSize" Value="16"/>
-                <Setter Property="Width" Value="150"/>
+                <Setter Property="Width" Value="140"/>
                 <Setter Property="Height" Value="25"/>
                 <Setter Property="TextAlignment" Value="Right"/>
             </Style>
@@ -26,7 +26,8 @@
                 <Setter Property="TextAlignment" Value="Left"/>
             </Style>
         </Grid.Resources>
-        <StackPanel Orientation="Vertical" Margin="10" VerticalAlignment="Center">
+        
+        <StackPanel Orientation="Vertical" Margin="10" VerticalAlignment="Center" HorizontalAlignment="Center">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Chart : "/>
                 <TextBox Text="{Binding Path=ChartCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}"/>

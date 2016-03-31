@@ -17,11 +17,11 @@
         <Setter Property="TextAlignment" Value="Right"/>
     </Style>
 
-    <Style TargetType="ListViewItem">
+    <Style x:Key="BaseListViewItem" TargetType="ListViewItem">
         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
     </Style>
 
-    <Style x:Key="GridViewItemStyle" TargetType="ListViewItem" x:Shared="False">
+    <Style x:Key="GridViewItemStyle" TargetType="ListViewItem" x:Shared="False" BasedOn="{StaticResource BaseListViewItem}">
         <Style.Triggers>
             <DataTrigger Binding="{Binding CircuitBreakType}" Value="StaticInvoke">
                 <Setter Property="Background" Value="PaleGoldenrod"/>

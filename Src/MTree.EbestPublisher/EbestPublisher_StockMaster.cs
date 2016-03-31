@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using MTree.DataStructure;
+using MTree.Configuration;
 
 namespace MTree.EbestPublisher
 {
@@ -104,13 +105,9 @@ namespace MTree.EbestPublisher
                 string listDateStr = stockQuotingObj.GetFieldData("t1102OutBlock", "listdate", 0); 
                 int listDate = 0;
                 if (int.TryParse(listDateStr, out listDate) == true)
-                {
                     QuotingStockMaster.ListedDate = new DateTime(listDate / 10000, listDate / 100 % 100, listDate % 100);
-                }
                 else
-                {
-                    logger.Error($"List date error: {listDateStr}");
-                }
+                    QuotingStockMaster.ListedDate = Config.General.DefaultStartDate;
 
                 string valueAltered = stockQuotingObj.GetFieldData("t1102OutBlock", "info1", 0);
                 if (valueAltered == "권배락")

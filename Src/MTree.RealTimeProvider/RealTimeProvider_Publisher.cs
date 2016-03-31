@@ -168,8 +168,6 @@ namespace MTree.RealTimeProvider
                         }
                         else
                         {
-                            //SaveTodayChart();
-                            //return;
                             StartStockMastering();
                             StartIndexMastering();
                             StartCodeDistributing();
