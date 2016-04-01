@@ -6,6 +6,17 @@ namespace MTree.DaishinPublisher
 {
     public partial class DaishinPublisher
     {
+        private int _StockSubscribeCount = 0;
+        public int StockSubscribeCount
+        {
+            get { return _StockSubscribeCount; }
+            set
+            {
+                _StockSubscribeCount = value;
+                NotifyPropertyChanged(nameof(StockSubscribeCount));
+            }
+        }
+
         public override bool SubscribeStock(string code)
         {
             short status = 1;
@@ -43,9 +54,14 @@ namespace MTree.DaishinPublisher
             finally
             {
                 if (status == 0)
+                {
                     logger.Info($"Subscribe stock, Code: {code}");
+                    StockSubscribeCount++;
+                }
                 else
+                {
                     logger.Error($"Subscribe stock error, Code: {code}, Status: {status}, Msg: {stockCurObj.GetDibMsg1()}");
+                }
             }
 
             return (status == 0);
@@ -76,9 +92,14 @@ namespace MTree.DaishinPublisher
             finally
             {
                 if (status == 0)
+                {
                     logger.Trace($"Unsubscribe stock, Code: {code}");
+                    StockSubscribeCount--;
+                }
                 else
+                {
                     logger.Error($"Unsubscribe stock error, Code: {code}, Status: {status}, Msg: {stockCurObj.GetDibMsg1()}");
+                }
             }
 
             return (status == 0);

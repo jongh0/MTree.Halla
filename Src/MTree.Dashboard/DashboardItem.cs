@@ -11,37 +11,37 @@ namespace MTree.Dashboard
 {
     public class DashboardItem : INotifyPropertyChanged
     {
-        private string _code = string.Empty;
+        private string _Code = string.Empty;
         public string Code
         {
-            get { return _code; }
+            get { return _Code; }
             set
             {
-                _code = value;
+                _Code = value;
                 NotifyPropertyChanged(nameof(Code));
             }
         }
 
-        private string _name = string.Empty;
+        private string _Name = string.Empty;
         public string Name
         {
-            get { return _name; }
+            get { return _Name; }
             set
             {
-                _name = value;
+                _Name = value;
                 NotifyPropertyChanged(nameof(Name));
             }
         }
 
-        private float _price = 0;
+        private float _Price = 0;
         public float Price
         {
-            get { return _price; }
+            get { return _Price; }
             set
             {
-                if (_price != value)
+                if (_Price != value)
                 {
-                    _price = value;
+                    _Price = value;
                     NotifyPropertyChanged(nameof(Price));
                     NotifyPropertyChanged(nameof(PriceColor));
                     NotifyPropertyChanged(nameof(PricePercent));
@@ -75,59 +75,70 @@ namespace MTree.Dashboard
             }
         }
 
-        private long _volume = 0;
+        private long _Volume = 0;
         public long Volume
         {
-            get { return _volume; }
+            get { return _Volume; }
             set
             {
-                if (_volume != value)
+                if (_Volume != value)
                 {
-                    _volume = value;
+                    _Volume = value;
                     NotifyPropertyChanged(nameof(Volume));
                 }
             }
         }
 
-        private float _basisPrice = 0;
+        private float _BasisPrice = 0;
         public float BasisPrice
         {
-            get { return _basisPrice; }
+            get { return _BasisPrice; }
             set
             {
-                if (_basisPrice != value)
+                if (_BasisPrice != value)
                 {
-                    _basisPrice = value;
+                    _BasisPrice = value;
                     NotifyPropertyChanged(nameof(BasisPrice));
                 }
             }
         }
 
-        private long _previousVolume = 0;
+        private long _PreviousVolume = 0;
         public long PreviousVolume
         {
-            get { return _previousVolume; }
+            get { return _PreviousVolume; }
             set
             {
-                if (_previousVolume != value)
+                if (_PreviousVolume != value)
                 {
-                    _previousVolume = value;
+                    _PreviousVolume = value;
                     NotifyPropertyChanged(nameof(PreviousVolume));
                 }
             }
         }
 
-        private CircuitBreakTypes _circuitBreakType = CircuitBreakTypes.Clear;
+        private CircuitBreakTypes _CircuitBreakType = CircuitBreakTypes.Clear;
         public CircuitBreakTypes CircuitBreakType
         {
-            get { return _circuitBreakType; }
+            get { return _CircuitBreakType; }
             set
             {
-                if (_circuitBreakType != value)
+                if (_CircuitBreakType != value)
                 {
-                    _circuitBreakType = value;
+                    _CircuitBreakType = value;
                     NotifyPropertyChanged(nameof(CircuitBreakType));
                 }
+            }
+        }
+
+        private MarketTypes _MarketType = MarketTypes.Unknown;
+        public MarketTypes MarketType
+        {
+            get { return _MarketType; }
+            set
+            {
+                _MarketType = value;
+                NotifyPropertyChanged(nameof(MarketType));
             }
         }
 

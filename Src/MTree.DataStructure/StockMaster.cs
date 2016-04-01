@@ -192,47 +192,10 @@ namespace MTree.DataStructure
             StringBuilder sb = new StringBuilder();
             try
             {
-                sb.Append(base.ToString());
-                sb.AppendLine($"{nameof(Name)}: {Name}");
-                sb.AppendLine($"{nameof(MarketType)}: {MarketType}");
-                sb.AppendLine($"{nameof(SettlementMonth)}: {SettlementMonth}");
-                sb.AppendLine($"{nameof(FaceValue)}: {FaceValue}");
-                sb.AppendLine($"{nameof(ListedDate)}: {ListedDate}");
-                sb.AppendLine($"{nameof(CirculatingVolume)}: {CirculatingVolume}");
-                sb.AppendLine($"{nameof(ShareVolume)}: {ShareVolume}");
-                sb.AppendLine($"{nameof(ListedCapital)}: {ListedCapital}");
-                sb.AppendLine($"{nameof(BasisPrice)}: {BasisPrice}");
-                sb.AppendLine($"{nameof(UpperLimit)}: {UpperLimit}");
-                sb.AppendLine($"{nameof(LowerLimit)}: {LowerLimit}");
-                sb.AppendLine($"{nameof(PreviousClosedPrice)}: {PreviousClosedPrice}");
-                sb.AppendLine($"{nameof(PreviousVolume)}: {PreviousVolume}");
-                sb.AppendLine($"{nameof(QuantityUnit)}: {QuantityUnit}");
-                sb.AppendLine($"{nameof(ForeigneLimit)}: {ForeigneLimit}");
-                sb.AppendLine($"{nameof(ForeigneAvailableRemain)}: {ForeigneAvailableRemain}");
-                sb.AppendLine($"{nameof(ForeigneLimitRate)}: {ForeigneLimitRate}");
-                sb.AppendLine($"{nameof(ForeigneHold)}: {ForeigneHold}");
-                sb.AppendLine($"{nameof(ForeigneExhaustingRate)}: {ForeigneExhaustingRate}");
-                sb.AppendLine($"{nameof(ForeigneAvailableRemainRate)}: {ForeigneAvailableRemainRate}");
-                sb.AppendLine($"{nameof(AdministrativeIssue)}: {AdministrativeIssue}");
-                sb.AppendLine($"{nameof(InvestCaution)}: {InvestCaution}");
-                sb.AppendLine($"{nameof(InvestWarning)}: {InvestWarning}");
-                sb.AppendLine($"{nameof(InvestRiskNoticed)}: {InvestRiskNoticed}");
-                sb.AppendLine($"{nameof(InvestRisk)}: {InvestRisk}");
-                sb.AppendLine($"{nameof(TradingHalt)}: {TradingHalt}");
-                sb.AppendLine($"{nameof(TradingSuspend)}: {TradingSuspend}");
-                sb.AppendLine($"{nameof(UnfairAnnouncement)}: {UnfairAnnouncement}");
-                sb.AppendLine($"{nameof(Overheated)}: {Overheated}");
-                sb.AppendLine($"{nameof(OverheatNoticed)}: {OverheatNoticed}");
-                sb.AppendLine($"{nameof(CleaningTrade)}: {CleaningTrade}");
-                sb.AppendLine($"{nameof(InvestAttention)}: {InvestAttention}");
-                sb.AppendLine($"{nameof(CallingAttention)}: {CallingAttention}");
-                sb.AppendLine($"{nameof(Asset)}: {Asset}");
-                sb.AppendLine($"{nameof(BPS)}: {BPS}");
-                sb.AppendLine($"{nameof(PBR)}: {PBR}");
-                sb.AppendLine($"{nameof(NetIncome)}: {NetIncome}");
-                sb.AppendLine($"{nameof(EPS)}: {EPS}");
-                sb.AppendLine($"{nameof(PER)}: {PER}");
-                sb.AppendLine($"{nameof(ValueAlteredType)}: {ValueAlteredType}");
+                foreach (var property in typeof(StockMaster).GetProperties())
+                {
+                    sb.AppendLine($"{property.Name}: {property.GetValue(this)}");
+                }
             }
             catch { }
 

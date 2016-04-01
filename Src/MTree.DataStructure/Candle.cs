@@ -53,14 +53,14 @@ namespace MTree.DataStructure
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append(base.ToString());
-            sb.AppendLine($"{nameof(CandleType)}: {CandleType}");
-            sb.AppendLine($"{nameof(Open)}: {Open}");
-            sb.AppendLine($"{nameof(Close)}: {Close}");
-            sb.AppendLine($"{nameof(Low)}: {Low}");
-            sb.AppendLine($"{nameof(High)}: {High}");
-            sb.AppendLine($"{nameof(Value)}: {Value}");
-            sb.AppendLine($"{nameof(Volume)}: {Volume}");
+            try
+            {
+                foreach (var property in typeof(Candle).GetProperties())
+                {
+                    sb.AppendLine($"{property.Name}: {property.GetValue(this)}");
+                }
+            }
+            catch { }
 
             return sb.ToString();
         }

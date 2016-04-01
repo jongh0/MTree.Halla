@@ -207,6 +207,8 @@ namespace MTree.HistorySaver
 
         public override void NotifyMessage(MessageTypes type, string message)
         {
+            logger.Info($"NotifyMessage, type: {type.ToString()}, message: {message}");
+
             try
             {
                 if (type == MessageTypes.CloseClient)
@@ -215,11 +217,14 @@ namespace MTree.HistorySaver
 
                     Task.Run(() =>
                     {
-                        DbAgent.Instance.CreateIndex();
-                        DbAgent.Instance.SaveStatisticLog();
+                        if (message.Equals(ExitProgramTypes.Normal.ToString()) == true)
+                        {
+                            DbAgent.Instance.CreateIndex();
+                            DbAgent.Instance.SaveStatisticLog();
+                        }
 
                         logger.Info("Process will be closed");
-                        Thread.Sleep(1000 * 10);
+                        Thread.Sleep(1000 * 5);
 
                         Environment.Exit(0);
                     });

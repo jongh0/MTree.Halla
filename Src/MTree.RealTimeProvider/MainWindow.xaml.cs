@@ -16,7 +16,6 @@ namespace MTree.RealTimeProvider
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         ServiceHost RealTimeHost { get; set; }
-
         RealTimeProvider RealTimeProviderInstance { get { return (RealTimeHost.SingletonInstance as RealTimeProvider); } }
 
         /// <summary>
@@ -62,16 +61,18 @@ namespace MTree.RealTimeProvider
                 // 추가된 설정들을 파일에 저장하기 위해서 호출
                 Config.Initialize();
 
-                // Daishin CybosPlus 실행
-                if (ProcessUtility.Exists(ProcessTypes.CybosStarter) == false)
-                {
-                    logger.Info("Daishin starter not exists");
-                    ProcessUtility.Start(ProcessTypes.DaishinSessionManager, ProcessWindowStyle.Minimized)?.WaitForExit();
-                }
-
-                // Daishin Master 실행
                 if (Config.General.OfflineMode == false)
+                {
+                    // Daishin CybosPlus 실행
+                    if (ProcessUtility.Exists(ProcessTypes.CybosStarter) == false)
+                    {
+                        logger.Info("Daishin starter not exists");
+                        ProcessUtility.Start(ProcessTypes.DaishinSessionManager, ProcessWindowStyle.Minimized)?.WaitForExit();
+                    }
+
+                    // Daishin Master 실행
                     ProcessUtility.Start(ProcessTypes.DaishinMaster, ProcessWindowStyle.Minimized);
+                }
             });
         }
     }

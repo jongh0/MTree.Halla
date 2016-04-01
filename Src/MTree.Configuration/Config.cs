@@ -26,21 +26,21 @@ namespace MTree.Configuration
         #region Instance
         private static object lockObject = new object();
 
-        private static Config _instance;
+        private static Config _Instance;
         private static Config Instance
         {
             get
             {
-                if (_instance == null)
+                if (_Instance == null)
                 {
                     lock (lockObject)
                     {
-                        if (_instance == null)
-                            LoadConfiguration(ref _instance, FileName);
+                        if (_Instance == null)
+                            LoadConfiguration(ref _Instance, FileName);
                     }
                 }
 
-                return _instance;
+                return _Instance;
             }
         }
         #endregion

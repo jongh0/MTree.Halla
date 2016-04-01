@@ -4,6 +4,7 @@
                     xmlns:local="clr-namespace:MTree.Dashboard">
     <utility:NumberToCurrencyConverter x:Key="NumberToCurrencyConverter"/>
     <utility:NumberToPercentConverter x:Key="NumberToPercentConverter"/>
+    <utility:EnumToStringConverter x:Key="EnumToStringConverter"/>
 
     <Style x:Key="BaseTextBlock" TargetType="TextBlock">
         <Setter Property="Foreground" Value="Black"/>
@@ -70,7 +71,7 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <!--PreviousClosedPrice-->
+                    <!--BasisPrice-->
                     <GridViewColumn Header="Basis Price" Width="100" utility:GridViewSort.PropertyName="BasisPrice">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
@@ -91,6 +92,14 @@
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Path=PreviousVolume, Converter={StaticResource NumberToCurrencyConverter}}" Style="{StaticResource CurrencyTextBlock}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <!--MarketType-->
+                    <GridViewColumn Header="Market Type" Width="100" utility:GridViewSort.PropertyName="MarketType">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=MarketType, Converter={StaticResource EnumToStringConverter}}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>

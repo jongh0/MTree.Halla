@@ -11,11 +11,12 @@ using MTree.RealTimeProvider;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Windows;
+using System.ComponentModel;
 
 namespace MTree.DaishinPublisher
 {
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
-    public partial class DaishinPublisher : BrokerageFirmBase
+    public partial class DaishinPublisher : BrokerageFirmBase, INotifyPropertyChanged
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -343,12 +344,14 @@ namespace MTree.DaishinPublisher
 
         public override void NotifyMessage(MessageTypes type, string message)
         {
+            logger.Info($"NotifyMessage, type: {type.ToString()}, message: {message}");
+
             if (type == MessageTypes.CloseClient)
             {
                 Task.Run(() =>
                 {
                     logger.Info("Process will be closed");
-                    Thread.Sleep(1000 * 10);
+                    Thread.Sleep(1000 * 5);
 
                     Environment.Exit(0);
                 });
@@ -384,5 +387,15 @@ namespace MTree.DaishinPublisher
 
             return base.GetMarketInfo(type);
         }
+
+        #region INotifyPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged(string name)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(name));
+        }
+        #endregion
     }
 }

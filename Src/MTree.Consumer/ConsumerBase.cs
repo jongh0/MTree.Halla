@@ -78,6 +78,8 @@ namespace MTree.Consumer
 
         public override void NotifyMessage(MessageTypes type, string message)
         {
+            logger.Info($"NotifyMessage, type: {type.ToString()}, message: {message}");
+
             try
             {
                 if (type == MessageTypes.CloseClient)

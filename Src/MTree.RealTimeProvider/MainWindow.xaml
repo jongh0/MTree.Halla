@@ -5,12 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MTree.RealTimeProvider"
         mc:Ignorable="d"
-        Title="RealTimeProvider" Height="185.28" Width="340.293">
+        Title="RealTimeProvider" Height="199.439" Width="327.942">
     <Grid>
         <Grid.Resources>
             <Style TargetType="TextBlock">
                 <Setter Property="FontSize" Value="16"/>
-                <Setter Property="Width" Value="140"/>
+                <Setter Property="Width" Value="90"/>
                 <Setter Property="Height" Value="25"/>
                 <Setter Property="TextAlignment" Value="Right"/>
             </Style>
@@ -27,14 +27,21 @@
 
         <StackPanel Orientation="Vertical" Margin="10" VerticalAlignment="Center" HorizontalAlignment="Center">
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Consumer Count : "/>
+                <TextBlock Text="Publisher : "/>
+                <TextBox Text="{Binding Path=PublisherContractCount, Mode=OneWay}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Consumer : "/>
                 <TextBox Text="{Binding Path=ConsumerContractCount, Mode=OneWay}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Publisher Count : "/>
-                <TextBox Text="{Binding Path=PublisherContractCount, Mode=OneWay}"/>
+                <TextBlock Text="State : "/>
+                <TextBox Text="{Binding Path=RealTimeState, Mode=OneWay}" Width="159" Height="50" TextWrapping="Wrap"/>
             </StackPanel>
-            <Button Content="Send log to email" Command="{Binding SendLogCommand}" IsEnabled="{Binding Path=CanExecuteSendLog}" Width="120" Height="30" HorizontalAlignment="Right" Margin="0,30,0,0"/>
+            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                <Button Content="Send log to email" Command="{Binding SendLogCommand}" IsEnabled="{Binding Path=CanExecuteSendLog}" Width="120" Height="30" Margin="0,0,10,0"/>
+                <Button Content="Exit program" Command="{Binding ExitProgramCommand}" Width="120" Height="30"/>
+            </StackPanel>
         </StackPanel>
     </Grid>
 </Window>

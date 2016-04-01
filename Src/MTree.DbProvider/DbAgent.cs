@@ -15,26 +15,44 @@ namespace MTree.DbProvider
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         private static object lockObject = new object();
 
-        private static volatile DbAgent _intance;
+        private static volatile DbAgent _Instance;
         public static DbAgent Instance
         {
             get
             {
-                if (_intance == null)
+                if (_Instance == null)
                 {
                     lock (lockObject)
                     {
-                        if (_intance == null)
-                            _intance = new DbAgent();
+                        if (_Instance == null)
+                            _Instance = new DbAgent(Config.Database.ConnectionString);
                     }
                 }
 
-                return _intance;
+                return _Instance;
+            }
+        }
+
+        private static volatile DbAgent _RemoteInstance;
+        public static DbAgent RemoteInstance
+        {
+            get
+            {
+                if (_RemoteInstance == null)
+                {
+                    lock (lockObject)
+                    {
+                        if (_RemoteInstance == null)
+                            _RemoteInstance = new DbAgent(Config.Database.RemoteConnectionString);
+                    }
+                }
+
+                return _RemoteInstance;
             }
         }
         #endregion
 
-        public MongoDbProvider DbProvider { get; set; } = new MongoDbProvider();
+        public MongoDbProvider DbProvider { get; set; }
 
         public IMongoDatabase ChartDb { get; set; }
         public IMongoDatabase BiddingPriceDb { get; set; }
@@ -44,8 +62,10 @@ namespace MTree.DbProvider
         public IMongoDatabase StockConclusionDb { get; set; }
         public IMongoDatabase IndexConclusionDb { get; set; }
 
-        public DbAgent()
+        public DbAgent(string connectionString)
         {
+            DbProvider = new MongoDbProvider(connectionString);
+
             ChartDb = DbProvider.GetDatabase(DbTypes.Chart);
             BiddingPriceDb = DbProvider.GetDatabase(DbTypes.BiddingPrice);
             CircuitBreakDb = DbProvider.GetDatabase(DbTypes.CircuitBreak);
@@ -57,6 +77,8 @@ namespace MTree.DbProvider
 
         public IMongoCollection<T> GetCollection<T>(string collectionName)
         {
+            int startTick = Environment.TickCount;
+
             try
             {
                 if (typeof(T) == typeof(Candle))
@@ -80,10 +102,21 @@ namespace MTree.DbProvider
             {
                 logger.Error(ex);
             }
+            finally
+            {
+                var duration = Environment.TickCount - startTick;
+                if (duration > 2000)
+                    logger.Warn($"Db get collection duration: {duration}, {collectionName}");
+            }
 
             return null;
         }
 
+        /// <summary>
+        /// Type과 Item에 맞는 Collection을 찾아서 Async Insert를 수행한다
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="item"></param>
         public void Insert<T>(T item)
         {
             if (item == null) return;
@@ -96,7 +129,7 @@ namespace MTree.DbProvider
                 var collection = GetCollection<T>(subscribable.Code);
 
                 if (collection != null)
-                    collection.InsertOne(item);
+                    collection.InsertOneAsync(item);
                 else
                     logger.Error($"Insert error, {subscribable.Code}/{subscribable.Time.ToString(Config.General.DateTimeFormat)}");
             }
@@ -298,8 +331,9 @@ namespace MTree.DbProvider
                     }
                 }
 
-                logger.Info("Database indexing done");
-                PushUtility.NotifyMessage("Database indexing done");
+                var msg = "Database indexing done";
+                logger.Info(msg);
+                PushUtility.NotifyMessage(msg);
             }
             catch (Exception ex)
             {

@@ -16,6 +16,12 @@ using System.ComponentModel;
 
 namespace MTree.RealTimeProvider
 {
+    public enum ExitProgramTypes
+    {
+        Normal,
+        Force,
+    }
+
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
     public partial class RealTimeProvider : RealTimeBase, IRealTimePublisher, IRealTimeConsumer, INotifyPropertyChanged
     {
@@ -31,6 +37,17 @@ namespace MTree.RealTimeProvider
 
         private List<StockMastering> StockMasteringList { get; } = new List<StockMastering>();
         private List<IndexMastering> IndexMasteringList { get; } = new List<IndexMastering>();
+
+        private string _RealTimeState = string.Empty;
+        public string RealTimeState
+        {
+            get { return _RealTimeState; }
+            set
+            {
+                _RealTimeState = value;
+                NotifyPropertyChanged(nameof(RealTimeState));
+            }
+        }
 
         public RealTimeProvider()
         {
@@ -66,7 +83,8 @@ namespace MTree.RealTimeProvider
 
             try
             {
-                logger.Info("Save chart");
+                RealTimeState = "Save chart started";
+                logger.Info(RealTimeState);
 
                 var daishinContracts = DaishinContracts;
                 var daishinContractCount = daishinContracts.Count;
@@ -77,17 +95,18 @@ namespace MTree.RealTimeProvider
                 for (int i = 0; i < stockCount; i++)
                 {
                     var mastering = StockMasteringList[i];
-                    var startDate = mastering.Stock.ListedDate;
+                    var startDate = DateTime.Now.AddYears(-5); // 최근 5년치만 저장
                     var endDate = DateTime.Now;
                     var code = mastering.Stock.Code;
                     var fullCode = CodeEntity.ConvertToDaishinCode(StockCodeList[code]);
 
                     int startTick = Environment.TickCount;
+                    var msg = $"Save stock chart ({i + 1}/{stockCount}), code: {code}, listedDate: {startDate.ToShortDateString()}";
 
                     var candleList = daishinContracts[i % daishinContractCount].Callback.GetChart(fullCode, startDate, endDate, CandleTypes.Day);
                     if (candleList == null || candleList.Count == 0)
                     {
-                        logger.Info($"{code} stock chart not exists");
+                        logger.Info($"{msg}, chart not exists");
                         continue;
                     }
 
@@ -101,7 +120,7 @@ namespace MTree.RealTimeProvider
 
                     int consumerTick = Environment.TickCount - startTick;
 
-                    logger.Info($"Save stock chart {i}/{stockCount}, {code}, {startDate.ToShortDateString()}, candle count: {candleList.Count}, publisher tick: {publisherTick}, consumer tick: {consumerTick}");
+                    logger.Info($"{msg}, candleCount: {candleList.Count}, publisherTick: {publisherTick}, consumerTick: {consumerTick}");
 
                     candleList.Clear();
                 }
@@ -113,17 +132,18 @@ namespace MTree.RealTimeProvider
                 for (int i = 0; i < indexCount; i++)
                 {
                     var mastering = IndexMasteringList[i];
-                    var startDate = Config.General.DefaultStartDate;
+                    var startDate = DateTime.Now.AddYears(-5); // 최근 5년치만 저장
                     var endDate = DateTime.Now;
                     var code = mastering.Index.Code;
                     var fullCode = CodeEntity.ConvertToDaishinCode(IndexCodeList[code]);
 
                     int startTick = Environment.TickCount;
+                    var msg = $"Save index chart ({i + 1}/{indexCount}), code: {code}";
 
                     var candleList = daishinContracts[i % daishinContractCount].Callback.GetChart(fullCode, startDate, endDate, CandleTypes.Day);
                     if (candleList == null || candleList.Count == 0)
                     {
-                        logger.Info($"{code} index chart not exists");
+                        logger.Info($"{msg}, chart not exists");
                         continue;
                     }
 
@@ -137,13 +157,14 @@ namespace MTree.RealTimeProvider
 
                     int consumerTick = Environment.TickCount - startTick;
 
-                    logger.Info($"Save index chart {i}/{indexCount}, {code}, {startDate.ToShortDateString()}, candle count: {candleList.Count}, publisher tick: {publisherTick}, consumer tick: {consumerTick}");
+                    logger.Info($"{msg}, candleCount: {candleList.Count}, publisherTick: {publisherTick}, consumerTick: {consumerTick}");
 
                     candleList.Clear();
-                } 
+                }
                 #endregion
 
-                logger.Info("Chart saving done");
+                RealTimeState = "Save chart done";
+                logger.Info(RealTimeState);
             }
             catch (Exception ex)
             {
@@ -156,9 +177,10 @@ namespace MTree.RealTimeProvider
             }
         }
 
-        private void ExitProgram()
+        private void ExitProgram(ExitProgramTypes type = ExitProgramTypes.Normal)
         {
-            logger.Info("Exit program");
+            RealTimeState = $"Exit program, {type.ToString()}";
+            logger.Info(RealTimeState);
 
             #region Publisher 종료
             foreach (var contract in PublisherContracts)
@@ -166,7 +188,7 @@ namespace MTree.RealTimeProvider
                 try
                 {
                     logger.Info($"Close publisher client, {contract.ToString()}");
-                    contract.Value.Callback.NotifyMessage(MessageTypes.CloseClient, string.Empty);
+                    contract.Value.Callback.NotifyMessage(MessageTypes.CloseClient, type.ToString());
                 }
                 catch (Exception ex)
                 {
@@ -181,7 +203,7 @@ namespace MTree.RealTimeProvider
                 try
                 {
                     logger.Info($"Close consumer client, {contract.ToString()}");
-                    contract.Value.Callback.NotifyMessage(MessageTypes.CloseClient, string.Empty);
+                    contract.Value.Callback.NotifyMessage(MessageTypes.CloseClient, type.ToString());
                 }
                 catch (Exception ex)
                 {
@@ -196,12 +218,13 @@ namespace MTree.RealTimeProvider
                 ProcessUtility.Kill(ProcessTypes.CybosStarter);
 
                 // 당일 수집된 로그를 Zip해서 Email로 전송함
-                LogUtility.SendLogToEmail();
+                if (type == ExitProgramTypes.Normal)
+                    LogUtility.SendLogToEmail();
 
                 // 20초후 프로그램 종료
-                var msg = "RealTimeProvider will be closed after 20sec";
-                logger.Info(msg);
-                PushUtility.NotifyMessage(msg);
+                RealTimeState = "RealTimeProvider will be closed after 20sec";
+                logger.Info(RealTimeState);
+                PushUtility.NotifyMessage(RealTimeState);
 
                 Thread.Sleep(1000 * 20);
 
@@ -213,7 +236,7 @@ namespace MTree.RealTimeProvider
         }
 
         #region Command
-        RelayCommand _SendLogCommand;
+        private RelayCommand _SendLogCommand;
         public ICommand SendLogCommand
         {
             get
@@ -227,6 +250,9 @@ namespace MTree.RealTimeProvider
 
         public void ExecuteSendLog()
         {
+            RealTimeState = "Execute send log";
+            logger.Info(RealTimeState);
+
             Task.Run(() =>
             {
                 CanExecuteSendLog = false;
@@ -244,6 +270,26 @@ namespace MTree.RealTimeProvider
                 _CanExecuteSendLog = value;
                 NotifyPropertyChanged(nameof(CanExecuteSendLog));
             }
+        }
+
+        private RelayCommand _ExitProgramCommand;
+        public ICommand ExitProgramCommand
+        {
+            get
+            {
+                if (_ExitProgramCommand == null)
+                    _ExitProgramCommand = new RelayCommand(() => ExecuteExitProgram());
+
+                return _ExitProgramCommand;
+            }
+        }
+
+        public void ExecuteExitProgram()
+        {
+            RealTimeState = "Execute exit program";
+            logger.Info(RealTimeState);
+
+            ExitProgram(ExitProgramTypes.Force);
         }
         #endregion
 

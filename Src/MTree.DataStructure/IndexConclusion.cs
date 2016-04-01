@@ -31,13 +31,14 @@ namespace MTree.DataStructure
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append(base.ToString());
-            sb.AppendLine($"{nameof(MarketCapitalization)}: {MarketCapitalization}");
-            sb.AppendLine($"{nameof(UpperLimitedItemCount)}: {UpperLimitedItemCount}");
-            sb.AppendLine($"{nameof(IncreasingItemCount)}: {IncreasingItemCount}");
-            sb.AppendLine($"{nameof(SteadyItemCount)}: {SteadyItemCount}");
-            sb.AppendLine($"{nameof(DecreasingItemCount)}: {DecreasingItemCount}");
-            sb.AppendLine($"{nameof(LowerLimitedItemCount)}: {LowerLimitedItemCount}");
+            try
+            {
+                foreach (var property in typeof(IndexConclusion).GetProperties())
+                {
+                    sb.AppendLine($"{property.Name}: {property.GetValue(this)}");
+                }
+            }
+            catch { }
 
             return sb.ToString();
         }

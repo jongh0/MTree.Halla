@@ -16,7 +16,8 @@ namespace MTree.RealTimeProvider
     {
         private void StartIndexMastering()
         {
-            logger.Info("Index mastering started");
+            RealTimeState = "Index mastering started";
+            logger.Info(RealTimeState);
 
             bool masteringRet = false;
 
@@ -52,22 +53,25 @@ namespace MTree.RealTimeProvider
 
                 if (masteringRet == true)
                 {
-                    logger.Info($"Index mastering done, Elapsed time: {sw.Elapsed.ToString()}");
-                    PushUtility.NotifyMessage("Index mastering success");
+                    RealTimeState = "Index mastering success";
+                    logger.Info($"{RealTimeState}, Elapsed time: {sw.Elapsed.ToString()}");
+                    PushUtility.NotifyMessage(RealTimeState);
 
                     Task.Run(() => StartIndexMasterPublishing());
                 }
                 else
                 {
-                    logger.Info("Index mastering failed");
-                    PushUtility.NotifyMessage("Index mastering fail");
+                    RealTimeState = "Index mastering failed";
+                    logger.Info(RealTimeState);
+                    PushUtility.NotifyMessage(RealTimeState);
                 }
             }
         }
 
         private void StartIndexMasterPublishing()
         {
-            logger.Info("Index master publishing started");
+            RealTimeState = "Index master publishing started";
+            logger.Info(RealTimeState);
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -103,13 +107,16 @@ namespace MTree.RealTimeProvider
                 //IndexMasteringList.Clear();
 
                 sw.Stop();
-                logger.Info($"Index master publishing done, Elapsed time: {sw.Elapsed.ToString()}");
+
+                RealTimeState = "Index master publishing done";
+                logger.Info($"{RealTimeState}, Elapsed time: {sw.Elapsed.ToString()}");
             }
         }
 
         private void StartDaishinIndexMastering()
         {
-            logger.Info("Daishin index mastering started");
+            RealTimeState = "Daishin index mastering started";
+            logger.Info(RealTimeState);
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -120,7 +127,11 @@ namespace MTree.RealTimeProvider
                 {
                     lock (masteringLock)
                     {
-                        if (IndexMasteringList.Count(m => m.DaishinState != MasteringStates.Finished) == 0)
+                        var totalCount = IndexMasteringList.Count;
+                        var notFinishedCount = IndexMasteringList.Count(m => m.DaishinState != MasteringStates.Finished);
+                        RealTimeState = $"Daishin index mastering ({totalCount - notFinishedCount}/{totalCount})";
+
+                        if (notFinishedCount == 0)
                             break;
                     }
 
@@ -167,7 +178,9 @@ namespace MTree.RealTimeProvider
             finally
             {
                 sw.Stop();
-                logger.Info($"Daishin index mastering done, Elapsed time: {sw.Elapsed.ToString()}");
+
+                RealTimeState = "Daishin index mastering done";
+                logger.Info($"{RealTimeState}, Elapsed time: {sw.Elapsed.ToString()}");
             }
         }
 

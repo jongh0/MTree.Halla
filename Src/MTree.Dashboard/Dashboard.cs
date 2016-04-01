@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using MTree.Configuration;
+using System.IO;
 
 namespace MTree.Dashboard
 {
@@ -158,6 +160,7 @@ namespace MTree.Dashboard
                         item.Price = stockMaster.BasisPrice;
                         item.BasisPrice = stockMaster.BasisPrice;
                         item.PreviousVolume = stockMaster.PreviousVolume;
+                        item.MarketType = stockMaster.MarketType;
 
                         StockItems.Add(item.Code, item);
                     }
@@ -181,6 +184,7 @@ namespace MTree.Dashboard
                         item.Name = indexMaster.Name;
                         item.Price = indexMaster.BasisPrice;
                         item.BasisPrice = indexMaster.BasisPrice;
+                        item.MarketType = MarketTypes.INDEX;
 
                         IndexItems.Add(item.Code, item);
                     }
@@ -192,19 +196,61 @@ namespace MTree.Dashboard
             }
         }
 
+        private void SaveDashboard()
+        {
+            try
+            {
+                logger.Info("Save dashboard");
+
+                var fileName = $"MTree.{DateTime.Now.ToString(Config.General.DateFormat)}.Dashboard.csv";
+                var filePath = Path.Combine(Environment.CurrentDirectory, "Logs", fileName);
+
+                using (var sw = new StreamWriter(new FileStream(filePath, FileMode.Create)))
+                {
+                    sw.WriteLine("Code, Name, Price, PricePercent, BasisPrice, Volume, PreviousVolume, MarketType");
+
+                    foreach (var item in StockItems.Values)
+                    {
+                        sw.WriteLine($"{item.Code}, {item.Name}, {item.Price}, {item.PricePercent}, {item.BasisPrice}, {item.Volume}, {item.PreviousVolume}, {item.MarketType.ToString()}");
+                    }
+
+                    foreach (var item in IndexItems.Values)
+                    {
+                        sw.WriteLine($"{item.Code}, {item.Name}, {item.Price}, {item.PricePercent}, {item.BasisPrice}, {item.Volume}, {item.PreviousVolume}, {item.MarketType.ToString()}");
+                    }
+                }
+
+                logger.Info($"Save dashboard done, {filePath}");
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
         public override void NotifyMessage(MessageTypes type, string message)
         {
+            logger.Info($"NotifyMessage, type: {type.ToString()}, message: {message}");
+
             try
             {
                 if (type == MessageTypes.CloseClient)
                 {
-                    Task.Run(() =>
+                    if (message.Equals(ExitProgramTypes.Force.ToString()) == true)
                     {
-                        logger.Info("Process will be closed");
-                        Thread.Sleep(1000 * 10);
+                        Task.Run(() =>
+                        {
+                            logger.Info("Process will be closed");
+                            Thread.Sleep(1000 * 5);
 
-                        Environment.Exit(0);
-                    });
+                            Environment.Exit(0);
+                        });
+                    }
+                    else if (message.Equals(ExitProgramTypes.Normal.ToString()) == true)
+                    {
+                        // 장종료 후 CloseClient-Normal 일 때는 Dashboard 종료하지 않는다
+                        SaveDashboard();
+                    }
                 }
             }
             catch (Exception ex)

@@ -47,7 +47,7 @@ namespace MTree.Publisher
 
         public virtual bool IsSubscribable()
         {
-            return false;
+            return true;
         }
 
         public virtual bool SubscribeStock(string code)

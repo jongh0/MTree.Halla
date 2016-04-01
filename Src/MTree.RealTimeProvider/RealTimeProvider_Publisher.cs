@@ -67,6 +67,9 @@ namespace MTree.RealTimeProvider
         {
             try
             {
+                RealTimeState = "Launch client process";
+                logger.Info(RealTimeState);
+
                 // HistorySaver
                 ProcessUtility.Start(ProcessTypes.HistorySaver);
 
@@ -153,7 +156,8 @@ namespace MTree.RealTimeProvider
         {
             try
             {
-                logger.Info("Process master contrace");
+                RealTimeState = "Process master contract";
+                logger.Info(RealTimeState);
 
                 if (CheckMarketWorkDate(contract) == true)
                 {
@@ -164,6 +168,9 @@ namespace MTree.RealTimeProvider
 
                     Task.Run(() =>
                     {
+                        RealTimeState = "Wait 20sec for client process launch";
+                        logger.Info(RealTimeState);
+
                         Thread.Sleep(1000 * 20);
 
                         if (Config.General.SkipMastering == true)
@@ -187,6 +194,8 @@ namespace MTree.RealTimeProvider
                 {
                     Task.Run(() =>
                     {
+                        logger.Info("RealTimeProvider will be closed after 5sec");
+
                         Thread.Sleep(1000 * 5);
                         ExitProgram();
                     });
@@ -206,7 +215,8 @@ namespace MTree.RealTimeProvider
         {
             try
             {
-                logger.Info("Check code list");
+                RealTimeState = "Check code list";
+                logger.Info(RealTimeState);
 
                 var codeList = contract.Callback.GetCodeList();
 
@@ -284,7 +294,8 @@ namespace MTree.RealTimeProvider
         {
             try
             {
-                logger.Info("Check market work date");
+                RealTimeState = "Check market work date";
+                logger.Info(RealTimeState);
 
                 var workDate = contract.Callback.GetMarketInfo(MarketInfoTypes.WorkDate);
                 logger.Info($"Market work date: {workDate}");
@@ -321,7 +332,8 @@ namespace MTree.RealTimeProvider
         {
             try
             {
-                logger.Info("Check market time");
+                RealTimeState = "Check market time";
+                logger.Info(RealTimeState);
 
                 var now = DateTime.Now;
 
@@ -359,7 +371,7 @@ namespace MTree.RealTimeProvider
 
                 if (MarketEndTime > now)
                 {
-                    TimeSpan interval = (MarketEndTime - now).Add(TimeSpan.FromMinutes(30)); // 장종료 30분 후 프로그램 종료
+                    TimeSpan interval = (MarketEndTime - now).Add(TimeSpan.FromMinutes(10)); // 장종료 10분 후 프로그램 종료
 
                     MarketEndTimer = new System.Timers.Timer();
                     MarketEndTimer.Interval = interval.TotalMilliseconds;
@@ -400,6 +412,9 @@ namespace MTree.RealTimeProvider
 
         private void StartCodeDistributing()
         {
+            RealTimeState = "Start code distributing";
+            logger.Info(RealTimeState);
+
             DistributeStockConclusionSubscribingCode();
             DistributeIndexConclusionSubscribingCode();
             if (Config.General.SkipBiddingPrice == false)
@@ -409,7 +424,8 @@ namespace MTree.RealTimeProvider
 
         private void DistributeBiddingSubscribingCode()
         {
-            logger.Info("Bidding code distribution, Start");
+            RealTimeState = "Bidding code distribution, Start";
+            logger.Info(RealTimeState);
 
             int index = 0;
 
@@ -452,7 +468,8 @@ namespace MTree.RealTimeProvider
 
         private void DistributeStockConclusionSubscribingCode()
         {
-            logger.Info("Stock conclusion code distribution, Start");
+            RealTimeState = "Stock conclusion code distribution, Start";
+            logger.Info(RealTimeState);
 
             int index = 0;
 
@@ -495,7 +512,9 @@ namespace MTree.RealTimeProvider
 
         private void DistributeIndexConclusionSubscribingCode()
         {
-            logger.Info("Index conclusion code distribution, Start");
+            RealTimeState = "Index conclusion code distribution, Start";
+            logger.Info(RealTimeState);
+
             int index = 0;
 
             foreach (var contract in DaishinContracts)
@@ -528,6 +547,7 @@ namespace MTree.RealTimeProvider
                     }
                 }
             }
+
             if (IndexCodeList.Count == index)
                 logger.Info("Index code distribution, Done");
             else
@@ -536,31 +556,35 @@ namespace MTree.RealTimeProvider
 
         private void DistributeCircuitBreakSubscribingCode()
         {
-            logger.Info("Circuite break code distribution, Start");
+            RealTimeState = "Circuite break code distribution, Start";
+            logger.Info(RealTimeState);
+
             int errorCnt = 0;
-            for (int i = 0; i < StockCodeList.Count;i++)
+
+            for (int i = 0; i < StockCodeList.Count; i++)
             {
                 var codeEntity = StockCodeList.Values.ElementAt(i);
                 var code = codeEntity.Code;
-
                 var contract = EbestContracts[i % EbestContracts.Count];
+
                 if (contract.Type == ProcessTypes.Daishin)
                     code = CodeEntity.ConvertToDaishinCode(codeEntity);
 
                 if (contract.Callback.SubscribeCircuitBreak(code) == false)
                 {
-                    logger.Error($"Circuite break code distribution fail. code:{code}");
+                    logger.Error($"Circuite break code distribution fail. code: {code}");
                     i--;
+
                     errorCnt++;
                     if (errorCnt > 10)
                         break;
                 }
             }
-            if(errorCnt > 10)
-                logger.Error($"Circuite break code distribution, Fail. error count:{errorCnt}");
+
+            if (errorCnt > 10)
+                logger.Error($"Circuite break code distribution, Fail. error count: {errorCnt}");
             else
                 logger.Info("Circuite break code distribution, Done");
-            
         }
 
         public void PublishBiddingPrice(BiddingPrice biddingPrice)

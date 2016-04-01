@@ -20,7 +20,7 @@ namespace MTree.PopupStopper
 
         static void Main(string[] args)
         {
-            logger.Info("Application Started");
+            logger.Info("Popup stopper started");
 
             Console.CancelKeyPress += Console_CancelKeyPress;
 
@@ -43,7 +43,7 @@ namespace MTree.PopupStopper
                     }
                     catch (OperationCanceledException)
                     {
-                        Console.WriteLine("Operation canceled");
+                        logger.Trace("Operation canceled");
                         break;
                     }
                     catch (Exception ex)
@@ -57,7 +57,7 @@ namespace MTree.PopupStopper
             }, cancelToken);
 
             task.Wait();
-            logger.Info("Application finished");
+            logger.Info("Popup stopper finished");
         }
 
         private static bool CheckRuntimeError()
@@ -127,20 +127,20 @@ namespace MTree.PopupStopper
 
                 if (windowH != IntPtr.Zero)
                 {
-                    logger.Info($"투자자정보 popup found");
+                    logger.Trace($"투자자정보 popup found");
                     //SetForegroundWindow(windowH);
 
                     IntPtr buttonH = WindowUtility.FindWindowEx2(windowH, "Button", "오늘은 더 묻지 않음");
                     if (buttonH != IntPtr.Zero)
                     {
-                        logger.Info($"Checkbox clicked");
+                        logger.Trace($"Checkbox clicked");
                         WindowUtility.SendMessage2(buttonH, WindowUtility.BM_CLICK, 0, 0);
                     }
 
                     buttonH = WindowUtility.FindWindowEx2(windowH, "Button", "아니오(&N)");
                     if (buttonH != IntPtr.Zero)
                     {
-                        logger.Info($"No button clicked");
+                        logger.Trace($"No button clicked");
                         WindowUtility.SendMessage2(buttonH, WindowUtility.BM_CLICK, 0, 0);
 
                         return true;

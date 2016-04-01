@@ -345,6 +345,8 @@ namespace MTree.KiwoomPublisher
 
         public override void NotifyMessage(MessageTypes type, string message)
         {
+            logger.Info($"NotifyMessage, type: {type.ToString()}, message: {message}");
+
             if (type == MessageTypes.CloseClient)
             {
                 Logout();
@@ -352,7 +354,7 @@ namespace MTree.KiwoomPublisher
                 Task.Run(() =>
                 {
                     logger.Info("Process will be closed");
-                    Thread.Sleep(1000 * 10);
+                    Thread.Sleep(1000 * 5);
 
                     Environment.Exit(0);
                 });

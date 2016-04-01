@@ -7,6 +7,17 @@ namespace MTree.DaishinPublisher
 {
     public partial class DaishinPublisher
     {
+        private int _IndexSubscribeCount = 0;
+        public int IndexSubscribeCount
+        {
+            get { return _IndexSubscribeCount; }
+            set
+            {
+                _IndexSubscribeCount = value;
+                NotifyPropertyChanged(nameof(IndexSubscribeCount));
+            }
+        }
+
         private Dictionary<string, long> PrevIndexVolume { get; set; } = new Dictionary<string, long>();
         private Dictionary<string, long> PrevIndexMarketCapitalization { get; set; } = new Dictionary<string, long>();
 
@@ -35,9 +46,14 @@ namespace MTree.DaishinPublisher
             finally
             {
                 if (status == 0)
+                {
                     logger.Info($"Subscribe index, Code: {code}");
+                    IndexSubscribeCount++;
+                }
                 else
+                {
                     logger.Error($"Subscribe index error, Code: {code}, Status: {status}, Msg: {stockCurObj.GetDibMsg1()}");
+                }
             }
 
             return (status == 0);
@@ -68,9 +84,14 @@ namespace MTree.DaishinPublisher
             finally
             {
                 if (status == 0)
+                {
                     logger.Trace($"Unsubscribe index, Code: {code}");
+                    IndexSubscribeCount--;
+                }
                 else
+                {
                     logger.Error($"Unsubscribe index error, Code: {code}, Status: {status}, Msg: {stockCurObj.GetDibMsg1()}");
+                }
             }
 
             return (status == 0);

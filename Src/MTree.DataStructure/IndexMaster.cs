@@ -19,8 +19,14 @@ namespace MTree.DataStructure
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"{nameof(Name)}: {Name}");
-            sb.AppendLine($"{nameof(BasisPrice)}: {BasisPrice}");
+            try
+            {
+                foreach (var property in typeof(IndexMaster).GetProperties())
+                {
+                    sb.AppendLine($"{property.Name}: {property.GetValue(this)}");
+                }
+            }
+            catch { }
 
             return sb.ToString();
         }

@@ -5,6 +5,17 @@ namespace MTree.EbestPublisher
 {
     public partial class EbestPublisher
     {
+        private int _CircuitBreakSubscribeCount = 0;
+        public int CircuitBreakSubscribeCount
+        {
+            get { return _CircuitBreakSubscribeCount; }
+            set
+            {
+                _CircuitBreakSubscribeCount = value;
+                NotifyPropertyChanged(nameof(CircuitBreakSubscribeCount));
+            }
+        }
+
         public override bool SubscribeCircuitBreak(string code)
         {
             if (WaitLogin() == false)
@@ -17,12 +28,11 @@ namespace MTree.EbestPublisher
             {
                 viSubscribingObj.SetFieldData("InBlock", "shcode", code);
                 viSubscribingObj.AdviseRealData();
-                subscribeCount++;
 
                 dviSubscribingObj.SetFieldData("InBlock", "shcode", code);
                 dviSubscribingObj.AdviseRealData();
-                subscribeCount++;
 
+                CircuitBreakSubscribeCount++;
                 logger.Info($"Subscribe circuit break success, Code: {code}");
                 return true;
             }
@@ -47,12 +57,11 @@ namespace MTree.EbestPublisher
             {
                 viSubscribingObj.SetFieldData("InBlock", "shcode", code);
                 viSubscribingObj.UnadviseRealData();
-                subscribeCount++;
 
                 dviSubscribingObj.SetFieldData("InBlock", "shcode", code);
                 dviSubscribingObj.UnadviseRealData();
-                subscribeCount++;
 
+                CircuitBreakSubscribeCount--;
                 logger.Info($"Subscribe circuit break success, Code: {code}");
                 return true;
             }

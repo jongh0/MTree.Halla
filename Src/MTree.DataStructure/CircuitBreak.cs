@@ -32,10 +32,14 @@ namespace MTree.DataStructure
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append(base.ToString());
-            sb.AppendLine($"{nameof(CircuitBreakType)}: {CircuitBreakType}");
-            sb.AppendLine($"{nameof(BasePrice)}: {BasePrice}");
-            sb.AppendLine($"{nameof(InvokePrice)}: {InvokePrice}");
+            try
+            {
+                foreach (var property in typeof(CircuitBreak).GetProperties())
+                {
+                    sb.AppendLine($"{property.Name}: {property.GetValue(this)}");
+                }
+            }
+            catch { }
 
             return sb.ToString();
         }

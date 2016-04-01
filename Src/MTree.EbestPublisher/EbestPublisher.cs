@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Threading;
+using System.ComponentModel;
 
 namespace MTree.EbestPublisher
 {
@@ -38,12 +39,9 @@ namespace MTree.EbestPublisher
     }
 
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
-    public partial class EbestPublisher : BrokerageFirmBase
+    public partial class EbestPublisher : BrokerageFirmBase, INotifyPropertyChanged
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-
-        private const int maxSubscribeCount = 200;
-        private int subscribeCount = 0;
 
         private readonly string resFilePath = "\\Res";
 
@@ -679,6 +677,8 @@ namespace MTree.EbestPublisher
 
         public override void NotifyMessage(MessageTypes type, string message)
         {
+            logger.Info($"NotifyMessage, type: {type.ToString()}, message: {message}");
+
             if (type == MessageTypes.CloseClient)
             {
                 Logout();
@@ -686,7 +686,7 @@ namespace MTree.EbestPublisher
                 Task.Run(() =>
                 {
                     logger.Info("Process will be closed");
-                    Thread.Sleep(1000 * 10);
+                    Thread.Sleep(1000 * 5);
 
                     Environment.Exit(0);
                 });
@@ -695,19 +695,24 @@ namespace MTree.EbestPublisher
             base.NotifyMessage(type, message);
         }
 
-        public override bool IsSubscribable()
-        {
-            return subscribeCount < maxSubscribeCount;
-        }
-
         private void OnCommunTimer(object sender, ElapsedEventArgs e)
         {
             if ((Environment.TickCount - LastCommTick) > MaxCommInterval)
             {
                 LastCommTick = Environment.TickCount;
-                logger.Info($"[{GetType().Name}] Keep firm connection");
+                logger.Info($"Keep Ebest connection");
                 GetStockMaster("000020");
             }
         }
+
+        #region INotifyPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged(string name)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(name));
+        }
+        #endregion
     }
 }

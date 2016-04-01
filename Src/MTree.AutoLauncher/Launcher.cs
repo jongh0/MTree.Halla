@@ -1,8 +1,11 @@
-﻿using MTree.Utility;
+﻿using GalaSoft.MvvmLight.Command;
+using MTree.Utility;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace MTree.AutoLauncher
 {
@@ -108,18 +111,14 @@ namespace MTree.AutoLauncher
 
                 ProcessUtility.Start(LaunchProcess);
 
-                logger.Info($"{LaunchProcess} launched");
-                PushUtility.NotifyMessage($"{LaunchProcess} launched");
+                var msg = $"{LaunchProcess} launched";
+                logger.Info(msg);
+                PushUtility.NotifyMessage(msg);
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
             }
-        }
-
-        public void LaunchNow()
-        {
-            Launch();
         }
 
         private void LaunchTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
@@ -138,6 +137,44 @@ namespace MTree.AutoLauncher
                 Start();
             }
         }
+
+        #region Command
+        RelayCommand _LaunchNowCommand;
+        public ICommand LaunchNowCommand
+        {
+            get
+            {
+                if (_LaunchNowCommand == null)
+                    _LaunchNowCommand = new RelayCommand(() => ExecuteLaunchNow());
+
+                return _LaunchNowCommand;
+            }
+        }
+
+        public void ExecuteLaunchNow()
+        {
+            logger.Info("Execute launch now");
+            Launch();
+        }
+
+        RelayCommand _KillAllCommand;
+        public ICommand KillAllCommand
+        {
+            get
+            {
+                if (_KillAllCommand == null)
+                    _KillAllCommand = new RelayCommand(() => ExecuteKillAll());
+
+                return _KillAllCommand;
+            }
+        }
+
+        public void ExecuteKillAll()
+        {
+            logger.Info("Execute kill all");
+            ProcessUtility.Start(ProcessTypes.KillAll);
+        }
+        #endregion
 
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;

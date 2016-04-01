@@ -7,6 +7,17 @@ namespace MTree.DaishinPublisher
 {
     public partial class DaishinPublisher
     {
+        private int _BiddingSubscribeCount = 0;
+        public int BiddingSubscribeCount
+        {
+            get { return _BiddingSubscribeCount; }
+            set
+            {
+                _BiddingSubscribeCount = value;
+                NotifyPropertyChanged(nameof(BiddingSubscribeCount));
+            }
+        }
+
         public override bool SubscribeBidding(string code)
         {
             short status = 1;
@@ -32,9 +43,14 @@ namespace MTree.DaishinPublisher
             finally
             {
                 if (status == 0)
+                {
                     logger.Info($"Subscribe bidding, Code: {code}");
+                    BiddingSubscribeCount++;
+                }
                 else
+                {
                     logger.Error($"Subscribe bidding error, Code: {code}, Status: {status}, Msg: {stockJpbidObj.GetDibMsg1()}");
+                }
             }
 
             return (status == 0);
@@ -65,9 +81,14 @@ namespace MTree.DaishinPublisher
             finally
             {
                 if (status == 0)
+                {
                     logger.Trace($"Unsubscribe bidding, Code: {code}");
+                    BiddingSubscribeCount--;
+                }
                 else
+                {
                     logger.Error($"Unsubscribe bidding error, Code: {code}, Status: {status}, Msg: {stockJpbidObj.GetDibMsg1()}");
+                }
             }
 
             return (status == 0);

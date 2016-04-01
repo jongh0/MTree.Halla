@@ -23,7 +23,7 @@ namespace MTree.AutoLauncher
                 var now = DateTime.Now;
 
                 launcher = new Launcher(ProcessTypes.RealTimeProvider);
-                launcher.Time = new DateTime(now.Year, now.Month, now.Day, 7, 00, 0);
+                launcher.Time = new DateTime(now.Year, now.Month, now.Day, 7, 10, 0);
 
                 launcher.KillProcesses.Add(ProcessTypes.CybosStarter);
                 launcher.KillProcesses.Add(ProcessTypes.PopupStopper);
@@ -37,19 +37,14 @@ namespace MTree.AutoLauncher
                 this.DataContext = launcher;
                 launcher.Start();
 
-                logger.Info("AutoLauncher started");
-                PushUtility.NotifyMessage("AutoLauncher started");
+                var msg = "AutoLauncher started";
+                logger.Info(msg);
+                PushUtility.NotifyMessage(msg);
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
             }
-        }
-
-        private void LaunchNow_Clicked(object sender, RoutedEventArgs e)
-        {
-            logger.Info("LaunchNow clicked");
-            launcher.LaunchNow();
         }
     }
 }

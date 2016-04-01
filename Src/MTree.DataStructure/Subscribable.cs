@@ -29,9 +29,9 @@ namespace MTree.DataStructure
     }
 
     [BsonDiscriminator(RootClass = true)]
-    [BsonKnownTypes(typeof(BiddingPrice), 
+    [BsonKnownTypes(typeof(Candle), 
+                    typeof(BiddingPrice), 
                     typeof(CircuitBreak),
-                    typeof(Candle),
                     typeof(IndexConclusion), 
                     typeof(StockConclusion), 
                     typeof(StockMaster),
@@ -52,9 +52,14 @@ namespace MTree.DataStructure
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"{nameof(Id)}: {Id}");
-            sb.AppendLine($"{nameof(Code)}: {Code}");
-            sb.AppendLine($"{nameof(Time)}: {Time}");
+            try
+            {
+                foreach (var property in typeof(Subscribable).GetProperties())
+                {
+                    sb.AppendLine($"{property.Name}: {property.GetValue(this)}");
+                }
+            }
+            catch { }
 
             return sb.ToString();
         }

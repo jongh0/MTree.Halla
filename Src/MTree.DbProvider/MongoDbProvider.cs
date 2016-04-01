@@ -22,7 +22,6 @@ namespace MTree.DbProvider
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private readonly string connectionString = Config.Database.ConnectionString;
         private readonly string chartDbString = "MTree_Chart";
         private readonly string biddingPriceDbString = "MTree_BiddingPrice";
         private readonly string circuitBreakDbString = "MTree_CircuitBreak";
@@ -34,12 +33,12 @@ namespace MTree.DbProvider
 
         private IMongoClient Client { get; set; }
 
-        public MongoDbProvider()
+        public MongoDbProvider(string connectionString)
         {
-            Connect();
+            Connect(connectionString);
         }
 
-        private void Connect()
+        private void Connect(string connectionString)
         {
             try
             {
@@ -63,7 +62,8 @@ namespace MTree.DbProvider
                 case DbTypes.IndexMaster:       return Client.GetDatabase(indexMasterDbString);
                 case DbTypes.StockConclusion:   return Client.GetDatabase(stockConclusionDbString);
                 case DbTypes.IndexConclusion:   return Client.GetDatabase(indexConclusionDbString);
-                default:                        return Client.GetDatabase(testDbString);
+                case DbTypes.Test:              return Client.GetDatabase(testDbString);
+                default:                        return null;
             }
         }
     }

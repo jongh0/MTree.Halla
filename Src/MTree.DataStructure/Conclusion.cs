@@ -35,10 +35,14 @@ namespace MTree.DataStructure
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append(base.ToString());
-            sb.AppendLine($"{nameof(Amount)}: {Amount}");
-            sb.AppendLine($"{nameof(MarketTimeType)}: {MarketTimeType}");
-            sb.AppendLine($"{nameof(Price)}: {Price}");
+            try
+            {
+                foreach (var property in typeof(Conclusion).GetProperties())
+                {
+                    sb.AppendLine($"{property.Name}: {property.GetValue(this)}");
+                }
+            }
+            catch { }
 
             return sb.ToString();
         }

@@ -21,7 +21,8 @@ namespace MTree.RealTimeProvider
 
         private void StartStockMastering()
         {
-            logger.Info("Stock mastering started");
+            RealTimeState = "Stock mastering started";
+            logger.Info(RealTimeState);
 
             bool masteringRet = false;
 
@@ -60,22 +61,25 @@ namespace MTree.RealTimeProvider
 
                 if (masteringRet == true)
                 {
-                    logger.Info($"Stock mastering done, Elapsed time: {sw.Elapsed.ToString()}");
-                    PushUtility.NotifyMessage("Stock mastering success");
+                    RealTimeState = "Stock mastering success";
+                    logger.Info($"{RealTimeState}, Elapsed time: {sw.Elapsed.ToString()}");
+                    PushUtility.NotifyMessage(RealTimeState);
 
                     Task.Run(() => StartStockMasterPublishing());
                 }
                 else
                 {
-                    logger.Info("Stock mastering failed");
-                    PushUtility.NotifyMessage("Stock mastering fail");
+                    RealTimeState = "Stock mastering failed";
+                    logger.Info(RealTimeState);
+                    PushUtility.NotifyMessage(RealTimeState);
                 }
             }
         }
 
         private void StartStockMasterPublishing()
         {
-            logger.Info("Stock master publishing started");
+            RealTimeState = "Stock master publishing started";
+            logger.Info(RealTimeState);
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -111,13 +115,16 @@ namespace MTree.RealTimeProvider
                 //StockMasteringList.Clear();
 
                 sw.Stop();
-                logger.Info($"Stock master publishing done, Elapsed time: {sw.Elapsed.ToString()}");
+
+                RealTimeState = "Stock master publishing done";
+                logger.Info($"{RealTimeState}, Elapsed time: {sw.Elapsed.ToString()}");
             }
         }
 
         private void StartDaishinStockMastering()
         {
-            logger.Info("Daishin stock mastering started");
+            RealTimeState = "Daishin stock mastering started";
+            logger.Info(RealTimeState);
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -128,7 +135,11 @@ namespace MTree.RealTimeProvider
                 {
                     lock (masteringLock)
                     {
-                        if (StockMasteringList.Count(m => m.DaishinState != MasteringStates.Finished) == 0)
+                        var totalCount = StockMasteringList.Count;
+                        var notFinishedCount = StockMasteringList.Count(m => m.DaishinState != MasteringStates.Finished);
+                        RealTimeState = $"Daishin stock mastering ({totalCount - notFinishedCount}/{totalCount})";
+
+                        if (notFinishedCount == 0)
                             break;
                     }
 
@@ -175,13 +186,16 @@ namespace MTree.RealTimeProvider
             finally
             {
                 sw.Stop();
-                logger.Info($"Daishin stock mastering done, Elapsed time: {sw.Elapsed.ToString()}");
+
+                RealTimeState = "Daishin stock mastering done";
+                logger.Info($"{RealTimeState}, Elapsed time: {sw.Elapsed.ToString()}");
             }
         }
 
         private void StartEbestStockMatering()
         {
-            logger.Info("Ebest stock mastering started");
+            RealTimeState = "Ebest stock mastering started";
+            logger.Info(RealTimeState);
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -192,7 +206,11 @@ namespace MTree.RealTimeProvider
                 {
                     lock (masteringLock)
                     {
-                        if (StockMasteringList.Count(m => m.EbestState != MasteringStates.Finished) == 0)
+                        var totalCount = StockMasteringList.Count;
+                        var notFinishedCount = StockMasteringList.Count(m => m.EbestState != MasteringStates.Finished);
+                        RealTimeState = $"Ebest stock mastering ({totalCount - notFinishedCount}/{totalCount})";
+
+                        if (notFinishedCount == 0)
                             break;
                     }
 
@@ -239,13 +257,16 @@ namespace MTree.RealTimeProvider
             finally
             {
                 sw.Stop();
-                logger.Info($"Ebest stock mastering done, Elapsed time: {sw.Elapsed.ToString()}");
+
+                RealTimeState = "Ebest stock mastering done";
+                logger.Info($"{RealTimeState}, Elapsed time: {sw.Elapsed.ToString()}");
             }
         }
 
         private void StartKiwoomStockMastering()
         {
-            logger.Info("Kiwoom stock mastering started");
+            RealTimeState = "Kiwoom stock mastering started";
+            logger.Info(RealTimeState);
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -256,7 +277,11 @@ namespace MTree.RealTimeProvider
                 {
                     lock (masteringLock)
                     {
-                        if (StockMasteringList.Count(m => m.KiwoomState != MasteringStates.Finished) == 0)
+                        var totalCount = StockMasteringList.Count;
+                        var notFinishedCount = StockMasteringList.Count(m => m.KiwoomState != MasteringStates.Finished);
+                        RealTimeState = $"Kiwoom stock mastering ({totalCount - notFinishedCount}/{totalCount})";
+
+                        if (notFinishedCount == 0)
                             break;
                     }
 
@@ -303,7 +328,9 @@ namespace MTree.RealTimeProvider
             finally
             {
                 sw.Stop();
-                logger.Info($"Kiwoom stock mastering done, Elapsed time: {sw.Elapsed.ToString()}");
+
+                RealTimeState = "Kiwoom stock mastering done";
+                logger.Info($"{RealTimeState}, Elapsed time: {sw.Elapsed.ToString()}");
 
                 var contracts = KiwoomContracts;
                 if (contracts != null)

@@ -11,6 +11,7 @@ namespace MTree.Utility
     public enum ProcessTypes
     {
         None,
+        KillAll,
         CybosStarter,
         TestConsole,
         TestConsumer,
@@ -36,6 +37,7 @@ namespace MTree.Utility
         static ProcessUtility()
         {
             ProcessList = new Dictionary<ProcessTypes, string>();
+            ProcessList.Add(ProcessTypes.KillAll, "KillAll");
             ProcessList.Add(ProcessTypes.CybosStarter, "CpStart");
             ProcessList.Add(ProcessTypes.TestConsole, "TestConsole");
             ProcessList.Add(ProcessTypes.TestConsumer, "TestConsumer");
