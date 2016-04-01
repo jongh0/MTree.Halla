@@ -1,4 +1,5 @@
-﻿using MTree.DataStructure;
+﻿using MTree.Configuration;
+using MTree.DataStructure;
 using MTree.Utility;
 using System;
 using System.Collections.Concurrent;
@@ -47,7 +48,8 @@ namespace MTree.RealTimeProvider
                 var masteringTask = new List<Task>();
                 masteringTask.Add(Task.Run(() => StartDaishinStockMastering()));
                 masteringTask.Add(Task.Run(() => StartEbestStockMatering()));
-                masteringTask.Add(Task.Run(() => StartKiwoomStockMastering()));
+                if (Config.General.ExcludeKiwoom == false)
+                    masteringTask.Add(Task.Run(() => StartKiwoomStockMastering()));
 
                 masteringRet = Task.WaitAll(masteringTask.ToArray(), TimeSpan.FromMinutes(30));
             }

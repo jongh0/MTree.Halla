@@ -76,19 +76,18 @@ namespace MTree.RealTimeProvider
                 // Dashboard
                 ProcessUtility.Start(ProcessTypes.Dashboard);
 
-                if (Config.General.SkipMastering == false)
-                {
-                    // Kiwoom
+                // Kiwoom
+                if (Config.General.SkipMastering == false &&
+                    Config.General.ExcludeKiwoom == false)
                     ProcessUtility.Start(ProcessTypes.Kiwoom, ProcessWindowStyle.Minimized);
 
-                    // Daishin popup stopper
-                    ProcessUtility.Start(ProcessTypes.PopupStopper, ProcessWindowStyle.Minimized);
-                }
+                // Popup stopper
+                ProcessUtility.Start(ProcessTypes.PopupStopper, ProcessWindowStyle.Minimized);
 
                 // Daishin
                 int daishinProcessCount;
                 if (Config.General.SkipBiddingPrice == true)
-                    daishinProcessCount = (StockCodeList.Count + IndexCodeList.Count) / 400;
+                    daishinProcessCount = (StockCodeList.Count * 2 + IndexCodeList.Count) / 400;
                 else
                     daishinProcessCount = (StockCodeList.Count * 3 + IndexCodeList.Count) / 400;
 
@@ -181,11 +180,6 @@ namespace MTree.RealTimeProvider
                         {
                             StartStockMastering();
                             StartIndexMastering();
-
-#if false // Test code
-                            SaveDayChart();
-                            return;
-#endif
                             StartCodeDistributing();
                         }
                     });
