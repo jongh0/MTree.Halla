@@ -15,6 +15,7 @@ namespace MTree.Configuration
         public DaishinConfiguration daishin { get; set; } = new DaishinConfiguration();
         public EbestConfiguration ebest { get; set; } = new EbestConfiguration();
         public EmailConfiguration email { get; set; } = new EmailConfiguration();
+        public CompareConfiguration compare { get; set; } = new CompareConfiguration();
 
         public static GeneralConfiguration General { get { return Instance.general; } }
         public static PushConfiguration Push { get { return Instance.push; } }
@@ -22,6 +23,7 @@ namespace MTree.Configuration
         public static DaishinConfiguration Daishin { get { return Instance.daishin; } }
         public static EbestConfiguration Ebest { get { return Instance.ebest; } }
         public static EmailConfiguration Email { get { return Instance.email; } }
+        public static CompareConfiguration Compare { get { return Instance.compare; } }
 
         #region Instance
         private static object lockObject = new object();

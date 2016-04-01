@@ -3,6 +3,7 @@ using MTree.Configuration;
 using MTree.DataStructure;
 using MTree.Utility;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -43,7 +44,12 @@ namespace MTree.DbProvider
                     lock (lockObject)
                     {
                         if (_RemoteInstance == null)
-                            _RemoteInstance = new DbAgent(Config.Database.RemoteConnectionString);
+                        {
+                            if (Config.Database.RemoteConnectionString != string.Empty)
+                                _RemoteInstance = new DbAgent(Config.Database.RemoteConnectionString);
+                            else
+                                logger.Error("Connection string for remote DB is empty");
+                        }
                     }
                 }
 
@@ -62,7 +68,7 @@ namespace MTree.DbProvider
         public IMongoDatabase StockConclusionDb { get; set; }
         public IMongoDatabase IndexConclusionDb { get; set; }
 
-        public DbAgent(string connectionString)
+        public DbAgent(string connectionString = null)
         {
             DbProvider = new MongoDbProvider(connectionString);
 
@@ -73,6 +79,15 @@ namespace MTree.DbProvider
             IndexMasterDb = DbProvider.GetDatabase(DbTypes.IndexMaster);
             StockConclusionDb = DbProvider.GetDatabase(DbTypes.StockConclusion);
             IndexConclusionDb = DbProvider.GetDatabase(DbTypes.IndexConclusion);
+        }
+
+        public List<string> GetCollectionList()
+        {
+            List<string> collections = new List<string>();
+            var result = StockMasterDb.ListCollections();
+            result.ForEachAsync((collection) => { collections.Add(collection.GetValue("name").AsString); });
+
+            return collections;
         }
 
         public IMongoCollection<T> GetCollection<T>(string collectionName)

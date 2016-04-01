@@ -57,6 +57,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestPublisher", "TestPublis
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.Dashboard", "MTree.Dashboard\MTree.Dashboard.csproj", "{FB13D3B5-8653-4218-9B58-2F715EB02B2B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.DataCompare", "MTree.DataCompare\MTree.DataCompare.csproj", "{872A62AB-F004-4F03-9905-981017E33BC9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -155,6 +157,10 @@ Global
 		{FB13D3B5-8653-4218-9B58-2F715EB02B2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB13D3B5-8653-4218-9B58-2F715EB02B2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FB13D3B5-8653-4218-9B58-2F715EB02B2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{872A62AB-F004-4F03-9905-981017E33BC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{872A62AB-F004-4F03-9905-981017E33BC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{872A62AB-F004-4F03-9905-981017E33BC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{872A62AB-F004-4F03-9905-981017E33BC9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -179,5 +185,6 @@ Global
 		{FBF6C623-2091-4DD7-8967-5CD6F3FD19B0} = {45A22074-BF98-4455-B6DE-D6B8CF4ADF18}
 		{772B7682-1D4D-46AD-9E0F-B4579F6185E2} = {C10ED646-15B3-409D-93DB-2F958CB8182A}
 		{FB13D3B5-8653-4218-9B58-2F715EB02B2B} = {45A22074-BF98-4455-B6DE-D6B8CF4ADF18}
+		{872A62AB-F004-4F03-9905-981017E33BC9} = {C22A1011-FE40-49F1-AB42-3CBF4921ACBD}
 	EndGlobalSection
 EndGlobal
