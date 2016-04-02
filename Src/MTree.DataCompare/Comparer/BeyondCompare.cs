@@ -46,25 +46,26 @@ namespace MTree.DataCompare
                 return false;
             }
 
-            StreamWriter sourceSw = new StreamWriter(sourceFile, false);
-            foreach (Subscribable s in src)
+            using (StreamWriter sourceSw = new StreamWriter(sourceFile, false))
             {
-                sourceSw.WriteLine(s.ToString());
+                foreach (Subscribable s in src)
+                {
+                    sourceSw.WriteLine(s.ToString());
+                }
+                sourceSw.Flush();
             }
-            sourceSw.Flush();
-            sourceSw.Close();
 
-            StreamWriter destinationSw = new StreamWriter(destinationFile, false);
-            foreach (Subscribable s in dest)
+            using (StreamWriter destinationSw = new StreamWriter(destinationFile, false))
             {
-                destinationSw.WriteLine(s.ToString());
+                foreach (Subscribable s in dest)
+                {
+                    destinationSw.WriteLine(s.ToString());
+                }
+                destinationSw.Flush();
             }
-            destinationSw.Flush();
-            destinationSw.Close();
 
             Process compareProcess = Process.Start(beyondComparePath, $"/qc=binary /silent {sourceFile} {destinationFile}");
             compareProcess.WaitForExit();
-
 
             if (File.Exists(sourceFile))
                 File.Delete(sourceFile);
@@ -97,21 +98,23 @@ namespace MTree.DataCompare
                 logger.Error("Beyond compare path is wrong");
                 return false;
             }
-            
-            StreamWriter sourceSw = new StreamWriter(sourceFile, false);
-            sourceSw.WriteLine(src);
-            sourceSw.Flush();
-            sourceSw.Close();
-            
-            StreamWriter destinationSw = new StreamWriter(destinationFile, false);
-            destinationSw.WriteLine(dest);
-            destinationSw.Flush();
-            destinationSw.Close();
+
+            using (StreamWriter sourceSw = new StreamWriter(sourceFile, false))
+            {
+                sourceSw.WriteLine(src);
+                sourceSw.Flush();
+            }
+
+            using (StreamWriter destinationSw = new StreamWriter(destinationFile, false))
+            {
+                destinationSw.WriteLine(dest);
+                destinationSw.Flush();
+            }
 
             Process compareProcess = Process.Start(beyondComparePath, $"/qc=binary /silent {sourceFile} {destinationFile}");
             compareProcess.WaitForExit();
 
-            if(File.Exists(sourceFile))
+            if (File.Exists(sourceFile))
                 File.Delete(sourceFile);
             if (File.Exists(destinationFile))
                 File.Delete(destinationFile);
@@ -119,6 +122,5 @@ namespace MTree.DataCompare
             logger.Info($"Comparing complete result:{compareProcess.ExitCode}");
             return compareProcess.ExitCode == 1;
         }
-
     }
 }

@@ -16,12 +16,10 @@ namespace MTree.DataCompare
         public DataCollector(DbAgent dataSource = null)
         {
             if (dataSource != null)
-            {
                 DataSource = dataSource;
-            }
         }
 
-        public List<string> GetStockCodeList()
+        public List<string> GetCodeList()
         {
             return DataSource.GetCollectionList(DbTypes.StockMaster);
         }
