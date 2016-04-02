@@ -310,6 +310,7 @@ namespace MTree.HistorySaver
                     sw.WriteLine($"IndexMaster, {IndexMasterCount}");
                     sw.WriteLine($"StockConclusion, {StockConclusionCount}");
                     sw.WriteLine($"IndexConclusion, {IndexConclusionCount}");
+                    sw.WriteLine($"Total, {TotalCount}");
                 }
 
                 logger.Info($"Save HistorySaver done, {filePath}");

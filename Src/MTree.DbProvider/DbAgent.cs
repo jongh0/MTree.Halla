@@ -5,6 +5,7 @@ using MTree.Utility;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -443,6 +444,23 @@ namespace MTree.DbProvider
 
                 logger.Info(sb.ToString());
                 PushUtility.NotifyMessage(sb.ToString());
+
+                #region DB 통계를 파일로 저장
+                var fileName = $"MTree.{DateTime.Now.ToString(Config.General.DateFormat)}.Database.csv";
+                var filePath = Path.Combine(Environment.CurrentDirectory, "Logs", fileName);
+
+                using (var stream = new StreamWriter(new FileStream(filePath, FileMode.Create)))
+                {
+                    stream.WriteLine($"Chart, {chartCount}");
+                    stream.WriteLine($"CircuitBreak, {circuitBreakCount}");
+                    stream.WriteLine($"BiddingPrice, {biddingCount}");
+                    stream.WriteLine($"StockMaster, {stockMasterCount}");
+                    stream.WriteLine($"IndexMaster, {indexMasterCount}");
+                    stream.WriteLine($"StockConclusion, {stockConclusionCount}");
+                    stream.WriteLine($"IndexConclusion, {indexConclusionCount}");
+                    stream.WriteLine($"Total, {totalCount}");
+                } 
+                #endregion
             }
             catch (Exception ex)
             {
