@@ -677,8 +677,6 @@ namespace MTree.EbestPublisher
 
         public override void NotifyMessage(MessageTypes type, string message)
         {
-            logger.Info($"NotifyMessage, type: {type.ToString()}, message: {message}");
-
             if (type == MessageTypes.CloseClient)
             {
                 Logout();

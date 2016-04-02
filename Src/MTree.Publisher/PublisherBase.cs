@@ -101,7 +101,7 @@ namespace MTree.Publisher
 
         public override void NotifyMessage(MessageTypes type, string message)
         {
-            logger.Info($"NotifyMessage, type: {type.ToString()}, message: {message}");
+            logger.Info($"[{GetType().Name}] NotifyMessage, type: {type.ToString()}, message: {message}");
 
             try
             {

@@ -46,5 +46,18 @@ namespace MTree.RealTimeProvider
             QueueTaskCancelSource.Cancel();
             logger.Info($"[{GetType().Name}] Queue task stopped");
         }
+
+        protected void WaitQueueTask()
+        {
+            while (BiddingPriceQueue.Count > 0 ||
+                   CircuitBreakQueue.Count > 0 ||
+                   StockConclusionQueue.Count > 0 ||
+                   IndexConclusionQueue.Count > 0)
+            {
+                Thread.Sleep(100);
+            }
+
+            logger.Info($"[{GetType().Name}] Queue task empty");
+        }
     }
 }
