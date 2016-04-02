@@ -200,7 +200,7 @@ namespace MTree.Dashboard
         {
             try
             {
-                logger.Info("Save dashboard");
+                logger.Info("Save Dashboard");
 
                 var fileName = $"MTree.{DateTime.Now.ToString(Config.General.DateFormat)}.Dashboard.csv";
                 var filePath = Path.Combine(Environment.CurrentDirectory, "Logs", fileName);
@@ -220,7 +220,7 @@ namespace MTree.Dashboard
                     }
                 }
 
-                logger.Info($"Save dashboard done, {filePath}");
+                logger.Info($"Save Dashboard done, {filePath}");
             }
             catch (Exception ex)
             {

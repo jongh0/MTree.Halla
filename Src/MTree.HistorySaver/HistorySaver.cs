@@ -11,6 +11,7 @@ using System.Windows;
 using System.ComponentModel;
 using MTree.Configuration;
 using System.Collections.Generic;
+using System.IO;
 
 namespace MTree.HistorySaver
 {
@@ -55,8 +56,8 @@ namespace MTree.HistorySaver
 
             try
             {
-                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.Mastering));
                 ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.Chart));
+                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.Mastering));
                 ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.CircuitBreak));
                 ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.BiddingPrice));
                 ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.StockConclusion));
@@ -219,6 +220,7 @@ namespace MTree.HistorySaver
                     {
                         if (message.Equals(ExitProgramTypes.Normal.ToString()) == true)
                         {
+                            SaveHistorySaver();
                             DbAgent.Instance.CreateIndex();
                             DbAgent.Instance.SaveStatisticLog();
                         }
@@ -266,6 +268,34 @@ namespace MTree.HistorySaver
             NotifyPropertyChanged(nameof(StockConclusionCount));
             NotifyPropertyChanged(nameof(IndexConclusionCount));
             NotifyPropertyChanged(nameof(TotalCount));
+        }
+
+        private void SaveHistorySaver()
+        {
+            try
+            {
+                logger.Info("Save HistorySaver");
+
+                var fileName = $"MTree.{DateTime.Now.ToString(Config.General.DateFormat)}.HistorySaver.csv";
+                var filePath = Path.Combine(Environment.CurrentDirectory, "Logs", fileName);
+
+                using (var sw = new StreamWriter(new FileStream(filePath, FileMode.Create)))
+                {
+                    sw.WriteLine($"Chart, {ChartCount}");
+                    sw.WriteLine($"CircuitBreak, {CircuitBreakCount}");
+                    sw.WriteLine($"BiddingPrice, {BiddingPriceCount}");
+                    sw.WriteLine($"StockMaster, {StockMasterCount}");
+                    sw.WriteLine($"IndexMaster, {IndexMasterCount}");
+                    sw.WriteLine($"StockConclusion, {StockConclusionCount}");
+                    sw.WriteLine($"IndexConclusion, {IndexConclusionCount}");
+                }
+
+                logger.Info($"Save HistorySaver done, {filePath}");
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
         }
 
         #region INotifyPropertyChanged
