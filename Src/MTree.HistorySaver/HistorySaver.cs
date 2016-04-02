@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define QUEUE_COUNT_ERROR_LOG
+
+using System;
 using System.ServiceModel;
 using MTree.DbProvider;
 using System.Threading;
@@ -137,18 +139,36 @@ namespace MTree.HistorySaver
         {
             BiddingPriceQueue.Enqueue(biddingPrice);
             BiddingPriceCount++;
+
+#if QUEUE_COUNT_ERROR_LOG
+            var count = BiddingPriceQueue.Count;
+            if (count > 100)
+                logger.Error($"BiddingPriceQueue count: {count}");
+#endif
         }
 
         public override void ConsumeStockConclusion(StockConclusion conclusion)
         {
             StockConclusionQueue.Enqueue(conclusion);
             StockConclusionCount++;
+
+#if QUEUE_COUNT_ERROR_LOG
+            var count = StockConclusionQueue.Count;
+            if (count > 100)
+                logger.Error($"StockConclusionQueue count: {count}");
+#endif
         }
 
         public override void ConsumeIndexConclusion(IndexConclusion conclusion)
         {
             IndexConclusionQueue.Enqueue(conclusion);
             IndexConclusionCount++;
+
+#if QUEUE_COUNT_ERROR_LOG
+            var count = IndexConclusionQueue.Count;
+            if (count > 100)
+                logger.Error($"IndexConclusionQueue count: {count}");
+#endif
         }
 
         public override void ConsumeCircuitBreak(CircuitBreak circuitBreak)
