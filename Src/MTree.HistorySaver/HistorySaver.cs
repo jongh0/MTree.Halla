@@ -232,7 +232,7 @@ namespace MTree.HistorySaver
             {
                 if (type == MessageTypes.CloseClient)
                 {
-                    // UI 업데이트 중지
+                    // Count 업데이트 중지
                     StopRefreshTimer();
 
                     if (message.Equals(ExitProgramTypes.Normal.ToString()) == true)

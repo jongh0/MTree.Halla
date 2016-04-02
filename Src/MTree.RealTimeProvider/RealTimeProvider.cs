@@ -45,6 +45,8 @@ namespace MTree.RealTimeProvider
         public int IndexConclusionCount { get; set; } = 0;
         #endregion
 
+        private System.Timers.Timer RefreshTimer { get; set; }
+
         private string _RealTimeState = string.Empty;
         public string RealTimeState
         {
@@ -62,6 +64,8 @@ namespace MTree.RealTimeProvider
             TaskUtility.Run("RealTimeProvider.CircuitBreakQueue", QueueTaskCancelToken, ProcessCircuitBreakQueue);
             TaskUtility.Run("RealTimeProvider.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
             TaskUtility.Run("RealTimeProvider.IndexConclusionQueue", QueueTaskCancelToken, ProcessIndexConclusionQueue);
+
+            StartRefreshTimer();
         }
 
         public void NotifyMessage(MessageTypes type, string message)
@@ -186,65 +190,101 @@ namespace MTree.RealTimeProvider
 
         private void ExitProgram(ExitProgramTypes type = ExitProgramTypes.Normal)
         {
-            RealTimeState = $"Exit program, {type.ToString()}";
-            logger.Info(RealTimeState);
-
-            #region Publisher 종료
-            foreach (var contract in PublisherContracts)
+            try
             {
-                try
-                {
-                    logger.Info($"Close publisher client, {contract.ToString()}");
-                    contract.Value.Callback.NotifyMessage(MessageTypes.CloseClient, type.ToString());
-                }
-                catch (Exception ex)
-                {
-                    logger.Error(ex);
-                }
-            }
-            #endregion
-
-            #region Consumer 종료
-            foreach (var contract in ConsumerContracts)
-            {
-                try
-                {
-                    logger.Info($"Close consumer client, {contract.ToString()}");
-                    contract.Value.Callback.NotifyMessage(MessageTypes.CloseClient, type.ToString());
-                }
-                catch (Exception ex)
-                {
-                    logger.Error(ex);
-                }
-            } 
-            #endregion
-
-            Task.Run(() =>
-            {
-                // CybosStarter 종료
-                ProcessUtility.Kill(ProcessTypes.CybosStarter);
-                
-                if (type == ExitProgramTypes.Normal)
-                {
-                    // 당일 수집된 로그를 Zip해서 Email로 전송함
-                    LogUtility.SendLogToEmail();
-
-                    // Queue에 입력된 Count를 파일로 저장
-                    SaveRealTimeProvider();
-                }
-
-                // 20초후 프로그램 종료
-                RealTimeState = "RealTimeProvider will be closed after 20sec";
+                RealTimeState = $"Exit program, {type.ToString()}";
                 logger.Info(RealTimeState);
-                PushUtility.NotifyMessage(RealTimeState);
 
-                Thread.Sleep(1000 * 20);
+                #region Publisher 종료
+                foreach (var contract in PublisherContracts)
+                {
+                    try
+                    {
+                        logger.Info($"Close publisher client, {contract.ToString()}");
+                        contract.Value.Callback.NotifyMessage(MessageTypes.CloseClient, type.ToString());
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error(ex);
+                    }
+                }
+                #endregion
 
-                // PopupStopper 종료
-                ProcessUtility.Kill(ProcessTypes.PopupStopper);
+                #region Consumer 종료
+                foreach (var contract in ConsumerContracts)
+                {
+                    try
+                    {
+                        logger.Info($"Close consumer client, {contract.ToString()}");
+                        contract.Value.Callback.NotifyMessage(MessageTypes.CloseClient, type.ToString());
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error(ex);
+                    }
+                }
+                #endregion
 
-                Environment.Exit(0);
-            });
+                // Count 업데이트 중지
+                StopRefreshTimer();
+
+                Task.Run(() =>
+                {
+                    // CybosStarter 종료
+                    ProcessUtility.Kill(ProcessTypes.CybosStarter);
+
+                    if (type == ExitProgramTypes.Normal)
+                    {
+                        // 당일 수집된 로그를 Zip해서 Email로 전송함
+                        LogUtility.SendLogToEmail();
+
+                        // Queue에 입력된 Count를 파일로 저장
+                        SaveRealTimeProvider();
+                    }
+
+                    // 20초후 프로그램 종료
+                    RealTimeState = "RealTimeProvider will be closed after 20sec";
+                    logger.Info(RealTimeState);
+                    PushUtility.NotifyMessage(RealTimeState);
+
+                    Thread.Sleep(1000 * 20);
+
+                    // PopupStopper 종료
+                    ProcessUtility.Kill(ProcessTypes.PopupStopper);
+
+                    Environment.Exit(0);
+                });
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
+        private void StartRefreshTimer()
+        {
+            if (RefreshTimer == null)
+            {
+                RefreshTimer = new System.Timers.Timer();
+                RefreshTimer.AutoReset = true;
+                RefreshTimer.Interval = 1000;
+                RefreshTimer.Elapsed += RefreshTimer_Elapsed;
+            }
+
+            RefreshTimer.Start();
+        }
+
+        private void StopRefreshTimer()
+        {
+            RefreshTimer?.Stop();
+        }
+
+        private void RefreshTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            NotifyPropertyChanged(nameof(BiddingPriceCount));
+            NotifyPropertyChanged(nameof(CircuitBreakCount));
+            NotifyPropertyChanged(nameof(StockConclusionCount));
+            NotifyPropertyChanged(nameof(IndexConclusionCount));
         }
 
         private void SaveRealTimeProvider()
