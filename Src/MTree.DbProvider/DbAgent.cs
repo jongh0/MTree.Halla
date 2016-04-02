@@ -1,4 +1,6 @@
-﻿using MongoDB.Driver;
+﻿#define DB_DURATION_ERROR_LOG
+
+using MongoDB.Driver;
 using MTree.Configuration;
 using MTree.DataStructure;
 using MTree.Utility;
@@ -108,7 +110,9 @@ namespace MTree.DbProvider
 
         public IMongoCollection<T> GetCollection<T>(string collectionName)
         {
-            int startTick = Environment.TickCount;
+#if DB_DURATION_ERROR_LOG
+            int startTick = Environment.TickCount; 
+#endif
 
             try
             {
@@ -135,9 +139,11 @@ namespace MTree.DbProvider
             }
             finally
             {
+#if DB_DURATION_ERROR_LOG
                 var duration = Environment.TickCount - startTick;
-                if (duration > 2000)
-                    logger.Warn($"Db get collection duration: {duration}, {collectionName}");
+                if (duration > 1000)
+                    logger.Error($"Db get collection duration: {duration}, {collectionName}"); 
+#endif
             }
 
             return null;
@@ -152,7 +158,9 @@ namespace MTree.DbProvider
         {
             if (item == null) return;
 
-            int startTick = Environment.TickCount;
+#if DB_DURATION_ERROR_LOG
+            int startTick = Environment.TickCount; 
+#endif
 
             try
             {
@@ -162,7 +170,7 @@ namespace MTree.DbProvider
                 if (collection != null)
                     collection.InsertOne(item);
                 else
-                    logger.Error($"Insert error, {subscribable.Code}/{subscribable.Time.ToString(Config.General.DateTimeFormat)}");
+                    logger.Error($"Insert error, {item.ToString()}");
             }
             catch (Exception ex)
             {
@@ -170,9 +178,11 @@ namespace MTree.DbProvider
             }
             finally
             {
+#if DB_DURATION_ERROR_LOG
                 var duration = Environment.TickCount - startTick;
                 if (duration > 2000)
-                    logger.Warn($"Db insert duration: {duration}, {item.ToString()}");
+                    logger.Error($"Db insert duration: {duration}, {item.ToString()}"); 
+#endif
             }
         }
 
@@ -188,7 +198,9 @@ namespace MTree.DbProvider
         {
             if (string.IsNullOrEmpty(collectionName) == true || filter == null) return;
 
-            int startTick = Environment.TickCount;
+#if DB_DURATION_ERROR_LOG
+            int startTick = Environment.TickCount; 
+#endif
 
             try
             {
@@ -205,11 +217,13 @@ namespace MTree.DbProvider
             }
             finally
             {
+#if DB_DURATION_ERROR_LOG
                 var duration = Environment.TickCount - startTick;
                 if (duration > 5000)
                     logger.Error($"Db delete duration: {duration}, {filter.ToString()}");
                 else if (duration > 2000)
-                    logger.Warn($"Db delete duration: {duration}, {filter.ToString()}");
+                    logger.Warn($"Db delete duration: {duration}, {filter.ToString()}"); 
+#endif
             }
         }
 
@@ -217,7 +231,9 @@ namespace MTree.DbProvider
         {
             if (string.IsNullOrEmpty(collectionName) == true || filter == null) return null;
 
-            int startTick = Environment.TickCount;
+#if DB_DURATION_ERROR_LOG
+            int startTick = Environment.TickCount; 
+#endif
 
             try
             {
@@ -234,11 +250,13 @@ namespace MTree.DbProvider
             }
             finally
             {
+#if DB_DURATION_ERROR_LOG
                 var duration = Environment.TickCount - startTick;
                 if (duration > 5000)
                     logger.Error($"Db find duration: {duration}, {filter.ToString()}");
                 else if (duration > 2000)
-                    logger.Warn($"Db find duration: {duration}, {filter.ToString()}");
+                    logger.Warn($"Db find duration: {duration}, {filter.ToString()}"); 
+#endif
             }
 
             return null;
