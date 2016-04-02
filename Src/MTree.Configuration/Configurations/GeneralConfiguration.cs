@@ -24,6 +24,9 @@ namespace MTree.Configuration
         public DateTime DefaultStartDate { get; } = new DateTime(1999, 1, 1);
 
         [JsonIgnore]
+        public bool ExcludeEbest { get; } = false;
+
+        [JsonIgnore]
         public bool ExcludeKiwoom { get; } = false;
 
         public bool OfflineMode { get; set; } = false;

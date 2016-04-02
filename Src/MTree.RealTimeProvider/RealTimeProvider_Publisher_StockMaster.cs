@@ -47,7 +47,8 @@ namespace MTree.RealTimeProvider
 
                 var masteringTask = new List<Task>();
                 masteringTask.Add(Task.Run(() => StartDaishinStockMastering()));
-                masteringTask.Add(Task.Run(() => StartEbestStockMatering()));
+                if (Config.General.ExcludeEbest == false)
+                    masteringTask.Add(Task.Run(() => StartEbestStockMatering()));
                 if (Config.General.ExcludeKiwoom == false)
                     masteringTask.Add(Task.Run(() => StartKiwoomStockMastering()));
 

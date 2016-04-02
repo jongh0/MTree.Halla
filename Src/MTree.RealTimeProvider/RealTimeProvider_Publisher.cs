@@ -95,9 +95,12 @@ namespace MTree.RealTimeProvider
                     ProcessUtility.Start(ProcessTypes.Daishin, ProcessWindowStyle.Minimized);
 
                 // Ebest
-                int ebestProcessCount = 3;
-                for (int i = 0; i < ebestProcessCount; i++)
-                    ProcessUtility.Start(ProcessTypes.Ebest, ProcessWindowStyle.Minimized);
+                if (Config.General.ExcludeEbest == false)
+                {
+                    int ebestProcessCount = 3;
+                    for (int i = 0; i < ebestProcessCount; i++)
+                        ProcessUtility.Start(ProcessTypes.Ebest, ProcessWindowStyle.Minimized);
+                }
             }
             catch (Exception ex)
             {
