@@ -99,7 +99,7 @@
                     <GridViewColumn Header="Market Type" Width="100" utility:GridViewSort.PropertyName="MarketType">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Path=MarketType, Converter={StaticResource EnumToStringConverter}}"/>
+                                <TextBlock Text="{Binding Path=MarketType, Converter={StaticResource EnumToStringConverter}}" Style="{StaticResource StringTextBlock}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
