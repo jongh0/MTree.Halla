@@ -36,10 +36,10 @@ namespace MTree.DataCompare
             Stopwatch swTotal = new Stopwatch();
 
             swTotal.Start();
-            Console.WriteLine(compare.DoCompareItem(source.GetCodeList(), destination.GetCodeList()));
+            Console.WriteLine(compare.DoCompareItem(source.GetStockCodeList(), destination.GetStockCodeList()));
 
             DateTime target = new DateTime(2016, 03, 31);
-            foreach (string code in source.GetCodeList())
+            foreach (string code in source.GetStockCodeList())
             {
                 Stopwatch sw = new Stopwatch();
                 sw.Start();

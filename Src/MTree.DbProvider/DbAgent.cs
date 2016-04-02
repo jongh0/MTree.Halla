@@ -81,13 +81,28 @@ namespace MTree.DbProvider
             IndexConclusionDb = DbProvider.GetDatabase(DbTypes.IndexConclusion);
         }
 
-        public List<string> GetCollectionList()
+        public List<string> GetCollectionList(DbTypes type)
         {
-            List<string> collections = new List<string>();
-            var result = StockMasterDb.ListCollections();
-            result.ForEachAsync((collection) => { collections.Add(collection.GetValue("name").AsString); });
+            List<string> collectionList = new List<string>();
 
-            return collections;
+            try
+            {
+                var db = DbProvider.GetDatabase(type);
+                using (var cursor = db.ListCollections())
+                {
+                    foreach (var doc in cursor.ToList())
+                    {
+                        var collectionName = doc.GetElement("name").Value.AsString;
+                        collectionList.Add(collectionName);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+
+            return collectionList;
         }
 
         public IMongoCollection<T> GetCollection<T>(string collectionName)
@@ -144,7 +159,7 @@ namespace MTree.DbProvider
                 var collection = GetCollection<T>(subscribable.Code);
 
                 if (collection != null)
-                    collection.InsertOneAsync(item);
+                    collection.InsertOne(item);
                 else
                     logger.Error($"Insert error, {subscribable.Code}/{subscribable.Time.ToString(Config.General.DateTimeFormat)}");
             }
@@ -241,109 +256,81 @@ namespace MTree.DbProvider
             {
                 logger.Info($"Create database index, recreate: {recreate}");
 
-                using (var cursor = ChartDb.ListCollections())
+                foreach (var collectionName in GetCollectionList(DbTypes.Chart))
                 {
-                    foreach (var doc in cursor.ToList())
-                    {
-                        var collectionName = doc.GetElement("name").Value.ToString();
-                        var collection = GetCollection<Candle>(collectionName);
-                        var keys = Builders<Candle>.IndexKeys.Ascending(i => i.CandleType).Ascending(i => i.Time);
+                    var collection = GetCollection<Candle>(collectionName);
+                    var keys = Builders<Candle>.IndexKeys.Ascending(i => i.CandleType).Ascending(i => i.Time);
 
-                        if (recreate == true)
-                            collection.Indexes.DropAll();
+                    if (recreate == true)
+                        collection.Indexes.DropAll();
 
-                        collection.Indexes.CreateOne(keys);
-                    }
+                    collection.Indexes.CreateOne(keys);
                 }
 
-                using (var cursor = BiddingPriceDb.ListCollections())
+                foreach (var collectionName in GetCollectionList(DbTypes.BiddingPrice))
                 {
-                    foreach (var doc in cursor.ToList())
-                    {
-                        var collectionName = doc.GetElement("name").Value.ToString();
-                        var collection = GetCollection<BiddingPrice>(collectionName);
-                        var keys = Builders<BiddingPrice>.IndexKeys.Ascending(i => i.Time);
+                    var collection = GetCollection<BiddingPrice>(collectionName);
+                    var keys = Builders<BiddingPrice>.IndexKeys.Ascending(i => i.Time);
 
-                        if (recreate == true)
-                            collection.Indexes.DropAll();
+                    if (recreate == true)
+                        collection.Indexes.DropAll();
 
-                        collection.Indexes.CreateOne(keys);
-                    }
+                    collection.Indexes.CreateOne(keys);
                 }
 
-                using (var cursor = CircuitBreakDb.ListCollections())
+                foreach (var collectionName in GetCollectionList(DbTypes.CircuitBreak))
                 {
-                    foreach (var doc in cursor.ToList())
-                    {
-                        var collectionName = doc.GetElement("name").Value.ToString();
-                        var collection = GetCollection<CircuitBreak>(collectionName);
-                        var keys = Builders<CircuitBreak>.IndexKeys.Ascending(i => i.Time);
+                    var collection = GetCollection<CircuitBreak>(collectionName);
+                    var keys = Builders<CircuitBreak>.IndexKeys.Ascending(i => i.Time);
 
-                        if (recreate == true)
-                            collection.Indexes.DropAll();
+                    if (recreate == true)
+                        collection.Indexes.DropAll();
 
-                        collection.Indexes.CreateOne(keys);
-                    }
+                    collection.Indexes.CreateOne(keys);
                 }
 
-                using (var cursor = StockMasterDb.ListCollections())
+                foreach (var collectionName in GetCollectionList(DbTypes.StockMaster))
                 {
-                    foreach (var doc in cursor.ToList())
-                    {
-                        var collectionName = doc.GetElement("name").Value.ToString();
-                        var collection = GetCollection<StockMaster>(collectionName);
-                        var keys = Builders<StockMaster>.IndexKeys.Ascending(i => i.Time);
+                    var collection = GetCollection<StockMaster>(collectionName);
+                    var keys = Builders<StockMaster>.IndexKeys.Ascending(i => i.Time);
 
-                        if (recreate == true)
-                            collection.Indexes.DropAll();
+                    if (recreate == true)
+                        collection.Indexes.DropAll();
 
-                        collection.Indexes.CreateOne(keys);
-                    }
+                    collection.Indexes.CreateOne(keys);
                 }
 
-                using (var cursor = IndexMasterDb.ListCollections())
+                foreach (var collectionName in GetCollectionList(DbTypes.IndexMaster))
                 {
-                    foreach (var doc in cursor.ToList())
-                    {
-                        var collectionName = doc.GetElement("name").Value.ToString();
-                        var collection = GetCollection<IndexMaster>(collectionName);
-                        var keys = Builders<IndexMaster>.IndexKeys.Ascending(i => i.Time);
+                    var collection = GetCollection<IndexMaster>(collectionName);
+                    var keys = Builders<IndexMaster>.IndexKeys.Ascending(i => i.Time);
 
-                        if (recreate == true)
-                            collection.Indexes.DropAll();
+                    if (recreate == true)
+                        collection.Indexes.DropAll();
 
-                        collection.Indexes.CreateOne(keys);
-                    }
+                    collection.Indexes.CreateOne(keys);
                 }
 
-                using (var cursor = StockConclusionDb.ListCollections())
+                foreach (var collectionName in GetCollectionList(DbTypes.StockConclusion))
                 {
-                    foreach (var doc in cursor.ToList())
-                    {
-                        var collectionName = doc.GetElement("name").Value.ToString();
-                        var collection = GetCollection<StockConclusion>(collectionName);
-                        var keys = Builders<StockConclusion>.IndexKeys.Ascending(i => i.Time);
+                    var collection = GetCollection<StockConclusion>(collectionName);
+                    var keys = Builders<StockConclusion>.IndexKeys.Ascending(i => i.Time);
 
-                        if (recreate == true)
-                            collection.Indexes.DropAll();
+                    if (recreate == true)
+                        collection.Indexes.DropAll();
 
-                        collection.Indexes.CreateOne(keys);
-                    }
+                    collection.Indexes.CreateOne(keys);
                 }
 
-                using (var cursor = IndexConclusionDb.ListCollections())
+                foreach (var collectionName in GetCollectionList(DbTypes.IndexConclusion))
                 {
-                    foreach (var doc in cursor.ToList())
-                    {
-                        var collectionName = doc.GetElement("name").Value.ToString();
-                        var collection = GetCollection<IndexConclusion>(collectionName);
-                        var keys = Builders<IndexConclusion>.IndexKeys.Ascending(i => i.Time);
+                    var collection = GetCollection<IndexConclusion>(collectionName);
+                    var keys = Builders<IndexConclusion>.IndexKeys.Ascending(i => i.Time);
 
-                        if (recreate == true)
-                            collection.Indexes.DropAll();
+                    if (recreate == true)
+                        collection.Indexes.DropAll();
 
-                        collection.Indexes.CreateOne(keys);
-                    }
+                    collection.Indexes.CreateOne(keys);
                 }
 
                 var msg = "Database indexing done";
@@ -385,95 +372,60 @@ namespace MTree.DbProvider
                 long indexConclusionCount = 0;
                 long totalCount = 0;
 
-                using (var cursor = ChartDb.ListCollections())
+                foreach (var collectionName in GetCollectionList(DbTypes.Chart))
                 {
-                    foreach (var doc in cursor.ToList())
-                    {
-                        var collectionName = doc.GetElement("name").Value.ToString();
-                        var collection = GetCollection<Candle>(collectionName);
-
-                        var builder = Builders<Candle>.Filter;
-                        var filter = builder.Gte(i => i.Time, startDate) & builder.Lte(i => i.Time, endDate);
-                        chartCount += collection.Find(filter).Count();
-                    }
+                    var collection = GetCollection<Candle>(collectionName);
+                    var builder = Builders<Candle>.Filter;
+                    var filter = builder.Gte(i => i.Time, startDate) & builder.Lte(i => i.Time, endDate);
+                    chartCount += collection.Find(filter).Count();
                 }
 
-                using (var cursor = BiddingPriceDb.ListCollections())
+                foreach (var collectionName in GetCollectionList(DbTypes.BiddingPrice))
                 {
-                    foreach (var doc in cursor.ToList())
-                    {
-                        var collectionName = doc.GetElement("name").Value.ToString();
-                        var collection = GetCollection<BiddingPrice>(collectionName);
-
-                        var builder = Builders<BiddingPrice>.Filter;
-                        var filter = builder.Gte(i => i.Time, startDate) & builder.Lte(i => i.Time, endDate);
-                        biddingCount += collection.Find(filter).Count();
-                    }
+                    var collection = GetCollection<BiddingPrice>(collectionName);
+                    var builder = Builders<BiddingPrice>.Filter;
+                    var filter = builder.Gte(i => i.Time, startDate) & builder.Lte(i => i.Time, endDate);
+                    biddingCount += collection.Find(filter).Count();
                 }
 
-                using (var cursor = CircuitBreakDb.ListCollections())
+                foreach (var collectionName in GetCollectionList(DbTypes.CircuitBreak))
                 {
-                    foreach (var doc in cursor.ToList())
-                    {
-                        var collectionName = doc.GetElement("name").Value.ToString();
-                        var collection = GetCollection<CircuitBreak>(collectionName);
-
-                        var builder = Builders<CircuitBreak>.Filter;
-                        var filter = builder.Gte(i => i.Time, startDate) & builder.Lte(i => i.Time, endDate);
-                        circuitBreakCount += collection.Find(filter).Count();
-                    }
+                    var collection = GetCollection<CircuitBreak>(collectionName);
+                    var builder = Builders<CircuitBreak>.Filter;
+                    var filter = builder.Gte(i => i.Time, startDate) & builder.Lte(i => i.Time, endDate);
+                    circuitBreakCount += collection.Find(filter).Count();
                 }
 
-                using (var cursor = StockMasterDb.ListCollections())
+                foreach (var collectionName in GetCollectionList(DbTypes.StockMaster))
                 {
-                    foreach (var doc in cursor.ToList())
-                    {
-                        var collectionName = doc.GetElement("name").Value.ToString();
-                        var collection = GetCollection<StockMaster>(collectionName);
-
-                        var builder = Builders<StockMaster>.Filter;
-                        var filter = builder.Gte(i => i.Time, startDate) & builder.Lte(i => i.Time, endDate);
-                        stockMasterCount += collection.Find(filter).Count();
-                    }
+                    var collection = GetCollection<StockMaster>(collectionName);
+                    var builder = Builders<StockMaster>.Filter;
+                    var filter = builder.Gte(i => i.Time, startDate) & builder.Lte(i => i.Time, endDate);
+                    stockMasterCount += collection.Find(filter).Count();
                 }
 
-                using (var cursor = IndexMasterDb.ListCollections())
+                foreach (var collectionName in GetCollectionList(DbTypes.IndexMaster))
                 {
-                    foreach (var doc in cursor.ToList())
-                    {
-                        var collectionName = doc.GetElement("name").Value.ToString();
-                        var collection = GetCollection<IndexMaster>(collectionName);
-
-                        var builder = Builders<IndexMaster>.Filter;
-                        var filter = builder.Gte(i => i.Time, startDate) & builder.Lte(i => i.Time, endDate);
-                        indexMasterCount += collection.Find(filter).Count();
-                    }
+                    var collection = GetCollection<IndexMaster>(collectionName);
+                    var builder = Builders<IndexMaster>.Filter;
+                    var filter = builder.Gte(i => i.Time, startDate) & builder.Lte(i => i.Time, endDate);
+                    indexMasterCount += collection.Find(filter).Count();
                 }
 
-                using (var cursor = StockConclusionDb.ListCollections())
+                foreach (var collectionName in GetCollectionList(DbTypes.StockConclusion))
                 {
-                    foreach (var doc in cursor.ToList())
-                    {
-                        var collectionName = doc.GetElement("name").Value.ToString();
-                        var collection = GetCollection<StockConclusion>(collectionName);
-
-                        var builder = Builders<StockConclusion>.Filter;
-                        var filter = builder.Gte(i => i.Time, startDate) & builder.Lte(i => i.Time, endDate);
-                        stockConclusionCount += collection.Find(filter).Count();
-                    }
+                    var collection = GetCollection<StockConclusion>(collectionName);
+                    var builder = Builders<StockConclusion>.Filter;
+                    var filter = builder.Gte(i => i.Time, startDate) & builder.Lte(i => i.Time, endDate);
+                    stockConclusionCount += collection.Find(filter).Count();
                 }
 
-                using (var cursor = IndexConclusionDb.ListCollections())
+                foreach (var collectionName in GetCollectionList(DbTypes.IndexConclusion))
                 {
-                    foreach (var doc in cursor.ToList())
-                    {
-                        var collectionName = doc.GetElement("name").Value.ToString();
-                        var collection = GetCollection<IndexConclusion>(collectionName);
-
-                        var builder = Builders<IndexConclusion>.Filter;
-                        var filter = builder.Gte(i => i.Time, startDate) & builder.Lte(i => i.Time, endDate);
-                        indexConclusionCount += collection.Find(filter).Count();
-                    }
+                    var collection = GetCollection<IndexConclusion>(collectionName);
+                    var builder = Builders<IndexConclusion>.Filter;
+                    var filter = builder.Gte(i => i.Time, startDate) & builder.Lte(i => i.Time, endDate);
+                    indexConclusionCount += collection.Find(filter).Count();
                 }
 
                 totalCount = chartCount + biddingCount + circuitBreakCount + stockMasterCount + indexMasterCount + stockConclusionCount + indexConclusionCount;
