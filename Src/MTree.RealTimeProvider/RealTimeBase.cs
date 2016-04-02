@@ -49,6 +49,8 @@ namespace MTree.RealTimeProvider
 
         protected void WaitQueueTask()
         {
+            logger.Info($"[{GetType().Name}] Wait queue task done");
+
             while (BiddingPriceQueue.Count > 0 ||
                    CircuitBreakQueue.Count > 0 ||
                    StockConclusionQueue.Count > 0 ||
@@ -57,7 +59,7 @@ namespace MTree.RealTimeProvider
                 Thread.Sleep(100);
             }
 
-            logger.Info($"[{GetType().Name}] Queue task empty");
+            logger.Info($"[{GetType().Name}] Queue task done");
         }
     }
 }

@@ -584,21 +584,25 @@ namespace MTree.RealTimeProvider
         public void PublishBiddingPrice(BiddingPrice biddingPrice)
         {
             BiddingPriceQueue.Enqueue(biddingPrice);
+            BiddingPriceCount++;
         }
 
         public void PublishCircuitBreak(CircuitBreak circuitBreak)
         {
             CircuitBreakQueue.Enqueue(circuitBreak);
+            CircuitBreakCount++;
         }
 
         public void PublishIndexConclusion(IndexConclusion conclusion)
         {
             IndexConclusionQueue.Enqueue(conclusion);
+            IndexConclusionCount++;
         }
 
         public void PublishStockConclusion(StockConclusion conclusion)
         {
             StockConclusionQueue.Enqueue(conclusion);
+            StockConclusionCount++;
         }
     }
 }

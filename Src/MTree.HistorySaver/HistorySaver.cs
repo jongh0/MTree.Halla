@@ -235,8 +235,11 @@ namespace MTree.HistorySaver
                     // UI 업데이트 중지
                     StopRefreshTimer();
 
-                    // Queue Task가 모두 완료될 때 까지 대기
-                    WaitQueueTask();
+                    if (message.Equals(ExitProgramTypes.Normal.ToString()) == true)
+                    {
+                        // Queue Task가 모두 완료될 때 까지 대기
+                        WaitQueueTask();
+                    }
 
                     Task.Run(() =>
                     {

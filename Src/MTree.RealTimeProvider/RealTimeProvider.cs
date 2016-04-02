@@ -38,6 +38,13 @@ namespace MTree.RealTimeProvider
         private List<StockMastering> StockMasteringList { get; } = new List<StockMastering>();
         private List<IndexMastering> IndexMasteringList { get; } = new List<IndexMastering>();
 
+        #region Counter property
+        public int BiddingPriceCount { get; set; } = 0;
+        public int CircuitBreakCount { get; set; } = 0;
+        public int StockConclusionCount { get; set; } = 0;
+        public int IndexConclusionCount { get; set; } = 0;
+        #endregion
+
         private string _RealTimeState = string.Empty;
         public string RealTimeState
         {
@@ -216,10 +223,15 @@ namespace MTree.RealTimeProvider
             {
                 // CybosStarter 종료
                 ProcessUtility.Kill(ProcessTypes.CybosStarter);
-
-                // 당일 수집된 로그를 Zip해서 Email로 전송함
+                
                 if (type == ExitProgramTypes.Normal)
+                {
+                    // 당일 수집된 로그를 Zip해서 Email로 전송함
                     LogUtility.SendLogToEmail();
+
+                    // Queue에 입력된 Count를 파일로 저장
+                    SaveRealTimeProvider();
+                }
 
                 // 20초후 프로그램 종료
                 RealTimeState = "RealTimeProvider will be closed after 20sec";
@@ -233,6 +245,31 @@ namespace MTree.RealTimeProvider
 
                 Environment.Exit(0);
             });
+        }
+
+        private void SaveRealTimeProvider()
+        {
+            try
+            {
+                logger.Info("Save RealTimeProvider");
+
+                var fileName = $"MTree.{DateTime.Now.ToString(Config.General.DateFormat)}.RealTimeProvider.csv";
+                var filePath = Path.Combine(Environment.CurrentDirectory, "Logs", fileName);
+
+                using (var sw = new StreamWriter(new FileStream(filePath, FileMode.Create)))
+                {
+                    sw.WriteLine($"CircuitBreak, {CircuitBreakCount}");
+                    sw.WriteLine($"BiddingPrice, {BiddingPriceCount}");
+                    sw.WriteLine($"StockConclusion, {StockConclusionCount}");
+                    sw.WriteLine($"IndexConclusion, {IndexConclusionCount}");
+                }
+
+                logger.Info($"Save RealTimeProvider done, {filePath}");
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
         }
 
         #region Command
