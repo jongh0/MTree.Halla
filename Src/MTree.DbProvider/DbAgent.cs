@@ -105,7 +105,7 @@ namespace MTree.DbProvider
                 else if (typeof(T) == typeof(StockMaster))
                     return (IMongoCollection<T>)StockMasterDb.GetCollection<StockMaster>(collectionName);
                 else if (typeof(T) == typeof(IndexMaster))
-                    return (IMongoCollection<T>)StockMasterDb.GetCollection<IndexMaster>(collectionName);
+                    return (IMongoCollection<T>)IndexMasterDb.GetCollection<IndexMaster>(collectionName);
                 else if (typeof(T) == typeof(StockConclusion))
                     return (IMongoCollection<T>)StockConclusionDb.GetCollection<StockConclusion>(collectionName);
                 else if (typeof(T) == typeof(IndexConclusion))
