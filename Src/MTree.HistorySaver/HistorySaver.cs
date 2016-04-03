@@ -14,6 +14,7 @@ using System.ComponentModel;
 using MTree.Configuration;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace MTree.HistorySaver
 {
@@ -305,10 +306,10 @@ namespace MTree.HistorySaver
             {
                 logger.Info("Save HistorySaver");
 
-                var fileName = $"MTree.{DateTime.Now.ToString(Config.General.DateFormat)}.HistorySaver.csv";
+                var fileName = $"MTree.{DateTime.Now.ToString(Config.General.DateFormat)}_HistorySaver.csv";
                 var filePath = Path.Combine(Environment.CurrentDirectory, "Logs", fileName);
 
-                using (var sw = new StreamWriter(new FileStream(filePath, FileMode.Create)))
+                using (var sw = new StreamWriter(new FileStream(filePath, FileMode.Create), Encoding.Default))
                 {
                     sw.WriteLine($"Chart, {ChartCount}");
                     sw.WriteLine($"CircuitBreak, {CircuitBreakCount}");

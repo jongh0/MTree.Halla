@@ -192,6 +192,8 @@ namespace MTree.RealTimeProvider
         {
             try
             {
+                CanExitProgram = false;
+
                 RealTimeState = $"Exit program, {type.ToString()}";
                 logger.Info(RealTimeState);
 
@@ -293,10 +295,10 @@ namespace MTree.RealTimeProvider
             {
                 logger.Info("Save RealTimeProvider");
 
-                var fileName = $"MTree.{DateTime.Now.ToString(Config.General.DateFormat)}.RealTimeProvider.csv";
+                var fileName = $"MTree.{DateTime.Now.ToString(Config.General.DateFormat)}_RealTimeProvider.csv";
                 var filePath = Path.Combine(Environment.CurrentDirectory, "Logs", fileName);
 
-                using (var sw = new StreamWriter(new FileStream(filePath, FileMode.Create)))
+                using (var sw = new StreamWriter(new FileStream(filePath, FileMode.Create), Encoding.Default))
                 {
                     sw.WriteLine($"CircuitBreak, {CircuitBreakCount}");
                     sw.WriteLine($"BiddingPrice, {BiddingPriceCount}");
@@ -355,7 +357,7 @@ namespace MTree.RealTimeProvider
             get
             {
                 if (_ExitProgramCommand == null)
-                    _ExitProgramCommand = new RelayCommand(() => ExecuteExitProgram());
+                    _ExitProgramCommand = new RelayCommand(() => ExecuteExitProgram(), () => CanExitProgram);
 
                 return _ExitProgramCommand;
             }
@@ -366,7 +368,21 @@ namespace MTree.RealTimeProvider
             RealTimeState = "Execute exit program";
             logger.Info(RealTimeState);
 
-            ExitProgram(ExitProgramTypes.Force);
+            Task.Run(() =>
+            {
+                ExitProgram(ExitProgramTypes.Force);
+            });
+        }
+
+        private bool _CanExitProgram = true;
+        public bool CanExitProgram
+        {
+            get { return _CanExitProgram; }
+            set
+            {
+                _CanExitProgram = value;
+                NotifyPropertyChanged(nameof(CanExitProgram));
+            }
         }
         #endregion
 

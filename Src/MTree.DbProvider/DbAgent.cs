@@ -395,7 +395,7 @@ namespace MTree.DbProvider
                 {
                     var collection = GetCollection<Candle>(collectionName);
                     var builder = Builders<Candle>.Filter;
-                    var filter = builder.Gte(i => i.Time, startDate) & builder.Lte(i => i.Time, endDate);
+                    var filter = builder.Empty;
                     chartCount += collection.Find(filter).Count();
                 }
 
@@ -464,10 +464,10 @@ namespace MTree.DbProvider
                 PushUtility.NotifyMessage(sb.ToString());
 
                 #region DB 통계를 파일로 저장
-                var fileName = $"MTree.{DateTime.Now.ToString(Config.General.DateFormat)}.Database.csv";
+                var fileName = $"MTree.{DateTime.Now.ToString(Config.General.DateFormat)}_Database.csv";
                 var filePath = Path.Combine(Environment.CurrentDirectory, "Logs", fileName);
 
-                using (var stream = new StreamWriter(new FileStream(filePath, FileMode.Create)))
+                using (var stream = new StreamWriter(new FileStream(filePath, FileMode.Create), Encoding.Default))
                 {
                     stream.WriteLine($"Chart, {chartCount}");
                     stream.WriteLine($"CircuitBreak, {circuitBreakCount}");

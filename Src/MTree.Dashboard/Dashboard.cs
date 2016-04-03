@@ -11,6 +11,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using MTree.Configuration;
 using System.IO;
+using System.Text;
 
 namespace MTree.Dashboard
 {
@@ -202,21 +203,21 @@ namespace MTree.Dashboard
             {
                 logger.Info("Save Dashboard");
 
-                var fileName = $"MTree.{DateTime.Now.ToString(Config.General.DateFormat)}.Dashboard.csv";
+                var fileName = $"MTree.{DateTime.Now.ToString(Config.General.DateFormat)}_Dashboard.csv";
                 var filePath = Path.Combine(Environment.CurrentDirectory, "Logs", fileName);
 
-                using (var sw = new StreamWriter(new FileStream(filePath, FileMode.Create)))
+                using (var sw = new StreamWriter(new FileStream(filePath, FileMode.Create), Encoding.Default))
                 {
                     sw.WriteLine("Code, Name, Price, PricePercent, BasisPrice, Volume, PreviousVolume, MarketType");
 
                     foreach (var item in StockItems.Values)
                     {
-                        sw.WriteLine($"{item.Code}, {item.Name}, {item.Price}, {item.PricePercent}, {item.BasisPrice}, {item.Volume}, {item.PreviousVolume}, {item.MarketType.ToString()}");
+                        sw.WriteLine($"{item.Code}, {item.Name.Replace(',', ' ')}, {item.Price}, {item.PricePercent}, {item.BasisPrice}, {item.Volume}, {item.PreviousVolume}, {item.MarketType.ToString()}");
                     }
 
                     foreach (var item in IndexItems.Values)
                     {
-                        sw.WriteLine($"{item.Code}, {item.Name}, {item.Price}, {item.PricePercent}, {item.BasisPrice}, {item.Volume}, {item.PreviousVolume}, {item.MarketType.ToString()}");
+                        sw.WriteLine($"{item.Code}, {item.Name.Replace(',', ' ')}, {item.Price}, {item.PricePercent}, {item.BasisPrice}, {item.Volume}, {item.PreviousVolume}, {item.MarketType.ToString()}");
                     }
                 }
 
