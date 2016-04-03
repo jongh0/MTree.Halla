@@ -209,6 +209,10 @@ namespace MTree.HistorySaver
             }
         }
 
+        /// <summary>
+        /// 기존에 저장된 Day Chart는 Collection Drop 후 새로 저장한다.
+        /// </summary>
+        /// <param name="candles"></param>
         public override void ConsumeChart(List<Candle> candles)
         {
             try
@@ -217,7 +221,7 @@ namespace MTree.HistorySaver
                 DbAgent.Instance.ChartDb.DropCollection(code);
 
                 var collection = DbAgent.Instance.ChartDb.GetCollection<Candle>(code);
-                collection.InsertManyAsync(candles);
+                collection.InsertMany(candles);
                 ChartCount += candles.Count;
             }
             catch (Exception ex)

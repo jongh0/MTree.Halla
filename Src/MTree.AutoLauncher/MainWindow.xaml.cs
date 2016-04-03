@@ -37,9 +37,7 @@ namespace MTree.AutoLauncher
                 this.DataContext = launcher;
                 launcher.Start();
 
-                var msg = "AutoLauncher started";
-                logger.Info(msg);
-                PushUtility.NotifyMessage(msg);
+                logger.Info("AutoLauncher started");
             }
             catch (Exception ex)
             {

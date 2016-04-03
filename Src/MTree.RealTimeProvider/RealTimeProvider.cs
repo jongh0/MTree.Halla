@@ -240,12 +240,12 @@ namespace MTree.RealTimeProvider
 
                         // Queue에 입력된 Count를 파일로 저장
                         SaveRealTimeProvider();
-                    }
 
-                    // 20초후 프로그램 종료
-                    RealTimeState = "RealTimeProvider will be closed after 20sec";
-                    logger.Info(RealTimeState);
-                    PushUtility.NotifyMessage(RealTimeState);
+                        // 20초후 프로그램 종료
+                        RealTimeState = "RealTimeProvider will be closed after 20sec";
+                        logger.Info(RealTimeState);
+                        PushUtility.NotifyMessage(RealTimeState);
+                    }
 
                     Thread.Sleep(1000 * 20);
 
