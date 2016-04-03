@@ -26,6 +26,7 @@ namespace MTree.Utility
         HistorySaver,
         RealTimeProvider,
         Dashboard,
+        DataCompare,
     }
 
     public class ProcessUtility
@@ -52,6 +53,7 @@ namespace MTree.Utility
             ProcessList.Add(ProcessTypes.HistorySaver, "MTree.HistorySaver");
             ProcessList.Add(ProcessTypes.RealTimeProvider, "MTree.RealTimeProvider");
             ProcessList.Add(ProcessTypes.Dashboard, "MTree.Dashboard");
+            ProcessList.Add(ProcessTypes.DataCompare, "MTree.DataCompare");
         }
 
         public static Process Start(ProcessTypes type, ProcessWindowStyle windowStyle = ProcessWindowStyle.Normal)
