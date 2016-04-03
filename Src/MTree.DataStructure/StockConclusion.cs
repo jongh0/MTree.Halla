@@ -28,7 +28,8 @@ namespace MTree.DataStructure
             {
                 foreach (var property in typeof(StockConclusion).GetProperties())
                 {
-                    sb.AppendLine($"{property.Name}: {property.GetValue(this)}");
+                    if (property.Name != "Id")
+                        sb.Append($"{property.Name}: {property.GetValue(this)}, ");
                 }
             }
             catch { }

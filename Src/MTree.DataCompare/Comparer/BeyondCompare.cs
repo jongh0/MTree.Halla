@@ -21,7 +21,7 @@ namespace MTree.DataCompare
         private string sourceFile = "source.txt";
         private string destinationFile = "destination.txt";
 
-        public bool DoCompareItem(List<string> src, List<string> dest)
+        public bool DoCompareItem(List<string> src, List<string> dest, bool showWindow = false)
         {
             StringBuilder srcString = new StringBuilder();
             StringBuilder destString = new StringBuilder();
@@ -35,47 +35,27 @@ namespace MTree.DataCompare
                 destString.AppendLine(d);
             }
 
-            return DoCompareItem(srcString.ToString(), destString.ToString());
+            return DoCompareItem(srcString.ToString(), destString.ToString(), showWindow);
         }
         
-        public bool DoCompareItem(List<Subscribable> src, List<Subscribable> dest)
+        public bool DoCompareItem(List<Subscribable> src, List<Subscribable> dest, bool showWindow = false)
         {
-            if (File.Exists(beyondComparePath) == false)
+            StringBuilder srcString = new StringBuilder();
+            StringBuilder destString = new StringBuilder();
+
+            foreach (Subscribable s in src)
             {
-                logger.Error("Beyond compare path is wrong");
-                return false;
+                srcString.AppendLine(s.ToString());
             }
-
-            using (StreamWriter sourceSw = new StreamWriter(sourceFile, false))
+            foreach (Subscribable d in dest)
             {
-                foreach (Subscribable s in src)
-                {
-                    sourceSw.WriteLine(s.ToString());
-                }
-                sourceSw.Flush();
+                destString.AppendLine(d.ToString());
             }
-
-            using (StreamWriter destinationSw = new StreamWriter(destinationFile, false))
-            {
-                foreach (Subscribable s in dest)
-                {
-                    destinationSw.WriteLine(s.ToString());
-                }
-                destinationSw.Flush();
-            }
-
-            Process compareProcess = Process.Start(beyondComparePath, $"/qc=binary /silent {sourceFile} {destinationFile}");
-            compareProcess.WaitForExit();
-
-            if (File.Exists(sourceFile))
-                File.Delete(sourceFile);
-            if (File.Exists(destinationFile))
-                File.Delete(destinationFile);
-
-            return compareProcess.ExitCode == 1;
+            
+            return DoCompareItem(srcString.ToString(), destString.ToString(), showWindow);
         }
 
-        public bool DoCompareItem(Subscribable src, Subscribable dest)
+        public bool DoCompareItem(Subscribable src, Subscribable dest, bool showWindow = false)
         {
             if (src == null && dest == null)
             {
@@ -88,10 +68,10 @@ namespace MTree.DataCompare
                 return false;
             }
 
-            return DoCompareItem(src.ToString(), dest.ToString());
+            return DoCompareItem(src.ToString(), dest.ToString(), showWindow);
         }
 
-        public bool DoCompareItem(string src, string dest)
+        public bool DoCompareItem(string src, string dest, bool showWindow = false)
         {
             if (File.Exists(beyondComparePath) == false)
             {
@@ -111,7 +91,13 @@ namespace MTree.DataCompare
                 destinationSw.Flush();
             }
 
-            Process compareProcess = Process.Start(beyondComparePath, $"/qc=binary /silent {sourceFile} {destinationFile}");
+            string param = $"{sourceFile} {destinationFile}";
+            if (showWindow == false)
+            {
+                param = "/qc=binary /silent " + param;
+            }
+
+            Process compareProcess = Process.Start(beyondComparePath, param);
             compareProcess.WaitForExit();
 
             if (File.Exists(sourceFile))

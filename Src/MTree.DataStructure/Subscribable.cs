@@ -56,7 +56,7 @@ namespace MTree.DataStructure
             {
                 foreach (var property in typeof(Subscribable).GetProperties())
                 {
-                    sb.AppendLine($"{property.Name}: {property.GetValue(this)}");
+                    sb.Append($"{property.Name}: {property.GetValue(this)}, ");
                 }
             }
             catch { }

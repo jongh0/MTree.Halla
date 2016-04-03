@@ -29,21 +29,26 @@ namespace MTree.DataCompare
             InitializeComponent();
 
             BeyondCompare compare = new BeyondCompare();
+            DateTime target = new DateTime(2016, 04, 01);
 
-            DataCollector source = new DataCollector(DbAgent.Instance);
-            DataCollector destination = new DataCollector(DbAgent.RemoteInstance);
+            string code = "005930";
+#if true
+            IDataCollector source = new DbCollector(DbAgent.RemoteInstance);
+            //IDataCollector destination = new DbCollector(DbAgent.RemoteInstance);
+            IDataCollector destination = new DaishinCollector();
 
             Stopwatch swTotal = new Stopwatch();
 
             swTotal.Start();
-            Console.WriteLine(compare.DoCompareItem(source.GetCodeList(), destination.GetCodeList()));
+            //Console.WriteLine(compare.DoCompareItem(source.GetCodeList(), destination.GetCodeList()));
 
-            DateTime target = new DateTime(2016, 03, 31);
-            foreach (string code in source.GetCodeList())
+           
+            //foreach (string code in source.GetCodeList())
             {
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
-                bool result = compare.DoCompareItem(source.GetMaster(code, target), destination.GetMaster(code, target));
+                //bool result = compare.DoCompareItem(source.GetMaster(code, target), destination.GetMaster(code, target), true);
+                bool result = compare.DoCompareItem(source.GetStockConclusions(code, target), destination.GetStockConclusions(code, target), true);
                 sw.Stop();
                 Console.WriteLine($"Code:{code}, Elapsed:{sw.Elapsed}");
                 if (result == false)
@@ -53,6 +58,8 @@ namespace MTree.DataCompare
             }
             swTotal.Stop();
             Console.WriteLine($"Done. Elapsed:{swTotal.Elapsed}");
+#endif
+
         }
     }
 }
