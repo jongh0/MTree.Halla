@@ -33,7 +33,7 @@ namespace MTree.DataCompare
 
             string code = "005930";
 #if true
-            IDataCollector source = new DbCollector(DbAgent.Instance);
+            IDataCollector source = new DbCollector(DbAgent.RemoteInstance);
             //IDataCollector destination = new DbCollector(DbAgent.RemoteInstance);
             IDataCollector destination = new DaishinCollector();
 
