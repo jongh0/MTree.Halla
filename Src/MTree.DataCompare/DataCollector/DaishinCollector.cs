@@ -34,7 +34,7 @@ namespace MTree.DataCompare
 
             ConclusionHistoryQueryObj.SetInputValue(0, "A" + code);
             ConclusionHistoryQueryObj.SetInputValue(2, 80);
-            ConclusionHistoryQueryObj.SetInputValue(3, 'H');
+            ConclusionHistoryQueryObj.SetInputValue(3, 'C');
             ConclusionHistoryQueryObj.SetInputValue(4, "1900");
             ConclusionHistoryQueryObj.BlockRequest();
 
