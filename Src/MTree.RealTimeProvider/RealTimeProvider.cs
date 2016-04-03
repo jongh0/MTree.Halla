@@ -112,7 +112,7 @@ namespace MTree.RealTimeProvider
                     var fullCode = CodeEntity.ConvertToDaishinCode(StockCodeList[code]);
 
                     int startTick = Environment.TickCount;
-                    var msg = $"Save stock chart ({i + 1}/{stockCount}), code: {code}, listedDate: {startDate.ToShortDateString()}";
+                    var msg = $"Save stock chart ({i + 1}/{stockCount}), Code: {code}";
 
                     var candleList = daishinContracts[i % daishinContractCount].Callback.GetChart(fullCode, startDate, endDate, CandleTypes.Day);
                     if (candleList == null || candleList.Count == 0)
@@ -149,7 +149,7 @@ namespace MTree.RealTimeProvider
                     var fullCode = CodeEntity.ConvertToDaishinCode(IndexCodeList[code]);
 
                     int startTick = Environment.TickCount;
-                    var msg = $"Save index chart ({i + 1}/{indexCount}), code: {code}";
+                    var msg = $"Save index chart ({i + 1}/{indexCount}), Code: {code}";
 
                     var candleList = daishinContracts[i % daishinContractCount].Callback.GetChart(fullCode, startDate, endDate, CandleTypes.Day);
                     if (candleList == null || candleList.Count == 0)
