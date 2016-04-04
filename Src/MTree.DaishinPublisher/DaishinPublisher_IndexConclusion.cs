@@ -173,7 +173,7 @@ namespace MTree.DaishinPublisher
                 long time = Convert.ToInt64(stockCurObj.GetHeaderValue(18));
                 try
                 {
-                    conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100, now.Millisecond); // Daishin doesn't provide milisecond 
+                    conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100); // Daishin doesn't provide milisecond 
                 }
                 catch (ArgumentOutOfRangeException)
                 {

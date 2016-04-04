@@ -129,7 +129,7 @@ namespace MTree.DaishinPublisher
 
                 // 1 - (long) 시간 (초)
                 long time = Convert.ToInt64(stockOutCurObj.GetHeaderValue(1));
-                conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100, now.Millisecond); // Daishin doesn't provide milisecond 
+                conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100); // Daishin doesn't provide milisecond 
 
                 // 5 - (long) 현재가
                 conclusion.Price = Convert.ToSingle(stockOutCurObj.GetHeaderValue(5));
