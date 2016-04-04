@@ -18,10 +18,12 @@ namespace KillAll
             "MTree.KrxPublisher",
             "MTree.EbestPublisher",
             "MTree.KiwoomPublisher",
+            "MTree.KiwoomTrader",
             "MTree.RealTimeProvider",
             "MTree.RealTimeProviderTests",
             "MTree.DaishinSessionManager",
             "MTree.PopupStopper",
+            "MTree.SimTrader",
             "TestConsole",
             "TestConsumer",
             "TestPublisher"

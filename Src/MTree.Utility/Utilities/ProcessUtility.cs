@@ -21,12 +21,14 @@ namespace MTree.Utility
         DaishinMaster,
         DaishinSessionManager,
         Kiwoom,
+        KiwoomTrader,
         Ebest,
         Krx,
         HistorySaver,
         RealTimeProvider,
         Dashboard,
         DataCompare,
+        SimTrader,
     }
 
     public class ProcessUtility
@@ -48,12 +50,14 @@ namespace MTree.Utility
             ProcessList.Add(ProcessTypes.DaishinMaster, "MTree.DaishinPublisher");
             ProcessList.Add(ProcessTypes.DaishinSessionManager, "MTree.DaishinSessionManager");
             ProcessList.Add(ProcessTypes.Kiwoom, "MTree.KiwoomPublisher");
+            ProcessList.Add(ProcessTypes.KiwoomTrader, "MTree.KiwoomTrader");
             ProcessList.Add(ProcessTypes.Ebest, "MTree.EbestPublisher");
             ProcessList.Add(ProcessTypes.Krx, "MTree.KrxPublisher");
             ProcessList.Add(ProcessTypes.HistorySaver, "MTree.HistorySaver");
             ProcessList.Add(ProcessTypes.RealTimeProvider, "MTree.RealTimeProvider");
             ProcessList.Add(ProcessTypes.Dashboard, "MTree.Dashboard");
             ProcessList.Add(ProcessTypes.DataCompare, "MTree.DataCompare");
+            ProcessList.Add(ProcessTypes.SimTrader, "MTree.SimTrader");
         }
 
         public static Process Start(ProcessTypes type, ProcessWindowStyle windowStyle = ProcessWindowStyle.Normal)
