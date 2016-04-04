@@ -321,7 +321,7 @@ namespace MTree.RealTimeProvider
             get
             {
                 if (_SendLogCommand == null)
-                    _SendLogCommand = new RelayCommand(() => ExecuteSendLog(), () => CanExecuteSendLog);
+                    _SendLogCommand = new RelayCommand(() => ExecuteSendLog(), () => CanSendLog);
 
                 return _SendLogCommand;
             }
@@ -334,20 +334,20 @@ namespace MTree.RealTimeProvider
 
             Task.Run(() =>
             {
-                CanExecuteSendLog = false;
+                CanSendLog = false;
                 LogUtility.SendLogToEmail();
-                CanExecuteSendLog = true;
+                CanSendLog = true;
             });
         }
 
-        private bool _CanExecuteSendLog = true;
-        public bool CanExecuteSendLog
+        private bool _CanSendLog = true;
+        public bool CanSendLog
         {
-            get { return _CanExecuteSendLog; }
+            get { return _CanSendLog; }
             set
             {
-                _CanExecuteSendLog = value;
-                NotifyPropertyChanged(nameof(CanExecuteSendLog));
+                _CanSendLog = value;
+                NotifyPropertyChanged(nameof(CanSendLog));
             }
         }
 
