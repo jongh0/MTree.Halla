@@ -1,4 +1,4 @@
-﻿#define QUEUE_COUNT_ERROR_LOG
+﻿//#define QUEUE_COUNT_ERROR_LOG
 
 using System;
 using System.ServiceModel;

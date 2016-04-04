@@ -1,4 +1,4 @@
-﻿#define DB_DURATION_ERROR_LOG
+﻿//#define DB_DURATION_ERROR_LOG
 
 using MongoDB.Driver;
 using MTree.Configuration;
