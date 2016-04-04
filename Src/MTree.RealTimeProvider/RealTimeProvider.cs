@@ -370,7 +370,12 @@ namespace MTree.RealTimeProvider
 
             Task.Run(() =>
             {
-                ExitProgram(ExitProgramTypes.Force);
+#if false // Test code
+                SaveDayChart();
+                ExitProgram(ExitProgramTypes.Normal);
+#else
+                ExitProgram(ExitProgramTypes.Force); 
+#endif
             });
         }
 

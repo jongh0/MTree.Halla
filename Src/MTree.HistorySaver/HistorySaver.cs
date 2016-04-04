@@ -1,6 +1,4 @@
-﻿//#define QUEUE_COUNT_ERROR_LOG
-
-using System;
+﻿using System;
 using System.ServiceModel;
 using MTree.DbProvider;
 using System.Threading;
@@ -72,13 +70,17 @@ namespace MTree.HistorySaver
             }
         }
 
-        private void ProcessBiddingPriceQueue()
+        private async void ProcessBiddingPriceQueue()
         {
             try
             {
                 BiddingPrice biddingPrice;
                 if (BiddingPriceQueue.TryDequeue(out biddingPrice) == true)
-                    DbAgent.Instance.Insert(biddingPrice);
+                {
+                    var collection = DbAgent.Instance.BiddingPriceDb.GetCollection<BiddingPrice>(biddingPrice.Code);
+                    await collection.InsertOneAsync(biddingPrice);
+                    BiddingPriceCount++;
+                }
                 else
                     Thread.Sleep(10);
             }
@@ -88,13 +90,17 @@ namespace MTree.HistorySaver
             }
         }
 
-        private void ProcessCircuitBreakQueue()
+        private async void ProcessCircuitBreakQueue()
         {
             try
             {
                 CircuitBreak circuitBreak;
                 if (CircuitBreakQueue.TryDequeue(out circuitBreak) == true)
-                    DbAgent.Instance.Insert(circuitBreak);
+                {
+                    var collection = DbAgent.Instance.CircuitBreakDb.GetCollection<CircuitBreak>(circuitBreak.Code);
+                    await collection.InsertOneAsync(circuitBreak);
+                    CircuitBreakCount++;
+                }
                 else
                     Thread.Sleep(10);
             }
@@ -104,13 +110,17 @@ namespace MTree.HistorySaver
             }
         }
 
-        private void ProcessStockConclusionQueue()
+        private async void ProcessStockConclusionQueue()
         {
             try
             {
                 StockConclusion conclusion;
                 if (StockConclusionQueue.TryDequeue(out conclusion) == true)
-                    DbAgent.Instance.Insert(conclusion);
+                {
+                    var collection = DbAgent.Instance.StockConclusionDb.GetCollection<StockConclusion>(conclusion.Code);
+                    await collection.InsertOneAsync(conclusion);
+                    StockConclusionCount++;
+                }
                 else
                     Thread.Sleep(10);
             }
@@ -120,13 +130,17 @@ namespace MTree.HistorySaver
             }
         }
 
-        private void ProcessIndexConclusionQueue()
+        private async void ProcessIndexConclusionQueue()
         {
             try
             {
                 IndexConclusion conclusion;
                 if (IndexConclusionQueue.TryDequeue(out conclusion) == true)
-                    DbAgent.Instance.Insert(conclusion);
+                {
+                    var collection = DbAgent.Instance.IndexConclusionDb.GetCollection<IndexConclusion>(conclusion.Code);
+                    await collection.InsertOneAsync(conclusion);
+                    IndexConclusionCount++;
+                }
                 else
                     Thread.Sleep(10);
             }
@@ -139,52 +153,31 @@ namespace MTree.HistorySaver
         public override void ConsumeBiddingPrice(BiddingPrice biddingPrice)
         {
             BiddingPriceQueue.Enqueue(biddingPrice);
-            BiddingPriceCount++;
-
-#if QUEUE_COUNT_ERROR_LOG
-            var count = BiddingPriceQueue.Count;
-            if (count > 100)
-                logger.Error($"BiddingPriceQueue count: {count}");
-#endif
         }
 
         public override void ConsumeStockConclusion(StockConclusion conclusion)
         {
             StockConclusionQueue.Enqueue(conclusion);
-            StockConclusionCount++;
-
-#if QUEUE_COUNT_ERROR_LOG
-            var count = StockConclusionQueue.Count;
-            if (count > 100)
-                logger.Error($"StockConclusionQueue count: {count}");
-#endif
         }
 
         public override void ConsumeIndexConclusion(IndexConclusion conclusion)
         {
             IndexConclusionQueue.Enqueue(conclusion);
-            IndexConclusionCount++;
-
-#if QUEUE_COUNT_ERROR_LOG
-            var count = IndexConclusionQueue.Count;
-            if (count > 100)
-                logger.Error($"IndexConclusionQueue count: {count}");
-#endif
         }
 
         public override void ConsumeCircuitBreak(CircuitBreak circuitBreak)
         {
             CircuitBreakQueue.Enqueue(circuitBreak);
-            CircuitBreakCount++;
         }
 
-        public override void ConsumeStockMaster(List<StockMaster> stockMasters)
+        public override async void ConsumeStockMaster(List<StockMaster> stockMasters)
         {
             try
             {
                 foreach (var stockMaster in stockMasters)
                 {
-                    DbAgent.Instance.Insert(stockMaster);
+                    var collection = DbAgent.Instance.StockMasterDb.GetCollection<StockMaster>(stockMaster.Code);
+                    await collection.InsertOneAsync(stockMaster);
                     StockMasterCount++;
                 }
             }
@@ -194,13 +187,14 @@ namespace MTree.HistorySaver
             }
         }
 
-        public override void ConsumeIndexMaster(List<IndexMaster> indexMasters)
+        public override async void ConsumeIndexMaster(List<IndexMaster> indexMasters)
         {
             try
             {
                 foreach (var indexMaster in indexMasters)
                 {
-                    DbAgent.Instance.Insert(indexMaster);
+                    var collection = DbAgent.Instance.IndexMasterDb.GetCollection<IndexMaster>(indexMaster.Code);
+                    await collection.InsertOneAsync(indexMaster);
                     IndexMasterCount++;
                 }
             }
@@ -214,7 +208,7 @@ namespace MTree.HistorySaver
         /// 기존에 저장된 Day Chart는 Collection Drop 후 새로 저장한다.
         /// </summary>
         /// <param name="candles"></param>
-        public override void ConsumeChart(List<Candle> candles)
+        public override async void ConsumeChart(List<Candle> candles)
         {
             try
             {
@@ -222,7 +216,7 @@ namespace MTree.HistorySaver
                 DbAgent.Instance.ChartDb.DropCollection(code);
 
                 var collection = DbAgent.Instance.ChartDb.GetCollection<Candle>(code);
-                collection.InsertMany(candles);
+                await collection.InsertManyAsync(candles);
                 ChartCount += candles.Count;
             }
             catch (Exception ex)

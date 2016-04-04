@@ -1,6 +1,4 @@
-﻿//#define DB_DURATION_ERROR_LOG
-
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 using MTree.Configuration;
 using MTree.DataStructure;
 using MTree.Utility;
@@ -110,10 +108,6 @@ namespace MTree.DbProvider
 
         public IMongoCollection<T> GetCollection<T>(string collectionName)
         {
-#if DB_DURATION_ERROR_LOG
-            int startTick = Environment.TickCount; 
-#endif
-
             try
             {
                 if (typeof(T) == typeof(Candle))
@@ -137,30 +131,18 @@ namespace MTree.DbProvider
             {
                 logger.Error(ex);
             }
-            finally
-            {
-#if DB_DURATION_ERROR_LOG
-                var duration = Environment.TickCount - startTick;
-                if (duration > 1000)
-                    logger.Error($"Db get collection duration: {duration}, {collectionName}"); 
-#endif
-            }
 
             return null;
         }
 
         /// <summary>
-        /// Type과 Item에 맞는 Collection을 찾아서 Async Insert를 수행한다
+        /// Type과 Item에 맞는 Collection을 찾아서 Insert를 수행한다
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="item"></param>
         public void Insert<T>(T item)
         {
             if (item == null) return;
-
-#if DB_DURATION_ERROR_LOG
-            int startTick = Environment.TickCount; 
-#endif
 
             try
             {
@@ -176,31 +158,11 @@ namespace MTree.DbProvider
             {
                 logger.Error(ex);
             }
-            finally
-            {
-#if DB_DURATION_ERROR_LOG
-                var duration = Environment.TickCount - startTick;
-                if (duration > 2000)
-                    logger.Error($"Db insert duration: {duration}, {item.ToString()}"); 
-#endif
-            }
-        }
-
-        public void Insert<T>(T[] items)
-        {
-            if (items == null) return;
-
-            foreach (var item in items)
-                Insert(item);
         }
 
         public void Delete<T>(string collectionName, FilterDefinition<T> filter)
         {
             if (string.IsNullOrEmpty(collectionName) == true || filter == null) return;
-
-#if DB_DURATION_ERROR_LOG
-            int startTick = Environment.TickCount; 
-#endif
 
             try
             {
@@ -215,25 +177,11 @@ namespace MTree.DbProvider
             {
                 logger.Error(ex);
             }
-            finally
-            {
-#if DB_DURATION_ERROR_LOG
-                var duration = Environment.TickCount - startTick;
-                if (duration > 5000)
-                    logger.Error($"Db delete duration: {duration}, {filter.ToString()}");
-                else if (duration > 2000)
-                    logger.Warn($"Db delete duration: {duration}, {filter.ToString()}"); 
-#endif
-            }
         }
 
         public IFindFluent<T, T> Find<T>(string collectionName, FilterDefinition<T> filter)
         {
             if (string.IsNullOrEmpty(collectionName) == true || filter == null) return null;
-
-#if DB_DURATION_ERROR_LOG
-            int startTick = Environment.TickCount; 
-#endif
 
             try
             {
@@ -247,16 +195,6 @@ namespace MTree.DbProvider
             catch (Exception ex)
             {
                 logger.Error(ex);
-            }
-            finally
-            {
-#if DB_DURATION_ERROR_LOG
-                var duration = Environment.TickCount - startTick;
-                if (duration > 5000)
-                    logger.Error($"Db find duration: {duration}, {filter.ToString()}");
-                else if (duration > 2000)
-                    logger.Warn($"Db find duration: {duration}, {filter.ToString()}"); 
-#endif
             }
 
             return null;
