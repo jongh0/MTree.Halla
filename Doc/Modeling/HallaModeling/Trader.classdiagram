@@ -1,0 +1,311 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<logicalClassDesignerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/ModelStore" xmlns:dm9="http://schemas.microsoft.com/dsltools/SimpleShapesModel" xmlns:dm10="http://schemas.microsoft.com/dsltools/UseCaseModel" xmlns:dm11="http://schemas.microsoft.com/VisualStudio/TeamArchitect/ComponentDesigner" dslVersion="1.0.0.0" Id="40373fc0-952e-48d7-b07d-3d02202f75d5" name="Trader" linkedPackageId="466934ef-12ac-476c-bb6d-32ce212a23d9" xmlns="http://schemas.microsoft.com/dsltools/LogicalClassDesigner">
+  <profileInstances>
+    <packageHasProfileInstances Id="40d1688f-8329-4661-a2ef-0997758fa41c">
+      <profileInstance Id="a1f741a6-c2c3-4584-aed6-b91d70855544" name="StandardProfileL2">
+        <elementDefinition Id="e34d544e-0fea-4ed6-ac5e-1b74119ac791" />
+      </profileInstance>
+      <elementDefinition Id="0caec977-1f8c-4ba3-a7db-8cc9ad9cc73b" />
+    </packageHasProfileInstances>
+    <packageHasProfileInstances Id="295885c7-17a3-4249-938b-154365fed1b5">
+      <profileInstance Id="6329dd73-0afb-4c2f-8259-3d77b8a51e46" name="StandardProfileL3">
+        <elementDefinition Id="532ea607-fb19-44b8-8502-3351b05452be" />
+      </profileInstance>
+      <elementDefinition Id="29349502-908c-4fda-9054-c48619c59ed0" />
+    </packageHasProfileInstances>
+    <packageHasProfileInstances Id="9f9f9305-2799-4263-98b9-4b7a74db3b17">
+      <profileInstance Id="b683cbcc-2caa-4a58-a618-b6d7ebd90d03" name="TextTemplateBindings">
+        <elementDefinition Id="0f6be66b-2ae9-4a5a-948c-d9579f5224a0" />
+      </profileInstance>
+      <elementDefinition Id="f272697a-727e-4e60-b8af-24206f289f68" />
+    </packageHasProfileInstances>
+  </profileInstances>
+  <packagedElements>
+    <packageHasNamedElement>
+      <referencedType Id="843e1157-a51d-468b-ae9a-8a635e75b58c" name="string[]" isAbstract="false" isLeaf="false" cachedFullName="string[]">
+        <elementDefinition Id="09a30c1c-f07e-45f3-ae10-92da98b7a06c" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="04b7a342-67f4-415d-b9c3-9f4bc96e4577" name="int" isAbstract="false" isLeaf="false" cachedFullName="int">
+        <elementDefinition Id="6bd2befa-bea8-42d8-9767-a72dcec77bf1" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="1a35e70e-87ee-460d-8c6e-94c127f60dc5" name="string" isAbstract="false" isLeaf="false" cachedFullName="string">
+        <elementDefinition Id="7f4da27c-25be-44e8-bea2-c54ca9a31cb3" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="b5046c17-86b7-4294-8e13-98081257b77c" name="OrderResult" isAbstract="false" isLeaf="false" cachedFullName="HallaModeling::OrderResult">
+        <elementDefinition Id="84b03543-02f2-4683-9f4d-c0ffb497f61d" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="bc7ed35b-11db-4fac-94d2-420db0857bd7" name="List&lt;HoldingStock&gt;" isAbstract="false" isLeaf="false" cachedFullName="List&lt;HoldingStock&gt;">
+        <elementDefinition Id="7e14645a-a128-4b8e-9d46-8277e9d0c314" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="7ceeadf9-6677-4aff-a975-ca6e5d948cf1" name="OrderTypes" isAbstract="false" isLeaf="false" cachedFullName="OrderTypes">
+        <elementDefinition Id="456039ab-4e32-4a5e-b663-2a9cc36c215e" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="03f5dfb9-c196-4959-8f6e-40e20e6a9a27" name="string" isAbstract="false" isLeaf="false" cachedFullName="string">
+        <elementDefinition Id="7f4da27c-25be-44e8-bea2-c54ca9a31cb3" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="4aed99d9-1443-4b23-b3ac-bc115955a226" name="int" isAbstract="false" isLeaf="false" cachedFullName="int">
+        <elementDefinition Id="6bd2befa-bea8-42d8-9767-a72dcec77bf1" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="2db81007-ca8e-4073-8c13-11199be17505" name="UInt64" isAbstract="false" isLeaf="false" cachedFullName="UInt64">
+        <elementDefinition Id="7e204291-f43d-41a9-89d0-6d93f4138ca7" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="5364de0e-4d5f-42b8-b6f6-f5d003064be6" name="OrderTypes" isAbstract="false" isLeaf="false" cachedFullName="HallaModeling::OrderTypes">
+        <elementDefinition Id="456039ab-4e32-4a5e-b663-2a9cc36c215e" />
+      </referencedType>
+    </packageHasNamedElement>
+    <logicalClassDesignerModelHasTypes>
+      <Interface Id="d608e763-62b9-49b6-a876-ff387ae2f7c8" name="ITrader" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="ab2781fa-2f87-4f50-98aa-516246a19584" />
+        <suppliersInternal>
+          <dependency Id="07e21024-72e2-4977-ad12-55eccab8d8ea">
+            <classMoniker Id="b2d3b3b7-137d-444d-89fa-a9f530686125" LastKnownName="Order" />
+            <elementDefinition Id="4dcc86ec-aa22-4c2a-be30-7d84997ea6fe" />
+          </dependency>
+          <dependency Id="f8493075-e36e-45bf-acc0-71336b06d3c4">
+            <classMoniker Id="747ff829-6b94-4a05-92e4-cc81e3ceb0d1" LastKnownName="OrderResult" />
+            <elementDefinition Id="1c4504a1-7e71-4729-9552-07c77a4e0359" />
+          </dependency>
+          <dependency Id="51396043-1f34-4522-801c-e17b5858c77e">
+            <classMoniker Id="a66f8bff-be5e-439b-87c9-6e3f80b069f0" LastKnownName="HoldingStock" />
+            <elementDefinition Id="2e2fbda2-6638-46b7-8c13-a37284abcd4c" />
+          </dependency>
+        </suppliersInternal>
+        <ownedOperations>
+          <operation Id="deb1be27-3e73-42e2-b25e-458ed7286f91" name="GetAccounts" isLeaf="false" isStatic="false" isAbstract="true" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="cbc18380-0386-425f-b44d-6551fb741ec3" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="2eaa55ea-19bd-4c57-adb7-abe145e75d1d" direction="Return" isUnique="false">
+                  <elementDefinition Id="508558ad-5c41-431f-a31a-69c640e85c47" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="843e1157-a51d-468b-ae9a-8a635e75b58c" LastKnownName="string[]" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="00c6b623-71bb-46f9-bd74-ef92c9584325" name="GetDeposit" isLeaf="false" isStatic="false" isAbstract="true" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="55ca92bb-9a29-4658-853b-8859e18f20b3" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="6089f16f-bcbd-45a9-a0f7-9c4d0c6a0f5d" direction="Return" isUnique="false">
+                  <elementDefinition Id="358d60d6-9f23-4a13-a79e-bb26cc713008" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="04b7a342-67f4-415d-b9c3-9f4bc96e4577" LastKnownName="int" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="b6c76ffb-d210-47c8-8c78-f79d3bf5fa1b" name="account" direction="In" isUnique="false">
+                  <elementDefinition Id="74d3d729-f5b0-4be9-8743-c3664fd4f129" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="1a35e70e-87ee-460d-8c6e-94c127f60dc5" LastKnownName="string" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="a0c1fe0e-cddc-4b86-904a-7dca4762c4d7" name="Order" isLeaf="false" isStatic="false" isAbstract="true" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="eb8b05ce-fb89-4bf8-baec-770f6a49af63" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="2253ff5b-9d33-41e3-8712-bb80d3804d46" direction="Return" isUnique="false">
+                  <elementDefinition Id="5beded67-15f5-4669-873d-cc3d3ce1f6fb" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="b5046c17-86b7-4294-8e13-98081257b77c" LastKnownName="OrderResult" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="4f446f81-3ee8-41a8-99d1-95cdda460592" name="Order order" direction="In" isUnique="false">
+                  <elementDefinition Id="3b970a46-8d23-4a75-8e86-b1ffc71b9e2d" />
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="a401bea3-7f3a-42b3-bbbd-3b68d26bd30c" name="GetHoldingStocks" isLeaf="false" isStatic="false" isAbstract="true" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="76e35473-bf39-497a-9096-e7b568d03229" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="4f6f7c5c-2d4b-4885-8c9a-e92d7d0ea8ab" name="account" direction="In" isUnique="false">
+                  <elementDefinition Id="b657ba80-3231-4f5b-a948-97a3252a14b0" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="1a35e70e-87ee-460d-8c6e-94c127f60dc5" LastKnownName="string" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="a24f132c-44d0-459e-a46c-425cac346aa0" direction="Return" isUnique="false">
+                  <elementDefinition Id="1ae9e2fe-b132-4c36-8cf1-3ae0e5ff2fcf" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="bc7ed35b-11db-4fac-94d2-420db0857bd7" LastKnownName="List&lt;HoldingStock&gt;" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+        </ownedOperations>
+      </Interface>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <enumeration Id="20ae7de2-5129-4fff-be27-562c6458564d" name="OrderTypes" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="456039ab-4e32-4a5e-b663-2a9cc36c215e" />
+        <ownedLiterals>
+          <enumerationLiteral Id="da158cd4-5816-4e7f-b670-9021289d6302" name="Sell">
+            <elementDefinition Id="c5426202-f2b5-45d8-a678-7459babb67e6" />
+          </enumerationLiteral>
+          <enumerationLiteral Id="bf969370-bb11-4407-a5ad-e8bf66b958a6" name="Buy">
+            <elementDefinition Id="36d997e9-a0f5-4ede-961d-db16b03838a6" />
+          </enumerationLiteral>
+          <enumerationLiteral Id="7581def6-2804-4b12-a1da-33c20d0675e2" name="SellModify">
+            <elementDefinition Id="0c4911c4-d357-4e88-a541-633978b21854" />
+          </enumerationLiteral>
+          <enumerationLiteral Id="3c371377-e34b-4392-8f1d-6165a4819a26" name="BuyModify">
+            <elementDefinition Id="5471be30-d5b3-4d05-b47e-cd67ee6b507c" />
+          </enumerationLiteral>
+          <enumerationLiteral Id="0af709d2-faa2-48f2-ba7c-9e54a2f61a11" name="Cancel">
+            <elementDefinition Id="8a24f8ec-4622-4a9b-b6a2-efe9f580791e" />
+          </enumerationLiteral>
+        </ownedLiterals>
+      </enumeration>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="b2d3b3b7-137d-444d-89fa-a9f530686125" name="Order" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="598ac411-846a-40bf-83ba-73bef4124d51" />
+        <suppliersInternal>
+          <dependency Id="152a4921-baa4-4054-9731-7a270ab201bf">
+            <enumerationMoniker Id="20ae7de2-5129-4fff-be27-562c6458564d" LastKnownName="OrderTypes" />
+            <elementDefinition Id="884b1f09-d697-44dd-a61e-b8e8e1479f36" />
+          </dependency>
+        </suppliersInternal>
+        <ownedAttributesInternal>
+          <property Id="af54b931-55a6-49e4-9c57-b3af55f7d3ba" name="OrderType" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="ffc07594-82fa-45a3-a380-f393cc16d40a" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="7ceeadf9-6677-4aff-a975-ca6e5d948cf1" LastKnownName="OrderTypes" />
+            </type_NamedElement>
+          </property>
+          <property Id="684f0001-40e5-444a-ac79-3bc6a59932c8" name="Code" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="5939849b-792d-40d0-91b1-a6bbd3d587dd" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="03f5dfb9-c196-4959-8f6e-40e20e6a9a27" LastKnownName="string" />
+            </type_NamedElement>
+          </property>
+          <property Id="65f765a0-8bbe-42eb-8436-1b3126c85088" name="OrderPrice" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="71d108f1-71c9-4771-aa24-2e8b1dc5cf24" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="4aed99d9-1443-4b23-b3ac-bc115955a226" LastKnownName="int" />
+            </type_NamedElement>
+          </property>
+          <property Id="19d407f5-57a2-456a-841d-03e3367efd88" name="Amount" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="9595993b-01a2-4bf8-b6f2-b66482ad2b1f" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="04b7a342-67f4-415d-b9c3-9f4bc96e4577" LastKnownName="int" />
+            </type_NamedElement>
+          </property>
+        </ownedAttributesInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="747ff829-6b94-4a05-92e4-cc81e3ceb0d1" name="OrderResult" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="84b03543-02f2-4683-9f4d-c0ffb497f61d" />
+        <ownedAttributesInternal>
+          <property Id="462e1765-1403-4c46-b35d-358705411c39" name="OrderNum" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="8b787fbf-63ab-4b91-8739-39f9c9708cbc" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="2db81007-ca8e-4073-8c13-11199be17505" LastKnownName="UInt64" />
+            </type_NamedElement>
+          </property>
+          <property Id="6d4749eb-5cef-444d-b846-2b673f559928" name="Code" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="90975b67-225a-4ec4-8199-2d914d89633b" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="1a35e70e-87ee-460d-8c6e-94c127f60dc5" LastKnownName="string" />
+            </type_NamedElement>
+          </property>
+          <property Id="a8bdbb93-ffd5-4b64-94ad-3f4365b04504" name="ConcludedPrice" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="e2c99d20-e76c-41f1-8113-b3977cc10619" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="04b7a342-67f4-415d-b9c3-9f4bc96e4577" LastKnownName="int" />
+            </type_NamedElement>
+          </property>
+          <property Id="342233e2-f32e-4aa0-b8d9-97853ce12778" name="ConcludedAmount" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="4c61ff68-4f33-4d6d-bd63-6d486baf199e" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="04b7a342-67f4-415d-b9c3-9f4bc96e4577" LastKnownName="int" />
+            </type_NamedElement>
+          </property>
+          <property Id="4e61195a-273e-421a-abc4-a9f5a943a029" name="OrderType" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="793490ce-36f9-472a-89e3-6e2e24e0c41f" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="5364de0e-4d5f-42b8-b6f6-f5d003064be6" LastKnownName="OrderTypes" />
+            </type_NamedElement>
+          </property>
+          <property Id="e58c9152-0595-434c-9971-14b9ec738323" name="OrderedPrice" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="9d7cd42f-51ee-493b-bed8-2fe4ef66fa8d" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="04b7a342-67f4-415d-b9c3-9f4bc96e4577" LastKnownName="int" />
+            </type_NamedElement>
+          </property>
+          <property Id="16742557-6006-4cec-badf-afe967e161ac" name="OrderedAmount" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="209bdbaa-38d3-4217-a3ed-0b629eefdce1" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="04b7a342-67f4-415d-b9c3-9f4bc96e4577" LastKnownName="int" />
+            </type_NamedElement>
+          </property>
+        </ownedAttributesInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="a66f8bff-be5e-439b-87c9-6e3f80b069f0" name="HoldingStock" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="d899b282-285f-4c38-bb8a-feae9cf00402" />
+        <ownedAttributesInternal>
+          <property Id="152eb9f6-b037-44c2-b0d6-0f0db28d4f0b" name="Code" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="20c644ee-c3e0-4b1b-8aa9-757780d4c3ab" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="1a35e70e-87ee-460d-8c6e-94c127f60dc5" LastKnownName="string" />
+            </type_NamedElement>
+          </property>
+          <property Id="6d2021fb-f411-4d80-8fc7-ccd667afd98f" name="Amount" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="57552542-b16d-43a3-b89b-dd765eadfa66" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="04b7a342-67f4-415d-b9c3-9f4bc96e4577" LastKnownName="int" />
+            </type_NamedElement>
+          </property>
+          <property Id="c46f5ad6-99fd-4326-b300-32680ad8fc14" name="PurchasePrice" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="2c4a59ff-0270-417c-a289-243605d27c64" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="04b7a342-67f4-415d-b9c3-9f4bc96e4577" LastKnownName="int" />
+            </type_NamedElement>
+          </property>
+          <property Id="9ded8966-b828-4e8a-afee-faf9fa4eee90" name="SellableAmount" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="81217032-8946-4d79-b3de-392e99c67d00" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="04b7a342-67f4-415d-b9c3-9f4bc96e4577" LastKnownName="int" />
+            </type_NamedElement>
+          </property>
+        </ownedAttributesInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+  </packagedElements>
+  <package Id="466934ef-12ac-476c-bb6d-32ce212a23d9" name="HallaModeling">
+    <elementDefinition Id="1daf07bb-4f77-4afe-8f56-ddfa2c1f436c" />
+  </package>
+</logicalClassDesignerModel>
