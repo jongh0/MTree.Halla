@@ -14,11 +14,11 @@ namespace MTree.Utility
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public static void SendLogToEmail()
+        public static void SendLog()
         {
             try
             {
-                logger.Info("Send log to email");
+                logger.Info("Send log");
 
                 var date = DateTime.Now.ToString(Config.General.DateFormat);
                 var logFolder = Path.Combine(Environment.CurrentDirectory, "Logs");

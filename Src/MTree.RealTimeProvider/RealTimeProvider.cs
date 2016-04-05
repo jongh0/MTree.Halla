@@ -238,7 +238,7 @@ namespace MTree.RealTimeProvider
                     if (type == ExitProgramTypes.Normal)
                     {
                         // 당일 수집된 로그를 Zip해서 Email로 전송함
-                        LogUtility.SendLogToEmail();
+                        LogUtility.SendLog();
 
                         // Queue에 입력된 Count를 파일로 저장
                         SaveRealTimeProvider();
@@ -335,7 +335,7 @@ namespace MTree.RealTimeProvider
             Task.Run(() =>
             {
                 CanSendLog = false;
-                LogUtility.SendLogToEmail();
+                LogUtility.SendLog();
                 CanSendLog = true;
             });
         }

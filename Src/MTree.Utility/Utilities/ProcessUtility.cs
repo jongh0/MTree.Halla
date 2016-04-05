@@ -29,6 +29,7 @@ namespace MTree.Utility
         Dashboard,
         DataCompare,
         SimTrader,
+        SendLog,
     }
 
     public class ProcessUtility
@@ -58,6 +59,7 @@ namespace MTree.Utility
             ProcessList.Add(ProcessTypes.Dashboard, "MTree.Dashboard");
             ProcessList.Add(ProcessTypes.DataCompare, "MTree.DataCompare");
             ProcessList.Add(ProcessTypes.SimTrader, "MTree.SimTrader");
+            ProcessList.Add(ProcessTypes.SendLog, "MTree.SendLog");
         }
 
         public static Process Start(ProcessTypes type, ProcessWindowStyle windowStyle = ProcessWindowStyle.Normal)

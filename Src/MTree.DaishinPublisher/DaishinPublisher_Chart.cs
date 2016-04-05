@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using MTree.DataStructure;
 using MTree.Configuration;
 using System.Threading;
+using MongoDB.Bson;
 
 namespace MTree.DaishinPublisher
 {
@@ -68,9 +69,6 @@ namespace MTree.DaishinPublisher
             {
                 if (QuotingCandleList == null) return;
 
-                var tiemForTick = DateTime.Now;
-                tiemForTick = new DateTime(tiemForTick.Year, tiemForTick.Month, tiemForTick.Day, tiemForTick.Hour, tiemForTick.Minute, 0, 0);
-
                 string fullCode = stockChartObj.GetHeaderValue(0).ToString(); // 종목코드
                 string code = CodeEntity.RemovePrefix(fullCode);
 
@@ -79,6 +77,7 @@ namespace MTree.DaishinPublisher
                 for (int i = 0; i < count; i++)
                 {
                     var candle = new Candle(code);
+                    candle.Id = ObjectId.GenerateNewId();
                     candle.CandleType = QuotingCandleType;
 
                     ulong date = Convert.ToUInt64(stockChartObj.GetDataValue(0, i));
@@ -100,13 +99,8 @@ namespace MTree.DaishinPublisher
                             candle.Time = new DateTime(year, month, day);
                             break;
 
-                        case CandleTypes.Min:
+                        default: // Min, Tick
                             candle.Time = new DateTime(year, month, day, hour, minute, 0);
-                            break;
-
-                        case CandleTypes.Tick: // 틱차트는 Sorting을 위해 임이의 Millisecond를 한개씩 올려서 저장한다
-                            candle.Time = new DateTime(year, month, day, hour, minute, tiemForTick.Second, tiemForTick.Millisecond);
-                            tiemForTick.AddMilliseconds(1);
                             break;
                     }
 
