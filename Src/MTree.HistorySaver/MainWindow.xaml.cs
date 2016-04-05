@@ -27,18 +27,7 @@ namespace MTree.HistorySaver
             InitializeComponent();
 
             Consumer = new HistorySaver();
-            //TestData();
-
             this.DataContext = Consumer;
-        }
-
-        private void TestData()
-        {
-            Consumer.StockMasterCount = 2750;
-            Consumer.BiddingPriceCount = 10004562;
-            Consumer.CircuitBreakCount = 127;
-            Consumer.StockConclusionCount = 2456354;
-            Consumer.IndexConclusionCount = 321542;
         }
     }
 }

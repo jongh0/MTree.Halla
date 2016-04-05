@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define VERIFY_ORDERING
+
+using System;
 using System.ServiceModel;
 using MTree.DbProvider;
 using System.Threading;
@@ -13,6 +15,8 @@ using MTree.Configuration;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Collections.Concurrent;
+using MongoDB.Bson;
 
 namespace MTree.HistorySaver
 {
@@ -22,26 +26,50 @@ namespace MTree.HistorySaver
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         #region Counter property
-        public int ChartCount { get; set; } = 0;
-        public int BiddingPriceCount { get; set; } = 0;
-        public int CircuitBreakCount { get; set; } = 0;
-        public int StockMasterCount { get; set; } = 0;
-        public int IndexMasterCount { get; set; } = 0;
-        public int StockConclusionCount { get; set; } = 0;
-        public int IndexConclusionCount { get; set; } = 0;
+        private int _ChartCount = 0;
+        public int ChartCount { get { return _ChartCount; } }
+
+        private int _BiddingPriceCount = 0;
+        public int BiddingPriceCount { get { return _BiddingPriceCount; } }
+
+        private int _CircuitBreakCount = 0;
+        public int CircuitBreakCount { get { return _CircuitBreakCount; } }
+
+        private int _StockMasterCount = 0;
+        public int StockMasterCount { get { return _StockMasterCount; } }
+
+        private int _IndexMasterCount = 0;
+        public int IndexMasterCount { get { return _IndexMasterCount; } }
+
+        private int _StockConclusionCount = 0;
+        public int StockConclusionCount { get { return _StockConclusionCount; } }
+
+        private int _IndexConclusionCount = 0;
+        public int IndexConclusionCount { get { return _IndexConclusionCount; } }
+
         public int TotalCount { get { return ChartCount + StockMasterCount + IndexMasterCount + BiddingPriceCount + CircuitBreakCount + StockConclusionCount + IndexConclusionCount; } }
         #endregion
 
         private System.Timers.Timer RefreshTimer { get; set; }
 
+#if VERIFY_ORDERING
+        private ConcurrentDictionary<string, ObjectId> VerifyList { get; set; } = new ConcurrentDictionary<string, ObjectId>();
+#endif
+
         public HistorySaver()
         {
             try
             {
-                TaskUtility.Run("HistorySaver.BiddingPriceQueue", QueueTaskCancelToken, ProcessBiddingPriceQueue);
                 TaskUtility.Run("HistorySaver.CircuitBreakQueue", QueueTaskCancelToken, ProcessCircuitBreakQueue);
-                TaskUtility.Run("HistorySaver.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
-                TaskUtility.Run("HistorySaver.IndexConclusionQueue", QueueTaskCancelToken, ProcessIndexConclusionQueue);
+
+                for (int i = 0; i < 6; i++)
+                    TaskUtility.Run($"HistorySaver.BiddingPriceQueue_{i + 1}", QueueTaskCancelToken, ProcessBiddingPriceQueue);
+
+                for (int i = 0; i < 3; i++)
+                    TaskUtility.Run($"HistorySaver.StockConclusionQueue_{i + 1}", QueueTaskCancelToken, ProcessStockConclusionQueue);
+
+                for (int i = 0; i < 2; i++)
+                    TaskUtility.Run($"HistorySaver.IndexConclusionQueue_{i + 1}", QueueTaskCancelToken, ProcessIndexConclusionQueue);
 
                 StartRefreshTimer();
             }
@@ -78,7 +106,7 @@ namespace MTree.HistorySaver
                 if (BiddingPriceQueue.TryDequeue(out biddingPrice) == true)
                 {
                     DbAgent.Instance.Insert(biddingPrice);
-                    BiddingPriceCount++;
+                    Interlocked.Increment(ref _BiddingPriceCount);
                 }
                 else
                     Thread.Sleep(10);
@@ -97,7 +125,7 @@ namespace MTree.HistorySaver
                 if (CircuitBreakQueue.TryDequeue(out circuitBreak) == true)
                 {
                     DbAgent.Instance.Insert(circuitBreak);
-                    CircuitBreakCount++;
+                    Interlocked.Increment(ref _CircuitBreakCount);
                 }
                 else
                     Thread.Sleep(10);
@@ -116,7 +144,7 @@ namespace MTree.HistorySaver
                 if (StockConclusionQueue.TryDequeue(out conclusion) == true)
                 {
                     DbAgent.Instance.Insert(conclusion);
-                    StockConclusionCount++;
+                    Interlocked.Increment(ref _StockConclusionCount);
                 }
                 else
                     Thread.Sleep(10);
@@ -135,7 +163,7 @@ namespace MTree.HistorySaver
                 if (IndexConclusionQueue.TryDequeue(out conclusion) == true)
                 {
                     DbAgent.Instance.Insert(conclusion);
-                    IndexConclusionCount++;
+                    Interlocked.Increment(ref _IndexConclusionCount);
                 }
                 else
                     Thread.Sleep(10);
@@ -154,6 +182,31 @@ namespace MTree.HistorySaver
         public override void ConsumeStockConclusion(StockConclusion conclusion)
         {
             StockConclusionQueue.Enqueue(conclusion);
+
+#if VERIFY_ORDERING
+            try
+            {
+                var code = conclusion.Code;
+                var newId = conclusion.Id;
+
+                if (VerifyList.ContainsKey(code) == false)
+                {
+                    VerifyList.TryAdd(code, newId);
+                }
+                else
+                {
+                    var prevId = VerifyList[code];
+                    if (prevId >= newId)
+                        logger.Error($"Conclusion ordering fail, prevId: {prevId.CreationTime.ToString(Config.General.DateTimeFormat)}, newId: {newId.CreationTime.ToString(Config.General.DateTimeFormat)}");
+
+                    VerifyList[code] = newId;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+#endif
         }
 
         public override void ConsumeIndexConclusion(IndexConclusion conclusion)
@@ -173,7 +226,7 @@ namespace MTree.HistorySaver
                 foreach (var stockMaster in stockMasters)
                 {
                     DbAgent.Instance.Insert(stockMaster);
-                    StockMasterCount++;
+                    Interlocked.Increment(ref _StockMasterCount);
                 }
             }
             catch (Exception ex)
@@ -189,7 +242,7 @@ namespace MTree.HistorySaver
                 foreach (var indexMaster in indexMasters)
                 {
                     DbAgent.Instance.Insert(indexMaster);
-                    IndexMasterCount++;
+                    Interlocked.Increment(ref _IndexMasterCount);
                 }
             }
             catch (Exception ex)
@@ -211,7 +264,7 @@ namespace MTree.HistorySaver
 
                 var collection = DbAgent.Instance.ChartDb.GetCollection<Candle>(code);
                 collection.InsertMany(candles);
-                ChartCount += candles.Count;
+                Interlocked.Add(ref _ChartCount, candles.Count);
             }
             catch (Exception ex)
             {

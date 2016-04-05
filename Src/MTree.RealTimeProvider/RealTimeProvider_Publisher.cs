@@ -1,4 +1,7 @@
-﻿using MTree.Configuration;
+﻿#define VERIFY_ORDERING
+
+using MongoDB.Bson;
+using MTree.Configuration;
 using MTree.DataStructure;
 using MTree.Utility;
 using Newtonsoft.Json;
@@ -19,6 +22,10 @@ namespace MTree.RealTimeProvider
     {
         public int PublisherContractCount { get { return PublisherContracts.Count; } }
         private ConcurrentDictionary<Guid, PublisherContract> PublisherContracts { get; set; } = new ConcurrentDictionary<Guid, PublisherContract>();
+
+#if VERIFY_ORDERING
+        private ConcurrentDictionary<string, ObjectId> VerifyList { get; set; } = new ConcurrentDictionary<string, ObjectId>();
+#endif
 
         #region Contract Property
         #region Daishin
@@ -587,25 +594,50 @@ namespace MTree.RealTimeProvider
         public void PublishBiddingPrice(BiddingPrice biddingPrice)
         {
             BiddingPriceQueue.Enqueue(biddingPrice);
-            BiddingPriceCount++;
+            Interlocked.Increment(ref _BiddingPriceCount);
         }
 
         public void PublishCircuitBreak(CircuitBreak circuitBreak)
         {
             CircuitBreakQueue.Enqueue(circuitBreak);
-            CircuitBreakCount++;
+            Interlocked.Increment(ref _CircuitBreakCount);
         }
 
         public void PublishIndexConclusion(IndexConclusion conclusion)
         {
             IndexConclusionQueue.Enqueue(conclusion);
-            IndexConclusionCount++;
+            Interlocked.Increment(ref _IndexConclusionCount);
         }
 
         public void PublishStockConclusion(StockConclusion conclusion)
         {
             StockConclusionQueue.Enqueue(conclusion);
-            StockConclusionCount++;
+            Interlocked.Increment(ref _StockConclusionCount);
+
+#if VERIFY_ORDERING
+            try
+            {
+                var code = conclusion.Code;
+                var newId = conclusion.Id;
+
+                if (VerifyList.ContainsKey(code) == false)
+                {
+                    VerifyList.TryAdd(code, newId);
+                }
+                else
+                {
+                    var prevId = VerifyList[code];
+                    if (prevId >= newId)
+                        logger.Error($"Conclusion ordering fail, prevId: {prevId.CreationTime.ToString(Config.General.DateTimeFormat)}, newId: {newId.CreationTime.ToString(Config.General.DateTimeFormat)}");
+
+                    VerifyList[code] = newId;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+#endif
         }
     }
 }

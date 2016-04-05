@@ -39,10 +39,28 @@ namespace MTree.RealTimeProvider
         private List<IndexMastering> IndexMasteringList { get; } = new List<IndexMastering>();
 
         #region Counter property
-        public int BiddingPriceCount { get; set; } = 0;
-        public int CircuitBreakCount { get; set; } = 0;
-        public int StockConclusionCount { get; set; } = 0;
-        public int IndexConclusionCount { get; set; } = 0;
+        private int _ChartCount = 0;
+        public int ChartCount { get { return _ChartCount; } }
+
+        private int _BiddingPriceCount = 0;
+        public int BiddingPriceCount { get { return _BiddingPriceCount; } }
+
+        private int _CircuitBreakCount = 0;
+        public int CircuitBreakCount { get { return _CircuitBreakCount; } }
+
+        private int _StockMasterCount = 0;
+        public int StockMasterCount { get { return _StockMasterCount; } }
+
+        private int _IndexMasterCount = 0;
+        public int IndexMasterCount { get { return _IndexMasterCount; } }
+
+        private int _StockConclusionCount = 0;
+        public int StockConclusionCount { get { return _StockConclusionCount; } }
+
+        private int _IndexConclusionCount = 0;
+        public int IndexConclusionCount { get { return _IndexConclusionCount; } }
+
+        public int TotalCount { get { return ChartCount + StockMasterCount + IndexMasterCount + BiddingPriceCount + CircuitBreakCount + StockConclusionCount + IndexConclusionCount; } }
         #endregion
 
         private System.Timers.Timer RefreshTimer { get; set; }
@@ -121,6 +139,8 @@ namespace MTree.RealTimeProvider
                         continue;
                     }
 
+                    Interlocked.Add(ref _ChartCount, candleList.Count);
+
                     int publisherTick = Environment.TickCount - startTick;
                     startTick = Environment.TickCount;
 
@@ -157,6 +177,8 @@ namespace MTree.RealTimeProvider
                         logger.Info($"{msg}, chart not exists");
                         continue;
                     }
+
+                    Interlocked.Add(ref _ChartCount, candleList.Count);
 
                     int publisherTick = Environment.TickCount - startTick;
                     startTick = Environment.TickCount;
@@ -283,10 +305,14 @@ namespace MTree.RealTimeProvider
 
         private void RefreshTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
+            NotifyPropertyChanged(nameof(ChartCount));
             NotifyPropertyChanged(nameof(BiddingPriceCount));
             NotifyPropertyChanged(nameof(CircuitBreakCount));
+            NotifyPropertyChanged(nameof(StockMasterCount));
+            NotifyPropertyChanged(nameof(IndexMasterCount));
             NotifyPropertyChanged(nameof(StockConclusionCount));
             NotifyPropertyChanged(nameof(IndexConclusionCount));
+            NotifyPropertyChanged(nameof(TotalCount));
         }
 
         private void SaveRealTimeProvider()
@@ -300,10 +326,14 @@ namespace MTree.RealTimeProvider
 
                 using (var sw = new StreamWriter(new FileStream(filePath, FileMode.Create), Encoding.Default))
                 {
+                    sw.WriteLine($"Chart, {ChartCount}");
                     sw.WriteLine($"CircuitBreak, {CircuitBreakCount}");
                     sw.WriteLine($"BiddingPrice, {BiddingPriceCount}");
+                    sw.WriteLine($"StockMaster, {StockMasterCount}");
+                    sw.WriteLine($"IndexMaster, {IndexMasterCount}");
                     sw.WriteLine($"StockConclusion, {StockConclusionCount}");
                     sw.WriteLine($"IndexConclusion, {IndexConclusionCount}");
+                    sw.WriteLine($"Total, {TotalCount}");
                 }
 
                 logger.Info($"Save RealTimeProvider done, {filePath}");

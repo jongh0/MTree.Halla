@@ -103,6 +103,7 @@ namespace MTree.DaishinPublisher
 
                 var biddingPrice = new BiddingPrice();
                 biddingPrice.Id = ObjectId.GenerateNewId();
+
                 biddingPrice.Bids = new List<BiddingPriceEntity>();
                 biddingPrice.Offers = new List<BiddingPriceEntity>();
 

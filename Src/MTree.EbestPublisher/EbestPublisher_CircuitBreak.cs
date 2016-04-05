@@ -1,5 +1,6 @@
 ﻿using System;
 using MTree.DataStructure;
+using MongoDB.Bson;
 
 namespace MTree.EbestPublisher
 {
@@ -79,6 +80,7 @@ namespace MTree.EbestPublisher
             try
             {
                 var circuitBreak = new CircuitBreak();
+                circuitBreak.Id = ObjectId.GenerateNewId();
                 circuitBreak.Time = DateTime.Now;
                 circuitBreak.Code = viSubscribingObj.GetFieldData("OutBlock", "shcode");
 

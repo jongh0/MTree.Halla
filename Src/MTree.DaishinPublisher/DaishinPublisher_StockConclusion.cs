@@ -165,6 +165,7 @@ namespace MTree.DaishinPublisher
             {
                 var now = DateTime.Now;
                 var conclusion = new StockConclusion();
+                conclusion.Id = ObjectId.GenerateNewId();
 
                 // 0 - (string) 종목 코드
                 string fullCode = stockCurObj.GetHeaderValue(0).ToString();

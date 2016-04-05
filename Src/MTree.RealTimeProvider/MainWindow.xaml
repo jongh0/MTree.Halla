@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:MTree.RealTimeProvider"
         xmlns:utility="clr-namespace:MTree.Utility;assembly=MTree.Utility"
         mc:Ignorable="d"
-        Title="RealTimeProvider" Height="295.439" Width="355.942" ResizeMode="CanMinimize">
+        Title="RealTimeProvider" Height="413.735" Width="355.942" ResizeMode="CanMinimize">
     <Grid>
         <Grid.Resources>
             <utility:NumberToCurrencyConverter x:Key="NumberToCurrencyConverter"/>
@@ -36,6 +36,10 @@
                 <TextBlock Text="Consumer : "/>
                 <TextBox Text="{Binding Path=ConsumerContractCount, Mode=OneWay}"/>
             </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                <TextBlock Text="Chart : "/>
+                <TextBox Text="{Binding Path=ChartCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}"/>
+            </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="CircuitBreak : "/>
                 <TextBox Text="{Binding Path=CircuitBreakCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}"/>
@@ -45,12 +49,24 @@
                 <TextBox Text="{Binding Path=BiddingPriceCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
+                <TextBlock Text="StockMaster : "/>
+                <TextBox Text="{Binding Path=StockMasterCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="IndexMaster : "/>
+                <TextBox Text="{Binding Path=IndexMasterCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
                 <TextBlock Text="StockConclusion : "/>
                 <TextBox Text="{Binding Path=StockConclusionCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="IndexConclusion : "/>
                 <TextBox Text="{Binding Path=IndexConclusionCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Total : "/>
+                <TextBox Text="{Binding Path=TotalCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
                 <TextBox Text="{Binding Path=RealTimeState, Mode=OneWay}" Width="300"/>

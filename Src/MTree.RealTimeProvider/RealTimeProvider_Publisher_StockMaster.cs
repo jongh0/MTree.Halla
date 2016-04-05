@@ -96,6 +96,8 @@ namespace MTree.RealTimeProvider
                     stockMasterList.Add(mastering.Stock);
                 }
 
+                _StockMasterCount = stockMasterList.Count;
+
                 foreach (var contract in MasteringContracts)
                 {
                     try

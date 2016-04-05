@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define VERIFY_ORDERING
+
+using System;
 using System.ServiceModel;
 using System.Threading;
 using MTree.DataStructure;
@@ -12,6 +14,7 @@ using System.Collections.Generic;
 using MTree.Configuration;
 using System.IO;
 using System.Text;
+using MongoDB.Bson;
 
 namespace MTree.Dashboard
 {
@@ -23,13 +26,21 @@ namespace MTree.Dashboard
         public ObservableConcurrentDictionary<string, DashboardItem> StockItems { get; set; } = new ObservableConcurrentDictionary<string, DashboardItem>();
         public ObservableConcurrentDictionary<string, DashboardItem> IndexItems { get; set; } = new ObservableConcurrentDictionary<string, DashboardItem>();
 
+#if VERIFY_ORDERING
+        private ConcurrentDictionary<string, ObjectId> VerifyList { get; set; } = new ConcurrentDictionary<string, ObjectId>(); 
+#endif
+
         public Dashboard()
         {
             try
             {
-                TaskUtility.Run("HistorySaver.CircuitBreakQueue", QueueTaskCancelToken, ProcessCircuitBreakQueue);
-                TaskUtility.Run("HistorySaver.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
-                TaskUtility.Run("HistorySaver.IndexConclusionQueue", QueueTaskCancelToken, ProcessIndexConclusionQueue);
+                TaskUtility.Run("Dashboard.CircuitBreakQueue", QueueTaskCancelToken, ProcessCircuitBreakQueue);
+
+                for (int i = 0; i < 3; i++)
+                    TaskUtility.Run($"Dashboard.StockConclusionQueue_{i + 1}", QueueTaskCancelToken, ProcessStockConclusionQueue);
+
+                for (int i = 0; i < 2; i++)
+                    TaskUtility.Run($"Dashboard.IndexConclusionQueue_{i + 1}", QueueTaskCancelToken, ProcessIndexConclusionQueue);
             }
             catch (Exception ex)
             {
@@ -136,6 +147,31 @@ namespace MTree.Dashboard
         public override void ConsumeStockConclusion(StockConclusion conclusion)
         {
             StockConclusionQueue.Enqueue(conclusion);
+
+#if VERIFY_ORDERING
+            try
+            {
+                var code = conclusion.Code;
+                var newId = conclusion.Id;
+
+                if (VerifyList.ContainsKey(code) == false)
+                {
+                    VerifyList.TryAdd(code, newId);
+                }
+                else
+                {
+                    var prevId = VerifyList[code];
+                    if (prevId >= newId)
+                        logger.Error($"Conclusion ordering fail, prevId: {prevId.CreationTime.ToString(Config.General.DateTimeFormat)}, newId: {newId.CreationTime.ToString(Config.General.DateTimeFormat)}");
+
+                    VerifyList[code] = newId;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+#endif
         }
 
         public override void ConsumeIndexConclusion(IndexConclusion conclusion)
