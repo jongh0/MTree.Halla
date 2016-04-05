@@ -59,7 +59,19 @@
                     <GridViewColumn Header="Price" Width="100" utility:GridViewSort.PropertyName="Price">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Path=Price, Converter={StaticResource NumberToCurrencyConverter}}" Foreground="{Binding Path=PriceColor}" Style="{StaticResource CurrencyTextBlock}"/>
+                                <DataTemplate.Triggers>
+                                    <EventTrigger RoutedEvent="Binding.TargetUpdated">
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="PriceTextBlock" Storyboard.TargetProperty="(TextBlock.FontWeight)">
+                                                    <DiscreteObjectKeyFrame KeyTime="00:00:00.0" Value="{x:Static FontWeights.Bold}"/>
+                                                    <DiscreteObjectKeyFrame KeyTime="00:00:00.1" Value="{x:Static FontWeights.Normal}"/>
+                                                </ObjectAnimationUsingKeyFrames>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </EventTrigger>
+                                </DataTemplate.Triggers>
+                                <TextBlock x:Name="PriceTextBlock" Text="{Binding Path=Price, Converter={StaticResource NumberToCurrencyConverter}, NotifyOnTargetUpdated=True}" Foreground="{Binding Path=PriceColor}" Style="{StaticResource CurrencyTextBlock}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>

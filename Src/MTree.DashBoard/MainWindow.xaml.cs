@@ -47,11 +47,36 @@ namespace MTree.Dashboard
 
             Task.Run(() =>
             {
-                Thread.Sleep(4000);
-                Consumer.StockItems["000020"].Name = "aaaaaa";
+                Thread.Sleep(1000);
+                Consumer.StockItems["000020"].Price = 2100;
+                Consumer.StockItems["000020"].Price = 2110;
+                Consumer.StockItems["000020"].Price = 2111;
+                Consumer.StockItems["000020"].Price = 2112;
+                Consumer.StockItems["000020"].Price = 2113;
 
-                Thread.Sleep(2000);
-                Consumer.StockItems.Add("000070", new DashboardItem() { Code = "000070", Name = "삼양6", Price = 12200, Volume = 510, BasisPrice = 12300, PreviousVolume = 234 });
+                Thread.Sleep(1000);
+                Consumer.StockItems["000030"].Price = (float)102.21;
+
+                Thread.Sleep(1000);
+                Consumer.StockItems["000060"].Price = 12201;
+
+                Thread.Sleep(1000);
+                Consumer.StockItems["000020"].Price = 2101;
+
+                Thread.Sleep(1000);
+                Consumer.StockItems["000030"].Price = (float)102.22;
+
+                Thread.Sleep(1000);
+                Consumer.StockItems["000060"].Price = 12202;
+
+                Thread.Sleep(1000);
+                Consumer.StockItems["000020"].Price = 2103;
+
+                Thread.Sleep(1000);
+                Consumer.StockItems["000030"].Price = (float)102.23;
+
+                Thread.Sleep(1000);
+                Consumer.StockItems["000060"].Price = 12203;
             });
         }
     }
