@@ -15,6 +15,9 @@ using MTree.Configuration;
 using System.IO;
 using System.Text;
 using MongoDB.Bson;
+using GalaSoft.MvvmLight.Command;
+using System.Windows.Input;
+using System.Diagnostics;
 
 namespace MTree.Dashboard
 {
@@ -295,5 +298,24 @@ namespace MTree.Dashboard
 
             base.NotifyMessage(type, message);
         }
+
+        #region Command
+        private RelayCommand<DashboardItem> _DoubleClickCommand;
+        public ICommand DoubleClickCommand
+        {
+            get
+            {
+                if (_DoubleClickCommand == null)
+                    _DoubleClickCommand = new RelayCommand<DashboardItem>((param) => ExecuteDoubleClick(param));
+
+                return _DoubleClickCommand;
+            }
+        }
+
+        public void ExecuteDoubleClick(DashboardItem item)
+        {
+            Process.Start("https://search.naver.com/search.naver?where=nexearch&query=" + item.Name);
+        }
+        #endregion
     }
 }
