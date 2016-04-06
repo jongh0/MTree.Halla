@@ -284,9 +284,13 @@ namespace MTree.Dashboard
             }
         }
 
-        public void CheckLatency(Subscribable newSubscribale)
+        private void CheckLatency(Subscribable newSubscribale)
         {
             Latency = DateTime.Now - newSubscribale.Time;
+            if (Latency.TotalMilliseconds > 100)
+            {
+                logger.Error($"Data transfer delayed. Latency:{Latency.TotalMilliseconds}");
+            }
         }
 
         private void SaveDashboard()
