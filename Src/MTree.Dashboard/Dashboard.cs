@@ -1,4 +1,5 @@
 ﻿#define VERIFY_ORDERING
+#define VERIFY_LATENCY
 
 using System;
 using System.ServiceModel;
@@ -30,20 +31,6 @@ namespace MTree.Dashboard
         public ObservableConcurrentDictionary<string, DashboardItem> StockItems { get; set; } = new ObservableConcurrentDictionary<string, DashboardItem>();
         public ObservableConcurrentDictionary<string, DashboardItem> IndexItems { get; set; } = new ObservableConcurrentDictionary<string, DashboardItem>();
 
-        private TimeSpan latency = new TimeSpan(0);
-        public TimeSpan Latency
-        {
-            get
-            {
-                return latency;
-            }
-            set
-            {
-                latency = value;
-                NotifyPropertyChanged(nameof(Latency));
-            }
-        } 
-
 #if VERIFY_ORDERING
         private ConcurrentDictionary<string, ObjectId> VerifyList { get; set; } = new ConcurrentDictionary<string, ObjectId>(); 
 #endif
@@ -52,9 +39,15 @@ namespace MTree.Dashboard
         {
             try
             {
-                TaskUtility.Run("Dashboard.BiddingPriceQueue", QueueTaskCancelToken, ProcessBiddingPriceQueue);
-
                 TaskUtility.Run("Dashboard.CircuitBreakQueue", QueueTaskCancelToken, ProcessCircuitBreakQueue);
+
+#if VERIFY_LATENCY
+                if (Config.General.SkipBiddingPrice == false)
+                {
+                    for (int i = 0; i < 10; i++)
+                        TaskUtility.Run($"Dashboard.BiddingPriceQueue_{i + 1}", QueueTaskCancelToken, ProcessBiddingPriceQueue);
+                } 
+#endif
 
                 for (int i = 0; i < 5; i++)
                     TaskUtility.Run($"Dashboard.StockConclusionQueue_{i + 1}", QueueTaskCancelToken, ProcessStockConclusionQueue);
@@ -78,26 +71,9 @@ namespace MTree.Dashboard
                 ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.CircuitBreak));
                 ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.StockConclusion));
                 ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.IndexConclusion));
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-            }
-        }
-
-        private void ProcessBiddingPriceQueue()
-        {
-            try
-            {
-                BiddingPrice bidding;
-                if (BiddingPriceQueue.TryDequeue(out bidding) == true)
-                {
-                    CheckLatency(bidding);
-                }
-                else
-                {
-                    Thread.Sleep(10);
-                }
+#if VERIFY_LATENCY
+                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.BiddingPrice));
+#endif
             }
             catch (Exception ex)
             {
@@ -190,11 +166,6 @@ namespace MTree.Dashboard
             }
         }
 
-        public override void ConsumeBiddingPrice(BiddingPrice biddingPrice)
-        {
-            BiddingPriceQueue.Enqueue(biddingPrice);
-        }
-
         public override void ConsumeStockConclusion(StockConclusion conclusion)
         {
             StockConclusionQueue.Enqueue(conclusion);
@@ -281,15 +252,6 @@ namespace MTree.Dashboard
             catch (Exception ex)
             {
                 logger.Error(ex);
-            }
-        }
-
-        private void CheckLatency(Subscribable newSubscribale)
-        {
-            Latency = DateTime.Now - newSubscribale.Time;
-            if (Latency.TotalMilliseconds > 100)
-            {
-                logger.Error($"Data transfer delayed. Latency:{Latency.TotalMilliseconds}");
             }
         }
 
@@ -390,5 +352,46 @@ namespace MTree.Dashboard
                 PropertyChanged(this, new PropertyChangedEventArgs(name));
         }
         #endregion
+
+#if VERIFY_LATENCY
+        private TimeSpan latency = new TimeSpan(0);
+        public TimeSpan Latency
+        {
+            get { return latency; }
+            set
+            {
+                latency = value;
+                NotifyPropertyChanged(nameof(Latency));
+            }
+        }
+
+        private void ProcessBiddingPriceQueue()
+        {
+            try
+            {
+                BiddingPrice biddingPrice;
+                if (BiddingPriceQueue.TryDequeue(out biddingPrice) == true)
+                    CheckLatency(biddingPrice);
+                else
+                    Thread.Sleep(10);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
+        private void CheckLatency(Subscribable newSubscribale)
+        {
+            Latency = DateTime.Now - newSubscribale.Time;
+            if (Latency.TotalMilliseconds > 100)
+                logger.Error($"Data transfer delayed. Latency: {Latency.TotalMilliseconds}");
+        }
+
+        public override void ConsumeBiddingPrice(BiddingPrice biddingPrice)
+        {
+            BiddingPriceQueue.Enqueue(biddingPrice);
+        }
+#endif
     }
 }
