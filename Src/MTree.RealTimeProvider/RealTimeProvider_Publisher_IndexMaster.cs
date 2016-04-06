@@ -85,7 +85,7 @@ namespace MTree.RealTimeProvider
                     indexMasterList.Add(mastering.Index);
                 }
 
-                _IndexMasterCount = indexMasterList.Count;
+                Counter.IndexMasterCount = indexMasterList.Count;
 
                 foreach (var contract in MasteringContracts)
                 {

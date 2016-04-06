@@ -594,25 +594,25 @@ namespace MTree.RealTimeProvider
         public void PublishBiddingPrice(BiddingPrice biddingPrice)
         {
             BiddingPriceQueue.Enqueue(biddingPrice);
-            Interlocked.Increment(ref _BiddingPriceCount);
+            Counter.Increment(CounterTypes.BiddingPrice);
         }
 
         public void PublishCircuitBreak(CircuitBreak circuitBreak)
         {
             CircuitBreakQueue.Enqueue(circuitBreak);
-            Interlocked.Increment(ref _CircuitBreakCount);
+            Counter.Increment(CounterTypes.CircuitBreak);
         }
 
         public void PublishIndexConclusion(IndexConclusion conclusion)
         {
             IndexConclusionQueue.Enqueue(conclusion);
-            Interlocked.Increment(ref _IndexConclusionCount);
+            Counter.Increment(CounterTypes.IndexConclusion);
         }
 
         public void PublishStockConclusion(StockConclusion conclusion)
         {
             StockConclusionQueue.Enqueue(conclusion);
-            Interlocked.Increment(ref _StockConclusionCount);
+            Counter.Increment(CounterTypes.StockConclusion);
 
 #if VERIFY_ORDERING
             try

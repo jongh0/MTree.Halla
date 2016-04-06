@@ -21,34 +21,11 @@ using MongoDB.Bson;
 namespace MTree.HistorySaver
 {
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
-    public class HistorySaver : ConsumerBase, INotifyPropertyChanged
+    public class HistorySaver : ConsumerBase
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        #region Counter property
-        private int _ChartCount = 0;
-        public int ChartCount { get { return _ChartCount; } }
-
-        private int _BiddingPriceCount = 0;
-        public int BiddingPriceCount { get { return _BiddingPriceCount; } }
-
-        private int _CircuitBreakCount = 0;
-        public int CircuitBreakCount { get { return _CircuitBreakCount; } }
-
-        private int _StockMasterCount = 0;
-        public int StockMasterCount { get { return _StockMasterCount; } }
-
-        private int _IndexMasterCount = 0;
-        public int IndexMasterCount { get { return _IndexMasterCount; } }
-
-        private int _StockConclusionCount = 0;
-        public int StockConclusionCount { get { return _StockConclusionCount; } }
-
-        private int _IndexConclusionCount = 0;
-        public int IndexConclusionCount { get { return _IndexConclusionCount; } }
-
-        public int TotalCount { get { return ChartCount + StockMasterCount + IndexMasterCount + BiddingPriceCount + CircuitBreakCount + StockConclusionCount + IndexConclusionCount; } }
-        #endregion
+        public DataCounter Counter { get; set; } = new DataCounter(DataTypes.HistorySaver);
 
         private System.Timers.Timer RefreshTimer { get; set; }
 
@@ -109,7 +86,7 @@ namespace MTree.HistorySaver
                 if (BiddingPriceQueue.TryDequeue(out biddingPrice) == true)
                 {
                     DbAgent.Instance.Insert(biddingPrice);
-                    Interlocked.Increment(ref _BiddingPriceCount);
+                    Counter.Increment(CounterTypes.BiddingPrice);
                 }
                 else
                     Thread.Sleep(10);
@@ -128,7 +105,7 @@ namespace MTree.HistorySaver
                 if (CircuitBreakQueue.TryDequeue(out circuitBreak) == true)
                 {
                     DbAgent.Instance.Insert(circuitBreak);
-                    Interlocked.Increment(ref _CircuitBreakCount);
+                    Counter.Increment(CounterTypes.CircuitBreak);
                 }
                 else
                     Thread.Sleep(10);
@@ -147,7 +124,7 @@ namespace MTree.HistorySaver
                 if (StockConclusionQueue.TryDequeue(out conclusion) == true)
                 {
                     DbAgent.Instance.Insert(conclusion);
-                    Interlocked.Increment(ref _StockConclusionCount);
+                    Counter.Increment(CounterTypes.StockConclusion);
                 }
                 else
                     Thread.Sleep(10);
@@ -166,7 +143,7 @@ namespace MTree.HistorySaver
                 if (IndexConclusionQueue.TryDequeue(out conclusion) == true)
                 {
                     DbAgent.Instance.Insert(conclusion);
-                    Interlocked.Increment(ref _IndexConclusionCount);
+                    Counter.Increment(CounterTypes.IndexConclusion);
                 }
                 else
                     Thread.Sleep(10);
@@ -229,7 +206,7 @@ namespace MTree.HistorySaver
                 foreach (var stockMaster in stockMasters)
                 {
                     DbAgent.Instance.Insert(stockMaster);
-                    Interlocked.Increment(ref _StockMasterCount);
+                    Counter.Increment(CounterTypes.StockMaster);
                 }
             }
             catch (Exception ex)
@@ -245,7 +222,7 @@ namespace MTree.HistorySaver
                 foreach (var indexMaster in indexMasters)
                 {
                     DbAgent.Instance.Insert(indexMaster);
-                    Interlocked.Increment(ref _IndexMasterCount);
+                    Counter.Increment(CounterTypes.IndexMaster);
                 }
             }
             catch (Exception ex)
@@ -267,7 +244,7 @@ namespace MTree.HistorySaver
 
                 var collection = DbAgent.Instance.ChartDb.GetCollection<Candle>(code);
                 collection.InsertMany(candles);
-                Interlocked.Add(ref _ChartCount, candles.Count);
+                Counter.Add(CounterTypes.Chart, candles.Count);
             }
             catch (Exception ex)
             {
@@ -294,7 +271,7 @@ namespace MTree.HistorySaver
                     {
                         if (message.Equals(ExitProgramTypes.Normal.ToString()) == true)
                         {
-                            SaveHistorySaver();
+                            Counter.SaveToFile();
                             DbAgent.Instance.CreateIndex();
                             DbAgent.Instance.SaveStatisticLog();
                         }
@@ -334,53 +311,7 @@ namespace MTree.HistorySaver
 
         private void RefreshTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            NotifyPropertyChanged(nameof(ChartCount));
-            NotifyPropertyChanged(nameof(BiddingPriceCount));
-            NotifyPropertyChanged(nameof(CircuitBreakCount));
-            NotifyPropertyChanged(nameof(StockMasterCount));
-            NotifyPropertyChanged(nameof(IndexMasterCount));
-            NotifyPropertyChanged(nameof(StockConclusionCount));
-            NotifyPropertyChanged(nameof(IndexConclusionCount));
-            NotifyPropertyChanged(nameof(TotalCount));
+            Counter.NotifyPropertyAll();
         }
-
-        private void SaveHistorySaver()
-        {
-            try
-            {
-                logger.Info("Save HistorySaver");
-
-                var fileName = $"MTree.{DateTime.Now.ToString(Config.General.DateFormat)}_HistorySaver.csv";
-                var filePath = Path.Combine(Environment.CurrentDirectory, "Logs", fileName);
-
-                using (var sw = new StreamWriter(new FileStream(filePath, FileMode.Create), Encoding.Default))
-                {
-                    sw.WriteLine($"Chart, {ChartCount}");
-                    sw.WriteLine($"CircuitBreak, {CircuitBreakCount}");
-                    sw.WriteLine($"BiddingPrice, {BiddingPriceCount}");
-                    sw.WriteLine($"StockMaster, {StockMasterCount}");
-                    sw.WriteLine($"IndexMaster, {IndexMasterCount}");
-                    sw.WriteLine($"StockConclusion, {StockConclusionCount}");
-                    sw.WriteLine($"IndexConclusion, {IndexConclusionCount}");
-                    sw.WriteLine($"Total, {TotalCount}");
-                }
-
-                logger.Info($"Save HistorySaver done, {filePath}");
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-            }
-        }
-
-        #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void NotifyPropertyChanged(string name)
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(name));
-        }
-        #endregion
     }
 }

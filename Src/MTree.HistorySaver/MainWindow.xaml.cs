@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -27,7 +28,28 @@ namespace MTree.HistorySaver
             InitializeComponent();
 
             Consumer = new HistorySaver();
+            //TestData();
+
             this.DataContext = Consumer;
+        }
+
+        private void TestData()
+        {
+            Consumer.Counter.StockMasterCount = 100000;
+
+            Task.Run(() =>
+            {
+                Thread.Sleep(1000);
+                Consumer.Counter.Increment(DataStructure.CounterTypes.CircuitBreak);
+                Consumer.Counter.Increment(DataStructure.CounterTypes.CircuitBreak);
+                Consumer.Counter.Increment(DataStructure.CounterTypes.CircuitBreak);
+
+                Thread.Sleep(1000);
+                Consumer.Counter.Increment(DataStructure.CounterTypes.StockConclusion);
+                Consumer.Counter.Increment(DataStructure.CounterTypes.StockConclusion);
+                Consumer.Counter.Increment(DataStructure.CounterTypes.StockConclusion);
+                Consumer.Counter.Increment(DataStructure.CounterTypes.StockConclusion);
+            });
         }
     }
 }

@@ -320,21 +320,14 @@ namespace MTree.DbProvider
                 var startDate = DateTimeUtility.StartDateTime(DateTime.Now);
                 var endDate = DateTimeUtility.EndDateTime(DateTime.Now);
 
-                long chartCount = 0;
-                long biddingCount = 0;
-                long circuitBreakCount = 0;
-                long stockMasterCount = 0;
-                long indexMasterCount = 0;
-                long stockConclusionCount = 0;
-                long indexConclusionCount = 0;
-                long totalCount = 0;
+                var Counter = new DataCounter(DataTypes.Database);
 
                 foreach (var collectionName in GetCollectionList(DbTypes.Chart))
                 {
                     var collection = GetCollection<Candle>(collectionName);
                     var builder = Builders<Candle>.Filter;
                     var filter = builder.Empty;
-                    chartCount += collection.Find(filter).Count();
+                    Counter.ChartCount += (int)collection.Find(filter).Count();
                 }
 
                 foreach (var collectionName in GetCollectionList(DbTypes.BiddingPrice))
@@ -342,7 +335,7 @@ namespace MTree.DbProvider
                     var collection = GetCollection<BiddingPrice>(collectionName);
                     var builder = Builders<BiddingPrice>.Filter;
                     var filter = builder.Gte(i => i.Time, startDate) & builder.Lte(i => i.Time, endDate);
-                    biddingCount += collection.Find(filter).Count();
+                    Counter.BiddingPriceCount += (int)collection.Find(filter).Count();
                 }
 
                 foreach (var collectionName in GetCollectionList(DbTypes.CircuitBreak))
@@ -350,7 +343,7 @@ namespace MTree.DbProvider
                     var collection = GetCollection<CircuitBreak>(collectionName);
                     var builder = Builders<CircuitBreak>.Filter;
                     var filter = builder.Gte(i => i.Time, startDate) & builder.Lte(i => i.Time, endDate);
-                    circuitBreakCount += collection.Find(filter).Count();
+                    Counter.CircuitBreakCount += (int)collection.Find(filter).Count();
                 }
 
                 foreach (var collectionName in GetCollectionList(DbTypes.StockMaster))
@@ -358,7 +351,7 @@ namespace MTree.DbProvider
                     var collection = GetCollection<StockMaster>(collectionName);
                     var builder = Builders<StockMaster>.Filter;
                     var filter = builder.Gte(i => i.Time, startDate) & builder.Lte(i => i.Time, endDate);
-                    stockMasterCount += collection.Find(filter).Count();
+                    Counter.StockMasterCount += (int)collection.Find(filter).Count();
                 }
 
                 foreach (var collectionName in GetCollectionList(DbTypes.IndexMaster))
@@ -366,7 +359,7 @@ namespace MTree.DbProvider
                     var collection = GetCollection<IndexMaster>(collectionName);
                     var builder = Builders<IndexMaster>.Filter;
                     var filter = builder.Gte(i => i.Time, startDate) & builder.Lte(i => i.Time, endDate);
-                    indexMasterCount += collection.Find(filter).Count();
+                    Counter.IndexMasterCount += (int)collection.Find(filter).Count();
                 }
 
                 foreach (var collectionName in GetCollectionList(DbTypes.StockConclusion))
@@ -374,7 +367,7 @@ namespace MTree.DbProvider
                     var collection = GetCollection<StockConclusion>(collectionName);
                     var builder = Builders<StockConclusion>.Filter;
                     var filter = builder.Gte(i => i.Time, startDate) & builder.Lte(i => i.Time, endDate);
-                    stockConclusionCount += collection.Find(filter).Count();
+                    Counter.StockConclusionCount += (int)collection.Find(filter).Count();
                 }
 
                 foreach (var collectionName in GetCollectionList(DbTypes.IndexConclusion))
@@ -382,41 +375,15 @@ namespace MTree.DbProvider
                     var collection = GetCollection<IndexConclusion>(collectionName);
                     var builder = Builders<IndexConclusion>.Filter;
                     var filter = builder.Gte(i => i.Time, startDate) & builder.Lte(i => i.Time, endDate);
-                    indexConclusionCount += collection.Find(filter).Count();
+                    Counter.IndexConclusionCount += (int)collection.Find(filter).Count();
                 }
 
-                totalCount = chartCount + biddingCount + circuitBreakCount + stockMasterCount + indexMasterCount + stockConclusionCount + indexConclusionCount;
+                var msg = "DB Statistics" + Environment.NewLine + Counter.ToString();
+                logger.Info(msg);
+                PushUtility.NotifyMessage(msg);
 
-                var sb = new StringBuilder();
-                sb.AppendLine("DB Statistics");
-                sb.AppendLine($"Chart: {chartCount.ToString(Config.General.CurrencyFormat)}");
-                sb.AppendLine($"CircuitBreak: {circuitBreakCount.ToString(Config.General.CurrencyFormat)}");
-                sb.AppendLine($"BiddingPrice: {biddingCount.ToString(Config.General.CurrencyFormat)}");
-                sb.AppendLine($"StockMaster: {stockMasterCount.ToString(Config.General.CurrencyFormat)}");
-                sb.AppendLine($"IndexMaster: {indexMasterCount.ToString(Config.General.CurrencyFormat)}");
-                sb.AppendLine($"StockConclusion: {stockConclusionCount.ToString(Config.General.CurrencyFormat)}");
-                sb.AppendLine($"IndexConclusion: {indexConclusionCount.ToString(Config.General.CurrencyFormat)}");
-                sb.Append($"Total: {totalCount.ToString(Config.General.CurrencyFormat)}");
-
-                logger.Info(sb.ToString());
-                PushUtility.NotifyMessage(sb.ToString());
-
-                #region DB 통계를 파일로 저장
-                var fileName = $"MTree.{DateTime.Now.ToString(Config.General.DateFormat)}_Database.csv";
-                var filePath = Path.Combine(Environment.CurrentDirectory, "Logs", fileName);
-
-                using (var stream = new StreamWriter(new FileStream(filePath, FileMode.Create), Encoding.Default))
-                {
-                    stream.WriteLine($"Chart, {chartCount}");
-                    stream.WriteLine($"CircuitBreak, {circuitBreakCount}");
-                    stream.WriteLine($"BiddingPrice, {biddingCount}");
-                    stream.WriteLine($"StockMaster, {stockMasterCount}");
-                    stream.WriteLine($"IndexMaster, {indexMasterCount}");
-                    stream.WriteLine($"StockConclusion, {stockConclusionCount}");
-                    stream.WriteLine($"IndexConclusion, {indexConclusionCount}");
-                    stream.WriteLine($"Total, {totalCount}");
-                } 
-                #endregion
+                // DB 통계를 파일로 저장
+                Counter.SaveToFile();
             }
             catch (Exception ex)
             {
