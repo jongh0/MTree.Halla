@@ -10,15 +10,11 @@ using System.Windows.Forms;
 
 namespace MTree.KiwoomTrader
 {
-    public partial class MainWindow : Form
+    public partial class Form1 : Form
     {
-        KiwoomTrader kiwoomTrader;
-
-        public MainWindow()
+        public Form1()
         {
             InitializeComponent();
-            kiwoomTrader = new KiwoomTrader(axKHOpenAPI);
-            Task.Run(() => { List<string> accs = kiwoomTrader.GetAccounts(); });
         }
     }
 }
