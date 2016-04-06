@@ -21,12 +21,14 @@ namespace MTree.KiwoomTrader
         {
             InitializeComponent();
 
-            var instance = new KiwoomTrader();
+            var instance = new KiwoomTrader(axKHOpenAPI);
             Host = new ServiceHost(instance);
             Host.Opened += Host_Opened;
             Host.Closed += Host_Closed;
             Host.Faulted += Host_Faulted;
             Host.Open();
+			
+			Task.Run(() => { List<string> accs = instance.GetAccounts(); });
         }
 
         private void Host_Faulted(object sender, EventArgs e)
