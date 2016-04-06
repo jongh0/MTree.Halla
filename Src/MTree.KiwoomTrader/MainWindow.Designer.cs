@@ -1,6 +1,6 @@
 ﻿namespace MTree.KiwoomTrader
 {
-    partial class Form1
+    partial class MainWindow
     {
         /// <summary>
         /// Required designer variable.
@@ -30,12 +30,12 @@
         {
             this.SuspendLayout();
             // 
-            // Form1
+            // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 261);
-            this.Name = "Form1";
+            this.Name = "MainWindow";
             this.Text = "KiwoomTrader";
             this.ResumeLayout(false);
 
@@ -44,4 +44,3 @@
         #endregion
     }
 }
-
