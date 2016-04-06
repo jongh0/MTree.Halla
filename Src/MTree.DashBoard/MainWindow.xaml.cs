@@ -1,4 +1,6 @@
-﻿using MTree.DataStructure;
+﻿#define VERIFY_LATENCY
+
+using MTree.DataStructure;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,7 +21,9 @@ namespace MTree.Dashboard
 
             Consumer = new Dashboard();
             //TestData();
-            //TestLatency();
+#if VERIFY_LATENCY
+            //TestLatency();  
+#endif
 
             this.DataContext = Consumer;
         }
@@ -71,6 +75,7 @@ namespace MTree.Dashboard
             });
         }
 
+#if VERIFY_LATENCY
         private void TestLatency()
         {
             Task.Run(() =>
@@ -85,6 +90,7 @@ namespace MTree.Dashboard
                     Consumer.ConsumeBiddingPrice(biddingPrice);
                 }
             });
-        }
+        } 
+#endif
     }
 }

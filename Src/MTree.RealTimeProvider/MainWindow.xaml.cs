@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using MTree.Utility;
 using MTree.Configuration;
 using System.Diagnostics;
+using System;
 
 namespace MTree.RealTimeProvider
 {
@@ -15,8 +16,8 @@ namespace MTree.RealTimeProvider
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        ServiceHost RealTimeHost { get; set; }
-        RealTimeProvider RealTimeProviderInstance { get { return (RealTimeHost.SingletonInstance as RealTimeProvider); } }
+        ServiceHost Host { get; set; }
+        RealTimeProvider RealTimeProviderInstance { get { return (Host.SingletonInstance as RealTimeProvider); } }
 
         /// <summary>
         /// MainWindow 실행
@@ -33,28 +34,28 @@ namespace MTree.RealTimeProvider
             InitializeComponent();
 
             var instance = new RealTimeProvider();
-            RealTimeHost = new ServiceHost(instance);
-            RealTimeHost.Opened += RealTimeHost_Opened;
-            RealTimeHost.Closed += RealTimeHost_Closed;
-            RealTimeHost.Faulted += RealTimeHost_Faulted;
-            RealTimeHost.Open();
+            Host = new ServiceHost(instance);
+            Host.Opened += Host_Opened;
+            Host.Closed += Host_Closed;
+            Host.Faulted += Host_Faulted;
+            Host.Open();
 
             this.DataContext = instance;
         }
 
-        private void RealTimeHost_Faulted(object sender, System.EventArgs e)
+        private void Host_Faulted(object sender, EventArgs e)
         {
-            logger.Error("RealTimeHost faulted");
+            logger.Error("Host faulted");
         }
 
-        private void RealTimeHost_Closed(object sender, System.EventArgs e)
+        private void Host_Closed(object sender, EventArgs e)
         {
-            logger.Info("RealTimeHost closed");
+            logger.Info("Host closed");
         }
 
-        private void RealTimeHost_Opened(object sender, System.EventArgs e)
+        private void Host_Opened(object sender, EventArgs e)
         {
-            logger.Info("RealTimeHost opened");
+            logger.Info("Host opened");
 
             Task.Run(() =>
             {

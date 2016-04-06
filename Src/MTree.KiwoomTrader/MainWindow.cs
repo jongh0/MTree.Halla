@@ -1,25 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.Windows.Forms;
 
-namespace MTree.SimTrader
+namespace MTree.KiwoomTrader
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Form
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -29,7 +21,7 @@ namespace MTree.SimTrader
         {
             InitializeComponent();
 
-            var instance = new SimTrader();
+            var instance = new KiwoomTrader();
             Host = new ServiceHost(instance);
             Host.Opened += Host_Opened;
             Host.Closed += Host_Closed;
