@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿using MTree.DataStructure;
+using System;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -17,6 +19,7 @@ namespace MTree.Dashboard
 
             Consumer = new Dashboard();
             //TestData();
+            //TestLatency();
 
             this.DataContext = Consumer;
         }
@@ -65,6 +68,22 @@ namespace MTree.Dashboard
 
                 Thread.Sleep(1000);
                 Consumer.StockItems["000060"].Price = 12203;
+            });
+        }
+
+        private void TestLatency()
+        {
+            Task.Run(() =>
+            {
+                Thread.Sleep(100);
+                Random rand = new Random(DateTime.Now.Millisecond);
+                while (true)
+                {
+                    BiddingPrice biddingPrice = new BiddingPrice();
+                    biddingPrice.Time = DateTime.Now;
+                    Thread.Sleep(rand.Next(10, 1000));
+                    Consumer.ConsumeBiddingPrice(biddingPrice);
+                }
             });
         }
     }

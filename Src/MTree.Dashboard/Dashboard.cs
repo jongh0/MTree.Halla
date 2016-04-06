@@ -18,16 +18,31 @@ using MongoDB.Bson;
 using GalaSoft.MvvmLight.Command;
 using System.Windows.Input;
 using System.Diagnostics;
+using System.ComponentModel;
 
 namespace MTree.Dashboard
 {
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
-    public class Dashboard : ConsumerBase
+    public class Dashboard : ConsumerBase, INotifyPropertyChanged
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         public ObservableConcurrentDictionary<string, DashboardItem> StockItems { get; set; } = new ObservableConcurrentDictionary<string, DashboardItem>();
         public ObservableConcurrentDictionary<string, DashboardItem> IndexItems { get; set; } = new ObservableConcurrentDictionary<string, DashboardItem>();
+
+        private TimeSpan latency = new TimeSpan(0);
+        public TimeSpan Latency
+        {
+            get
+            {
+                return latency;
+            }
+            set
+            {
+                latency = value;
+                NotifyPropertyChanged(nameof(Latency));
+            }
+        } 
 
 #if VERIFY_ORDERING
         private ConcurrentDictionary<string, ObjectId> VerifyList { get; set; } = new ConcurrentDictionary<string, ObjectId>(); 
@@ -37,6 +52,8 @@ namespace MTree.Dashboard
         {
             try
             {
+                TaskUtility.Run("Dashboard.BiddingPriceQueue", QueueTaskCancelToken, ProcessBiddingPriceQueue);
+
                 TaskUtility.Run("Dashboard.CircuitBreakQueue", QueueTaskCancelToken, ProcessCircuitBreakQueue);
 
                 for (int i = 0; i < 5; i++)
@@ -61,6 +78,26 @@ namespace MTree.Dashboard
                 ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.CircuitBreak));
                 ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.StockConclusion));
                 ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.IndexConclusion));
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
+        private void ProcessBiddingPriceQueue()
+        {
+            try
+            {
+                BiddingPrice bidding;
+                if (BiddingPriceQueue.TryDequeue(out bidding) == true)
+                {
+                    CheckLatency(bidding);
+                }
+                else
+                {
+                    Thread.Sleep(10);
+                }
             }
             catch (Exception ex)
             {
@@ -153,6 +190,11 @@ namespace MTree.Dashboard
             }
         }
 
+        public override void ConsumeBiddingPrice(BiddingPrice biddingPrice)
+        {
+            BiddingPriceQueue.Enqueue(biddingPrice);
+        }
+
         public override void ConsumeStockConclusion(StockConclusion conclusion)
         {
             StockConclusionQueue.Enqueue(conclusion);
@@ -242,6 +284,11 @@ namespace MTree.Dashboard
             }
         }
 
+        public void CheckLatency(Subscribable newSubscribale)
+        {
+            Latency = DateTime.Now - newSubscribale.Time;
+        }
+
         private void SaveDashboard()
         {
             try
@@ -327,6 +374,16 @@ namespace MTree.Dashboard
         public void ExecuteDoubleClick(DashboardItem item)
         {
             Process.Start("https://search.naver.com/search.naver?where=nexearch&query=" + item.Name);
+        }
+        #endregion
+
+        #region INotifyPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged(string name)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(name));
         }
         #endregion
     }

@@ -16,8 +16,12 @@
                 </ResourceDictionary.MergedDictionaries>
             </ResourceDictionary>
         </Grid.Resources>
-
-        <TabControl Margin="5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="150"/>
+        </Grid.ColumnDefinitions>
+        <TabControl Margin="5" Grid.ColumnSpan="3">
             <TabItem Header="Stock">
                 <ListView x:Name="StockListView" ItemsSource="{Binding Path=StockItems.Values}" Margin="0" Style="{StaticResource GridViewStyle}" ItemContainerStyle="{StaticResource GridViewItemStyle}" utility:GridViewSort.AutoSort="True">
                     <i:Interaction.Triggers>
@@ -37,5 +41,7 @@
                 </ListView>
             </TabItem>
         </TabControl>
+        <Label Grid.Column="1" Content="Latency" HorizontalAlignment="Right"/>
+        <Label Grid.Column="2" Content="{Binding Latency}" HorizontalAlignment="Left"/>
     </Grid>
 </Window>
