@@ -628,9 +628,9 @@ namespace MTree.RealTimeProvider
                 {
                     var prevId = VerifyList[code];
                     if (prevId >= newId)
-                        logger.Error($"Conclusion ordering fail, prevId: {prevId.CreationTime.ToString(Config.General.DateTimeFormat)}, newId: {newId.CreationTime.ToString(Config.General.DateTimeFormat)}");
+                        logger.Error($"Conclusion ordering fail, code: {code}, prevId: {prevId}, newId: {newId}");
 
-                    VerifyList[code] = newId;
+                    prevId = newId;
                 }
             }
             catch (Exception ex)

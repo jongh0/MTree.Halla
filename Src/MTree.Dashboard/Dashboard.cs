@@ -39,7 +39,7 @@ namespace MTree.Dashboard
             {
                 TaskUtility.Run("Dashboard.CircuitBreakQueue", QueueTaskCancelToken, ProcessCircuitBreakQueue);
 
-                for (int i = 0; i < 3; i++)
+                for (int i = 0; i < 5; i++)
                     TaskUtility.Run($"Dashboard.StockConclusionQueue_{i + 1}", QueueTaskCancelToken, ProcessStockConclusionQueue);
 
                 for (int i = 0; i < 2; i++)
@@ -105,8 +105,11 @@ namespace MTree.Dashboard
                     }
 
                     var item = StockItems[conclusion.Code];
-                    item.Price = conclusion.Price;
-                    item.Volume += conclusion.Amount;
+                    lock (item)
+                    {
+                        item.Price = conclusion.Price;
+                        item.Volume += conclusion.Amount;
+                    }
                 }
                 else
                 {
@@ -133,8 +136,11 @@ namespace MTree.Dashboard
                     }
 
                     var item = IndexItems[conclusion.Code];
-                    item.Price = conclusion.Price;
-                    item.Volume += conclusion.Amount;
+                    lock (item)
+                    {
+                        item.Price = conclusion.Price;
+                        item.Volume += conclusion.Amount;
+                    }
                 }
                 else
                 {
@@ -165,9 +171,9 @@ namespace MTree.Dashboard
                 {
                     var prevId = VerifyList[code];
                     if (prevId >= newId)
-                        logger.Error($"Conclusion ordering fail, prevId: {prevId.CreationTime.ToString(Config.General.DateTimeFormat)}, newId: {newId.CreationTime.ToString(Config.General.DateTimeFormat)}");
+                        logger.Error($"Conclusion ordering fail, code: {code}, prevId: {prevId}, newId: {newId}");
 
-                    VerifyList[code] = newId;
+                    prevId = newId;
                 }
             }
             catch (Exception ex)
@@ -286,8 +292,14 @@ namespace MTree.Dashboard
                     }
                     else if (message.Equals(ExitProgramTypes.Normal.ToString()) == true)
                     {
-                        // 장종료 후 CloseClient-Normal 일 때는 Dashboard 종료하지 않는다
-                        SaveDashboard();
+                        // Queue Task가 모두 완료될 때 까지 대기
+                        WaitQueueTask();
+
+                        Task.Run(() =>
+                        {
+                            // 장종료 후 CloseClient-Normal 일 때는 Dashboard 종료하지 않는다
+                            SaveDashboard();
+                        });
                     }
                 }
             }

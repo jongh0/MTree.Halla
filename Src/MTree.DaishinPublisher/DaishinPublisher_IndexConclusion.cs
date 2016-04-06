@@ -8,6 +8,9 @@ namespace MTree.DaishinPublisher
 {
     public partial class DaishinPublisher
     {
+        private long indexPrevTime = 0;
+        private int indexMillisecond = 0;
+
         private int _IndexSubscribeCount = 0;
         public int IndexSubscribeCount
         {
@@ -173,9 +176,15 @@ namespace MTree.DaishinPublisher
 
                 // 18 - (long) 시간 (초)
                 long time = Convert.ToInt64(stockCurObj.GetHeaderValue(18));
+                if (indexPrevTime != time)
+                {
+                    indexPrevTime = time;
+                    indexMillisecond = 0;
+                }
+
                 try
                 {
-                    conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100); // Daishin doesn't provide milisecond 
+                    conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100, indexMillisecond++); // Daishin doesn't provide milisecond 
                 }
                 catch (ArgumentOutOfRangeException)
                 {

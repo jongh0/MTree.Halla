@@ -29,16 +29,16 @@ namespace MTree.RealTimeProvider
         [OperationContract(IsOneWay = true)]
         void NotifyMessage(MessageTypes type, string message);
 
-        [OperationContract(IsOneWay = true)]
+        [OperationContract]
         void ConsumeBiddingPrice(BiddingPrice biddingPrice);
 
-        [OperationContract(IsOneWay = true)]
+        [OperationContract]
         void ConsumeCircuitBreak(CircuitBreak circuitBreak);
 
-        [OperationContract(IsOneWay = true)]
+        [OperationContract]
         void ConsumeStockConclusion(StockConclusion conclusion);
 
-        [OperationContract(IsOneWay = true)]
+        [OperationContract]
         void ConsumeIndexConclusion(IndexConclusion conclusion);
 
         [OperationContract(IsOneWay = true)]

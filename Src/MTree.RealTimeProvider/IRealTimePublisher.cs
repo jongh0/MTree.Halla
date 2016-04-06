@@ -11,22 +11,22 @@ namespace MTree.RealTimeProvider
         [OperationContract(IsOneWay = true)]
         void NotifyMessage(MessageTypes type, string message);
 
-        [OperationContract]
+        [OperationContract(IsOneWay = true)]
         void RegisterContract(Guid clientId, PublisherContract contract);
 
         [OperationContract(IsOneWay = true)]
         void UnregisterContract(Guid clientId);
 
-        [OperationContract(IsOneWay = true)]
+        [OperationContract]
         void PublishBiddingPrice(BiddingPrice biddingPrice);
 
-        [OperationContract(IsOneWay = true)]
+        [OperationContract]
         void PublishCircuitBreak(CircuitBreak circuitBreak);
 
-        [OperationContract(IsOneWay = true)]
+        [OperationContract]
         void PublishStockConclusion(StockConclusion conclusion);
 
-        [OperationContract(IsOneWay = true)]
+        [OperationContract]
         void PublishIndexConclusion(IndexConclusion conclusion);
     }
 

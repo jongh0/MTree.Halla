@@ -74,6 +74,10 @@ namespace MTree.DaishinPublisher
 
                 long count = Convert.ToInt64(stockChartObj.GetHeaderValue(3)); // 수신개수
 
+                ulong prevDate = 0;
+                long prevTime = 0;
+                int millisecond = 0;
+
                 for (int i = 0; i < count; i++)
                 {
                     var candle = new Candle(code);
@@ -88,6 +92,13 @@ namespace MTree.DaishinPublisher
                     int hour = (int)(time / 100);
                     int minute = (int)(time % 100);
 
+                    if (prevDate != date || prevTime != time)
+                    {
+                        prevDate = date;
+                        prevTime = time;
+                        millisecond = 0;
+                    }
+
                     switch (candle.CandleType)
                     {
                         case CandleTypes.Month:
@@ -99,8 +110,12 @@ namespace MTree.DaishinPublisher
                             candle.Time = new DateTime(year, month, day);
                             break;
 
-                        default: // Min, Tick
+                        case CandleTypes.Min:
                             candle.Time = new DateTime(year, month, day, hour, minute, 0);
+                            break;
+
+                        default: // 틱차트는 Sorting을 위해 임이의 Millisecond를 한개씩 올려서 저장한다
+                            candle.Time = new DateTime(year, month, day, hour, minute, 0, millisecond++);
                             break;
                     }
 

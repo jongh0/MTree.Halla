@@ -62,10 +62,13 @@ namespace MTree.HistorySaver
             {
                 TaskUtility.Run("HistorySaver.CircuitBreakQueue", QueueTaskCancelToken, ProcessCircuitBreakQueue);
 
-                for (int i = 0; i < 6; i++)
-                    TaskUtility.Run($"HistorySaver.BiddingPriceQueue_{i + 1}", QueueTaskCancelToken, ProcessBiddingPriceQueue);
+                if (Config.General.SkipBiddingPrice == false)
+                {
+                    for (int i = 0; i < 10; i++)
+                        TaskUtility.Run($"HistorySaver.BiddingPriceQueue_{i + 1}", QueueTaskCancelToken, ProcessBiddingPriceQueue);
+                }
 
-                for (int i = 0; i < 3; i++)
+                for (int i = 0; i < 5; i++)
                     TaskUtility.Run($"HistorySaver.StockConclusionQueue_{i + 1}", QueueTaskCancelToken, ProcessStockConclusionQueue);
 
                 for (int i = 0; i < 2; i++)
@@ -197,9 +200,9 @@ namespace MTree.HistorySaver
                 {
                     var prevId = VerifyList[code];
                     if (prevId >= newId)
-                        logger.Error($"Conclusion ordering fail, prevId: {prevId.CreationTime.ToString(Config.General.DateTimeFormat)}, newId: {newId.CreationTime.ToString(Config.General.DateTimeFormat)}");
+                        logger.Error($"Conclusion ordering fail, code: {code}, prevId: {prevId}, newId: {newId}");
 
-                    VerifyList[code] = newId;
+                    prevId = newId;
                 }
             }
             catch (Exception ex)
