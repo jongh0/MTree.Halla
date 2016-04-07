@@ -10,24 +10,6 @@ using System.Threading.Tasks;
 
 namespace MTree.KiwoomTrader
 {
-    enum KOAErrorCode
-    {
-        OP_ERR_NONE = 0,     //"정상처리"
-        OP_ERR_LOGIN = -100,  //"사용자정보교환에 실패하였습니다. 잠시후 다시 시작하여 주십시오."
-        OP_ERR_CONNECT = -101,  //"서버 접속 실패"
-        OP_ERR_VERSION = -102,  //"버전처리가 실패하였습니다.
-        OP_ERR_SISE_OVERFLOW = -200,  //”시세조회 과부하”
-        OP_ERR_RQ_STRUCT_FAIL = -201,  //”REQUEST_INPUT_st Failed”
-        OP_ERR_RQ_STRING_FAIL = -202,  //”요청 전문 작성 실패”
-        OP_ERR_ORD_WRONG_INPUT = -300,  //”주문 입력값 오류”
-        OP_ERR_ORD_WRONG_ACCNO = -301,  //”계좌비밀번호를 입력하십시오.”
-        OP_ERR_OTHER_ACC_USE = -302,  //”타인계좌는 사용할 수 없습니다.
-        OP_ERR_MIS_2BILL_EXC = -303,  //”주문가격이 20억원을 초과합니다.”
-        OP_ERR_MIS_5BILL_EXC = -304,  //”주문가격은 50억원을 초과할 수 없습니다.”
-        OP_ERR_MIS_1PER_EXC = -305,  //”주문수량이 총발행주수의 1%를 초과합니다.”
-        OP_ERR_MID_3PER_EXC = -306,  //”주문수량은 총발행주수의 3%를 초과할 수 없습니다.”
-    }
-	
 	[ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
     public class KiwoomTrader: ITrader
     {
@@ -57,7 +39,7 @@ namespace MTree.KiwoomTrader
             }
         }
 
-        public List<string> GetAccounts()
+        public List<string> GetAccountList()
         {
             List<string> accounts = new List<string>();
             if (WaitLogin() == true)
@@ -73,7 +55,7 @@ namespace MTree.KiwoomTrader
             return accounts;
         }
 
-        public int GetDeposit(string account)
+        public int GetDeposit(string accountCode)
         {
             throw new NotImplementedException();
         }
@@ -83,7 +65,7 @@ namespace MTree.KiwoomTrader
             throw new NotImplementedException();
         }
 
-        public List<HoldingStock> GetHoldingStocks(string account)
+        public List<HoldingStock> GetHoldingList(string accountCode)
         {
             throw new NotImplementedException();
         }
@@ -145,7 +127,7 @@ namespace MTree.KiwoomTrader
                 }
                 else
                 {
-                    logger.Error($"Login fail, return code: {e.nErrCode}. Message:{GetErrorMessage(e.nErrCode)}");
+                    logger.Error($"Login fail, return code: {e.nErrCode}. Message: {ErrorMessageUtility.GetErrorMessage(e.nErrCode)}");
                 }
             }
             catch (Exception ex)
@@ -196,43 +178,6 @@ namespace MTree.KiwoomTrader
                 _scrNum = 5000;
 
             return _scrNum.ToString();
-        }
-
-        private string GetErrorMessage(int errorCode)
-        {
-            switch ((KOAErrorCode)errorCode)
-            {
-                case KOAErrorCode.OP_ERR_NONE:
-                    return "정상처리";
-                case KOAErrorCode.OP_ERR_LOGIN:
-                    return "사용자정보교환에 실패하였습니다. 잠시 후 다시 시작하여 주십시오.";
-                case KOAErrorCode.OP_ERR_CONNECT:
-                    return "서버 접속 실패";
-                case KOAErrorCode.OP_ERR_VERSION:
-                    return "버전처리가 실패하였습니다";
-                case KOAErrorCode.OP_ERR_SISE_OVERFLOW:
-                    return "시세조회 과부하";
-                case KOAErrorCode.OP_ERR_RQ_STRUCT_FAIL:
-                    return "REQUEST_INPUT_st Failed";
-                case KOAErrorCode.OP_ERR_RQ_STRING_FAIL:
-                    return "요청 전문 작성 실패";
-                case KOAErrorCode.OP_ERR_ORD_WRONG_INPUT:
-                    return "주문 입력값 오류";
-                case KOAErrorCode.OP_ERR_ORD_WRONG_ACCNO:
-                    return "계좌비밀번호를 입력하십시오.";
-                case KOAErrorCode.OP_ERR_OTHER_ACC_USE:
-                    return "타인계좌는 사용할 수 없습니다.";
-                case KOAErrorCode.OP_ERR_MIS_2BILL_EXC:
-                    return "주문가격이 20억원을 초과합니다.";
-                case KOAErrorCode.OP_ERR_MIS_5BILL_EXC:
-                    return "주문가격은 50억원을 초과할 수 없습니다.";
-                case KOAErrorCode.OP_ERR_MIS_1PER_EXC:
-                    return "주문수량이 총발행주수의 1%를 초과합니다.";
-                case KOAErrorCode.OP_ERR_MID_3PER_EXC:
-                    return "주문수량은 총발행주수의 3%를 초과할 수 없습니다";
-                default:
-                    return "알려지지 않은 오류입니다.";
-            }
         }
 
         private void OnReceiveTrData(object sender, AxKHOpenAPILib._DKHOpenAPIEvents_OnReceiveTrDataEvent e)

@@ -18,6 +18,8 @@ namespace MTree.Trader
     [Serializable]
     public class Order
     {
+        public string Account { get; set; }
+
         public string Code { get; set; }
         
         public int Amount { get; set; }

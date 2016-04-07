@@ -69,6 +69,7 @@
     <Compile Include="Converters\NumberToCurrencyConverter.cs" />
     <Compile Include="Converters\NumberToPercentConverter.cs" />
     <Compile Include="Converters\EnumToStringConverter.cs" />
+    <Compile Include="Utilities\ErrorMessageUtility.cs" />
     <Compile Include="Sort\GridViewSort.cs" />
     <Compile Include="Collections\ObservableConcurrentDictionary.cs" />
     <Compile Include="Utilities\EmailUtility.cs" />

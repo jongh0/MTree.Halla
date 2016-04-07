@@ -110,8 +110,7 @@ namespace MTree.DaishinPublisher
                 string fullCode = Convert.ToString(stockJpbidObj.GetHeaderValue(0));
                 biddingPrice.Code = CodeEntity.RemovePrefix(fullCode);
 
-                long time = Convert.ToInt64(stockJpbidObj.GetHeaderValue(1));
-                biddingPrice.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 100), (int)(time % 100), now.Second, now.Millisecond); // Daishin doesn't provide second 
+                biddingPrice.Time = now;
 
                 int[] indexes = { 3, 7, 11, 15, 19, 27, 31, 35, 39, 43 };
 

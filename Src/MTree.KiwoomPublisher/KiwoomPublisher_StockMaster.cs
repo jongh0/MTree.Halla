@@ -1,4 +1,5 @@
 ﻿using MTree.DataStructure;
+using MTree.Utility;
 using System;
 using System.Threading;
 
@@ -50,7 +51,7 @@ namespace MTree.KiwoomPublisher
                 }
                 else
                 {
-                    logger.Error($"Quoting request fail, Code: {code}, Quoting result: {ret}. Message:{GetErrorMessage(ret)}");
+                    logger.Error($"Quoting request fail, Code: {code}, Quoting result: {ret}. Message: {ErrorMessageUtility.GetErrorMessage(ret)}");
                 }
             }
             catch (Exception ex)

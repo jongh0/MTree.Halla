@@ -11,13 +11,13 @@ namespace MTree.Trader
     public interface ITrader
     {
         [OperationContract]
-        List<string> GetAccounts();
+        List<string> GetAccountList();
 
         [OperationContract]
-        int GetDeposit(string account);
+        int GetDeposit(string accountCode);
 
         [OperationContract]
-        List<HoldingStock> GetHoldingStocks(string account);
+        List<HoldingStock> GetHoldingList(string accountCode);
 
         [OperationContract]
         OrderResult MakeOrder(Order order);

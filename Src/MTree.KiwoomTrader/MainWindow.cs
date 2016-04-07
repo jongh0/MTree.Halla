@@ -28,7 +28,7 @@ namespace MTree.KiwoomTrader
             Host.Faulted += Host_Faulted;
             Host.Open();
 			
-			Task.Run(() => { List<string> accs = instance.GetAccounts(); });
+			//Task.Run(() => { List<string> accs = instance.GetAccounts(); });
         }
 
         private void Host_Faulted(object sender, EventArgs e)
@@ -44,10 +44,6 @@ namespace MTree.KiwoomTrader
         private void Host_Opened(object sender, EventArgs e)
         {
             logger.Info("Host opened");
-
-            Task.Run(() =>
-            {
-            });
         }
     }
 }

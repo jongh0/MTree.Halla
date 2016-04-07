@@ -13,24 +13,42 @@ namespace MTree.SimTrader
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public List<string> GetAccounts()
+        public SimAccountManager AccountManager { get; set; } = new SimAccountManager();
+
+        public List<string> GetAccountList()
         {
-            throw new NotImplementedException();
+            return AccountManager.GetAccountList();
         }
 
-        public int GetDeposit(string account)
+        public int GetDeposit(string accountCode)
         {
-            throw new NotImplementedException();
+            var account = AccountManager.GetAccout(accountCode);
+
+            if (account != null)
+                return account.Deposit;
+            else
+                return 0;
         }
 
-        public List<HoldingStock> GetHoldingStocks(string account)
+        public List<HoldingStock> GetHoldingList(string accountCode)
         {
-            throw new NotImplementedException();
+            List<HoldingStock> holdings = new List<HoldingStock>();
+
+            var account = AccountManager.GetAccout(accountCode);
+            if (account != null)
+            {
+                foreach (var holdingStock in account.HoldingStockList.Values)
+                {
+                    holdings.Add(holdingStock);
+                }
+            }
+
+            return holdings;
         }
 
         public OrderResult MakeOrder(Order order)
         {
-            throw new NotImplementedException();
+            return AccountManager.MakeOrder(order);
         }
     }
 }
