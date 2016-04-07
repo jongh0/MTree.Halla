@@ -315,10 +315,7 @@ namespace MTree.DaishinPublisher
             logger.Error("Disconnected");
 
             if (IsMasterProcess == true)
-            {
-                PushUtility.NotifyMessage("Daishin session disconnected");
                 ServiceClient.NotifyMessage(MessageTypes.DaishinSessionDisconnected, string.Empty);
-            }
         }
 
         private void stockMstObj_Received()

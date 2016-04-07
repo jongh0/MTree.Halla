@@ -14,6 +14,7 @@ using GalaSoft.MvvmLight.Command;
 using System.Windows.Input;
 using System.ComponentModel;
 using MTree.DbProvider;
+using System.Windows.Forms;
 
 namespace MTree.RealTimeProvider
 {
@@ -21,6 +22,7 @@ namespace MTree.RealTimeProvider
     {
         Normal,
         Force,
+        Restart,
     }
 
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
@@ -70,8 +72,11 @@ namespace MTree.RealTimeProvider
             {
                 if (type == MessageTypes.DaishinSessionDisconnected)
                 {
-                    logger.Error("Daishin session disconnected, exit program");
-                    ExitProgram(ExitProgramTypes.Force);
+                    RealTimeState = "Daishin session disconnected";
+                    logger.Info(RealTimeState);
+                    PushUtility.NotifyMessage(RealTimeState);
+
+                    ExitProgram(ExitProgramTypes.Restart);
                 }
             }
             catch (Exception ex)
@@ -261,6 +266,15 @@ namespace MTree.RealTimeProvider
 
                     // PopupStopper 종료
                     ProcessUtility.Kill(ProcessTypes.PopupStopper);
+
+                    if (type == ExitProgramTypes.Restart)
+                    {
+                        RealTimeState = "RealTimeProvider will be restarted";
+                        logger.Info(RealTimeState);
+                        PushUtility.NotifyMessage(RealTimeState);
+
+                        Application.Restart();
+                    }
 
                     Environment.Exit(0);
                 });
