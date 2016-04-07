@@ -15,6 +15,7 @@ namespace MTree.DbProvider
         StockConclusion,
         IndexConclusion,
         CircuitBreak,
+        Common,
         Test,
     }
 
@@ -29,6 +30,7 @@ namespace MTree.DbProvider
         private readonly string indexMasterDbString = "MTree_IndexMaster";
         private readonly string stockConclusionDbString = "MTree_StockConclusion";
         private readonly string indexConclusionDbString = "MTree_IndexConclusion";
+        private readonly string commonDbString = "MTree_Common";
         private readonly string testDbString = "MTree_Test";
 
         private IMongoClient Client { get; set; }
@@ -62,6 +64,7 @@ namespace MTree.DbProvider
                 case DbTypes.IndexMaster:       return Client.GetDatabase(indexMasterDbString);
                 case DbTypes.StockConclusion:   return Client.GetDatabase(stockConclusionDbString);
                 case DbTypes.IndexConclusion:   return Client.GetDatabase(indexConclusionDbString);
+                case DbTypes.Common:            return Client.GetDatabase(commonDbString);
                 case DbTypes.Test:              return Client.GetDatabase(testDbString);
                 default:                        return null;
             }

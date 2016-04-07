@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using MTree.Configuration;
 using System;
 using System.Collections.Generic;
@@ -34,6 +35,12 @@ namespace MTree.DataStructure
     public class DataCounter : INotifyPropertyChanged
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
+        [BsonId]
+        public ObjectId Id { get; set; }
+
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
+        public DateTime Time { get; set; }
 
         public DataTypes Type { get; set; }
 
@@ -143,6 +150,7 @@ namespace MTree.DataStructure
         public DataCounter(DataTypes type)
         {
             Type = type;
+            Time = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
         }
 
         public void NotifyPropertyAll()

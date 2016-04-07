@@ -13,6 +13,7 @@ using System.Diagnostics;
 using GalaSoft.MvvmLight.Command;
 using System.Windows.Input;
 using System.ComponentModel;
+using MTree.DbProvider;
 
 namespace MTree.RealTimeProvider
 {
@@ -67,6 +68,11 @@ namespace MTree.RealTimeProvider
         {
             try
             {
+                if (type == MessageTypes.DaishinSessionDisconnected)
+                {
+                    logger.Error("Daishin session disconnected, exit program");
+                    ExitProgram(ExitProgramTypes.Force);
+                }
             }
             catch (Exception ex)
             {
@@ -241,6 +247,9 @@ namespace MTree.RealTimeProvider
 
                         // Queue에 입력된 Count를 파일로 저장
                         Counter.SaveToFile();
+
+                        // Queue에 입력된 Count를 DB에 저장
+                        DbAgent.Instance.Insert(Counter);
 
                         // 20초후 프로그램 종료
                         RealTimeState = "RealTimeProvider will be closed after 20sec";

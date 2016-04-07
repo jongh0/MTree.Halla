@@ -68,6 +68,7 @@ namespace MTree.DbProvider
         public IMongoDatabase IndexMasterDb { get; set; }
         public IMongoDatabase StockConclusionDb { get; set; }
         public IMongoDatabase IndexConclusionDb { get; set; }
+        public IMongoDatabase CommonDb { get; set; }
 
         public DbAgent(string connectionString = null)
         {
@@ -80,6 +81,7 @@ namespace MTree.DbProvider
             IndexMasterDb = DbProvider.GetDatabase(DbTypes.IndexMaster);
             StockConclusionDb = DbProvider.GetDatabase(DbTypes.StockConclusion);
             IndexConclusionDb = DbProvider.GetDatabase(DbTypes.IndexConclusion);
+            CommonDb = DbProvider.GetDatabase(DbTypes.Common);
         }
 
         public List<string> GetCollectionList(DbTypes type)
@@ -124,8 +126,67 @@ namespace MTree.DbProvider
                     return (IMongoCollection<T>)StockConclusionDb.GetCollection<StockConclusion>(collectionName);
                 else if (typeof(T) == typeof(IndexConclusion))
                     return (IMongoCollection<T>)IndexConclusionDb.GetCollection<IndexConclusion>(collectionName);
+                else if (typeof(T) == typeof(DataCounter))
+                    return (IMongoCollection<T>)CommonDb.GetCollection<DataCounter>(collectionName);
                 else
-                    logger.Error($"Can't find collection, type: {typeof(T)}");
+                    logger.Error($"Can not find collection, type: {typeof(T)}");
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+
+            return null;
+        }
+
+        public IMongoCollection<T> GetCollection<T>(T item)
+        {
+            try
+            {
+                var collectionName = GetCollectionName(item);
+                if (collectionName == null)
+                {
+                    logger.Error("Collection name is null");
+                    return null;
+                }
+
+                if (item is Candle)
+                    return (IMongoCollection<T>)ChartDb.GetCollection<Candle>(collectionName);
+                else if (item is BiddingPrice)
+                    return (IMongoCollection<T>)BiddingPriceDb.GetCollection<BiddingPrice>(collectionName);
+                else if (item is CircuitBreak)
+                    return (IMongoCollection<T>)CircuitBreakDb.GetCollection<CircuitBreak>(collectionName);
+                else if (item is StockMaster)
+                    return (IMongoCollection<T>)StockMasterDb.GetCollection<StockMaster>(collectionName);
+                else if (item is IndexMaster)
+                    return (IMongoCollection<T>)IndexMasterDb.GetCollection<IndexMaster>(collectionName);
+                else if (item is StockConclusion)
+                    return (IMongoCollection<T>)StockConclusionDb.GetCollection<StockConclusion>(collectionName);
+                else if (item is IndexConclusion)
+                    return (IMongoCollection<T>)IndexConclusionDb.GetCollection<IndexConclusion>(collectionName);
+                else if (item is DataCounter)
+                    return (IMongoCollection<T>)CommonDb.GetCollection<DataCounter>(collectionName);
+                else
+                    logger.Error($"Can not find collection, item: {item}");
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+
+            return null;
+        }
+
+        public string GetCollectionName<T>(T item)
+        {
+            try
+            {
+                if (item is Subscribable)
+                    return (item as Subscribable).Code;
+                else if (item is DataCounter)
+                    return nameof(DataCounter);
+                else
+                    logger.Error($"Can not find collection name, item: {item}");
             }
             catch (Exception ex)
             {
@@ -142,17 +203,20 @@ namespace MTree.DbProvider
         /// <param name="item"></param>
         public void Insert<T>(T item)
         {
-            if (item == null) return;
+            if (item == null)
+            {
+                logger.Error("item is null");
+                return;
+            }
 
             try
             {
-                var subscribable = item as Subscribable;
-                var collection = GetCollection<T>(subscribable.Code);
+                var collection = GetCollection(item);
 
                 if (collection != null)
                     collection.InsertOne(item);
                 else
-                    logger.Error($"Insert error, {item.ToString()}");
+                    logger.Error($"Insert error, {item}");
             }
             catch (Exception ex)
             {
@@ -384,6 +448,9 @@ namespace MTree.DbProvider
 
                 // DB 통계를 파일로 저장
                 Counter.SaveToFile();
+
+                // DB 통계를 DB에 저장
+                Insert(Counter);
             }
             catch (Exception ex)
             {

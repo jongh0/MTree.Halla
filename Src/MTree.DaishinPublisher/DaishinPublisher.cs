@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Windows;
 using System.ComponentModel;
+using MTree.Utility;
 
 namespace MTree.DaishinPublisher
 {
@@ -19,6 +20,8 @@ namespace MTree.DaishinPublisher
     public partial class DaishinPublisher : BrokerageFirmBase, INotifyPropertyChanged
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
+        private bool IsMasterProcess { get; set; } = false;
 
         #region Daishin Specific
         private CpCybosClass sessionObj;
@@ -32,8 +35,6 @@ namespace MTree.DaishinPublisher
         private CpSvr8091SClass memberTrendObj;
         private CpSvr8561Class themeListObj;
         private CpSvr8561TClass themeTypeObj;
-
-
         #endregion
 
         public DaishinPublisher() : base()
@@ -82,6 +83,9 @@ namespace MTree.DaishinPublisher
                 StartBiddingPriceQueueTask();
                 StartStockConclusionQueueTask();
                 StartIndexConclusionQueueTask();
+
+                if (Environment.GetCommandLineArgs()[1] == "DaishinMaster")
+                    IsMasterProcess = true;
 
 #if false // Chart test code
                 var chart = GetChart("A000020", new DateTime(2015, 3, 4), new DateTime(2015, 3, 4), ChartTypes.Min);
@@ -309,6 +313,12 @@ namespace MTree.DaishinPublisher
         private void sessionObj_OnDisconnect()
         {
             logger.Error("Disconnected");
+
+            if (IsMasterProcess == true)
+            {
+                PushUtility.NotifyMessage("Daishin session disconnected");
+                ServiceClient.NotifyMessage(MessageTypes.DaishinSessionDisconnected, string.Empty);
+            }
         }
 
         private void stockMstObj_Received()

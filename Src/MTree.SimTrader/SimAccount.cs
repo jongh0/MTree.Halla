@@ -13,8 +13,8 @@ namespace MTree.SimTrader
 
         public int Deposit { get; set; }
 
-        public Dictionary<string, Order> OrderList { get; set; } = new Dictionary<string, Order>();
+        public List<Order> OrderList { get; set; } = new List<Order>();
 
-        public Dictionary<string, HoldingStock> HoldingStockList { get; set; } = new Dictionary<string, HoldingStock>();
+        public List<HoldingStock> HoldingStockList { get; set; } = new List<HoldingStock>();
     }
 }

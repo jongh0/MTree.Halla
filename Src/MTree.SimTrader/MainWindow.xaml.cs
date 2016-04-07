@@ -50,10 +50,6 @@ namespace MTree.SimTrader
         private void Host_Opened(object sender, EventArgs e)
         {
             logger.Info("Host opened");
-
-            Task.Run(() =>
-            {
-            });
         }
     }
 }

@@ -160,7 +160,7 @@ namespace MTree.Utility
 
         public static void ApplySort(ICollectionView view, string propertyName)
         {
-            ListSortDirection direction = ListSortDirection.Ascending;
+            ListSortDirection direction = ListSortDirection.Descending;
             if (view.SortDescriptions.Count > 0)
             {
                 SortDescription currentSort = view.SortDescriptions[0];

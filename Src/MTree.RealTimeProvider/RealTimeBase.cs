@@ -11,8 +11,9 @@ namespace MTree.RealTimeProvider
 {
     public enum MessageTypes
     {
-        NoOperation,
+        KeepAlive,
         CloseClient,
+        DaishinSessionDisconnected,
     }
 
     public enum MarketInfoTypes

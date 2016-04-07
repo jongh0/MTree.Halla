@@ -272,6 +272,7 @@ namespace MTree.HistorySaver
                         if (message.Equals(ExitProgramTypes.Normal.ToString()) == true)
                         {
                             Counter.SaveToFile();
+                            DbAgent.Instance.Insert(Counter);
                             DbAgent.Instance.CreateIndex();
                             DbAgent.Instance.SaveStatisticLog();
                         }

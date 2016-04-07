@@ -20,6 +20,7 @@ namespace TestConsole
         {
             Config.Initialize();
 
+            //TestDataCounter();
             //TestLogging();
             //TestConfig();
             //TestCreateIndex();
@@ -28,6 +29,14 @@ namespace TestConsole
             //TestEmail();
 
             Console.ReadLine();
+        }
+
+        private static void TestDataCounter()
+        {
+            var counter = new DataCounter(DataTypes.Database);
+            counter.BiddingPriceCount = 10;
+            counter.CircuitBreakCount = 30;
+            DbAgent.Instance.Insert(counter);
         }
 
         private static void TestLogging()

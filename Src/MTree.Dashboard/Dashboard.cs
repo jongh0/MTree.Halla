@@ -384,7 +384,7 @@ namespace MTree.Dashboard
         private void CheckLatency(Subscribable newSubscribale)
         {
             Latency = DateTime.Now - newSubscribale.Time;
-            if (Latency.TotalMilliseconds > 100)
+            if (Latency.TotalMilliseconds > 1000)
                 logger.Error($"Data transfer delayed. Latency: {Latency.TotalMilliseconds}");
         }
 

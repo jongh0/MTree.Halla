@@ -37,7 +37,7 @@ namespace MTree.SimTrader
             var account = AccountManager.GetAccout(accountCode);
             if (account != null)
             {
-                foreach (var holdingStock in account.HoldingStockList.Values)
+                foreach (var holdingStock in account.HoldingStockList)
                 {
                     holdings.Add(holdingStock);
                 }
