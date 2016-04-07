@@ -9,6 +9,8 @@ namespace MTree.DaishinPublisher
     {
         private long stockPrevTime = 0;
         private int stockMillisecond = 0;
+        private long stockOutPrevTime = 0;
+        private int stockOutMillisecond = 0;
 
         private int _StockSubscribeCount = 0;
         public int StockSubscribeCount
@@ -134,12 +136,12 @@ namespace MTree.DaishinPublisher
 
                 // 1 - (long) 시간 (초)
                 long time = Convert.ToInt64(stockOutCurObj.GetHeaderValue(1));
-                if (stockPrevTime != time)
+                if (stockOutPrevTime != time)
                 {
-                    stockPrevTime = time;
-                    stockMillisecond = 0;
+                    stockOutPrevTime = time;
+                    stockOutMillisecond = 0;
                 }
-                conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100, stockMillisecond++); // Daishin doesn't provide milisecond 
+                conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100, stockOutMillisecond++); // Daishin doesn't provide milisecond 
 
                 // 5 - (long) 현재가
                 conclusion.Price = Convert.ToSingle(stockOutCurObj.GetHeaderValue(5));
@@ -181,7 +183,12 @@ namespace MTree.DaishinPublisher
 
                 // 18 - (long) 시간 (초)
                 long time = Convert.ToInt64(stockCurObj.GetHeaderValue(18));
-                conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100, now.Millisecond); // Daishin doesn't provide milisecond 
+                if (stockPrevTime != time)
+                {
+                    stockPrevTime = time;
+                    stockMillisecond = 0;
+                }
+                conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100, stockMillisecond++); // Daishin doesn't provide milisecond 
 
                 // 13 - (long) 현재가
                 conclusion.Price = Convert.ToSingle(stockCurObj.GetHeaderValue(13));
