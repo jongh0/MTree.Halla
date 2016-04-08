@@ -17,9 +17,16 @@ namespace MTree.SimTrader
         {
             List<string> list = new List<string>();
 
-            foreach (var account in AccountList.Keys)
+            try
             {
-                list.Add(account);
+                foreach (var account in AccountList.Keys)
+                {
+                    list.Add(account);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
             }
 
             return list;
@@ -35,11 +42,18 @@ namespace MTree.SimTrader
 
         public OrderResult MakeOrder(Order order)
         {
-            var result = new OrderResult();
+            try
+            {
+                var account = GetAccout(order.Account);
+                if (account != null)
+                    return account.MakeOrder(order);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
 
-
-
-            return result;
+            return null;
         }
     }
 }

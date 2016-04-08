@@ -1,4 +1,5 @@
-﻿using MTree.DataStructure;
+﻿using MTree.Configuration;
+using MTree.DataStructure;
 using MTree.Utility;
 using System;
 using System.Collections.Concurrent;
@@ -42,13 +43,10 @@ namespace MTree.Publisher
 
         protected ConcurrentDictionary<string, IndexConclusion> PrevIndexConclusions { get; } = new ConcurrentDictionary<string, IndexConclusion>();
 
-        public BrokerageFirmBase() : base()
-        {
-        }
-
         protected void StartBiddingPriceQueueTask()
         {
-            TaskUtility.Run($"{GetType().Name}.BiddingPriceQueue", QueueTaskCancelToken, ProcessBiddingPriceQueue);
+            if (Config.General.SkipBiddingPrice == false)
+                TaskUtility.Run($"{GetType().Name}.BiddingPriceQueue", QueueTaskCancelToken, ProcessBiddingPriceQueue);
         }
 
         protected void StartCircuitBreakQueueTask()

@@ -63,7 +63,7 @@ namespace MTree.DaishinPublisher
             return null;
         }
 
-        private void StockChartReceived()
+        private void stockChartObj_Received()
         {
             try
             {

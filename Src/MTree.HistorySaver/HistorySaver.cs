@@ -39,17 +39,17 @@ namespace MTree.HistorySaver
             {
                 TaskUtility.Run("HistorySaver.CircuitBreakQueue", QueueTaskCancelToken, ProcessCircuitBreakQueue);
 
-                if (Config.General.SkipBiddingPrice == false)
-                {
-                    for (int i = 0; i < 10; i++)
-                        TaskUtility.Run($"HistorySaver.BiddingPriceQueue_{i + 1}", QueueTaskCancelToken, ProcessBiddingPriceQueue);
-                }
-
                 for (int i = 0; i < 5; i++)
                     TaskUtility.Run($"HistorySaver.StockConclusionQueue_{i + 1}", QueueTaskCancelToken, ProcessStockConclusionQueue);
 
                 for (int i = 0; i < 2; i++)
                     TaskUtility.Run($"HistorySaver.IndexConclusionQueue_{i + 1}", QueueTaskCancelToken, ProcessIndexConclusionQueue);
+
+                if (Config.General.SkipBiddingPrice == false)
+                {
+                    for (int i = 0; i < 10; i++)
+                        TaskUtility.Run($"HistorySaver.BiddingPriceQueue_{i + 1}", QueueTaskCancelToken, ProcessBiddingPriceQueue);
+                }
 
                 StartRefreshTimer();
             }
@@ -68,9 +68,10 @@ namespace MTree.HistorySaver
                 ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.Chart));
                 ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.Mastering));
                 ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.CircuitBreak));
-                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.BiddingPrice));
                 ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.StockConclusion));
                 ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.IndexConclusion));
+                if (Config.General.SkipBiddingPrice == false)
+                    ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.BiddingPrice));
             }
             catch (Exception ex)
             {

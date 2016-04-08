@@ -8,6 +8,8 @@ namespace MTree.DaishinPublisher
 {
     public partial class DaishinPublisher
     {
+        int[] biddingIndexes = { 3, 7, 11, 15, 19, 27, 31, 35, 39, 43 };
+
         private int _BiddingSubscribeCount = 0;
         public int BiddingSubscribeCount
         {
@@ -21,6 +23,12 @@ namespace MTree.DaishinPublisher
 
         public override bool SubscribeBidding(string code)
         {
+            if (GetSubscribableCount() < 1)
+            {
+                logger.Error("Not enough subscribable count");
+                return false;
+            }
+
             short status = 1;
 
             try
@@ -95,14 +103,13 @@ namespace MTree.DaishinPublisher
             return (status == 0);
         }
 
-        private void BiddingPriceReceived()
+        private void stockJpbidObj_Received()
         {
             try
             {
-                var now = DateTime.Now;
-
                 var biddingPrice = new BiddingPrice();
                 biddingPrice.Id = ObjectId.GenerateNewId();
+                biddingPrice.Time = DateTime.Now;
 
                 biddingPrice.Bids = new List<BiddingPriceEntity>();
                 biddingPrice.Offers = new List<BiddingPriceEntity>();
@@ -110,13 +117,9 @@ namespace MTree.DaishinPublisher
                 string fullCode = Convert.ToString(stockJpbidObj.GetHeaderValue(0));
                 biddingPrice.Code = CodeEntity.RemovePrefix(fullCode);
 
-                biddingPrice.Time = now;
-
-                int[] indexes = { 3, 7, 11, 15, 19, 27, 31, 35, 39, 43 };
-
-                for (int i = 0; i < indexes.Length; i++)
+                for (int i = 0; i < biddingIndexes.Length; i++)
                 {
-                    int index = indexes[i];
+                    int index = biddingIndexes[i];
 
                     biddingPrice.Offers.Add(new BiddingPriceEntity(i,
                         Convert.ToSingle(stockJpbidObj.GetHeaderValue(index)),

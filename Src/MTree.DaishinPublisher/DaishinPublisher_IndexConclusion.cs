@@ -27,16 +27,22 @@ namespace MTree.DaishinPublisher
 
         public override bool SubscribeIndex(string code)
         {
+            if (GetSubscribableCount() < 1)
+            {
+                logger.Error("Not enough subscribable count");
+                return false;
+            }
+
             short status = 1;
 
             try
             {
-                stockCurObj.SetInputValue(0, code);
-                stockCurObj.Subscribe();
+                indexCurObj.SetInputValue(0, code);
+                indexCurObj.Subscribe();
 
                 while (true)
                 {
-                    status = stockCurObj.GetDibStatus();
+                    status = indexCurObj.GetDibStatus();
                     if (status != 1) // 1 - 수신대기
                         break;
 
@@ -56,7 +62,7 @@ namespace MTree.DaishinPublisher
                 }
                 else
                 {
-                    logger.Error($"Subscribe index error, Code: {code}, Status: {status}, Msg: {stockCurObj.GetDibMsg1()}");
+                    logger.Error($"Subscribe index error, Code: {code}, Status: {status}, Msg: {indexCurObj.GetDibMsg1()}");
                 }
             }
 
@@ -69,12 +75,12 @@ namespace MTree.DaishinPublisher
 
             try
             {
-                stockCurObj.SetInputValue(0, code);
-                stockCurObj.Unsubscribe();
+                indexCurObj.SetInputValue(0, code);
+                indexCurObj.Unsubscribe();
 
                 while (true)
                 {
-                    status = stockCurObj.GetDibStatus();
+                    status = indexCurObj.GetDibStatus();
                     if (status != 1) // 1 - 수신대기
                         break;
 
@@ -94,14 +100,14 @@ namespace MTree.DaishinPublisher
                 }
                 else
                 {
-                    logger.Error($"Unsubscribe index error, Code: {code}, Status: {status}, Msg: {stockCurObj.GetDibMsg1()}");
+                    logger.Error($"Unsubscribe index error, Code: {code}, Status: {status}, Msg: {indexCurObj.GetDibMsg1()}");
                 }
             }
 
             return (status == 0);
         }
 
-        private void IndexConclusionReceived()
+        private void indexCurObj_Received()
         {
             try
             {
@@ -110,16 +116,16 @@ namespace MTree.DaishinPublisher
                 conclusion.Id = ObjectId.GenerateNewId();
 
                 // 0 - (string) 종목 코드
-                string fullCode = stockCurObj.GetHeaderValue(0).ToString();
+                string fullCode = indexCurObj.GetHeaderValue(0).ToString();
                 conclusion.Code = CodeEntity.RemovePrefix(fullCode);
 
                 // 13 - (long) 현재가
-                conclusion.Price = Convert.ToSingle(stockCurObj.GetHeaderValue(13)) / 100;
+                conclusion.Price = Convert.ToSingle(indexCurObj.GetHeaderValue(13)) / 100;
                 if (conclusion.Price <= 0)
                     logger.Error($"Index conclusion price error, Price: {conclusion.Price}");
 
                 // 9 - (long) 누적거래량
-                conclusion.Amount = Convert.ToInt64(stockCurObj.GetHeaderValue(9));
+                conclusion.Amount = Convert.ToInt64(indexCurObj.GetHeaderValue(9));
                 if (PrevIndexVolume.ContainsKey(conclusion.Code))
                 {
                     long newReceived = conclusion.Amount;
@@ -132,7 +138,7 @@ namespace MTree.DaishinPublisher
                 }
 
                 // 10 - (long) 누적거래대금
-                conclusion.MarketCapitalization = Convert.ToInt64(stockCurObj.GetHeaderValue(10));
+                conclusion.MarketCapitalization = Convert.ToInt64(indexCurObj.GetHeaderValue(10));
                 if (PrevIndexMarketCapitalization.ContainsKey(conclusion.Code))
                 {
                     long newReceived = conclusion.MarketCapitalization;
@@ -145,7 +151,7 @@ namespace MTree.DaishinPublisher
                 }
 
                 // 20 - (char) 장 구분 플래그
-                char marketTime = Convert.ToChar(stockCurObj.GetHeaderValue(20));
+                char marketTime = Convert.ToChar(indexCurObj.GetHeaderValue(20));
                 switch (marketTime)
                 {
                     case '1':
@@ -175,7 +181,7 @@ namespace MTree.DaishinPublisher
                 }
 
                 // 18 - (long) 시간 (초)
-                long time = Convert.ToInt64(stockCurObj.GetHeaderValue(18));
+                long time = Convert.ToInt64(indexCurObj.GetHeaderValue(18));
                 if (indexPrevTime != time)
                 {
                     indexPrevTime = time;

@@ -1,4 +1,5 @@
 ﻿#define VERIFY_ORDERING
+#define EVENLY_DISTRIBUTION
 
 using MongoDB.Bson;
 using MTree.Configuration;
@@ -97,6 +98,9 @@ namespace MTree.RealTimeProvider
                     daishinProcessCount = (StockCodeList.Count * 2 + IndexCodeList.Count) / 400;
                 else
                     daishinProcessCount = (StockCodeList.Count * 3 + IndexCodeList.Count) / 400;
+#if EVENLY_DISTRIBUTION
+                daishinProcessCount += 5;
+#endif
 
                 for (int i = 0; i < daishinProcessCount; i++)
                     ProcessUtility.Start(ProcessTypes.Daishin, ProcessWindowStyle.Minimized);
@@ -419,13 +423,61 @@ namespace MTree.RealTimeProvider
             RealTimeState = "Start code distributing";
             logger.Info(RealTimeState);
 
+
+#if EVENLY_DISTRIBUTION
+            DistributeConclusionAndBiddingSubscribingCode();
+#else
             DistributeStockConclusionSubscribingCode();
             DistributeIndexConclusionSubscribingCode();
             if (Config.General.SkipBiddingPrice == false)
-                DistributeBiddingSubscribingCode();
+                DistributeBiddingSubscribingCode(); 
+#endif
             DistributeCircuitBreakSubscribingCode();
         }
 
+#if EVENLY_DISTRIBUTION
+        private void DistributeConclusionAndBiddingSubscribingCode()
+        {
+            try
+            {
+                RealTimeState = "Conclusion and Bidding code distribution, Start";
+                logger.Info(RealTimeState);
+
+                for (int i = 0; i < StockCodeList.Count; i++)
+                {
+                    var codeEntiry = StockCodeList.Values.ElementAt(i);
+                    var code = CodeEntity.ConvertToDaishinCode(codeEntiry);
+                    var contract = DaishinContracts[i % DaishinContracts.Count];
+
+                    if (contract.Callback.SubscribeStock(code) == false)
+                        logger.Error($"Stock conclusioin code distribution fail. code: {code}");
+
+                    if (Config.General.SkipBiddingPrice == false)
+                    {
+                        if (contract.Callback.SubscribeBidding(code) == false)
+                            logger.Error($"Bidding code distribution fail. code: {code}");
+                    }
+                }
+
+                for (int i = 0; i < IndexCodeList.Count; i++)
+                {
+                    var codeEntiry = IndexCodeList.Values.ElementAt(i);
+                    var code = CodeEntity.ConvertToDaishinCode(codeEntiry);
+                    var contract = DaishinContracts[i % DaishinContracts.Count];
+
+                    if (contract.Callback.SubscribeIndex(code) == false)
+                        logger.Error($"Index conclusioin code distribution fail. code: {code}");
+                }
+
+                RealTimeState = "Conclusion and Bidding code distribution, Done";
+                logger.Info(RealTimeState);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+#else
         private void DistributeBiddingSubscribingCode()
         {
             RealTimeState = "Bidding code distribution, Start";
@@ -556,7 +608,8 @@ namespace MTree.RealTimeProvider
                 logger.Info("Index code distribution, Done");
             else
                 logger.Error("Index code distribution, Fail");
-        }
+        } 
+#endif
 
         private void DistributeCircuitBreakSubscribingCode()
         {

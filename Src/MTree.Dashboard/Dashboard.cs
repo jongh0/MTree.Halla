@@ -41,19 +41,19 @@ namespace MTree.Dashboard
             {
                 TaskUtility.Run("Dashboard.CircuitBreakQueue", QueueTaskCancelToken, ProcessCircuitBreakQueue);
 
-#if VERIFY_LATENCY
-                if (Config.General.SkipBiddingPrice == false)
-                {
-                    for (int i = 0; i < 10; i++)
-                        TaskUtility.Run($"Dashboard.BiddingPriceQueue_{i + 1}", QueueTaskCancelToken, ProcessBiddingPriceQueue);
-                } 
-#endif
-
                 for (int i = 0; i < 5; i++)
                     TaskUtility.Run($"Dashboard.StockConclusionQueue_{i + 1}", QueueTaskCancelToken, ProcessStockConclusionQueue);
 
                 for (int i = 0; i < 2; i++)
                     TaskUtility.Run($"Dashboard.IndexConclusionQueue_{i + 1}", QueueTaskCancelToken, ProcessIndexConclusionQueue);
+
+#if VERIFY_LATENCY
+                if (Config.General.SkipBiddingPrice == false)
+                {
+                    for (int i = 0; i < 10; i++)
+                        TaskUtility.Run($"Dashboard.BiddingPriceQueue_{i + 1}", QueueTaskCancelToken, ProcessBiddingPriceQueue);
+                }
+#endif
             }
             catch (Exception ex)
             {
@@ -72,7 +72,8 @@ namespace MTree.Dashboard
                 ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.StockConclusion));
                 ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.IndexConclusion));
 #if VERIFY_LATENCY
-                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.BiddingPrice));
+                if (Config.General.SkipBiddingPrice == false)
+                    ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.BiddingPrice));
 #endif
             }
             catch (Exception ex)
@@ -293,7 +294,8 @@ namespace MTree.Dashboard
             {
                 if (type == MessageTypes.CloseClient)
                 {
-                    if (message.Equals(ExitProgramTypes.Force.ToString()) == true)
+                    if (message.Equals(ExitProgramTypes.Force.ToString()) == true ||
+                        message.Equals(ExitProgramTypes.Restart.ToString()) == true)
                     {
                         Task.Run(() =>
                         {
@@ -348,8 +350,7 @@ namespace MTree.Dashboard
 
         private void NotifyPropertyChanged(string name)
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(name));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
         #endregion
 

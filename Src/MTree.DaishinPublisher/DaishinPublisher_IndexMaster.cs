@@ -75,7 +75,7 @@ namespace MTree.DaishinPublisher
             return false;
         }
 
-        private void IndexMasterReceived()
+        private void indexMstObj_Received()
         {
             try
             {

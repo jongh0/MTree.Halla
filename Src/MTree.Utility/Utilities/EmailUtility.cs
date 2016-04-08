@@ -23,6 +23,9 @@ namespace MTree.Utility
         {
             try
             {
+                if (Config.General.OfflineMode == true)
+                    return;
+
                 using (var client = new SmtpClient())
                 {
                     client.Host = "smtp.gmail.com";

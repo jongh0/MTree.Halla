@@ -75,7 +75,7 @@ namespace MTree.DaishinPublisher
             return false;
         }
 
-        private void StockMasterReceived()
+        private void stockMstObj_Received()
         {
             try
             {

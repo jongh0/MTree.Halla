@@ -29,6 +29,7 @@ namespace MTree.DaishinPublisher
         private StockMstClass stockMstObj;
         private StockMstClass indexMstObj;
         private StockCurClass stockCurObj;
+        private StockCurClass indexCurObj;
         private StockOutCurClass stockOutCurObj;
         private StockJpbidClass stockJpbidObj;
         private StockChartClass stockChartObj;
@@ -52,13 +53,16 @@ namespace MTree.DaishinPublisher
                 stockMstObj.Received += stockMstObj_Received;
 
                 indexMstObj = new StockMstClass();
-                indexMstObj.Received += IndexMasterReceived;
+                indexMstObj.Received += indexMstObj_Received;
 
                 stockCurObj = new StockCurClass();
                 stockCurObj.Received += stockCurObj_Received;
 
+                indexCurObj = new StockCurClass();
+                indexCurObj.Received += indexCurObj_Received;
+
                 stockOutCurObj = new StockOutCurClass();
-                stockOutCurObj.Received += StockOutCurObj_Received;
+                stockOutCurObj.Received += stockOutCurObj_Received;
 
                 stockJpbidObj = new StockJpbidClass();
                 stockJpbidObj.Received += stockJpbidObj_Received;
@@ -67,7 +71,7 @@ namespace MTree.DaishinPublisher
                 stockChartObj.Received += stockChartObj_Received;
 
                 memberTrendObj = new CpSvr8091SClass();
-                memberTrendObj.Received += MemberTrendObj_Received;
+                memberTrendObj.Received += memberTrendObj_Received;
 
                 themeListObj = new CpSvr8561Class();
                 themeTypeObj = new CpSvr8561TClass();
@@ -108,10 +112,10 @@ namespace MTree.DaishinPublisher
         }
 
         int cnt = 0;
-        private void MemberTrendObj_Received()
+        private void memberTrendObj_Received()
         {
             cnt++;
-            string str = $"Time:{memberTrendObj.GetHeaderValue(0)},Member:{memberTrendObj.GetHeaderValue(1)},Code:{memberTrendObj.GetHeaderValue(2)},Name:{memberTrendObj.GetHeaderValue(3)},Sell/Buy:{memberTrendObj.GetHeaderValue(4)},Amount: { memberTrendObj.GetHeaderValue(5)},Accum Amount:{ memberTrendObj.GetHeaderValue(6)},Sign: { memberTrendObj.GetHeaderValue(7)},Forien: { memberTrendObj.GetHeaderValue(8)}";
+            string str = $"Time: {memberTrendObj.GetHeaderValue(0)}, Member: {memberTrendObj.GetHeaderValue(1)}, Code: {memberTrendObj.GetHeaderValue(2)}, Name: {memberTrendObj.GetHeaderValue(3)}, Sell/Buy: {memberTrendObj.GetHeaderValue(4)}, Amount: { memberTrendObj.GetHeaderValue(5)}, Accum Amount: { memberTrendObj.GetHeaderValue(6)}, Sign: { memberTrendObj.GetHeaderValue(7)}, Forien: { memberTrendObj.GetHeaderValue(8)}";
             if (cnt % 100 == 0)
             {
                 logger.Info(str);
@@ -318,35 +322,15 @@ namespace MTree.DaishinPublisher
                 ServiceClient.NotifyMessage(MessageTypes.DaishinSessionDisconnected, string.Empty);
         }
 
-        private void stockMstObj_Received()
-        {
-            StockMasterReceived();
-        }
-
-        private void stockCurObj_Received()
-        {
-            string fullcode = stockCurObj.GetHeaderValue(0).ToString();
-
-            if (fullcode[0] == 'U')
-                IndexConclusionReceived();
-            else
-                StockConclusionReceived();
-        }
-
-        private void stockJpbidObj_Received()
-        {
-            BiddingPriceReceived();
-        }
-
-        private void stockChartObj_Received()
-        {
-            StockChartReceived();
-        }
-
         public override bool IsSubscribable()
         {
-            int remainCount = sessionObj.GetLimitRemainCount(LIMIT_TYPE.LT_SUBSCRIBE);
+            int remainCount = GetSubscribableCount();
             return remainCount > 0;
+        }
+
+        private int GetSubscribableCount()
+        {
+            return sessionObj.GetLimitRemainCount(LIMIT_TYPE.LT_SUBSCRIBE);
         }
 
         public override void NotifyMessage(MessageTypes type, string message)
@@ -404,8 +388,7 @@ namespace MTree.DaishinPublisher
 
         private void NotifyPropertyChanged(string name)
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(name));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
         #endregion
     }

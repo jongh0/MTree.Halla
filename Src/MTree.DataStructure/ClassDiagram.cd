@@ -17,7 +17,7 @@
   <Class Name="MTree.DataStructure.CircuitBreak">
     <Position X="3.75" Y="3.5" Width="2.75" />
     <TypeIdentifier>
-      <HashCode>BAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAEACA=</HashCode>
+      <HashCode>BAAAAAAAAAAAEAAEAAAAAAAAAAAAAAAAAAAAAAAAACA=</HashCode>
       <FileName>CircuitBreak.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -31,14 +31,14 @@
   <Class Name="MTree.DataStructure.IndexConclusion">
     <Position X="7.25" Y="6.25" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>BAAAAAAAAAAAAAAEAAQAAAQAAAAAIAAAAAMgAgAAAAA=</HashCode>
+      <HashCode>BAAAAAAAAAAAAAAEAAQAAAQAAAAAIAAAAAAAAgAABAA=</HashCode>
       <FileName>IndexConclusion.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="MTree.DataStructure.IndexMaster">
     <Position X="13.5" Y="3.5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAIAAEAAAAAgQAAAAAAAABAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAIEAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>IndexMaster.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -52,50 +52,72 @@
   <Class Name="MTree.DataStructure.StockMaster">
     <Position X="16.5" Y="3.5" Width="2.75" />
     <TypeIdentifier>
-      <HashCode>ICEINIABOAAIKqIUQACAAIQCBRAAAACBAAAgAgEBAAA=</HashCode>
+      <HashCode>ICUINKAAOAAIKuIUQACAAIQCBRAACACBIAAwAgEBAAA=</HashCode>
       <FileName>StockMaster.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="MTree.DataStructure.Subscribable">
     <Position X="9.25" Y="0.5" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AAACAAAAAAAAAAAEAAAgAQAAAAAAAAAAAAAAAAAAAQA=</HashCode>
+      <HashCode>AAACAAAAAAAAAAAEAAAgAAAAAAAAAAAAAAAAAAAAAQA=</HashCode>
       <FileName>Subscribable.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="MTree.DataStructure.CodeEntity" Collapsed="true">
     <Position X="22" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAgAQQAAAAIAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAQAAAAAAAAAAAAEAAAgAAQAAAAIAAAAAAAAAAAAAgA=</HashCode>
       <FileName>CodeEntity.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Enum Name="MTree.DataStructure.CircuitBreakType" Collapsed="true">
+  <Class Name="MTree.DataStructure.DataCounter" BaseTypeListCollapsed="true">
+    <Position X="20.25" Y="3.5" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>EAICgAAgAAkARIEGJQAAAAACwABAAAgAAwAAAgAIAQA=</HashCode>
+      <FileName>DataCounter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Enum Name="MTree.DataStructure.CircuitBreakTypes" Collapsed="true">
     <Position X="20.25" Y="1.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAABAIAA=</HashCode>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAABAIBA=</HashCode>
       <FileName>CircuitBreak.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="MTree.DataStructure.MarketTimeType" Collapsed="true">
+  <Enum Name="MTree.DataStructure.MarketTimeTypes" Collapsed="true">
     <Position X="20.25" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAgAAAAAAAAIACIAAAAAAAABAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAgAAAAAAAAYACIAAAAAAAABAAAABA=</HashCode>
       <FileName>Conclusion.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="MTree.DataStructure.ConclusionType" Collapsed="true">
+  <Enum Name="MTree.DataStructure.ConclusionTypes" Collapsed="true">
     <Position X="22" Y="1.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAIAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAEAAAA=</HashCode>
+      <HashCode>AAIAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>StockConclusion.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="MTree.DataStructure.ValueAlteredType" Collapsed="true">
+  <Enum Name="MTree.DataStructure.ValueAlteredTypes" Collapsed="true">
     <Position X="22" Y="2.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>IAAAgAAAAAAAAgAAAAAKAAAAAAAAACAIAAAAAAEABAA=</HashCode>
       <FileName>StockMaster.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="MTree.DataStructure.CounterTypes" Collapsed="true">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAgQAAQAQAACAAAAIAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataCounter.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="MTree.DataStructure.DataTypes" Collapsed="true">
+    <Position X="2.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEACAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataCounter.cs</FileName>
     </TypeIdentifier>
   </Enum>
   <Font Name="Malgun Gothic" Size="9" />

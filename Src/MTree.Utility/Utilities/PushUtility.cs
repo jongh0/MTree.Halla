@@ -17,6 +17,9 @@ namespace MTree.Utility
         {
             try
             {
+                if (Config.General.OfflineMode == true)
+                    return;
+
                 var HubClient = NotificationHubClient.CreateClientFromConnectionString(Config.Push.ConnectionString, Config.Push.NotificationHubPath);
 
                 string json = "{\"data\":{\"message\":\"" + $"[{Environment.MachineName}] {message}" + "\"}}";

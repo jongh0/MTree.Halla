@@ -29,9 +29,9 @@ namespace MTree.Configuration
         [JsonIgnore]
         public bool ExcludeKiwoom { get; } = false;
 
-        public bool OfflineMode { get; set; } = false;
+        public bool SimulMode { get; set; } = false;
 
-        public bool TestMode { get; set; } = false;
+        public bool OfflineMode { get; set; } = false;
 
         public bool SkipMastering { get; set; } = false;
 

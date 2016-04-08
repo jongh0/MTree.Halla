@@ -25,6 +25,12 @@ namespace MTree.DaishinPublisher
 
         public override bool SubscribeStock(string code)
         {
+            if (GetSubscribableCount() < 2)
+            {
+                logger.Error("Not enough subscribable count");
+                return false;
+            }
+
             short status = 1;
 
             try
@@ -111,7 +117,7 @@ namespace MTree.DaishinPublisher
             return (status == 0);
         }
 
-        private void StockOutCurObj_Received()
+        private void stockOutCurObj_Received()
         {
             try
             {
@@ -169,7 +175,7 @@ namespace MTree.DaishinPublisher
             }
         }
 
-        private void StockConclusionReceived()
+        private void stockCurObj_Received()
         {
             try
             {

@@ -32,18 +32,11 @@ namespace MTree.SimTrader
 
         public List<HoldingStock> GetHoldingList(string accountCode)
         {
-            List<HoldingStock> holdings = new List<HoldingStock>();
-
             var account = AccountManager.GetAccout(accountCode);
             if (account != null)
-            {
-                foreach (var holdingStock in account.HoldingStockList)
-                {
-                    holdings.Add(holdingStock);
-                }
-            }
+                return account.HoldingStockList;
 
-            return holdings;
+            return null;
         }
 
         public OrderResult MakeOrder(Order order)

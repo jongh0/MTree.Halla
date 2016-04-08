@@ -72,7 +72,7 @@
     <Compile Include="Subscribable.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="DataStructure.cd" />
+    <None Include="ClassDiagram.cd" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

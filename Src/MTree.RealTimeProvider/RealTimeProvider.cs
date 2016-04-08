@@ -58,10 +58,11 @@ namespace MTree.RealTimeProvider
 
         public RealTimeProvider()
         {
-            TaskUtility.Run("RealTimeProvider.BiddingPriceQueue", QueueTaskCancelToken, ProcessBiddingPriceQueue);
             TaskUtility.Run("RealTimeProvider.CircuitBreakQueue", QueueTaskCancelToken, ProcessCircuitBreakQueue);
             TaskUtility.Run("RealTimeProvider.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
             TaskUtility.Run("RealTimeProvider.IndexConclusionQueue", QueueTaskCancelToken, ProcessIndexConclusionQueue);
+            if (Config.General.SkipBiddingPrice == false)
+                TaskUtility.Run("RealTimeProvider.BiddingPriceQueue", QueueTaskCancelToken, ProcessBiddingPriceQueue);
 
             StartRefreshTimer();
         }
@@ -365,8 +366,7 @@ namespace MTree.RealTimeProvider
             Task.Run(() =>
             {
 #if false // Test code
-                SaveDayChart();
-                ExitProgram(ExitProgramTypes.Normal);
+                ExitProgram(ExitProgramTypes.Restart);
 #else
                 ExitProgram(ExitProgramTypes.Force); 
 #endif
@@ -390,8 +390,7 @@ namespace MTree.RealTimeProvider
 
         private void NotifyPropertyChanged(string name)
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(name));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
         #endregion
     }

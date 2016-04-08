@@ -40,6 +40,9 @@ namespace MTree.PopupStopper
 
                         cancelToken.ThrowIfCancellationRequested();
                         popupClosed |= CheckRuntimeError();
+
+                        cancelToken.ThrowIfCancellationRequested();
+                        popupClosed |= ChecknProtectPopup();
                     }
                     catch (OperationCanceledException)
                     {
@@ -58,6 +61,34 @@ namespace MTree.PopupStopper
 
             task.Wait();
             logger.Info("Popup stopper finished");
+        }
+
+        private static bool ChecknProtectPopup()
+        {
+            try
+            {
+                IntPtr windowH = WindowUtility.FindWindow2("nProtect Netizen v5.5", interval: 10, setForeground: false);
+
+                if (windowH != IntPtr.Zero)
+                {
+                    logger.Trace($"nProtect popup found");
+
+                    IntPtr buttonH = WindowUtility.FindWindowEx2(windowH, "Button", "확인");
+                    if (buttonH != IntPtr.Zero)
+                    {
+                        logger.Trace($"Confirm button clicked");
+                        WindowUtility.SendMessage2(buttonH, WindowUtility.BM_CLICK, 0, 0);
+
+                        return true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+
+            return false;
         }
 
         private static bool CheckRuntimeError()
