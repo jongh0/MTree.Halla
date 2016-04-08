@@ -13,6 +13,8 @@ namespace MTree.DataCompare
         
         StockMaster GetMaster(string code, DateTime targetDate);
 
+        List<Subscribable> GetIndexConclusions(string code, DateTime targetDate, bool normalOnly = true);
+
         List<Subscribable> GetStockConclusions(string code, DateTime targetDate, bool normalOnly = true);
     }
 }

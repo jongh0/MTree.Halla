@@ -31,6 +31,23 @@ namespace MTree.DataCompare
             return DataSource.Find(code, filter).FirstOrDefault();
         }
 
+        public List<Subscribable> GetIndexConclusions(string code, DateTime targetDate, bool normalOnly = true)
+        {
+            List<Subscribable> conclusions = new List<Subscribable>();
+
+            var builder = Builders<IndexConclusion>.Filter;
+            var filter = builder.Gte(i => i.Time, targetDate) & builder.Lt(i => i.Time, targetDate.AddDays(1));
+
+            foreach (Subscribable conclusion in DataSource.Find(code, filter).ToList())
+            {
+                if (((IndexConclusion)conclusion).MarketTimeType == MarketTimeTypes.Normal)
+                {
+                    conclusions.Add(conclusion);
+                }
+            }
+            return conclusions;
+        }
+
         public List<Subscribable> GetStockConclusions(string code, DateTime targetDate, bool normalOnly = true)
         {
             List<Subscribable> conclusions = new List<Subscribable>();

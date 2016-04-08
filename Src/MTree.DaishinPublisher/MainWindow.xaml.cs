@@ -30,15 +30,28 @@ namespace MTree.DaishinPublisher
             Publisher = new DaishinPublisher();
             this.DataContext = Publisher;
 
-            //Publisher.SubscribeWorldStock("ENXH");
-            //bool result = Publisher.SubscribeStock("A005930");
-			/*
+            //TestBidding();
+            //TestSubscribingSingle();
+            //TestCodeListAndSubscribing();
+
+        }
+
+        void TestSubscribingSingle()
+        {
+            bool result = Publisher.SubscribeStock("A005930");
+        }
+
+        void TestCodeListAndSubscribing()
+        {
             Dictionary<string, CodeEntity> list = Publisher.GetCodeList();
             for (int i = 0; i < 200; i++)
             {
                 bool result = Publisher.SubscribeStock("A" + list.ToArray()[i].Key);
             }
-			*/
+        }
+        void TestBidding()
+        {
+            Publisher.SubscribeBidding("A000020");
         }
     }
 }

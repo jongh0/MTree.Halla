@@ -29,7 +29,7 @@ namespace MTree.DataCompare
             InitializeComponent();
 
             BeyondCompare compare = new BeyondCompare();
-            DateTime target = new DateTime(2016, 04, 01);
+            DateTime target = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
 
             string code = "005930";
 #if true
@@ -47,8 +47,20 @@ namespace MTree.DataCompare
             {
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
-                //bool result = compare.DoCompareItem(source.GetMaster(code, target), destination.GetMaster(code, target), true);
-                bool result = compare.DoCompareItem(source.GetStockConclusions(code, target), destination.GetStockConclusions(code, target), true);
+
+                var tasks = new List<Task>();
+
+                List<Subscribable> sourceList = new List<Subscribable>();
+                tasks.Add(Task.Run(() => { sourceList = source.GetStockConclusions(code, target); }));
+                //tasks.Add(Task.Run(() => { sourceList = source.GetIndexConclusions(code, target); }));
+
+                List<Subscribable> destinationList = new List<Subscribable>();
+                tasks.Add(Task.Run(() => { destinationList = destination.GetStockConclusions(code, target); }));
+                //tasks.Add(Task.Run(() => { destinationList = destination.GetIndexConclusions(code, target); }));
+
+                Task.WaitAll(tasks.ToArray());
+
+                bool result = compare.DoCompareItem(sourceList, destinationList, true);
                 sw.Stop();
                 Console.WriteLine($"Code:{code}, Elapsed:{sw.Elapsed}");
                 if (result == false)

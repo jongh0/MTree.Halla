@@ -27,6 +27,11 @@ namespace MTree.DataCompare
             throw new NotImplementedException();
         }
 
+        public List<Subscribable> GetIndexConclusions(string code, DateTime targetDate, bool normalOnly = true)
+        {
+            throw new NotImplementedException();
+        }
+
         public List<Subscribable> GetStockConclusions(string code, DateTime targetDate, bool normalOnly = true)
         {
             Stack<StockConclusion> conclusions = new Stack<StockConclusion>();
@@ -59,7 +64,7 @@ namespace MTree.DataCompare
                     Int32 concludedTime = Convert.ToInt32(ConclusionHistoryQueryObj.GetDataValue(9, i));
                     conclusion.Time = new DateTime(targetDate.Year, targetDate.Month, targetDate.Day,
                         (int)concludedTime / 10000, (int)(concludedTime / 100) % 100, (int)concludedTime % 100);
-
+                    
                     if (conclusion.Time < new DateTime(targetDate.Year, targetDate.Month, targetDate.Day, 8, 50, 0))
                         conclusion.MarketTimeType = MarketTimeTypes.BeforeOffTheClock;
                     else
