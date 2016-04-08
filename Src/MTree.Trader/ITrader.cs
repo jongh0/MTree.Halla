@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ProtoBuf;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace MTree.Trader
 {
+    [ProtoContract]
     [ServiceContract(CallbackContract = typeof(ITraderCallback))]
     public interface ITrader
     {
@@ -23,6 +25,7 @@ namespace MTree.Trader
         OrderResult MakeOrder(Order order);
     }
 
+    [ProtoContract]
     public interface ITraderCallback
     {
 

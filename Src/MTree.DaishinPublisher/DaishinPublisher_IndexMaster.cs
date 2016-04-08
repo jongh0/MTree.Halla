@@ -10,7 +10,7 @@ namespace MTree.DaishinPublisher
         public override IndexMaster GetIndexMaster(string code)
         {
             var master = new IndexMaster();
-            master.Id = ObjectId.GenerateNewId();
+            master.Id = ObjectId.GenerateNewId().ToString();
             master.Code = code;
 
             if (GetQuote(code, ref master) == true)

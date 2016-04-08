@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MTree.Configuration;
+using ProtoBuf;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -31,6 +32,7 @@ namespace MTree.DataStructure
     }
 
     [BsonDiscriminator(RootClass = true)]
+    [ProtoContract(ImplicitFields = ImplicitFields.AllPublic)]
     [Serializable]
     public class DataCounter : INotifyPropertyChanged
     {

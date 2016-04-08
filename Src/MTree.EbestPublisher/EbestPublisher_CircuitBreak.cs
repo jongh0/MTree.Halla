@@ -80,7 +80,7 @@ namespace MTree.EbestPublisher
             try
             {
                 var circuitBreak = new CircuitBreak();
-                circuitBreak.Id = ObjectId.GenerateNewId();
+                circuitBreak.Id = ObjectId.GenerateNewId().ToString();
                 circuitBreak.Time = DateTime.Now;
                 circuitBreak.Code = viSubscribingObj.GetFieldData("OutBlock", "shcode");
 

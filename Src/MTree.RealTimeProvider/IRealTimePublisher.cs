@@ -2,9 +2,11 @@
 using System.ServiceModel;
 using MTree.DataStructure;
 using System.Collections.Generic;
+using ProtoBuf;
 
 namespace MTree.RealTimeProvider
 {
+    [ProtoContract]
     [ServiceContract(CallbackContract = typeof(IRealTimePublisherCallback))]
     public interface IRealTimePublisher
     {
@@ -30,6 +32,7 @@ namespace MTree.RealTimeProvider
         void PublishIndexConclusion(IndexConclusion conclusion);
     }
 
+    [ProtoContract]
     public interface IRealTimePublisherCallback
     {
         [OperationContract(IsOneWay = true)]

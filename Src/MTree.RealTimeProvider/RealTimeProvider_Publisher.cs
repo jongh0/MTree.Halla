@@ -1,4 +1,4 @@
-﻿#define VERIFY_ORDERING
+﻿//#define VERIFY_ORDERING
 #define EVENLY_DISTRIBUTION
 
 using MongoDB.Bson;

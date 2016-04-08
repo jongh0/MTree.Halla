@@ -2,9 +2,11 @@
 using System.ServiceModel;
 using MTree.DataStructure;
 using System.Collections.Generic;
+using ProtoBuf;
 
 namespace MTree.RealTimeProvider
 {
+    [ProtoContract]
     [ServiceContract(CallbackContract = typeof(IRealTimeConsumerCallback))]
     public interface IRealTimeConsumer
     {
@@ -24,6 +26,7 @@ namespace MTree.RealTimeProvider
         List<Candle> GetChart(string code, DateTime startDate, DateTime endDate, CandleTypes candleType);
     }
 
+    [ProtoContract]
     public interface IRealTimeConsumerCallback
     {
         [OperationContract(IsOneWay = true)]

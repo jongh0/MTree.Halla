@@ -81,7 +81,7 @@ namespace MTree.DaishinPublisher
                 for (int i = 0; i < count; i++)
                 {
                     var candle = new Candle(code);
-                    candle.Id = ObjectId.GenerateNewId();
+                    candle.Id = ObjectId.GenerateNewId().ToString();
                     candle.CandleType = QuotingCandleType;
 
                     ulong date = Convert.ToUInt64(stockChartObj.GetDataValue(0, i));

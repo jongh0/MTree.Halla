@@ -10,6 +10,7 @@ using MTree.DataStructure;
 using MTree.Utility;
 using MongoDB.Driver;
 using System.Diagnostics;
+using MongoDB.Bson;
 
 namespace TestConsole
 {
@@ -71,23 +72,23 @@ namespace TestConsole
             item.Asset = 10;
 
             int startTick = Environment.TickCount;
-            item.Id = new MongoDB.Bson.ObjectId();
+            item.Id = ObjectId.GenerateNewId().ToString();
             DbAgent.Instance.Insert(item);
             Console.WriteLine($"db insert tick : {Environment.TickCount - startTick}");
 
             startTick = Environment.TickCount;
-            item.Id = new MongoDB.Bson.ObjectId();
+            item.Id = ObjectId.GenerateNewId().ToString();
             DbAgent.Instance.Insert(item);
             Console.WriteLine($"db insert tick : {Environment.TickCount - startTick}");
 
             startTick = Environment.TickCount;
-            item.Id = new MongoDB.Bson.ObjectId();
+            item.Id = ObjectId.GenerateNewId().ToString();
             item.Code = "000030b";
             DbAgent.Instance.Insert(item);
             Console.WriteLine($"db insert tick : {Environment.TickCount - startTick}");
 
             startTick = Environment.TickCount;
-            item.Id = new MongoDB.Bson.ObjectId();
+            item.Id = ObjectId.GenerateNewId().ToString();
             DbAgent.Instance.Insert(item);
             Console.WriteLine($"db insert tick : {Environment.TickCount - startTick}");
 
@@ -100,12 +101,12 @@ namespace TestConsole
             item2.Close = 100;
 
             startTick = Environment.TickCount;
-            item2.Id = new MongoDB.Bson.ObjectId();
+            item2.Id = ObjectId.GenerateNewId().ToString();
             DbAgent.Instance.Insert(item2);
             Console.WriteLine($"db insert tick : {Environment.TickCount - startTick}");
 
             startTick = Environment.TickCount;
-            item2.Id = new MongoDB.Bson.ObjectId();
+            item2.Id = ObjectId.GenerateNewId().ToString();
             DbAgent.Instance.Insert(item2);
             Console.WriteLine($"db insert tick : {Environment.TickCount - startTick}");
         }

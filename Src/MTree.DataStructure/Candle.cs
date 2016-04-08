@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using ProtoBuf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,7 @@ namespace MTree.DataStructure
         Month,
     }
 
+    [ProtoContract(ImplicitFields = ImplicitFields.AllPublic)]
     [Serializable]
     public class Candle : Subscribable
     {

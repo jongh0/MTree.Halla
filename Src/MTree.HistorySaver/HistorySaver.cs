@@ -1,4 +1,4 @@
-﻿#define VERIFY_ORDERING
+﻿//#define VERIFY_ORDERING
 
 using System;
 using System.ServiceModel;

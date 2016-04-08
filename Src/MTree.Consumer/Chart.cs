@@ -3,6 +3,7 @@ using MTree.Configuration;
 using MTree.DataStructure;
 using MTree.DbProvider;
 using MTree.Utility;
+using ProtoBuf;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -19,6 +20,7 @@ namespace MTree.Consumer
         Month,
     }
 
+    [ProtoContract(ImplicitFields = ImplicitFields.AllPublic)]
     [Serializable]
     public class Chart
     {

@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
+using ProtoBuf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +23,7 @@ namespace MTree.DataStructure
     }
     #endregion
 
+    [ProtoContract(ImplicitFields = ImplicitFields.AllPublic)]
     [Serializable]
     public class StockMaster : Subscribable
     {

@@ -108,7 +108,7 @@ namespace MTree.DaishinPublisher
             try
             {
                 var biddingPrice = new BiddingPrice();
-                biddingPrice.Id = ObjectId.GenerateNewId();
+                biddingPrice.Id = ObjectId.GenerateNewId().ToString();
                 biddingPrice.Time = DateTime.Now;
 
                 biddingPrice.Bids = new List<BiddingPriceEntity>();

@@ -19,7 +19,7 @@ namespace TestConsumer
         {
             StockConclusion conclusion;
             if (StockConclusionQueue.TryDequeue(out conclusion) == true)
-                Console.WriteLine($"{(DateTime.Now - conclusion.Time).ToString()}, {conclusion.Price}, {conclusion.Code} consumed");
+                Console.WriteLine($"{(DateTime.Now - conclusion.Time).ToString()} consumed");
             else
                 Thread.Sleep(10);
         }

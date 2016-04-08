@@ -10,7 +10,7 @@ namespace MTree.DaishinPublisher
         public override StockMaster GetStockMaster(string code)
         {
             var stockMaster = new StockMaster();
-            stockMaster.Id = ObjectId.GenerateNewId();
+            stockMaster.Id = ObjectId.GenerateNewId().ToString();
             stockMaster.Code = code;
 
             if (GetQuote(code, ref stockMaster) == true)

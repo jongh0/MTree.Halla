@@ -23,7 +23,7 @@ namespace TestPublisher
                         break;
 
                     var conclusion = new StockConclusion();
-                    conclusion.Id = ObjectId.GenerateNewId();
+                    conclusion.Id = ObjectId.GenerateNewId().ToString();
                     conclusion.Code = "000020";
                     conclusion.Price = 100;
                     conclusion.Time = DateTime.Now;

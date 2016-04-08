@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
+using ProtoBuf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,9 +18,12 @@ namespace MTree.DataStructure
         BeforeExpect,
         AfterOffTheClock,
         AfterExpect,
-    } 
+    }
     #endregion
 
+    [ProtoContract(ImplicitFields = ImplicitFields.AllPublic)]
+    [ProtoInclude(200, typeof(StockConclusion))]
+    [ProtoInclude(201, typeof(IndexConclusion))]
     [Serializable]
     public class Conclusion : Subscribable
     {
