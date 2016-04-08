@@ -44,9 +44,14 @@ namespace MTree.DaishinPublisher
         void TestCodeListAndSubscribing()
         {
             Dictionary<string, CodeEntity> list = Publisher.GetCodeList();
-            for (int i = 0; i < 200; i++)
+            foreach (KeyValuePair<string, CodeEntity> entity in list)
             {
-                bool result = Publisher.SubscribeStock("A" + list.ToArray()[i].Key);
+                if (entity.Value.MarketType == MarketTypes.KOSPI)
+                {
+                    if (Publisher.IsSubscribable() == true)
+                        Publisher.SubscribeStock("A" + entity.Value.Code);
+                }
+                
             }
         }
         void TestBidding()

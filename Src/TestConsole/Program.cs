@@ -9,6 +9,7 @@ using MTree.DbProvider;
 using MTree.DataStructure;
 using MTree.Utility;
 using MongoDB.Driver;
+using System.Diagnostics;
 
 namespace TestConsole
 {
@@ -27,6 +28,7 @@ namespace TestConsole
             //TestDbAgent();
             //TestPushService();
             //TestEmail();
+            //TestDaishinInstanceLimit();
 
 
             Console.WriteLine("Press any key..");
@@ -117,6 +119,12 @@ namespace TestConsole
         private static void TestPushService()
         {
             PushUtility.NotifyMessage("Hello MTree");
+        }
+
+        private static void TestDaishinInstanceLimit()
+        {
+            for (int i = 0; i < 41; i++)
+                ProcessUtility.Start(ProcessTypes.Daishin, ProcessWindowStyle.Minimized);
         }
     }
 }
