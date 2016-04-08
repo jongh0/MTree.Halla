@@ -19,7 +19,7 @@ namespace TestConsumer
         {
             StockConclusion conclusion;
             if (StockConclusionQueue.TryDequeue(out conclusion) == true)
-                Console.WriteLine($"{conclusion.Time.ToLongTimeString()} consumed");
+                Console.WriteLine($"{(DateTime.Now - conclusion.Time).ToString()}, {conclusion.Price}, {conclusion.Code} consumed");
             else
                 Thread.Sleep(10);
         }
@@ -32,12 +32,7 @@ namespace TestConsumer
         public void StartConsume()
         {
             TaskUtility.Run("Consumer.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
-
-            var subscription = new SubscribeContract();
-            subscription.Type = SubscribeTypes.StockConclusion;
-            subscription.Scope = SubscribeScopes.Partial;
-            subscription.Codes.Add("000020");
-            ServiceClient.RegisterContract(ClientId, subscription);
+            ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.StockConclusion));
         }
 
         public void StopConsume()

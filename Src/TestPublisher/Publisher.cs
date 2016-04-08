@@ -1,4 +1,5 @@
-﻿using MTree.DataStructure;
+﻿using MongoDB.Bson;
+using MTree.DataStructure;
 using MTree.Publisher;
 using MTree.RealTimeProvider;
 using System;
@@ -22,7 +23,9 @@ namespace TestPublisher
                         break;
 
                     var conclusion = new StockConclusion();
+                    conclusion.Id = ObjectId.GenerateNewId();
                     conclusion.Code = "000020";
+                    conclusion.Price = 100;
                     conclusion.Time = DateTime.Now;
                     
                     ServiceClient.PublishStockConclusion(conclusion);

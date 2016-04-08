@@ -68,7 +68,7 @@ namespace MTree.DaishinPublisher
                 if (status == 0)
                 {
                     logger.Info($"Subscribe stock, Code: {code}");
-                    StockSubscribeCount++;
+                    StockSubscribeCount += 2;
                 }
                 else
                 {
@@ -96,6 +96,18 @@ namespace MTree.DaishinPublisher
 
                     Thread.Sleep(10);
                 }
+
+                stockOutCurObj.SetInputValue(0, code);
+                stockOutCurObj.Unsubscribe();
+
+                while (true)
+                {
+                    status = stockOutCurObj.GetDibStatus();
+                    if (status != 1) // 1 - 수신대기
+                        break;
+
+                    Thread.Sleep(10);
+                }
             }
             catch (Exception ex)
             {
@@ -106,7 +118,7 @@ namespace MTree.DaishinPublisher
                 if (status == 0)
                 {
                     logger.Trace($"Unsubscribe stock, Code: {code}");
-                    StockSubscribeCount--;
+                    StockSubscribeCount -= 2;
                 }
                 else
                 {

@@ -99,7 +99,7 @@ namespace MTree.RealTimeProvider
                 else
                     daishinProcessCount = (StockCodeList.Count * 3 + IndexCodeList.Count) / 400;
 #if EVENLY_DISTRIBUTION
-                daishinProcessCount += 5;
+                daishinProcessCount += 6;
 #endif
 
                 for (int i = 0; i < daishinProcessCount; i++)
@@ -517,9 +517,15 @@ namespace MTree.RealTimeProvider
             }
 
             if (StockCodeList.Count == index)
-                logger.Info("Bidding code distribution, Done");
+            {
+                RealTimeState = "Bidding code distribution, Done";
+                logger.Info(RealTimeState);
+            }
             else
-                logger.Error("Bidding code distribution, Fail");
+            {
+                RealTimeState = "Bidding code distribution, Fail";
+                logger.Error(RealTimeState);
+            }
         }
 
         private void DistributeStockConclusionSubscribingCode()
@@ -561,9 +567,15 @@ namespace MTree.RealTimeProvider
             }
 
             if (StockCodeList.Count == index)
-                logger.Info("Stock code distribution, Done");
+            {
+                RealTimeState = "Stock code distribution, Done";
+                logger.Info(RealTimeState);
+            }
             else
-                logger.Error("Stock code distribution, Fail");
+            {
+                RealTimeState = "Stock code distribution, Fail";
+                logger.Error(RealTimeState);
+            }
         }
 
         private void DistributeIndexConclusionSubscribingCode()
@@ -605,9 +617,15 @@ namespace MTree.RealTimeProvider
             }
 
             if (IndexCodeList.Count == index)
-                logger.Info("Index code distribution, Done");
+            {
+                RealTimeState = "Index code distribution, Done";
+                logger.Info(RealTimeState);
+            }
             else
-                logger.Error("Index code distribution, Fail");
+            {
+                RealTimeState = "Index code distribution, Fail";
+                logger.Error(RealTimeState);
+            }
         } 
 #endif
 
@@ -639,9 +657,15 @@ namespace MTree.RealTimeProvider
             }
 
             if (errorCnt > 10)
-                logger.Error($"Circuite break code distribution, Fail. error count: {errorCnt}");
+            {
+                RealTimeState = $"Circuite break code distribution, Fail. error count: {errorCnt}";
+                logger.Error(RealTimeState);
+            }
             else
-                logger.Info("Circuite break code distribution, Done");
+            {
+                RealTimeState = "Circuite break code distribution, Done";
+                logger.Info(RealTimeState);
+            }
         }
 
         public void PublishBiddingPrice(BiddingPrice biddingPrice)
