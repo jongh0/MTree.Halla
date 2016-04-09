@@ -38,13 +38,7 @@ namespace MTree.DataStructure
                     typeof(StockMaster),
                     typeof(IndexMaster))]
     [ProtoContract(ImplicitFields = ImplicitFields.AllPublic)]
-    [ProtoInclude(100, typeof(Candle))]
-    [ProtoInclude(101, typeof(BiddingPrice))]
-    [ProtoInclude(102, typeof(CircuitBreak))]
-    [ProtoInclude(103, typeof(StockMaster))]
-    [ProtoInclude(104, typeof(IndexMaster))]
-    [ProtoInclude(105, typeof(StockConclusion))]
-    [ProtoInclude(105, typeof(IndexConclusion))]
+    [ProtoInclude(10, typeof(StockConclusion))]
     [Serializable]
     public class Subscribable
     {

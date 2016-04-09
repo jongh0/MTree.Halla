@@ -30,6 +30,9 @@ namespace MTree.RealTimeProvider
 
         [OperationContract]
         void PublishIndexConclusion(IndexConclusion conclusion);
+
+        [OperationContract]
+        void PublishStockConclusionTest(StockConclusionTest conclusion);
     }
 
     [ProtoContract]

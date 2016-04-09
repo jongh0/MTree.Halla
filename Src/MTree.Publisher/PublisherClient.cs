@@ -48,5 +48,10 @@ namespace MTree.Publisher
         {
             base.Channel.PublishStockConclusion(conclusion);
         }
+
+        public void PublishStockConclusionTest(StockConclusionTest conclusion)
+        {
+            base.Channel.PublishStockConclusionTest(conclusion);
+        }
     }
 }

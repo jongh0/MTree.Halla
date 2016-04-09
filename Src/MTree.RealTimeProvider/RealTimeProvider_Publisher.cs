@@ -686,8 +686,17 @@ namespace MTree.RealTimeProvider
             Counter.Increment(CounterTypes.IndexConclusion);
         }
 
+        double totalMillisecond = 0;
+        int count = 0;
         public void PublishStockConclusion(StockConclusion conclusion)
         {
+            double millisecond = (DateTime.Now - conclusion.Time).TotalMilliseconds;
+            totalMillisecond += millisecond;
+
+            if (count++ > 5000)
+                Debugger.Break();
+
+            Trace.WriteLine($"{conclusion.Code}, {millisecond}");
             StockConclusionQueue.Enqueue(conclusion);
             Counter.Increment(CounterTypes.StockConclusion);
 
@@ -715,6 +724,11 @@ namespace MTree.RealTimeProvider
                 logger.Error(ex);
             }
 #endif
+        }
+
+        public void PublishStockConclusionTest(StockConclusionTest conclusion)
+        {
+            Trace.WriteLine($"{conclusion.Id}");
         }
     }
 }
