@@ -44,14 +44,16 @@ namespace MTree.Utility
 
                         break; // 여기까지 못 오고 Exception 발생하면 1초 간격으로 3회 재시도
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
+                        logger.Error(ex);
                         Thread.Sleep(1000);
                     }
                 }
 
                 logger.Info($"{targetFile} file created");
 
+                // 압축한 로그 파일을 Email로 전송
                 EmailUtility.SendEmail($"[{Environment.MachineName}] MTree log {date}", "Log attached", targetPath);
             }
             catch (Exception ex)

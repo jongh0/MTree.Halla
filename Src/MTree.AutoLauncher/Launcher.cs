@@ -97,7 +97,7 @@ namespace MTree.AutoLauncher
                     }
                     else
                     {
-                        logger.Error($"{LaunchProcess} already exists, not launched");
+                        logger.Error($"{LaunchProcess} already exists, launcher stopped");
                         return;
                     }
                 }

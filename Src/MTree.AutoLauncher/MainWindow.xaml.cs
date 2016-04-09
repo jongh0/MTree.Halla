@@ -26,13 +26,18 @@ namespace MTree.AutoLauncher
                 launcher.Time = new DateTime(now.Year, now.Month, now.Day, 7, 10, 0);
 
                 launcher.KillProcesses.Add(ProcessTypes.CybosStarter);
-                launcher.KillProcesses.Add(ProcessTypes.PopupStopper);
-                launcher.KillProcesses.Add(ProcessTypes.DaishinSessionManager);
+                launcher.KillProcesses.Add(ProcessTypes.Dashboard);
+                launcher.KillProcesses.Add(ProcessTypes.HistorySaver);
+                launcher.KillProcesses.Add(ProcessTypes.StrategyManager);
+                launcher.KillProcesses.Add(ProcessTypes.DaishinPublisher);
                 launcher.KillProcesses.Add(ProcessTypes.EbestPublisher);
                 launcher.KillProcesses.Add(ProcessTypes.KiwoomPublisher);
-                launcher.KillProcesses.Add(ProcessTypes.DaishinPublisher);
-                launcher.KillProcesses.Add(ProcessTypes.HistorySaver);
-                launcher.KillProcesses.Add(ProcessTypes.Dashboard);
+                launcher.KillProcesses.Add(ProcessTypes.KrxPublisher);
+                launcher.KillProcesses.Add(ProcessTypes.EbestTrader);
+                launcher.KillProcesses.Add(ProcessTypes.KiwoomTrader);
+                launcher.KillProcesses.Add(ProcessTypes.VirtualTrader);
+                launcher.KillProcesses.Add(ProcessTypes.DaishinSessionManager);
+                launcher.KillProcesses.Add(ProcessTypes.PopupStopper);
 
                 this.DataContext = launcher;
                 launcher.Start();
