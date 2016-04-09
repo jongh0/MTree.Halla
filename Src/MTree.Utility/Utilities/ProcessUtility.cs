@@ -11,26 +11,28 @@ namespace MTree.Utility
     public enum ProcessTypes
     {
         Unknown,
-        KillAll,
         CybosStarter,
-        TestConsole,
+        Dashboard,
+        HistorySaver,
+        StrategyManager,
         TestConsumer,
-        TestPublisher,
-        PopupStopper,
+        RealTimeProvider,
         DaishinPublisher,
         DaishinPublisherMaster,
-        DaishinSessionManager,
-        KiwoomPublisher,
-        KiwoomTrader,
         EbestPublisher,
-        EbestTrader,
+        KiwoomPublisher,
         KrxPublisher,
-        HistorySaver,
-        RealTimeProvider,
-        Dashboard,
+        TestPublisher,
+        EbestTrader,
+        KiwoomTrader,
+        VirtualTrader,
+        KillAll,
+        AutoLauncher,
+        DaishinSessionManager,
         DataCompare,
-        SimTrader,
+        PopupStopper,
         SendLog,
+        TestConsole,
     }
 
     public class ProcessUtility
@@ -42,26 +44,28 @@ namespace MTree.Utility
         static ProcessUtility()
         {
             ProcessList = new Dictionary<ProcessTypes, string>();
-            ProcessList.Add(ProcessTypes.KillAll, "KillAll");
             ProcessList.Add(ProcessTypes.CybosStarter, "CpStart");
-            ProcessList.Add(ProcessTypes.TestConsole, "TestConsole");
+            ProcessList.Add(ProcessTypes.Dashboard, "MTree.Dashboard");
+            ProcessList.Add(ProcessTypes.HistorySaver, "MTree.HistorySaver");
+            ProcessList.Add(ProcessTypes.StrategyManager, "MTree.StrategyManager");
             ProcessList.Add(ProcessTypes.TestConsumer, "TestConsumer");
-            ProcessList.Add(ProcessTypes.TestPublisher, "TestPublisher");
-            ProcessList.Add(ProcessTypes.PopupStopper, "MTree.PopupStopper");
+            ProcessList.Add(ProcessTypes.RealTimeProvider, "MTree.RealTimeProvider");
             ProcessList.Add(ProcessTypes.DaishinPublisher, "MTree.DaishinPublisher");
             ProcessList.Add(ProcessTypes.DaishinPublisherMaster, "MTree.DaishinPublisher");
-            ProcessList.Add(ProcessTypes.DaishinSessionManager, "MTree.DaishinSessionManager");
-            ProcessList.Add(ProcessTypes.KiwoomPublisher, "MTree.KiwoomPublisher");
-            ProcessList.Add(ProcessTypes.KiwoomTrader, "MTree.KiwoomTrader");
             ProcessList.Add(ProcessTypes.EbestPublisher, "MTree.EbestPublisher");
-            ProcessList.Add(ProcessTypes.EbestTrader, "MTree.EbestTrader");
+            ProcessList.Add(ProcessTypes.KiwoomPublisher, "MTree.KiwoomPublisher");
             ProcessList.Add(ProcessTypes.KrxPublisher, "MTree.KrxPublisher");
-            ProcessList.Add(ProcessTypes.HistorySaver, "MTree.HistorySaver");
-            ProcessList.Add(ProcessTypes.RealTimeProvider, "MTree.RealTimeProvider");
-            ProcessList.Add(ProcessTypes.Dashboard, "MTree.Dashboard");
+            ProcessList.Add(ProcessTypes.TestPublisher, "TestPublisher");
+            ProcessList.Add(ProcessTypes.EbestTrader, "MTree.EbestTrader");
+            ProcessList.Add(ProcessTypes.KiwoomTrader, "MTree.KiwoomTrader");
+            ProcessList.Add(ProcessTypes.VirtualTrader, "MTree.VirtualTrader");
+            ProcessList.Add(ProcessTypes.KillAll, "KillAll");
+            ProcessList.Add(ProcessTypes.AutoLauncher, "MTree.AutoLauncher");
+            ProcessList.Add(ProcessTypes.DaishinSessionManager, "MTree.DaishinSessionManager");
             ProcessList.Add(ProcessTypes.DataCompare, "MTree.DataCompare");
-            ProcessList.Add(ProcessTypes.SimTrader, "MTree.SimTrader");
+            ProcessList.Add(ProcessTypes.PopupStopper, "MTree.PopupStopper");
             ProcessList.Add(ProcessTypes.SendLog, "MTree.SendLog");
+            ProcessList.Add(ProcessTypes.TestConsole, "TestConsole");
         }
 
         public static Process Start(ProcessTypes type, ProcessWindowStyle windowStyle = ProcessWindowStyle.Normal)

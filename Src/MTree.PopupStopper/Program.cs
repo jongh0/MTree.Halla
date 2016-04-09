@@ -39,10 +39,13 @@ namespace MTree.PopupStopper
                         popupClosed |= CheckInvestorInfoPopup();
 
                         cancelToken.ThrowIfCancellationRequested();
-                        popupClosed |= CheckRuntimeError();
+                        popupClosed |= CheckRuntimeErrorPopup();
 
                         cancelToken.ThrowIfCancellationRequested();
                         popupClosed |= ChecknProtectPopup();
+
+                        cancelToken.ThrowIfCancellationRequested();
+                        popupClosed |= CheckRegularCheckupPopup();
                     }
                     catch (OperationCanceledException)
                     {
@@ -91,7 +94,7 @@ namespace MTree.PopupStopper
             return false;
         }
 
-        private static bool CheckRuntimeError()
+        private static bool CheckRuntimeErrorPopup()
         {
             try
             {
@@ -130,7 +133,6 @@ namespace MTree.PopupStopper
                 if (windowH != IntPtr.Zero)
                 {
                     logger.Trace($"CPDIB/CPSYSDIB popup found");
-                    //SetForegroundWindow(windowH);
 
                     IntPtr buttonH = WindowUtility.FindWindowEx2(windowH, "Button", "확인");
                     if (buttonH != IntPtr.Zero)
@@ -159,7 +161,6 @@ namespace MTree.PopupStopper
                 if (windowH != IntPtr.Zero)
                 {
                     logger.Trace($"투자자정보 popup found");
-                    //SetForegroundWindow(windowH);
 
                     IntPtr buttonH = WindowUtility.FindWindowEx2(windowH, "Button", "오늘은 더 묻지 않음");
                     if (buttonH != IntPtr.Zero)
@@ -172,6 +173,34 @@ namespace MTree.PopupStopper
                     if (buttonH != IntPtr.Zero)
                     {
                         logger.Trace($"No button clicked");
+                        WindowUtility.SendMessage2(buttonH, WindowUtility.BM_CLICK, 0, 0);
+
+                        return true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+
+            return false;
+        }
+
+        private static bool CheckRegularCheckupPopup()
+        {
+            try
+            {
+                IntPtr windowH = WindowUtility.FindWindow2("정기 점검", interval: 10, setForeground: false);
+
+                if (windowH != IntPtr.Zero)
+                {
+                    logger.Trace($"Regular check-up popup found");
+
+                    IntPtr buttonH = WindowUtility.FindWindowEx2(windowH, "Button", "확인");
+                    if (buttonH != IntPtr.Zero)
+                    {
+                        logger.Trace($"Confirm button clicked");
                         WindowUtility.SendMessage2(buttonH, WindowUtility.BM_CLICK, 0, 0);
 
                         return true;

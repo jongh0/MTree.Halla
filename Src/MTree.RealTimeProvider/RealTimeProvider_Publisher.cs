@@ -89,9 +89,6 @@ namespace MTree.RealTimeProvider
                     Config.General.ExcludeKiwoom == false)
                     ProcessUtility.Start(ProcessTypes.KiwoomPublisher, ProcessWindowStyle.Minimized);
 
-                // Popup stopper
-                ProcessUtility.Start(ProcessTypes.PopupStopper, ProcessWindowStyle.Minimized);
-
                 // Daishin
                 int daishinProcessCount;
                 if (Config.General.SkipBiddingPrice == true)
