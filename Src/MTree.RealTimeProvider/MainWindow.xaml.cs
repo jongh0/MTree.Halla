@@ -63,13 +63,13 @@ namespace MTree.RealTimeProvider
 
                 if (Config.General.OfflineMode == false)
                 {
-                    // Popup stopper
+                    // Popup stopper 실행
                     ProcessUtility.Start(ProcessTypes.PopupStopper, ProcessWindowStyle.Minimized);
 
                     // Daishin CybosPlus 실행
                     if (ProcessUtility.Exists(ProcessTypes.CybosStarter) == false)
                     {
-                        logger.Info("Daishin starter not exists");
+                        logger.Error("Daishin starter not exists");
                         ProcessUtility.Start(ProcessTypes.DaishinSessionManager, ProcessWindowStyle.Minimized)?.WaitForExit();
                     }
 
