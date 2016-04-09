@@ -14,6 +14,7 @@ namespace MTree.Configuration
         public DatabaseConfiguration database { get; set; } = new DatabaseConfiguration();
         public DaishinConfiguration daishin { get; set; } = new DaishinConfiguration();
         public EbestConfiguration ebest { get; set; } = new EbestConfiguration();
+        public KiwoomConfiguration kiwoom { get; set; } = new KiwoomConfiguration();
         public EmailConfiguration email { get; set; } = new EmailConfiguration();
         public CompareConfiguration compare { get; set; } = new CompareConfiguration();
 
@@ -22,6 +23,7 @@ namespace MTree.Configuration
         public static DatabaseConfiguration Database { get { return Instance.database; } }
         public static DaishinConfiguration Daishin { get { return Instance.daishin; } }
         public static EbestConfiguration Ebest { get { return Instance.ebest; } }
+        public static KiwoomConfiguration Kiwoom { get { return Instance.kiwoom; } }
         public static EmailConfiguration Email { get { return Instance.email; } }
         public static CompareConfiguration Compare { get { return Instance.compare; } }
 

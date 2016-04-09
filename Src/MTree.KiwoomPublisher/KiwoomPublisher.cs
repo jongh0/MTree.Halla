@@ -7,6 +7,8 @@ using System.ServiceModel;
 using System.Threading;
 using System.Threading.Tasks;
 using MTree.RealTimeProvider;
+using System.Diagnostics;
+using MTree.Configuration;
 
 namespace MTree.KiwoomPublisher
 {
@@ -42,6 +44,13 @@ namespace MTree.KiwoomPublisher
         {
             try
             {
+#if false 
+                // 모의투자 체크박스 잘 안될 때가 있음
+                // 공인인증서 비밀번호까지는 들어가지는데 탭버튼 등 다른 입력을 한번 줘야지만 공인인증서 관련 팝업이 안생김
+                // 버전처리 실행 시 프로그램이 종료가 되어있어야해서 동작이 꼬임
+				Task.Run(() => KiwoomSessionUtility.HandleSession());  
+#endif
+
                 if (kiwoomObj.CommConnect() == 0)
                 {
                     logger.Info("Login window open success");

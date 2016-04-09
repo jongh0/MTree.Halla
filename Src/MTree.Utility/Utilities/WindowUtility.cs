@@ -48,6 +48,7 @@ namespace MTree.Utility
         public static int VK_BACKSPACE = 0x08;
 
         public static uint BM_CLICK = 0X00F5;
+        public static uint BM_SETCHECK = 0x00F1;
         #endregion
 
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
@@ -59,7 +60,7 @@ namespace MTree.Utility
                 IntPtr handle = GetWindow(hWnd, uCmd);
                 if (handle != IntPtr.Zero)
                 {
-                    logger.Info($"GetWindow found, {hWnd}/{uCmd}/{handle}");
+                    logger.Info($"GetWindow found, {hWnd.ToString("X")}/{uCmd}/{handle.ToString("X")}");
                     return handle;
                 }
 
@@ -72,7 +73,7 @@ namespace MTree.Utility
 
         public static IntPtr SendMessage2(IntPtr hWnd, uint Msg, int wParam, int lParam)
         {
-            logger.Info($"SendMessage, {hWnd}/{Msg}/{wParam}/{lParam}");
+            logger.Info($"SendMessage, {hWnd.ToString("X")}/{Msg}/{wParam}/{lParam}");
             return SendMessage(hWnd, Msg, wParam, lParam);
         }
 
@@ -85,7 +86,7 @@ namespace MTree.Utility
                     IntPtr handle = FindWindow(null, windowName);
                     if (handle != IntPtr.Zero)
                     {
-                        logger.Info($"FindWindow found, {windowName}/{handle}");
+                        logger.Info($"FindWindow found, {windowName}/{handle.ToString("X")}");
 
                         if (setForeground)
                         {
@@ -117,7 +118,7 @@ namespace MTree.Utility
                     IntPtr handle = FindWindowEx(window, IntPtr.Zero, className, caption);
                     if (handle != IntPtr.Zero)
                     {
-                        logger.Info($"FindWindowEx found, {window}/{className}/{caption}/{handle}");
+                        logger.Info($"FindWindowEx found, {window.ToString("X")}/{className}/{caption}/{handle.ToString("X")}");
                         return handle;
                     }
 
