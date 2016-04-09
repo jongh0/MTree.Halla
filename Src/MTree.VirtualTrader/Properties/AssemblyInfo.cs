@@ -10,9 +10,9 @@ using System.Windows;
 [assembly: AssemblyTitle("MTree.VirtualTrader")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("MTree")]
 [assembly: AssemblyProduct("MTree.VirtualTrader")]
-[assembly: AssemblyCopyright("Copyright ©  2016")]
+[assembly: AssemblyCopyright("Copyright © MTree 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
