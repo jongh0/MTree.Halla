@@ -6,14 +6,14 @@ using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MTree.SimTrader
+namespace MTree.VirtualTrader
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
-    public class SimTrader : ITrader
+    public class VirtualTrader : ITrader
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public SimAccountManager AccountManager { get; set; } = new SimAccountManager();
+        public VirtualAccountManager AccountManager { get; set; } = new VirtualAccountManager();
 
         public List<string> GetAccountList()
         {

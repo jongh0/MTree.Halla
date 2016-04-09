@@ -9,17 +9,38 @@ namespace MTree.StrategyManager
 {
     public class StrategyManager
     {
-        public RealTimeHandler RealTimeHandle { get; set; }
-        public TradeHandler TradeHandle { get; set; }
+        public DbHandler DbHandler { get; set; }
+        public RealTimeHandler RealTimeHandler { get; set; }
+        public TradeHandler TradeHandler { get; set; }
 
         public StrategyManager()
         {
-            RealTimeHandle = new RealTimeHandler();
+            DbHandler = new DbHandler();
+            DbHandler.BiddingPriceNotified += BiddingPriceNotified;
+            DbHandler.CircuitBreakNotified += CircuitBreakNotified;
+            DbHandler.ConclusionNotified += ConclusionNotified;
 
-            if (Config.General.SimulMode == true)
-                TradeHandle = new TradeHandler("SimTraderConfig");
+            RealTimeHandler = new RealTimeHandler();
+            RealTimeHandler.BiddingPriceNotified += BiddingPriceNotified;
+            RealTimeHandler.CircuitBreakNotified += CircuitBreakNotified;
+            RealTimeHandler.ConclusionNotified += ConclusionNotified;
+
+            if (Config.General.VirtualTrade == true)
+                TradeHandler = new TradeHandler("VirtualTraderConfig");
             else
-                TradeHandle = new TradeHandler("KiwoomTraderConfig");
+                TradeHandler = new TradeHandler("KiwoomTraderConfig");
+        }
+
+        private void ConclusionNotified(object sender, Consumer.SubscribableEventArgs e)
+        {
+        }
+
+        private void CircuitBreakNotified(object sender, Consumer.SubscribableEventArgs e)
+        {
+        }
+
+        private void BiddingPriceNotified(object sender, Consumer.SubscribableEventArgs e)
+        {
         }
     }
 }

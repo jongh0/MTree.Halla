@@ -1,5 +1,6 @@
 ﻿using MTree.Configuration;
 using MTree.Consumer;
+using MTree.DataStructure;
 using MTree.RealTimeProvider;
 using MTree.Utility;
 using System;
@@ -8,12 +9,13 @@ using System.ComponentModel;
 using System.Linq;
 using System.ServiceModel;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MTree.StrategyManager
 {
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
-    public class RealTimeHandler : ConsumerBase, INotifyPropertyChanged
+    public class RealTimeHandler : ConsumerBase, INotifyPropertyChanged, INotifySubscribable
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -35,20 +37,66 @@ namespace MTree.StrategyManager
 
         private void ProcessIndexConclusionQueue()
         {
+            try
+            {
+                IndexConclusion conclusion;
+                if (IndexConclusionQueue.TryDequeue(out conclusion) == true)
+                    NotifyConclusion(conclusion);
+                else
+                    Thread.Sleep(10);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
         }
 
         private void ProcessStockConclusionQueue()
         {
-            // TODO : 데이터 흐름 정의 필요함
-            // Chart로 들어갔다 ML로 가야하나?
+            try
+            {
+                StockConclusion conclusion;
+                if (StockConclusionQueue.TryDequeue(out conclusion) == true)
+                    NotifyConclusion(conclusion);
+                else
+                    Thread.Sleep(10);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
         }
 
         private void ProcessBiddingPriceQueue()
         {
+            try
+            {
+                BiddingPrice biddingPrice;
+                if (BiddingPriceQueue.TryDequeue(out biddingPrice) == true)
+                    NotifyBiddingPrice(biddingPrice);
+                else
+                    Thread.Sleep(10);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
         }
 
         private void ProcessCircuitBreakQueue()
         {
+            try
+            {
+                CircuitBreak circuitBreak;
+                if (CircuitBreakQueue.TryDequeue(out circuitBreak) == true)
+                    NotifyCircuitBreak(circuitBreak);
+                else
+                    Thread.Sleep(10);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
         }
 
         protected override void ServiceClient_Opened(object sender, EventArgs e)
@@ -76,6 +124,27 @@ namespace MTree.StrategyManager
         private void NotifyPropertyChanged(string name)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+        #endregion
+
+        #region INotifySubscribable
+        public event SubscribableEventHandler BiddingPriceNotified;
+        public event SubscribableEventHandler CircuitBreakNotified;
+        public event SubscribableEventHandler ConclusionNotified; 
+
+        private void NotifyBiddingPrice(BiddingPrice biddingPrice)
+        {
+            BiddingPriceNotified?.Invoke(this, new SubscribableEventArgs(biddingPrice));
+        }
+
+        private void NotifyCircuitBreak(CircuitBreak circuitBreak)
+        {
+            CircuitBreakNotified?.Invoke(this, new SubscribableEventArgs(circuitBreak));
+        }
+
+        private void NotifyConclusion(Conclusion conclusion)
+        {
+            ConclusionNotified?.Invoke(this, new SubscribableEventArgs(conclusion));
         }
         #endregion
     }

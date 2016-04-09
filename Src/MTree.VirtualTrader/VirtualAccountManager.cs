@@ -5,13 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MTree.SimTrader
+namespace MTree.VirtualTrader
 {
-    public class SimAccountManager
+    public class VirtualAccountManager
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private Dictionary<string, SimAccount> AccountList { get; set; } = new Dictionary<string, SimAccount>();
+        private Dictionary<string, VirtualAccount> AccountList { get; set; } = new Dictionary<string, VirtualAccount>();
 
         public List<string> GetAccountList()
         {
@@ -32,7 +32,7 @@ namespace MTree.SimTrader
             return list;
         }
 
-        public SimAccount GetAccout(string accountCode)
+        public VirtualAccount GetAccout(string accountCode)
         {
             if (AccountList.ContainsKey(accountCode) == true)
                 return AccountList[accountCode];

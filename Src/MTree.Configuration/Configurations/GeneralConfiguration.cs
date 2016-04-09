@@ -29,7 +29,9 @@ namespace MTree.Configuration
         [JsonIgnore]
         public bool ExcludeKiwoom { get; } = false;
 
-        public bool SimulMode { get; set; } = false;
+        public bool SimulTrade { get; set; } = false;
+
+        public bool VirtualTrade { get; set; } = false;
 
         public bool OfflineMode { get; set; } = false;
 

@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MTree.SimTrader
+namespace MTree.VirtualTrader
 {
-    public class SimAccount
+    public class VirtualAccount
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
