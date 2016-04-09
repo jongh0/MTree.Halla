@@ -33,8 +33,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup />
   <PropertyGroup>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>app.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AxInterop.KHOpenAPILib, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -66,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="KiwoomTrader.cs" />
+    <Compile Include="KiwoomTrader_Trade.cs" />
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -116,6 +118,9 @@
       <Project>{d8291168-4d81-4acd-81c4-da122a249102}</Project>
       <Name>MTree.Utility</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="app.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

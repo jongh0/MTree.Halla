@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace MTree.VirtualTrader
+namespace MTree.EbestTrader
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -29,7 +29,7 @@ namespace MTree.VirtualTrader
         {
             InitializeComponent();
 
-            var instance = new VirtualTrader();
+            var instance = new EbestTrader();
             Host = new ServiceHost(instance);
             Host.Opened += Host_Opened;
             Host.Closed += Host_Closed;

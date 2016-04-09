@@ -355,16 +355,16 @@ namespace MTree.RealTimeProvider
                 var codeEntity = StockCodeList[mastering.Stock.Code];
                 var code = codeEntity.Code;
 
-                if (contract.Type == ProcessTypes.Daishin)
+                if (contract.Type == ProcessTypes.DaishinPublisher)
                     code = CodeEntity.ConvertToDaishinCode(codeEntity);
 
                 StockMaster master = contract.Callback.GetStockMaster(code);
 
-                if (contract.Type == ProcessTypes.Daishin)
+                if (contract.Type == ProcessTypes.DaishinPublisher)
                     CopyStockMasterFromDaishin(mastering, master);
-                else if (contract.Type == ProcessTypes.Ebest)
+                else if (contract.Type == ProcessTypes.EbestPublisher)
                     CopyStockMasterFromEbest(mastering, master);
-                else if (contract.Type == ProcessTypes.Kiwoom)
+                else if (contract.Type == ProcessTypes.KiwoomPublisher)
                     CopyStockMasterFromKiwoom(mastering, master);
                 else
                     logger.Warn("Wrong contract type for stock mastering");
@@ -376,17 +376,17 @@ namespace MTree.RealTimeProvider
             }
             finally
             {
-                if (contract.Type == ProcessTypes.Daishin)
+                if (contract.Type == ProcessTypes.DaishinPublisher)
                 {
                     lock (daishinMasteringLock)
                         contract.IsOperating = false;
                 }
-                else if (contract.Type == ProcessTypes.Ebest)
+                else if (contract.Type == ProcessTypes.EbestPublisher)
                 {
                     lock (ebestMasteringLock)
                         contract.IsOperating = false;
                 }
-                else if (contract.Type == ProcessTypes.Kiwoom)
+                else if (contract.Type == ProcessTypes.KiwoomPublisher)
                 {
                     lock (kiwoomMasteringLock)
                         contract.IsOperating = false;

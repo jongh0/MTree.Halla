@@ -7,13 +7,10 @@ using XA_SESSIONLib;
 using XA_DATASETLib;
 using System.ServiceModel;
 using MTree.RealTimeProvider;
-using MTree.Utility;
 using System.Timers;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using System.Windows;
-using System.Windows.Threading;
 using System.ComponentModel;
 
 namespace MTree.EbestPublisher
@@ -153,8 +150,8 @@ namespace MTree.EbestPublisher
                 LoginInstance.UserPw = Config.Ebest.UserPw;
                 LoginInstance.CertPw = Config.Ebest.CertPw;
                 LoginInstance.AccountPw = Config.Ebest.AccountPw;
-                LoginInstance.ServerType = Config.Ebest.ServerType;
-                LoginInstance.ServerAddress = Config.Ebest.ServerAddress;
+                LoginInstance.ServerType = ServerTypes.Real;
+                LoginInstance.ServerAddress = Config.Ebest.RealServerAddress;
                 LoginInstance.ServerPort = Config.Ebest.ServerPort;
 
                 if (string.IsNullOrEmpty(LoginInstance.UserId) == false &&
@@ -698,7 +695,7 @@ namespace MTree.EbestPublisher
             if ((Environment.TickCount - LastCommTick) > MaxCommInterval)
             {
                 LastCommTick = Environment.TickCount;
-                logger.Info($"Keep Ebest connection");
+                logger.Info($"Ebest keep alive");
                 GetStockMaster("000020");
             }
         }

@@ -28,9 +28,9 @@ namespace MTree.AutoLauncher
                 launcher.KillProcesses.Add(ProcessTypes.CybosStarter);
                 launcher.KillProcesses.Add(ProcessTypes.PopupStopper);
                 launcher.KillProcesses.Add(ProcessTypes.DaishinSessionManager);
-                launcher.KillProcesses.Add(ProcessTypes.Ebest);
-                launcher.KillProcesses.Add(ProcessTypes.Kiwoom);
-                launcher.KillProcesses.Add(ProcessTypes.Daishin);
+                launcher.KillProcesses.Add(ProcessTypes.EbestPublisher);
+                launcher.KillProcesses.Add(ProcessTypes.KiwoomPublisher);
+                launcher.KillProcesses.Add(ProcessTypes.DaishinPublisher);
                 launcher.KillProcesses.Add(ProcessTypes.HistorySaver);
                 launcher.KillProcesses.Add(ProcessTypes.Dashboard);
 

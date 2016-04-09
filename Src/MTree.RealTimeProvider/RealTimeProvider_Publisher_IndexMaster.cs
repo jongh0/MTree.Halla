@@ -193,12 +193,12 @@ namespace MTree.RealTimeProvider
                 var codeEntity = IndexCodeList[mastering.Index.Code];
                 var code = codeEntity.Code;
 
-                if (contract.Type == ProcessTypes.Daishin)
+                if (contract.Type == ProcessTypes.DaishinPublisher)
                     code = CodeEntity.ConvertToDaishinCode(codeEntity);
 
                 IndexMaster master = contract.Callback.GetIndexMaster(code);
 
-                if (contract.Type == ProcessTypes.Daishin)
+                if (contract.Type == ProcessTypes.DaishinPublisher)
                     CopyIndexMasterFromDaishin(mastering, master);
                 else
                     logger.Warn("Wrong contract type for index mastering");
@@ -210,7 +210,7 @@ namespace MTree.RealTimeProvider
             }
             finally
             {
-                if (contract.Type == ProcessTypes.Daishin)
+                if (contract.Type == ProcessTypes.DaishinPublisher)
                 {
                     lock (daishinMasteringLock)
                         contract.IsOperating = false;

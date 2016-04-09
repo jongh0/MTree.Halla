@@ -19,20 +19,11 @@ namespace MTree.Configuration
 
         public string AccountPw { get; set; } = string.Empty;
 
-        [JsonConverter(typeof(StringEnumConverter))]
-        public ServerTypes ServerType { get; set; } = ServerTypes.Real;
+        [JsonIgnore]
+        public string RealServerAddress { get { return "Hts.etrade.co.kr"; } }
 
         [JsonIgnore]
-        public string ServerAddress
-        {
-            get
-            {
-                if (ServerType == ServerTypes.Real)
-                    return "Hts.etrade.co.kr";
-                else
-                    return "demo.etrade.co.kr";
-            }
-        }
+        public string SimulServerAddress { get { return "demo.etrade.co.kr"; } }
 
         [JsonIgnore]
         public int ServerPort { get; } = 20001;

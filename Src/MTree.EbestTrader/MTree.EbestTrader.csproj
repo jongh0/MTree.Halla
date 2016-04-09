@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{1606CE51-4CD3-4CE6-A08D-B3AD32E5D183}</ProjectGuid>
+    <ProjectGuid>{8F3E6370-C3A7-47B5-A5E4-CBA24A313560}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MTree.VirtualTrader</RootNamespace>
-    <AssemblyName>MTree.VirtualTrader</AssemblyName>
+    <RootNamespace>MTree.EbestTrader</RootNamespace>
+    <AssemblyName>MTree.EbestTrader</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -25,7 +25,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -35,9 +34,24 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>app.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Interop.XA_DATASETLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <HintPath>..\packages\Ebest\Interop.XA_DATASETLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Interop.XA_SESSIONLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <HintPath>..\packages\Ebest\Interop.XA_SESSIONLib.dll</HintPath>
+    </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.2.3\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
@@ -64,10 +78,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="VirtualAccount.cs" />
-    <Compile Include="VirtualAccountManager.cs" />
-    <Compile Include="VirtualTrader.cs" />
-    <Compile Include="VirtualTrader_Trade.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -76,6 +86,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="EbestTrader.cs" />
+    <Compile Include="EbestTrader_Trade.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -99,6 +111,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="app.manifest" />
     <None Include="ClassDiagram.cd" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -108,14 +121,20 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MTree.Configuration\MTree.Configuration.csproj">
       <Project>{9c52064a-188b-449a-89a1-de3a9dd3f766}</Project>
       <Name>MTree.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MTree.DataStructure\MTree.DataStructure.csproj">
+      <Project>{da1959a9-15fa-47aa-98ac-3844a723fea1}</Project>
+      <Name>MTree.DataStructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MTree.Publisher\MTree.Publisher.csproj">
+      <Project>{891f9baa-d335-4a1b-8fa3-bb0e4d76410a}</Project>
+      <Name>MTree.Publisher</Name>
     </ProjectReference>
     <ProjectReference Include="..\MTree.Trader\MTree.Trader.csproj">
       <Project>{147b0e77-7a22-4ea5-83ea-a0909b456408}</Project>
@@ -125,6 +144,9 @@
       <Project>{d8291168-4d81-4acd-81c4-da122a249102}</Project>
       <Name>MTree.Utility</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="app.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

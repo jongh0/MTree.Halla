@@ -124,7 +124,7 @@ namespace TestConsole
         private static void TestDaishinInstanceLimit()
         {
             for (int i = 0; i < 41; i++)
-                ProcessUtility.Start(ProcessTypes.Daishin, ProcessWindowStyle.Minimized);
+                ProcessUtility.Start(ProcessTypes.DaishinPublisher, ProcessWindowStyle.Minimized);
         }
     }
 }

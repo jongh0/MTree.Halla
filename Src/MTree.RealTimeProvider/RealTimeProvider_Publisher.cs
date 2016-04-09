@@ -32,41 +32,41 @@ namespace MTree.RealTimeProvider
         #region Daishin
         private List<PublisherContract> DaishinContracts
         {
-            get { return PublisherContracts.Values.Where(c => c.Type == ProcessTypes.Daishin).ToList(); }
+            get { return PublisherContracts.Values.Where(c => c.Type == ProcessTypes.DaishinPublisher).ToList(); }
         }
 
         private PublisherContract DaishinContractForMastering
         {
-            get { return PublisherContracts.Values.FirstOrDefault(c => c.Type == ProcessTypes.Daishin && c.IsOperating == false); }
+            get { return PublisherContracts.Values.FirstOrDefault(c => c.Type == ProcessTypes.DaishinPublisher && c.IsOperating == false); }
         }
 
         private PublisherContract DaishinMasterContract
         {
-            get { return PublisherContracts.Values.FirstOrDefault(c => c.Type == ProcessTypes.DaishinMaster); }
+            get { return PublisherContracts.Values.FirstOrDefault(c => c.Type == ProcessTypes.DaishinPublisherMaster); }
         }
         #endregion
 
         #region Ebest
         private List<PublisherContract> EbestContracts
         {
-            get { return PublisherContracts.Values.Where(c => c.Type == ProcessTypes.Ebest).ToList(); }
+            get { return PublisherContracts.Values.Where(c => c.Type == ProcessTypes.EbestPublisher).ToList(); }
         }
 
         private PublisherContract EbestContractForMastering
         {
-            get { return PublisherContracts.Values.FirstOrDefault(c => c.Type == ProcessTypes.Ebest && c.IsOperating == false); }
+            get { return PublisherContracts.Values.FirstOrDefault(c => c.Type == ProcessTypes.EbestPublisher && c.IsOperating == false); }
         }
         #endregion
 
         #region Kiwoom
         private List<PublisherContract> KiwoomContracts
         {
-            get { return PublisherContracts.Values.Where(c => c.Type == ProcessTypes.Kiwoom).ToList(); }
+            get { return PublisherContracts.Values.Where(c => c.Type == ProcessTypes.KiwoomPublisher).ToList(); }
         }
 
         private PublisherContract KiwoomContractForMastering
         {
-            get { return PublisherContracts.Values.FirstOrDefault(c => c.Type == ProcessTypes.Kiwoom && c.IsOperating == false); }
+            get { return PublisherContracts.Values.FirstOrDefault(c => c.Type == ProcessTypes.KiwoomPublisher && c.IsOperating == false); }
         }
         #endregion
         #endregion
@@ -87,7 +87,7 @@ namespace MTree.RealTimeProvider
                 // Kiwoom
                 if (Config.General.SkipMastering == false &&
                     Config.General.ExcludeKiwoom == false)
-                    ProcessUtility.Start(ProcessTypes.Kiwoom, ProcessWindowStyle.Minimized);
+                    ProcessUtility.Start(ProcessTypes.KiwoomPublisher, ProcessWindowStyle.Minimized);
 
                 // Popup stopper
                 ProcessUtility.Start(ProcessTypes.PopupStopper, ProcessWindowStyle.Minimized);
@@ -103,14 +103,14 @@ namespace MTree.RealTimeProvider
 #endif
 
                 for (int i = 0; i < daishinProcessCount; i++)
-                    ProcessUtility.Start(ProcessTypes.Daishin, ProcessWindowStyle.Minimized);
+                    ProcessUtility.Start(ProcessTypes.DaishinPublisher, ProcessWindowStyle.Minimized);
 
                 // Ebest
                 if (Config.General.ExcludeEbest == false)
                 {
                     int ebestProcessCount = 3;
                     for (int i = 0; i < ebestProcessCount; i++)
-                        ProcessUtility.Start(ProcessTypes.Ebest, ProcessWindowStyle.Minimized);
+                        ProcessUtility.Start(ProcessTypes.EbestPublisher, ProcessWindowStyle.Minimized);
                 }
             }
             catch (Exception ex)
@@ -132,15 +132,15 @@ namespace MTree.RealTimeProvider
                     contract.Id = PublisherContract.IdNumbering++;
                     contract.Callback = OperationContext.Current.GetCallbackChannel<IRealTimePublisherCallback>();
 
-                    if (contract.Type == ProcessTypes.None)
+                    if (contract.Type == ProcessTypes.Unknown)
                     {
                         PublisherContracts.TryAdd(clientId, contract);
                         logger.Warn($"{contract.ToString()} contract type is not set / {clientId}");
                     }
                     else
                     {
-                        bool isMasterContract = (contract.Type == ProcessTypes.DaishinMaster);
-                        if (contract.Type == ProcessTypes.DaishinMaster) contract.Type = ProcessTypes.Daishin;
+                        bool isMasterContract = (contract.Type == ProcessTypes.DaishinPublisherMaster);
+                        if (contract.Type == ProcessTypes.DaishinPublisherMaster) contract.Type = ProcessTypes.DaishinPublisher;
 
                         PublisherContracts.TryAdd(clientId, contract);
                         logger.Info($"{contract.ToString()} contract registered / {clientId}");
@@ -642,7 +642,7 @@ namespace MTree.RealTimeProvider
                 var code = codeEntity.Code;
                 var contract = EbestContracts[i % EbestContracts.Count];
 
-                if (contract.Type == ProcessTypes.Daishin)
+                if (contract.Type == ProcessTypes.DaishinPublisher)
                     code = CodeEntity.ConvertToDaishinCode(codeEntity);
 
                 if (contract.Callback.SubscribeCircuitBreak(code) == false)

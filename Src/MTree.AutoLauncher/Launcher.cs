@@ -29,7 +29,7 @@ namespace MTree.AutoLauncher
         #endregion
 
         #region Process
-        public ProcessTypes LaunchProcess = ProcessTypes.None;
+        public ProcessTypes LaunchProcess = ProcessTypes.Unknown;
 
         public List<ProcessTypes> KillProcesses { get; set; } = new List<ProcessTypes>(); 
         #endregion

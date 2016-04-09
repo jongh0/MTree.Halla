@@ -10,20 +10,21 @@ namespace MTree.Utility
 {
     public enum ProcessTypes
     {
-        None,
+        Unknown,
         KillAll,
         CybosStarter,
         TestConsole,
         TestConsumer,
         TestPublisher,
         PopupStopper,
-        Daishin,
-        DaishinMaster,
+        DaishinPublisher,
+        DaishinPublisherMaster,
         DaishinSessionManager,
-        Kiwoom,
+        KiwoomPublisher,
         KiwoomTrader,
-        Ebest,
-        Krx,
+        EbestPublisher,
+        EbestTrader,
+        KrxPublisher,
         HistorySaver,
         RealTimeProvider,
         Dashboard,
@@ -47,13 +48,14 @@ namespace MTree.Utility
             ProcessList.Add(ProcessTypes.TestConsumer, "TestConsumer");
             ProcessList.Add(ProcessTypes.TestPublisher, "TestPublisher");
             ProcessList.Add(ProcessTypes.PopupStopper, "MTree.PopupStopper");
-            ProcessList.Add(ProcessTypes.Daishin, "MTree.DaishinPublisher");
-            ProcessList.Add(ProcessTypes.DaishinMaster, "MTree.DaishinPublisher");
+            ProcessList.Add(ProcessTypes.DaishinPublisher, "MTree.DaishinPublisher");
+            ProcessList.Add(ProcessTypes.DaishinPublisherMaster, "MTree.DaishinPublisher");
             ProcessList.Add(ProcessTypes.DaishinSessionManager, "MTree.DaishinSessionManager");
-            ProcessList.Add(ProcessTypes.Kiwoom, "MTree.KiwoomPublisher");
+            ProcessList.Add(ProcessTypes.KiwoomPublisher, "MTree.KiwoomPublisher");
             ProcessList.Add(ProcessTypes.KiwoomTrader, "MTree.KiwoomTrader");
-            ProcessList.Add(ProcessTypes.Ebest, "MTree.EbestPublisher");
-            ProcessList.Add(ProcessTypes.Krx, "MTree.KrxPublisher");
+            ProcessList.Add(ProcessTypes.EbestPublisher, "MTree.EbestPublisher");
+            ProcessList.Add(ProcessTypes.EbestTrader, "MTree.EbestTrader");
+            ProcessList.Add(ProcessTypes.KrxPublisher, "MTree.KrxPublisher");
             ProcessList.Add(ProcessTypes.HistorySaver, "MTree.HistorySaver");
             ProcessList.Add(ProcessTypes.RealTimeProvider, "MTree.RealTimeProvider");
             ProcessList.Add(ProcessTypes.Dashboard, "MTree.Dashboard");

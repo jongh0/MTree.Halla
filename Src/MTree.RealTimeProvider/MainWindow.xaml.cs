@@ -17,7 +17,6 @@ namespace MTree.RealTimeProvider
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         ServiceHost Host { get; set; }
-        RealTimeProvider RealTimeProviderInstance { get { return (Host.SingletonInstance as RealTimeProvider); } }
 
         /// <summary>
         /// MainWindow 실행
@@ -72,7 +71,7 @@ namespace MTree.RealTimeProvider
                     }
 
                     // Daishin Master 실행
-                    ProcessUtility.Start(ProcessTypes.DaishinMaster, ProcessWindowStyle.Minimized);
+                    ProcessUtility.Start(ProcessTypes.DaishinPublisherMaster, ProcessWindowStyle.Minimized);
                 }
             });
         }

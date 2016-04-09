@@ -28,7 +28,7 @@ namespace MTree.StrategyManager
             if (Config.General.VirtualTrade == true)
                 TradeHandler = new TradeHandler("VirtualTraderConfig");
             else
-                TradeHandler = new TradeHandler("KiwoomTraderConfig");
+                TradeHandler = new TradeHandler("EbestTraderConfig");
         }
 
         private void ConclusionNotified(object sender, Consumer.SubscribableEventArgs e)

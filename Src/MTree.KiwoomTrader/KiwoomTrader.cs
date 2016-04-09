@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace MTree.KiwoomTrader
 {
 	[ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
-    public class KiwoomTrader: ITrader
+    public partial class KiwoomTrader : ITrader
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -39,36 +39,6 @@ namespace MTree.KiwoomTrader
             }
         }
 
-        public List<string> GetAccountList()
-        {
-            List<string> accounts = new List<string>();
-            if (WaitLogin() == true)
-            {
-                foreach (string acc in kiwoomObj.GetLoginInfo("ACCNO").Split(';'))
-                {
-                    if (acc != string.Empty)
-                    {
-                        accounts.Add(acc);
-                    }
-                }
-            }
-            return accounts;
-        }
-
-        public int GetDeposit(string accountCode)
-        {
-            throw new NotImplementedException();
-        }
-
-        public OrderResult MakeOrder(Order order)
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<HoldingStock> GetHoldingList(string accountCode)
-        {
-            throw new NotImplementedException();
-        }
 
         #region Session
         protected bool WaitLogin()

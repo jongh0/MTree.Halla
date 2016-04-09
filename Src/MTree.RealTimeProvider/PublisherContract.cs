@@ -31,7 +31,7 @@ namespace MTree.RealTimeProvider
             if (Enum.TryParse(value, out type) == true)
                 return type;
             else
-                return ProcessTypes.None;
+                return ProcessTypes.Unknown;
         }
     }
 }

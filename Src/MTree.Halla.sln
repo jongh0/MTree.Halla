@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.DaishinPublisher", "MTree.DaishinPublisher\MTree.DaishinPublisher.csproj", "{0DE033E7-A072-4450-B357-CA69165B9CA8}"
 EndProject
@@ -70,6 +70,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.Trader", "MTree.Trader\MTree.Trader.csproj", "{147B0E77-7A22-4EA5-83EA-A0909B456408}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.VirtualTrader", "MTree.VirtualTrader\MTree.VirtualTrader.csproj", "{1606CE51-4CD3-4CE6-A08D-B3AD32E5D183}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.EbestTrader", "MTree.EbestTrader\MTree.EbestTrader.csproj", "{8F3E6370-C3A7-47B5-A5E4-CBA24A313560}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -193,6 +195,10 @@ Global
 		{1606CE51-4CD3-4CE6-A08D-B3AD32E5D183}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1606CE51-4CD3-4CE6-A08D-B3AD32E5D183}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1606CE51-4CD3-4CE6-A08D-B3AD32E5D183}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F3E6370-C3A7-47B5-A5E4-CBA24A313560}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F3E6370-C3A7-47B5-A5E4-CBA24A313560}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F3E6370-C3A7-47B5-A5E4-CBA24A313560}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F3E6370-C3A7-47B5-A5E4-CBA24A313560}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -223,5 +229,6 @@ Global
 		{5D39289A-2353-42F0-9EBA-7408B2588E01} = {C22A1011-FE40-49F1-AB42-3CBF4921ACBD}
 		{147B0E77-7A22-4EA5-83EA-A0909B456408} = {690A9CDC-0205-453F-ABC2-8E4D40845541}
 		{1606CE51-4CD3-4CE6-A08D-B3AD32E5D183} = {690A9CDC-0205-453F-ABC2-8E4D40845541}
+		{8F3E6370-C3A7-47B5-A5E4-CBA24A313560} = {690A9CDC-0205-453F-ABC2-8E4D40845541}
 	EndGlobalSection
 EndGlobal
