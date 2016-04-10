@@ -236,7 +236,7 @@ namespace MTree.EbestPublisher
 
             CommTimer?.Stop();
 
-            LoginInstance.State = LoginStates.Logout;
+            LoginInstance.State = LoginStates.LoggedOut;
             logger.Info(LoginInstance.ToString());
         }
 
@@ -246,14 +246,14 @@ namespace MTree.EbestPublisher
 
             if (szCode == "0000")
             {
-                logger.Info("Loggin success");
-                LoginInstance.State = LoginStates.Login;
+                logger.Info("Login success");
+                LoginInstance.State = LoginStates.LoggedIn;
                 QuoteInterval = 1000 / stockQuotingObj.GetTRCountPerSec("t1102");
                 SetLogin();
             }
             else
             {
-                logger.Error($"Loggin fail, szCode: {szCode}, szMsg: {szMsg}");
+                logger.Error($"Login fail, szCode: {szCode}, szMsg: {szMsg}");
             }
         }
 
@@ -303,7 +303,7 @@ namespace MTree.EbestPublisher
                 if (sessionObj.IsConnected() == false)
                     return false;
 
-                if (LoginInstance.State != LoginStates.Login)
+                if (LoginInstance.State != LoginStates.LoggedIn)
                     return false;
 
                 sessionObj.Logout();

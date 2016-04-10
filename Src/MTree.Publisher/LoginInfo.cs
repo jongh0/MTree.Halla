@@ -11,8 +11,8 @@ namespace MTree.Publisher
     public enum LoginStates
     {
         Disconnect,
-        Login,
-        Logout,
+        LoggedIn,
+        LoggedOut,
     }
 
     public enum FirmTypes

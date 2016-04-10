@@ -72,7 +72,7 @@ namespace MTree.KiwoomPublisher
             try
             {
                 kiwoomObj.CommTerminate();
-                LoginInstance.State = LoginStates.Logout;
+                LoginInstance.State = LoginStates.LoggedOut;
                 logger.Info("Logout success");
                 return true;
             }
@@ -91,7 +91,7 @@ namespace MTree.KiwoomPublisher
                 if (e.nErrCode == 0)
                 {
                     logger.Info("Login sucess");
-                    LoginInstance.State = LoginStates.Login;
+                    LoginInstance.State = LoginStates.LoggedIn;
                 }
                 else
                 {

@@ -95,7 +95,7 @@ namespace MTree.EbestTrader
 
             CommTimer?.Stop();
 
-            LoginInstance.State = LoginStates.Logout;
+            LoginInstance.State = LoginStates.LoggedOut;
             logger.Info(LoginInstance.ToString());
         }
 
@@ -105,12 +105,12 @@ namespace MTree.EbestTrader
 
             if (szCode == "0000")
             {
-                logger.Info("Loggin success");
-                LoginInstance.State = LoginStates.Login;
+                logger.Info("Login success");
+                LoginInstance.State = LoginStates.LoggedIn;
             }
             else
             {
-                logger.Info($"Loggin fail, szCode: {szCode}, szMsg: {szMsg}");
+                logger.Error($"Login fail, szCode: {szCode}, szMsg: {szMsg}");
             }
         }
 
@@ -160,7 +160,7 @@ namespace MTree.EbestTrader
                 if (sessionObj.IsConnected() == false)
                     return false;
 
-                if (LoginInstance.State != LoginStates.Login)
+                if (LoginInstance.State != LoginStates.LoggedIn)
                     return false;
 
                 sessionObj.Logout();

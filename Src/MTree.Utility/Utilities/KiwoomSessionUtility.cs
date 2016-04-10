@@ -35,7 +35,7 @@ namespace MTree.Utility
 
                 foreach (var pair in handleList)
                 {
-                    logger.Info($"Kiwoom loggin, {pair.Key}: {pair.Value.ToString("X")}");
+                    logger.Info($"Kiwoom login, {pair.Key}: {pair.Value.ToString("X")}");
                 }
 
                 // User password
@@ -73,11 +73,11 @@ namespace MTree.Utility
                 WindowUtility.SendMessage2(simulH, WindowUtility.BM_SETCHECK, 1, 0);
                 // TODO : 체크박스 처리가 잘 안될 때가 있음
 
-                // Loggin button
-                var logginH = handleList[3];
-                //if (logginH != IntPtr.Zero)
+                // Login button
+                var loginH = handleList[3];
+                //if (loginH != IntPtr.Zero)
                 //{
-                //    WindowUtility.SendMessage2(logginH, WindowUtility.BM_CLICK, 0, 0);
+                //    WindowUtility.SendMessage2(loginH, WindowUtility.BM_CLICK, 0, 0);
                 //    logger.Info("Login button clicked");
                 //}
 
