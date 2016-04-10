@@ -20,7 +20,7 @@ namespace MTree.EbestPublisher
 
         public bool GetQuote(string code, ref StockMaster stockMaster)
         {
-            if (WaitWarninglistUpdated() == false)
+            if (WaitWarningListUpdated() == false)
             {
                 logger.Error($"Quoting failed, Code: {code}, Warning list update is not done yet.");
                 return false;
@@ -33,8 +33,6 @@ namespace MTree.EbestPublisher
             }
 
             QuoteInterval = 1000 / stockQuotingObj.GetTRCountPerSec("t1102");
-
-            int ret = -1;
 
             try
             {
@@ -51,27 +49,24 @@ namespace MTree.EbestPublisher
                 QuotingStockMaster.Code = code;
 
                 stockQuotingObj.SetFieldData("t1102InBlock", "shcode", 0, code);
-                ret = stockQuotingObj.Request(false);
-
-                if (ret > 0)
+                if (stockQuotingObj.Request(false) < 0)
                 {
-                    if (WaitQuoting() == true)
-                    {
-                        if (QuotingStockMaster.Code != string.Empty)
-                        {
-                            logger.Info($"Quoting done, Code: {code}");
-                            return true;
-                        }
+                    logger.Error($"Quoting request error, {GetLastErrorMessage()}");
+                    return false;
+                }
 
-                        logger.Error($"Quoting fail, Code: {code}");
+                if (WaitQuoting() == true)
+                {
+                    if (QuotingStockMaster.Code != string.Empty)
+                    {
+                        logger.Info($"Quoting done, Code: {code}");
+                        return true;
                     }
 
-                    logger.Error($"Quoting timeout, Code: {code}");
+                    logger.Error($"Quoting fail, Code: {code}");
                 }
-                else
-                {
-                    logger.Error($"Quoting request fail, Code: {code}, result: {ret}");
-                }
+
+                logger.Error($"Quoting timeout, Code: {code}");
             }
             catch (Exception ex)
             {
@@ -86,7 +81,7 @@ namespace MTree.EbestPublisher
             return false;
         }
 
-        private void stockQuotingObj_ReceiveData(string szTrCode)
+        private void StockQuotingObj_ReceiveData(string szTrCode)
         {
             try
             {

@@ -16,9 +16,9 @@ namespace MTree.VirtualTrader
             return AccountManager.GetAccountList();
         }
 
-        public int GetDeposit(string accountCode)
+        public long GetDeposit(string accNum, string accPw)
         {
-            var account = AccountManager.GetAccout(accountCode);
+            var account = AccountManager.GetAccout(accNum);
 
             if (account != null)
                 return account.Deposit;
@@ -26,9 +26,9 @@ namespace MTree.VirtualTrader
                 return 0;
         }
 
-        public List<HoldingStock> GetHoldingList(string accountCode)
+        public List<HoldingStock> GetHoldingList(string accNum)
         {
-            var account = AccountManager.GetAccout(accountCode);
+            var account = AccountManager.GetAccout(accNum);
             if (account != null)
                 return account.HoldingStockList;
 

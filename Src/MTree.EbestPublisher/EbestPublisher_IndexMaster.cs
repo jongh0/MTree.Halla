@@ -16,8 +16,6 @@ namespace MTree.EbestPublisher
 
             QuoteInterval = 1000 / stockQuotingObj.GetTRCountPerSec("t1511");
 
-            int ret = -1;
-
             try
             {
                 if (WaitLogin() == false)
@@ -32,27 +30,24 @@ namespace MTree.EbestPublisher
                 QuotingIndexMaster = indexMaster;
 
                 indexQuotingObj.SetFieldData("t1511InBlock", "upcode", 0, code);
-                ret = indexQuotingObj.Request(false);
-
-                if (ret > 0)
+                if (indexQuotingObj.Request(false) < 0)
                 {
-                    if (WaitQuoting() == true)
-                    {
-                        if (QuotingIndexMaster.Code != string.Empty)
-                        {
-                            logger.Info($"Quoting done, Code: {code}");
-                            return true;
-                        }
+                    logger.Error($"Quoting request error, {GetLastErrorMessage()}");
+                    return false;
+                }
 
-                        logger.Error($"Quoting fail, Code: {code}");
+                if (WaitQuoting() == true)
+                {
+                    if (QuotingIndexMaster.Code != string.Empty)
+                    {
+                        logger.Info($"Quoting done, Code: {code}");
+                        return true;
                     }
 
-                    logger.Error($"Quoting timeout, Code: {code}");
+                    logger.Error($"Quoting fail, Code: {code}");
                 }
-                else
-                {
-                    logger.Error($"Quoting request fail, Code: {code}, Quoting result: {ret}");
-                }
+
+                logger.Error($"Quoting timeout, Code: {code}");
             }
             catch (Exception ex)
             {
@@ -67,7 +62,7 @@ namespace MTree.EbestPublisher
             return false;
         }
 
-        private void indexQuotingObj_ReceiveData(string szTrCode)
+        private void IndexQuotingObj_ReceiveData(string szTrCode)
         {
             try
             {

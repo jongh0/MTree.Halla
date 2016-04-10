@@ -75,10 +75,13 @@ namespace MTree.EbestPublisher
             return false;
         }
 
-        private void VolatilityInterruptionReceived(string szTrCode)
+        private void ViSubscribingObj_ReceiveRealData(string szTrCode)
         {
             try
             {
+                LastCommTick = Environment.TickCount;
+                logger.Trace($"szTrCode: {szTrCode}");
+
                 var circuitBreak = new CircuitBreak();
                 circuitBreak.Id = ObjectId.GenerateNewId();
                 circuitBreak.Time = DateTime.Now;
@@ -119,10 +122,13 @@ namespace MTree.EbestPublisher
             }
         }
 
-        private void AfterVolatilityInterruptionReceived(string szTrCode)
+        private void DviSubscribingObj_ReceiveRealData(string szTrCode)
         {
             try
             {
+                LastCommTick = Environment.TickCount;
+                logger.Trace($"szTrCode: {szTrCode}");
+
                 var circuitBreak = new CircuitBreak();
                 circuitBreak.Time = DateTime.Now;
                 circuitBreak.Code = dviSubscribingObj.GetFieldData("OutBlock", "shcode");

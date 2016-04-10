@@ -14,10 +14,10 @@ namespace MTree.Trader
         List<string> GetAccountList();
 
         [OperationContract]
-        int GetDeposit(string accountCode);
+        long GetDeposit(string accNum, string accPw);
 
         [OperationContract]
-        List<HoldingStock> GetHoldingList(string accountCode);
+        List<HoldingStock> GetHoldingList(string accNum);
 
         [OperationContract]
         OrderResult MakeOrder(Order order);

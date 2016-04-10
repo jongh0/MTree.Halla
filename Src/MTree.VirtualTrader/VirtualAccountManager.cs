@@ -19,9 +19,9 @@ namespace MTree.VirtualTrader
 
             try
             {
-                foreach (var account in AccountList.Keys)
+                foreach (var accNum in AccountList.Keys)
                 {
-                    list.Add(account);
+                    list.Add(accNum);
                 }
             }
             catch (Exception ex)
@@ -32,10 +32,10 @@ namespace MTree.VirtualTrader
             return list;
         }
 
-        public VirtualAccount GetAccout(string accountCode)
+        public VirtualAccount GetAccout(string accNum)
         {
-            if (AccountList.ContainsKey(accountCode) == true)
-                return AccountList[accountCode];
+            if (AccountList.ContainsKey(accNum) == true)
+                return AccountList[accNum];
             else
                 return null;
         }

@@ -4,6 +4,7 @@ using MTree.Trader;
 using System;
 using System.ComponentModel;
 using System.ServiceModel;
+using System.Threading;
 using System.Timers;
 using XA_DATASETLib;
 using XA_SESSIONLib;
@@ -19,6 +20,10 @@ namespace MTree.EbestTrader
 
         public LoginInfo LoginInstance { get; } = new LoginInfo();
 
+        private int WaitTimeout { get; } = 1000 * 10;
+        private AutoResetEvent WaitDepositEvent { get; } = new AutoResetEvent(false);
+        private AutoResetEvent WaitOrderEvent { get; } = new AutoResetEvent(false);
+
         #region Keep session
         private int MaxCommInterval { get; } = 1000 * 60 * 20; // 통신 안한지 20분 넘어가면 Quote 시작
         private int CommTimerInterval { get; } = 1000 * 60 * 2; // 2분마다 체크
@@ -29,7 +34,10 @@ namespace MTree.EbestTrader
         #region Ebest Specific
         private XASessionClass sessionObj;
         private XAQueryClass stockQuotingObj;
-        private XAQueryClass stockOrderObj;
+        private XAQueryClass normalOrderObj;
+        private XAQueryClass modifyOrderObj;
+        private XAQueryClass cancelOrderObj;
+        private XAQueryClass accDepositObj;
         #endregion
 
         public EbestTrader()
@@ -50,11 +58,23 @@ namespace MTree.EbestTrader
                 #region XAQuery
                 stockQuotingObj = new XAQueryClass();
                 stockQuotingObj.ResFileName = resFilePath + "\\t1102.res";
-                stockQuotingObj.ReceiveData += stockQuotingObj_ReceiveData;
+                stockQuotingObj.ReceiveData += StockQuotingObj_ReceiveData;
 
-                stockOrderObj = new XAQueryClass();
-                stockOrderObj.ResFileName = resFilePath + "\\CSPAT00600.res";
-                stockOrderObj.ReceiveData += stockOrderObj_ReceiveData;
+                normalOrderObj = new XAQueryClass();
+                normalOrderObj.ResFileName = resFilePath + "\\CSPAT00600.res";
+                normalOrderObj.ReceiveData += NormalOrderObj_ReceiveData;
+
+                modifyOrderObj = new XAQueryClass();
+                modifyOrderObj.ResFileName = resFilePath + "\\CSPAT00700.res";
+                modifyOrderObj.ReceiveData += ModifyOrderObj_ReceiveData;
+
+                cancelOrderObj = new XAQueryClass();
+                cancelOrderObj.ResFileName = resFilePath + "\\CSPAT00800.res";
+                cancelOrderObj.ReceiveData += CancelOrderObj_ReceiveData;
+
+                accDepositObj = new XAQueryClass();
+                accDepositObj.ResFileName = resFilePath + "\\t0424.res";
+                accDepositObj.ReceiveData += AccDepositObj_ReceiveData;
                 #endregion
 
                 #region Login
@@ -205,7 +225,8 @@ namespace MTree.EbestTrader
             try
             {
                 stockQuotingObj.SetFieldData("t1102InBlock", "shcode", 0, "000020");
-                stockQuotingObj.Request(false);
+                if (stockQuotingObj.Request(false) < 0)
+                    logger.Error($"Keep alive error, {GetLastErrorMessage()}");
             }
             catch (Exception ex)
             {
@@ -213,24 +234,79 @@ namespace MTree.EbestTrader
             }
         }
 
-        private void stockQuotingObj_ReceiveData(string szTrCode)
+        private void StockQuotingObj_ReceiveData(string szTrCode)
         {
             LastCommTick = Environment.TickCount;
             logger.Trace($"szTrCode: {szTrCode}");
         }
 
-        private void stockOrderObj_ReceiveData(string szTrCode)
+        private void NormalOrderObj_ReceiveData(string szTrCode)
         {
-            LastCommTick = Environment.TickCount;
-            logger.Trace($"szTrCode: {szTrCode}");
-
             try
             {
-
+                LastCommTick = Environment.TickCount;
+                logger.Trace($"szTrCode: {szTrCode}");
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
+            }
+            finally
+            {
+                WaitOrderEvent.Set();
+            }
+        }
+
+        private void CancelOrderObj_ReceiveData(string szTrCode)
+        {
+            try
+            {
+                LastCommTick = Environment.TickCount;
+                logger.Trace($"szTrCode: {szTrCode}");
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+            finally
+            {
+                WaitOrderEvent.Set();
+            }
+        }
+
+        private void ModifyOrderObj_ReceiveData(string szTrCode)
+        {
+            try
+            {
+                LastCommTick = Environment.TickCount;
+                logger.Trace($"szTrCode: {szTrCode}");
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+            finally
+            {
+                WaitOrderEvent.Set();
+            }
+        }
+
+        private void AccDepositObj_ReceiveData(string szTrCode)
+        {
+            try
+            {
+                LastCommTick = Environment.TickCount;
+                logger.Trace($"szTrCode: {szTrCode}");
+
+                CurrDeposit = long.Parse(accDepositObj.GetFieldData("t0424OutBlock", "sunamt", 0));
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+            finally
+            {
+                WaitDepositEvent.Set();
             }
         }
 

@@ -25,9 +25,17 @@ namespace MTree.KiwoomTrader
             return accounts;
         }
 
-        public int GetDeposit(string accountCode)
+        public long GetDeposit(string accNum, string accPw)
         {
-            throw new NotImplementedException();
+            try
+            {
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+
+            return 0;
         }
 
         public OrderResult MakeOrder(Order order)
@@ -35,7 +43,7 @@ namespace MTree.KiwoomTrader
             throw new NotImplementedException();
         }
 
-        public List<HoldingStock> GetHoldingList(string accountCode)
+        public List<HoldingStock> GetHoldingList(string accNum)
         {
             throw new NotImplementedException();
         }

@@ -88,61 +88,61 @@ namespace MTree.EbestPublisher
 
                 #region XASession
                 sessionObj = new XASessionClass();
-                sessionObj.Disconnect += sessionObj_Disconnect;
-                sessionObj._IXASessionEvents_Event_Login += sessionObj_Event_Login;
-                sessionObj._IXASessionEvents_Event_Logout += sessionObj_Event_Logout;
+                sessionObj.Disconnect += SessionObj_Disconnect;
+                sessionObj._IXASessionEvents_Event_Login += SessionObj_Event_Login;
+                sessionObj._IXASessionEvents_Event_Logout += SessionObj_Event_Logout;
                 #endregion
 
                 #region XAReal
                 indexSubscribingObj = new XARealClass();
-                indexSubscribingObj.ReceiveRealData += realObj_ReceiveRealData;
+                indexSubscribingObj.ReceiveRealData += IndexSubscribingObj_ReceiveRealData;
                 indexSubscribingObj.ResFileName = resFilePath + "\\IJ_.res";
 
                 viSubscribingObj = new XARealClass();
-                viSubscribingObj.ReceiveRealData += realObj_ReceiveRealData;
+                viSubscribingObj.ReceiveRealData += ViSubscribingObj_ReceiveRealData;
                 viSubscribingObj.ResFileName = resFilePath + "\\VI_.res";
 
                 dviSubscribingObj = new XARealClass();
-                dviSubscribingObj.ReceiveRealData += realObj_ReceiveRealData;
+                dviSubscribingObj.ReceiveRealData += DviSubscribingObj_ReceiveRealData;
                 dviSubscribingObj.ResFileName = resFilePath + "\\DVI.res";
                 #endregion
 
                 #region XAQuery
                 indexListObj = new XAQueryClass();
                 indexListObj.ResFileName = resFilePath + "\\t8424.res";
-                indexListObj.ReceiveChartRealData += queryObj_ReceiveChartRealData;
-                indexListObj.ReceiveData += indexListObj_ReceiveData;
-                indexListObj.ReceiveMessage += queryObj_ReceiveMessage;
+                indexListObj.ReceiveChartRealData += QueryObj_ReceiveChartRealData;
+                indexListObj.ReceiveData += IndexListObj_ReceiveData;
+                indexListObj.ReceiveMessage += QueryObj_ReceiveMessage;
 
                 stockListObj = new XAQueryClass();
                 stockListObj.ResFileName = resFilePath + "\\t8430.res";
-                stockListObj.ReceiveChartRealData += queryObj_ReceiveChartRealData;
-                stockListObj.ReceiveData += stockListObj_ReceiveData;
-                stockListObj.ReceiveMessage += queryObj_ReceiveMessage;
+                stockListObj.ReceiveChartRealData += QueryObj_ReceiveChartRealData;
+                stockListObj.ReceiveData += StockListObj_ReceiveData;
+                stockListObj.ReceiveMessage += QueryObj_ReceiveMessage;
 
                 indexQuotingObj = new XAQueryClass();
                 indexQuotingObj.ResFileName = resFilePath + "\\t1511.res";
-                indexQuotingObj.ReceiveChartRealData += queryObj_ReceiveChartRealData;
-                indexQuotingObj.ReceiveData += indexQuotingObj_ReceiveData;
-                indexQuotingObj.ReceiveMessage += queryObj_ReceiveMessage;
+                indexQuotingObj.ReceiveChartRealData += QueryObj_ReceiveChartRealData;
+                indexQuotingObj.ReceiveData += IndexQuotingObj_ReceiveData;
+                indexQuotingObj.ReceiveMessage += QueryObj_ReceiveMessage;
 
                 stockQuotingObj = new XAQueryClass();
                 stockQuotingObj.ResFileName = resFilePath + "\\t1102.res";
-                stockQuotingObj.ReceiveChartRealData += queryObj_ReceiveChartRealData;
-                stockQuotingObj.ReceiveData += stockQuotingObj_ReceiveData;
-                stockQuotingObj.ReceiveMessage += queryObj_ReceiveMessage;
+                stockQuotingObj.ReceiveChartRealData += QueryObj_ReceiveChartRealData;
+                stockQuotingObj.ReceiveData += StockQuotingObj_ReceiveData;
+                stockQuotingObj.ReceiveMessage += QueryObj_ReceiveMessage;
 
                 warningObj1 = new XAQueryClass();
                 warningObj1.ResFileName = resFilePath + "\\t1404.res";
-                warningObj1.ReceiveChartRealData += queryObj_ReceiveChartRealData;
-                warningObj1.ReceiveData += warningObj1_ReceiveData;
-                warningObj1.ReceiveMessage += queryObj_ReceiveMessage;
+                warningObj1.ReceiveChartRealData += QueryObj_ReceiveChartRealData;
+                warningObj1.ReceiveData += WarningObj1_ReceiveData;
+                warningObj1.ReceiveMessage += QueryObj_ReceiveMessage;
 
                 warningObj2 = new XAQueryClass();
                 warningObj2.ResFileName = resFilePath + "\\t1405.res";
-                warningObj2.ReceiveChartRealData += queryObj_ReceiveChartRealData;
-                warningObj2.ReceiveData += warningObj2_ReceiveData;
-                warningObj2.ReceiveMessage += queryObj_ReceiveMessage;
+                warningObj2.ReceiveChartRealData += QueryObj_ReceiveChartRealData;
+                warningObj2.ReceiveData += WarningObj2_ReceiveData;
+                warningObj2.ReceiveMessage += QueryObj_ReceiveMessage;
                 #endregion
 
                 #region Login
@@ -179,7 +179,7 @@ namespace MTree.EbestPublisher
         }
 
         #region XAQuery
-        private void queryObj_ReceiveMessage(bool bIsSystemError, string nMessageCode, string szMessage)
+        private void QueryObj_ReceiveMessage(bool bIsSystemError, string nMessageCode, string szMessage)
         {
             LastCommTick = Environment.TickCount;
 
@@ -187,31 +187,15 @@ namespace MTree.EbestPublisher
                 logger.Error($"bIsSystemError: {bIsSystemError}, nMessageCode: {nMessageCode}, szMessage: {szMessage}");
         }
 
-        private void queryObj_ReceiveChartRealData(string szTrCode)
+        private void QueryObj_ReceiveChartRealData(string szTrCode)
         {
             LastCommTick = Environment.TickCount;
             logger.Trace($"szTrCode: {szTrCode}");
         }
         #endregion
 
-        #region XAReal
-        private void realObj_ReceiveRealData(string szTrCode)
-        {
-            LastCommTick = Environment.TickCount;
-
-            if (szTrCode == "VI_")
-                VolatilityInterruptionReceived(szTrCode);
-            else if (szTrCode == "DVI")
-                AfterVolatilityInterruptionReceived(szTrCode);
-#if false
-            else if (szTrCode == "IJ_")
-                IndexConclusionReceived(szTrCode); 
-#endif
-        }
-        #endregion
-
         #region XASession
-        private void sessionObj_Event_Logout()
+        private void SessionObj_Event_Logout()
         {
             LastCommTick = Environment.TickCount;
 
@@ -221,7 +205,7 @@ namespace MTree.EbestPublisher
             logger.Info(LoginInstance.ToString());
         }
 
-        private void sessionObj_Event_Login(string szCode, string szMsg)
+        private void SessionObj_Event_Login(string szCode, string szMsg)
         {
             LastCommTick = Environment.TickCount;
 
@@ -238,7 +222,7 @@ namespace MTree.EbestPublisher
             }
         }
 
-        private void sessionObj_Disconnect()
+        private void SessionObj_Disconnect()
         {
             LoginInstance.State = LoginStates.Disconnect;
             logger.Info(LoginInstance.ToString());
@@ -445,7 +429,7 @@ namespace MTree.EbestPublisher
             return codeList;
         }
 
-        private void indexListObj_ReceiveData(string szTrCode)
+        private void IndexListObj_ReceiveData(string szTrCode)
         {
             try
             {
@@ -468,7 +452,7 @@ namespace MTree.EbestPublisher
             }
         }
 
-        private void stockListObj_ReceiveData(string szTrCode)
+        private void StockListObj_ReceiveData(string szTrCode)
         {
             try
             {
@@ -592,7 +576,7 @@ namespace MTree.EbestPublisher
             return true;
         }
 
-        private void warningObj1_ReceiveData(string szTrCode)
+        private void WarningObj1_ReceiveData(string szTrCode)
         {
             try
             {
@@ -622,7 +606,7 @@ namespace MTree.EbestPublisher
             }
         }
 
-        private void warningObj2_ReceiveData(string szTrCode)
+        private void WarningObj2_ReceiveData(string szTrCode)
         {
             try
             {
@@ -652,7 +636,7 @@ namespace MTree.EbestPublisher
             }
         }
 
-        protected bool WaitWarninglistUpdated()
+        protected bool WaitWarningListUpdated()
         {
             return WarningListUpdatedEvent.WaitOne(WarningListUpdateTimeout);
         }
@@ -673,7 +657,7 @@ namespace MTree.EbestPublisher
         {
             // Login이 완료된 후에 Publisher contract 등록
             WaitLogin();
-            WaitWarninglistUpdated();
+            WaitWarningListUpdated();
             base.ServiceClient_Opened(sender, e);
         }
 

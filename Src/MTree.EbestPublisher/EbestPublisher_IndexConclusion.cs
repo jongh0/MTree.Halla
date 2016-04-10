@@ -5,6 +5,17 @@ namespace MTree.EbestPublisher
 {
     public partial class EbestPublisher
     {
+        private int _IndexSubscribeCount = 0;
+        public int IndexSubscribeCount
+        {
+            get { return _IndexSubscribeCount; }
+            set
+            {
+                _IndexSubscribeCount = value;
+                NotifyPropertyChanged(nameof(IndexSubscribeCount));
+            }
+        }
+
         public override bool SubscribeIndex(string code)
         {
             if (WaitLogin() == false)
@@ -18,8 +29,8 @@ namespace MTree.EbestPublisher
                 indexSubscribingObj.SetFieldData("InBlock", "upcode", code);
                 indexSubscribingObj.AdviseRealData();
 
-                subscribeCount++;
-                logger.Info($"Subscribe index success, Code: {code}, subscribeCount: {subscribeCount}");
+                IndexSubscribeCount++;
+                logger.Info($"Subscribe index success, Code: {code}, subscribeCount: {IndexSubscribeCount}");
                 return true;
             }
             catch (Exception ex)
@@ -44,8 +55,8 @@ namespace MTree.EbestPublisher
                 indexSubscribingObj.SetFieldData("InBlock", "upcode", code);
                 indexSubscribingObj.UnadviseRealData();
 
-                subscribeCount--;
-                logger.Info($"Unsubscribe index success, Code: {code}, subscribeCount: {subscribeCount}");
+                IndexSubscribeCount--;
+                logger.Info($"Unsubscribe index success, Code: {code}, subscribeCount: {IndexSubscribeCount}");
                 return true;
             }
             catch (Exception ex)
@@ -57,10 +68,13 @@ namespace MTree.EbestPublisher
             return false;
         }
 
-        private void IndexConclusionReceived(string szTrCode)
+        private void IndexSubscribingObj_ReceiveRealData(string szTrCode)
         {
             try
             {
+                LastCommTick = Environment.TickCount;
+                logger.Trace($"szTrCode: {szTrCode}");
+
                 var now = DateTime.Now;
                 var conclusion = new IndexConclusion();
 

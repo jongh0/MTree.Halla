@@ -17,14 +17,14 @@ namespace MTree.Trader
             return base.Channel.GetAccountList();
         }
 
-        public int GetDeposit(string accountCode)
+        public long GetDeposit(string accNum, string accPw)
         {
-            return base.Channel.GetDeposit(accountCode);
+            return base.Channel.GetDeposit(accNum, accPw);
         }
 
-        public List<HoldingStock> GetHoldingList(string accountCode)
+        public List<HoldingStock> GetHoldingList(string accNum)
         {
-            return base.Channel.GetHoldingList(accountCode);
+            return base.Channel.GetHoldingList(accNum);
         }
 
         public OrderResult MakeOrder(Order order)
