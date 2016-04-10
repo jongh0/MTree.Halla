@@ -44,7 +44,7 @@ namespace MTree.VirtualTrader
         {
             try
             {
-                var account = GetAccout(order.Account);
+                var account = GetAccout(order.AccountNumber);
                 if (account != null)
                     return account.MakeOrder(order);
             }
