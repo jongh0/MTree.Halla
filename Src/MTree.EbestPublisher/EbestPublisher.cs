@@ -244,12 +244,17 @@ namespace MTree.EbestPublisher
         {
             LastCommTick = Environment.TickCount;
 
-            QuoteInterval = 1000 / stockQuotingObj.GetTRCountPerSec("t1102");
-
-            LoginInstance.State = LoginStates.Login;
-            SetLogin();
-
-            logger.Info($"{LoginInstance.ToString()}, nszCode: {szCode}, szMsg: {szMsg}");
+            if (szCode == "0000")
+            {
+                logger.Info("Loggin success");
+                LoginInstance.State = LoginStates.Login;
+                QuoteInterval = 1000 / stockQuotingObj.GetTRCountPerSec("t1102");
+                SetLogin();
+            }
+            else
+            {
+                logger.Error($"Loggin fail, szCode: {szCode}, szMsg: {szMsg}");
+            }
         }
 
         private void sessionObj_Disconnect()
@@ -266,7 +271,7 @@ namespace MTree.EbestPublisher
             {
                 if (sessionObj.ConnectServer(LoginInstance.ServerAddress, LoginInstance.ServerPort) == false)
                 {
-                    logger.Error("Server connection fail");
+                    logger.Error($"Server connection fail, {GetLastErrorMessage()}");
                     return false;
                 }
 
@@ -281,7 +286,7 @@ namespace MTree.EbestPublisher
                     return true;
                 }
 
-                logger.Error("Login error");
+                logger.Error($"Login error, {GetLastErrorMessage()}");
             }
             catch (Exception ex)
             {
@@ -663,7 +668,14 @@ namespace MTree.EbestPublisher
         {
             WarningListUpdatedEvent.Set();
         }
-        
+
+        private string GetLastErrorMessage()
+        {
+            var errCode = sessionObj.GetLastError();
+            var errMsg = sessionObj.GetErrorMessage(errCode);
+            return $"errCode: {errCode}, errMsg: {errMsg}";
+        }
+
         protected override void ServiceClient_Opened(object sender, EventArgs e)
         {
             // Login이 완료된 후에 Publisher contract 등록

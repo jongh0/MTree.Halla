@@ -102,8 +102,16 @@ namespace MTree.EbestTrader
         private void sessionObj_Event_Login(string szCode, string szMsg)
         {
             LastCommTick = Environment.TickCount;
-            LoginInstance.State = LoginStates.Login;
-            logger.Info($"{LoginInstance.ToString()}, nszCode: {szCode}, szMsg: {szMsg}");
+
+            if (szCode == "0000")
+            {
+                logger.Info("Loggin success");
+                LoginInstance.State = LoginStates.Login;
+            }
+            else
+            {
+                logger.Info($"Loggin fail, szCode: {szCode}, szMsg: {szMsg}");
+            }
         }
 
         private void sessionObj_Disconnect()
@@ -120,7 +128,7 @@ namespace MTree.EbestTrader
             {
                 if (sessionObj.ConnectServer(LoginInstance.ServerAddress, LoginInstance.ServerPort) == false)
                 {
-                    logger.Error("Server connection fail");
+                    logger.Error($"Server connection fail, {GetLastErrorMessage()}");
                     return false;
                 }
 
@@ -135,7 +143,7 @@ namespace MTree.EbestTrader
                     return true;
                 }
 
-                logger.Error("Login error");
+                logger.Error($"Login error, {GetLastErrorMessage()}");
             }
             catch (Exception ex)
             {
@@ -169,6 +177,13 @@ namespace MTree.EbestTrader
             return false;
         }
         #endregion
+
+        private string GetLastErrorMessage()
+        {
+            var errCode = sessionObj.GetLastError();
+            var errMsg = sessionObj.GetErrorMessage(errCode);
+            return $"errCode: {errCode}, errMsg: {errMsg}";
+        }
 
         private void OnCommunTimer(object sender, ElapsedEventArgs e)
         {
