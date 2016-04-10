@@ -29,6 +29,7 @@ namespace MTree.EbestTrader
         #region Ebest Specific
         private XASessionClass sessionObj;
         private XAQueryClass stockQuotingObj;
+        private XAQueryClass stockOrderObj;
         #endregion
 
         public EbestTrader()
@@ -49,7 +50,11 @@ namespace MTree.EbestTrader
                 #region XAQuery
                 stockQuotingObj = new XAQueryClass();
                 stockQuotingObj.ResFileName = resFilePath + "\\t1102.res";
-                stockQuotingObj.ReceiveData += queryObj_ReceiveData;
+                stockQuotingObj.ReceiveData += stockQuotingObj_ReceiveData;
+
+                stockOrderObj = new XAQueryClass();
+                stockOrderObj.ResFileName = resFilePath + "\\CSPAT00600.res";
+                stockOrderObj.ReceiveData += stockOrderObj_ReceiveData;
                 #endregion
 
                 #region Login
@@ -208,9 +213,25 @@ namespace MTree.EbestTrader
             }
         }
 
-        private void queryObj_ReceiveData(string szTrCode)
+        private void stockQuotingObj_ReceiveData(string szTrCode)
         {
             LastCommTick = Environment.TickCount;
+            logger.Trace($"szTrCode: {szTrCode}");
+        }
+
+        private void stockOrderObj_ReceiveData(string szTrCode)
+        {
+            LastCommTick = Environment.TickCount;
+            logger.Trace($"szTrCode: {szTrCode}");
+
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
         }
 
         #region INotifyPropertyChanged

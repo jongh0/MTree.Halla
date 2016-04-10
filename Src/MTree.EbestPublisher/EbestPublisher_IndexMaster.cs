@@ -67,10 +67,13 @@ namespace MTree.EbestPublisher
             return false;
         }
 
-        private void IndexMasterReceived()
+        private void indexQuotingObj_ReceiveData(string szTrCode)
         {
             try
             {
+                LastCommTick = Environment.TickCount;
+                logger.Trace($"szTrCode: {szTrCode}");
+
                 if (QuotingIndexMaster == null)
                     return;
 

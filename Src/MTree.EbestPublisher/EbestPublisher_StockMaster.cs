@@ -86,10 +86,13 @@ namespace MTree.EbestPublisher
             return false;
         }
 
-        private void StockMasterReceived()
+        private void stockQuotingObj_ReceiveData(string szTrCode)
         {
             try
             {
+                LastCommTick = Environment.TickCount;
+                logger.Trace($"szTrCode: {szTrCode}");
+
                 if (QuotingStockMaster == null)
                     return;
 

@@ -57,7 +57,7 @@ namespace MTree.EbestPublisher
         private XARealClass dviSubscribingObj;
 
         private XAQueryClass indexListObj;
-        private XAQueryClass codeListObj;
+        private XAQueryClass stockListObj;
         private XAQueryClass indexQuotingObj;
         private XAQueryClass stockQuotingObj;
 
@@ -111,37 +111,37 @@ namespace MTree.EbestPublisher
                 indexListObj = new XAQueryClass();
                 indexListObj.ResFileName = resFilePath + "\\t8424.res";
                 indexListObj.ReceiveChartRealData += queryObj_ReceiveChartRealData;
-                indexListObj.ReceiveData += queryObj_ReceiveData;
+                indexListObj.ReceiveData += indexListObj_ReceiveData;
                 indexListObj.ReceiveMessage += queryObj_ReceiveMessage;
 
-                codeListObj = new XAQueryClass();
-                codeListObj.ResFileName = resFilePath + "\\t8430.res";
-                codeListObj.ReceiveChartRealData += queryObj_ReceiveChartRealData;
-                codeListObj.ReceiveData += queryObj_ReceiveData;
-                codeListObj.ReceiveMessage += queryObj_ReceiveMessage;
+                stockListObj = new XAQueryClass();
+                stockListObj.ResFileName = resFilePath + "\\t8430.res";
+                stockListObj.ReceiveChartRealData += queryObj_ReceiveChartRealData;
+                stockListObj.ReceiveData += stockListObj_ReceiveData;
+                stockListObj.ReceiveMessage += queryObj_ReceiveMessage;
 
                 indexQuotingObj = new XAQueryClass();
                 indexQuotingObj.ResFileName = resFilePath + "\\t1511.res";
                 indexQuotingObj.ReceiveChartRealData += queryObj_ReceiveChartRealData;
-                indexQuotingObj.ReceiveData += queryObj_ReceiveData;
+                indexQuotingObj.ReceiveData += indexQuotingObj_ReceiveData;
                 indexQuotingObj.ReceiveMessage += queryObj_ReceiveMessage;
 
                 stockQuotingObj = new XAQueryClass();
                 stockQuotingObj.ResFileName = resFilePath + "\\t1102.res";
                 stockQuotingObj.ReceiveChartRealData += queryObj_ReceiveChartRealData;
-                stockQuotingObj.ReceiveData += queryObj_ReceiveData;
+                stockQuotingObj.ReceiveData += stockQuotingObj_ReceiveData;
                 stockQuotingObj.ReceiveMessage += queryObj_ReceiveMessage;
 
                 warningObj1 = new XAQueryClass();
                 warningObj1.ResFileName = resFilePath + "\\t1404.res";
                 warningObj1.ReceiveChartRealData += queryObj_ReceiveChartRealData;
-                warningObj1.ReceiveData += queryObj_ReceiveData;
+                warningObj1.ReceiveData += warningObj1_ReceiveData;
                 warningObj1.ReceiveMessage += queryObj_ReceiveMessage;
 
                 warningObj2 = new XAQueryClass();
                 warningObj2.ResFileName = resFilePath + "\\t1405.res";
                 warningObj2.ReceiveChartRealData += queryObj_ReceiveChartRealData;
-                warningObj2.ReceiveData += queryObj_ReceiveData;
+                warningObj2.ReceiveData += warningObj2_ReceiveData;
                 warningObj2.ReceiveMessage += queryObj_ReceiveMessage;
                 #endregion
 
@@ -185,25 +185,6 @@ namespace MTree.EbestPublisher
 
             if (bIsSystemError == true)
                 logger.Error($"bIsSystemError: {bIsSystemError}, nMessageCode: {nMessageCode}, szMessage: {szMessage}");
-        }
-
-        private void queryObj_ReceiveData(string szTrCode)
-        {
-            LastCommTick = Environment.TickCount;
-            logger.Trace($"szTrCode: {szTrCode}");
-
-            if (szTrCode == "t1102")
-                StockMasterReceived();
-            else if (szTrCode == "t1511")
-                IndexMasterReceived();
-            else if (szTrCode == "t8424")
-                IndexListReceived();
-            else if (szTrCode == "t8430")
-                StockListReceived();
-            else if (szTrCode == "t1404")
-                WarningType1ListReceived();
-            else if (szTrCode == "t1405")
-                WarningType2ListReceived();
         }
 
         private void queryObj_ReceiveChartRealData(string szTrCode)
@@ -400,8 +381,8 @@ namespace MTree.EbestPublisher
 
                 WaitQuoteInterval();
 
-                codeListObj.SetFieldData("t8430InBlock", "gubun", 0, "0");
-                ret = codeListObj.Request(false);
+                stockListObj.SetFieldData("t8430InBlock", "gubun", 0, "0");
+                ret = stockListObj.Request(false);
 
                 if (ret > 0)
                 {
@@ -464,10 +445,13 @@ namespace MTree.EbestPublisher
             return codeList;
         }
 
-        private void IndexListReceived()
+        private void indexListObj_ReceiveData(string szTrCode)
         {
             try
             {
+                LastCommTick = Environment.TickCount;
+                logger.Trace($"szTrCode: {szTrCode}");
+
                 int cnt = indexListObj.GetBlockCount("t8424OutBlock");
                 for (int i = 0; i < cnt; i++)
                 {
@@ -484,15 +468,18 @@ namespace MTree.EbestPublisher
             }
         }
 
-        private void StockListReceived()
+        private void stockListObj_ReceiveData(string szTrCode)
         {
             try
             {
-                int cnt = codeListObj.GetBlockCount("t8430OutBlock");
+                LastCommTick = Environment.TickCount;
+                logger.Trace($"szTrCode: {szTrCode}");
+
+                int cnt = stockListObj.GetBlockCount("t8430OutBlock");
 
                 for (int i = 0; i < cnt; i++)
                 {
-                    StockCodeList.Add(codeListObj.GetFieldData("t8430OutBlock", "shcode", i), codeListObj.GetFieldData("t8430OutBlock", "hname", i));
+                    StockCodeList.Add(stockListObj.GetFieldData("t8430OutBlock", "shcode", i), stockListObj.GetFieldData("t8430OutBlock", "hname", i));
                 }
             }
             catch (Exception ex)
@@ -605,10 +592,13 @@ namespace MTree.EbestPublisher
             return true;
         }
 
-        private void WarningType1ListReceived()
+        private void warningObj1_ReceiveData(string szTrCode)
         {
             try
             {
+                LastCommTick = Environment.TickCount;
+                logger.Trace($"szTrCode: {szTrCode}");
+
                 int cnt = warningObj1.GetBlockCount("t1404OutBlock1");
                 for (int i = 0; i < cnt; i++)
                 {
@@ -632,10 +622,13 @@ namespace MTree.EbestPublisher
             }
         }
 
-        private void WarningType2ListReceived()
+        private void warningObj2_ReceiveData(string szTrCode)
         {
             try
             {
+                LastCommTick = Environment.TickCount;
+                logger.Trace($"szTrCode: {szTrCode}");
+
                 int cnt = warningObj2.GetBlockCount("t1405OutBlock1");
                 for (int i = 0; i < cnt; i++)
                 {
