@@ -19,12 +19,6 @@ namespace MTree.EbestPublisher
 
         public override bool SubscribeCircuitBreak(string code)
         {
-            if (WaitLogin() == false)
-            {
-                logger.Error("Not loggedin state");
-                return false;
-            }
-
             try
             {
                 viSubscribingObj.SetFieldData("InBlock", "shcode", code);
@@ -48,12 +42,6 @@ namespace MTree.EbestPublisher
 
         public override bool UnsubscribeCircuitBreak(string code)
         {
-            if (WaitLogin() == false)
-            {
-                logger.Error("Not loggedin state");
-                return false;
-            }
-
             try
             {
                 viSubscribingObj.SetFieldData("InBlock", "shcode", code);

@@ -50,9 +50,9 @@ namespace MTree.EbestTrader
 
                 #region XASession
                 sessionObj = new XASessionClass();
-                sessionObj.Disconnect += sessionObj_Disconnect;
-                sessionObj._IXASessionEvents_Event_Login += sessionObj_Event_Login;
-                sessionObj._IXASessionEvents_Event_Logout += sessionObj_Event_Logout;
+                sessionObj.Disconnect += SessionObj_Disconnect;
+                sessionObj._IXASessionEvents_Event_Login += SessionObj_Event_Login;
+                sessionObj._IXASessionEvents_Event_Logout += SessionObj_Event_Logout;
                 #endregion
 
                 #region XAQuery
@@ -114,24 +114,19 @@ namespace MTree.EbestTrader
         }
 
         #region XASession
-        private void sessionObj_Event_Logout()
+        private void SessionObj_Event_Logout()
         {
-            LastCommTick = Environment.TickCount;
-
-            CommTimer?.Stop();
-
+            CommTimer.Stop();
             LoginInstance.State = LoginStates.LoggedOut;
             logger.Info(LoginInstance.ToString());
         }
 
-        private void sessionObj_Event_Login(string szCode, string szMsg)
+        private void SessionObj_Event_Login(string szCode, string szMsg)
         {
-            LastCommTick = Environment.TickCount;
-
             if (szCode == "0000")
             {
-                logger.Info("Login success");
                 LoginInstance.State = LoginStates.LoggedIn;
+                logger.Info($"Login success, {LoginInstance.ToString()}");
             }
             else
             {
@@ -139,10 +134,11 @@ namespace MTree.EbestTrader
             }
         }
 
-        private void sessionObj_Disconnect()
+        private void SessionObj_Disconnect()
         {
+            CommTimer.Stop();
             LoginInstance.State = LoginStates.Disconnect;
-            logger.Info(LoginInstance.ToString());
+            logger.Error(LoginInstance.ToString());
         }
         #endregion
 
@@ -157,18 +153,16 @@ namespace MTree.EbestTrader
                     return false;
                 }
 
-                logger.Info("Server connected");
+                logger.Info($"Try login, Id: {LoginInstance.UserId}");
 
-                int serverType = LoginInstance.ServerType == ServerTypes.Real ? (int)XA_SERVER_TYPE.XA_REAL_SERVER : (int)XA_SERVER_TYPE.XA_SIMUL_SERVER;
-
-                if (sessionObj.Login(LoginInstance.UserId, LoginInstance.UserPw, LoginInstance.CertPw, serverType, true) == true)
+                if (sessionObj.Login(LoginInstance.UserId, LoginInstance.UserPw, LoginInstance.CertPw, 0, true) == false)
                 {
-                    logger.Info($"Try login with id: {LoginInstance.UserId}");
-                    CommTimer.Start();
-                    return true;
+                    logger.Error($"Login error, {GetLastErrorMessage()}");
+                    return false;
                 }
 
-                logger.Error($"Login error, {GetLastErrorMessage()}");
+                CommTimer.Start();
+                return true;
             }
             catch (Exception ex)
             {
@@ -182,14 +176,9 @@ namespace MTree.EbestTrader
         {
             try
             {
-                if (sessionObj.IsConnected() == false)
-                    return false;
-
-                if (LoginInstance.State != LoginStates.LoggedIn)
-                    return false;
-
-                sessionObj.Logout();
+                CommTimer.Stop();
                 sessionObj.DisconnectServer();
+                LoginInstance.State = LoginStates.Disconnect;
 
                 logger.Info("Logout success");
                 return true;

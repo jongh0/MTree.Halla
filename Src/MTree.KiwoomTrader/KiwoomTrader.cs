@@ -30,6 +30,7 @@ namespace MTree.KiwoomTrader
                 kiwoomObj = axKHOpenAPI;
                 kiwoomObj.OnEventConnect += OnEventConnect;
                 kiwoomObj.OnReceiveTrData += OnReceiveTrData;
+                kiwoomObj.OnReceiveChejanData += OnReceiveChejanData;
 
                 Login();
             }
@@ -38,7 +39,6 @@ namespace MTree.KiwoomTrader
                 logger.Error(ex);
             }
         }
-
 
         #region Session
         protected bool WaitLogin()
@@ -140,7 +140,7 @@ namespace MTree.KiwoomTrader
         #endregion
         
         // 화면번호 생산
-        private string GetScrNum()
+        private string GetScreenNum()
         {
             if (_scrNum < 9999)
                 _scrNum++;
@@ -152,6 +152,29 @@ namespace MTree.KiwoomTrader
 
         private void OnReceiveTrData(object sender, AxKHOpenAPILib._DKHOpenAPIEvents_OnReceiveTrDataEvent e)
         {
+            switch (e.sRQName)
+            {
+                case "주식주문":
+                    OrderResultReceived(e);
+                    break;
+            }
+        }
+
+        private void OnReceiveChejanData(object sender, AxKHOpenAPILib._DKHOpenAPIEvents_OnReceiveChejanDataEvent e)
+        {
+            switch (e.sGubun)
+            {
+                case "0": // 주문체결통보
+                    OrderConclusionReceived(e);
+                    break;
+
+                case "1": // 잔고통보
+                    AccountDepositReceived(e);
+                    break;
+
+                case "3": // 특이신호
+                    break;
+            }
         }
     }
 }

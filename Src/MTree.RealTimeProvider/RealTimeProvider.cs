@@ -208,6 +208,9 @@ namespace MTree.RealTimeProvider
                 RealTimeState = $"Exit program, {type.ToString()}";
                 logger.Info(RealTimeState);
 
+                // Popup stopper 실행 (Ebest error popup 닫아야함)
+                ProcessUtility.Start(ProcessTypes.PopupStopper, ProcessWindowStyle.Minimized);
+
                 #region Publisher 종료
                 foreach (var contract in PublisherContracts)
                 {

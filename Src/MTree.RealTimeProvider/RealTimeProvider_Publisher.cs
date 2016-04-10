@@ -193,6 +193,8 @@ namespace MTree.RealTimeProvider
                             StartIndexMastering();
                             StartCodeDistributing();
                         }
+
+                        ProcessUtility.Kill(ProcessTypes.PopupStopper);
                     });
                 }
                 else

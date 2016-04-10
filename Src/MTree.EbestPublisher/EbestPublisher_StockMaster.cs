@@ -20,28 +20,15 @@ namespace MTree.EbestPublisher
 
         public bool GetQuote(string code, ref StockMaster stockMaster)
         {
-            if (WaitWarningListUpdated() == false)
-            {
-                logger.Error($"Quoting failed, Code: {code}, Warning list update is not done yet.");
-                return false;
-            }
-
             if (Monitor.TryEnter(QuoteLock, QuoteLockTimeout) == false)
             {
                 logger.Error($"Quoting failed, Code: {code}, Can't obtaion lock object");
                 return false;
             }
 
-            QuoteInterval = 1000 / stockQuotingObj.GetTRCountPerSec("t1102");
-
             try
             {
-                if (WaitLogin() == false)
-                {
-                    logger.Error($"Quoting failed, Code: {code}, Not loggedin state");
-                    return false;
-                }
-
+                QuoteInterval = 1000 / stockQuotingObj.GetTRCountPerSec("t1102");
                 WaitQuoteInterval();
 
                 logger.Info($"Start quoting, Code: {code}");

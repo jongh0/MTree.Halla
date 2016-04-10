@@ -14,16 +14,9 @@ namespace MTree.EbestPublisher
                 return false;
             }
 
-            QuoteInterval = 1000 / stockQuotingObj.GetTRCountPerSec("t1511");
-
             try
             {
-                if (WaitLogin() == false)
-                {
-                    logger.Error($"Quoting failed, Code: {code}, Not loggedin state");
-                    return false;
-                }
-
+                QuoteInterval = 1000 / stockQuotingObj.GetTRCountPerSec("t1511");
                 WaitQuoteInterval();
 
                 logger.Info($"Start quoting, Code: {code}");

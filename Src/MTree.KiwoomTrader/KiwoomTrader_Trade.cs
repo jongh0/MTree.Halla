@@ -53,17 +53,19 @@ namespace MTree.KiwoomTrader
         {
             try
             {
-                var rqName = "MakrOrder";
-                var screenNum = "1";
-                var accNum = order.AccountNumber;
-                var orderType = (int)order.OrderType;
-                var code = order.Code;
-                var qty = order.Quantity;
-                var price = order.Price;
                 var hoga = (order.PriceType == PriceTypes.LimitPrice) ? "00" : "03";
-                var originOrderNum = order.OriginOrderNumber;
 
-                var ret = kiwoomObj.SendOrder(rqName, screenNum, accNum, orderType, code, qty, price, hoga, originOrderNum);
+                var ret = kiwoomObj.SendOrder(
+                    "주식주문", 
+                    GetScreenNum(), 
+                    order.AccountNumber, 
+                    (int)order.OrderType, 
+                    order.Code, 
+                    order.Quantity, 
+                    order.Price, 
+                    hoga, 
+                    order.OriginOrderNumber);
+
                 if (ret == 0)
                 {
                     logger.Info($"Order success, {order.ToString()}");
@@ -90,6 +92,39 @@ namespace MTree.KiwoomTrader
             }
 
             return null;
+        }
+
+        private void OrderResultReceived(AxKHOpenAPILib._DKHOpenAPIEvents_OnReceiveTrDataEvent e)
+        {
+            try
+            {
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
+        private void OrderConclusionReceived(AxKHOpenAPILib._DKHOpenAPIEvents_OnReceiveChejanDataEvent e)
+        {
+            try
+            {
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
+        private void AccountDepositReceived(AxKHOpenAPILib._DKHOpenAPIEvents_OnReceiveChejanDataEvent e)
+        {
+            try
+            {
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
         }
     }
 }

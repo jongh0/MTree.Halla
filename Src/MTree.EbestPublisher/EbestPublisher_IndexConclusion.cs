@@ -18,12 +18,6 @@ namespace MTree.EbestPublisher
 
         public override bool SubscribeIndex(string code)
         {
-            if (WaitLogin() == false)
-            {
-                logger.Error("Not login state");
-                return false;
-            }
-
             try
             {
                 indexSubscribingObj.SetFieldData("InBlock", "upcode", code);
@@ -44,12 +38,6 @@ namespace MTree.EbestPublisher
 
         public override bool UnsubscribeIndex(string code)
         {
-            if (WaitLogin() == false)
-            {
-                logger.Error("Not login state");
-                return false;
-            }
-
             try
             {
                 indexSubscribingObj.SetFieldData("InBlock", "upcode", code);

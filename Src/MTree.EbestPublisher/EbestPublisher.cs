@@ -197,24 +197,18 @@ namespace MTree.EbestPublisher
         #region XASession
         private void SessionObj_Event_Logout()
         {
-            LastCommTick = Environment.TickCount;
-
-            CommTimer?.Stop();
-
+            CommTimer.Stop();
             LoginInstance.State = LoginStates.LoggedOut;
             logger.Info(LoginInstance.ToString());
         }
 
         private void SessionObj_Event_Login(string szCode, string szMsg)
         {
-            LastCommTick = Environment.TickCount;
-
             if (szCode == "0000")
             {
-                logger.Info("Login success");
-                LoginInstance.State = LoginStates.LoggedIn;
-                QuoteInterval = 1000 / stockQuotingObj.GetTRCountPerSec("t1102");
                 SetLogin();
+                LoginInstance.State = LoginStates.LoggedIn;
+                logger.Info($"Login success, {LoginInstance.ToString()}");
             }
             else
             {
@@ -224,8 +218,9 @@ namespace MTree.EbestPublisher
 
         private void SessionObj_Disconnect()
         {
+            CommTimer.Stop();
             LoginInstance.State = LoginStates.Disconnect;
-            logger.Info(LoginInstance.ToString());
+            logger.Error(LoginInstance.ToString());
         }
         #endregion
 
@@ -240,24 +235,22 @@ namespace MTree.EbestPublisher
                     return false;
                 }
 
-                logger.Info("Server connected");
-                
-                int serverType = LoginInstance.ServerType == ServerTypes.Real ? (int)XA_SERVER_TYPE.XA_REAL_SERVER : (int)XA_SERVER_TYPE.XA_SIMUL_SERVER;
+                logger.Info($"Try login, Id: {LoginInstance.UserId}");
 
-                if (sessionObj.Login(LoginInstance.UserId, LoginInstance.UserPw, LoginInstance.CertPw, serverType, true) == true)
+                if (sessionObj.Login(LoginInstance.UserId, LoginInstance.UserPw, LoginInstance.CertPw, 0, true) == false)
                 {
-                    logger.Info($"Try login with id: {LoginInstance.UserId}");
-                    CommTimer.Start();
-                    return true;
+                    logger.Error($"Login error, {GetLastErrorMessage()}");
+                    return false;
                 }
 
-                logger.Error($"Login error, {GetLastErrorMessage()}");
+                CommTimer.Start();
+                return true;
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
             }
-
+            
             return false;
         }
 
@@ -265,14 +258,9 @@ namespace MTree.EbestPublisher
         {
             try
             {
-                if (sessionObj.IsConnected() == false)
-                    return false;
-
-                if (LoginInstance.State != LoginStates.LoggedIn)
-                    return false;
-
-                sessionObj.Logout();
+                CommTimer.Stop();
                 sessionObj.DisconnectServer();
+                LoginInstance.State = LoginStates.Disconnect;
 
                 logger.Info("Logout success");
                 return true;
@@ -288,9 +276,6 @@ namespace MTree.EbestPublisher
 
         private void UpdateWarningList()
         {
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-
             try
             {
                 foreach (WarningTypes1 warningType in Enum.GetValues(typeof(WarningTypes1)))
@@ -310,9 +295,6 @@ namespace MTree.EbestPublisher
             finally
             {
                 SetWarningListUpdated();
-
-                sw.Stop();
-                logger.Trace(sw.Elapsed);
             }
         }
 
@@ -321,12 +303,6 @@ namespace MTree.EbestPublisher
             int ret = -1;
             try
             {
-                if (WaitLogin() == false)
-                {
-                    logger.Error($"Get industry list fail. Not loggedin state");
-                    return null;
-                }
-
                 WaitQuoteInterval();
 
                 indexListObj.SetFieldData("t8424InBlock", "gubun1", 0, "");
@@ -357,12 +333,6 @@ namespace MTree.EbestPublisher
             int ret = -1;
             try
             {
-                if (WaitLogin() == false)
-                {
-                    logger.Error($"Get stock list fail. Not loggedin state");
-                    return null;
-                }
-
                 WaitQuoteInterval();
 
                 stockListObj.SetFieldData("t8430InBlock", "gubun", 0, "0");
@@ -484,16 +454,9 @@ namespace MTree.EbestPublisher
                 return false;
             }
 
-            QuoteInterval = 1000 / stockQuotingObj.GetTRCountPerSec("t1404");
-
             try
             {
-                if (WaitLogin() == false)
-                {
-                    logger.Error($"Updating {warningType.ToString()} list fail, Not loggedin state");
-                    return false;
-                }
-
+                QuoteInterval = 1000 / stockQuotingObj.GetTRCountPerSec("t1404");
                 WaitQuoteInterval();
 
                 if (WarningList.ContainsKey(warningType.ToString()) == false)
@@ -534,16 +497,9 @@ namespace MTree.EbestPublisher
                 return false;
             }
 
-            QuoteInterval = 1000 / stockQuotingObj.GetTRCountPerSec("t1405");
-
             try
             {
-                if (WaitLogin() == false)
-                {
-                    logger.Error($"Updating {warningType.ToString()} list fail, Not loggedin state");
-                    return false;
-                }
-
+                QuoteInterval = 1000 / stockQuotingObj.GetTRCountPerSec("t1405");
                 WaitQuoteInterval();
 
                 if (WarningList.ContainsKey(warningType.ToString()) == false)

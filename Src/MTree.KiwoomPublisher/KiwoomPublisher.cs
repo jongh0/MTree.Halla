@@ -138,7 +138,7 @@ namespace MTree.KiwoomPublisher
         #endregion
 
         // 화면번호 생산
-        private string GetScrNum()
+        private string GetScreenNum()
         {
             if (_scrNum < 9999)
                 _scrNum++;
@@ -147,12 +147,19 @@ namespace MTree.KiwoomPublisher
 
             return _scrNum.ToString();
         }
-        
+
+        private void OnReceiveTrData(object sender, AxKHOpenAPILib._DKHOpenAPIEvents_OnReceiveTrDataEvent e)
+        {
+            switch (e.sRQName)
+            {
+                case "주식기본정보":
+                    StockMasterReceived(e);
+                    break;
+            }
+        }
+
         public override Dictionary<string, CodeEntity> GetCodeList()
         {
-            if (WaitLogin() == false)
-                logger.Error("Session is not established");
-
             var codeDictionary = new Dictionary<string, CodeEntity>();
 
             try
