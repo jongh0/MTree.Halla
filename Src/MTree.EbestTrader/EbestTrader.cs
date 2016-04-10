@@ -34,7 +34,7 @@ namespace MTree.EbestTrader
         #region Ebest Specific
         private XASessionClass sessionObj;
         private XAQueryClass stockQuotingObj;
-        private XAQueryClass normalOrderObj;
+        private XAQueryClass newOrderObj;
         private XAQueryClass modifyOrderObj;
         private XAQueryClass cancelOrderObj;
         private XAQueryClass accDepositObj;
@@ -60,9 +60,9 @@ namespace MTree.EbestTrader
                 stockQuotingObj.ResFileName = resFilePath + "\\t1102.res";
                 stockQuotingObj.ReceiveData += StockQuotingObj_ReceiveData;
 
-                normalOrderObj = new XAQueryClass();
-                normalOrderObj.ResFileName = resFilePath + "\\CSPAT00600.res";
-                normalOrderObj.ReceiveData += NormalOrderObj_ReceiveData;
+                newOrderObj = new XAQueryClass();
+                newOrderObj.ResFileName = resFilePath + "\\CSPAT00600.res";
+                newOrderObj.ReceiveData += NewOrderObj_ReceiveData;
 
                 modifyOrderObj = new XAQueryClass();
                 modifyOrderObj.ResFileName = resFilePath + "\\CSPAT00700.res";
@@ -240,7 +240,7 @@ namespace MTree.EbestTrader
             logger.Trace($"szTrCode: {szTrCode}");
         }
 
-        private void NormalOrderObj_ReceiveData(string szTrCode)
+        private void NewOrderObj_ReceiveData(string szTrCode)
         {
             try
             {

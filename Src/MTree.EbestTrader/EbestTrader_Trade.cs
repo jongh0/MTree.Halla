@@ -75,52 +75,59 @@ namespace MTree.EbestTrader
             throw new NotImplementedException();
         }
 
-        public OrderResult MakeOrder(Order order)
+        public bool MakeOrder(Order order)
         {
-            switch (order.Type)
+            bool ret = false;
+
+            switch (order.OrderType)
             {
-                case OrderTypes.Buy:
-                case OrderTypes.Sell:
-                    return MakeNormalOrder(order);
+                case OrderTypes.BuyNew:
+                case OrderTypes.SellNew:
+                    ret = MakeNewOrder(order);
+                    break;
 
                 case OrderTypes.BuyModify:
                 case OrderTypes.SellModify:
-                    return MakeModifyOrder(order);
+                    ret = MakeModifyOrder(order);
+                    break;
 
-                case OrderTypes.Cancel:
-                    return MakeCancelOrder(order);
-
-                default:
-                    return null;
+                case OrderTypes.BuyCancel:
+                case OrderTypes.SellCancel:
+                    ret = MakeCancelOrder(order);
+                    break;
             }
+
+            if (ret == true)
+                logger.Info($"Order success, {order.ToString()}");
+            else
+                logger.Error($"Order fail, {order.ToString()}");
+
+            return ret;
         }
 
-        private OrderResult MakeNormalOrder(Order order)
+        private bool MakeNewOrder(Order order)
         {
             try
             {
-                var orderResult = new OrderResult();
-                CurrOrderResult = orderResult;
-
                 var blockName = "CSPAT00600InBlock1";
 
                 // 계좌번호
-                normalOrderObj.SetFieldData(blockName, "AcntNo", 0, order.AccountNumber);
+                newOrderObj.SetFieldData(blockName, "AcntNo", 0, order.AccountNumber);
                 // 계좌비밀번호
-                normalOrderObj.SetFieldData(blockName, "InptPwd", 0, order.AccountPassword);
+                newOrderObj.SetFieldData(blockName, "InptPwd", 0, order.AccountPassword);
                 // 종목번호
-                normalOrderObj.SetFieldData(blockName, "IsuNo", 0, order.Code);
+                newOrderObj.SetFieldData(blockName, "IsuNo", 0, order.Code);
                 // 주문수량
-                normalOrderObj.SetFieldData(blockName, "OrdQty", 0, order.Amount.ToString());
+                newOrderObj.SetFieldData(blockName, "OrdQty", 0, order.Quantity.ToString());
                 // 주문가
-                normalOrderObj.SetFieldData(blockName, "OrdPrc", 0, order.Price.ToString());
+                newOrderObj.SetFieldData(blockName, "OrdPrc", 0, order.Price.ToString());
                 // 매매구분
-                if (order.Type == OrderTypes.Buy)
-                    normalOrderObj.SetFieldData(blockName, "BnsTpCode", 0, "1");
-                else if (order.Type == OrderTypes.Sell)
-                    normalOrderObj.SetFieldData(blockName, "BnsTpCode", 0, "2");
+                newOrderObj.SetFieldData(blockName, "BnsTpCode", 0, order.OrderType.ToString());
                 // 호가유형코드
-                normalOrderObj.SetFieldData(blockName, "OrdprcPtnCode", 0, "00");
+                if (order.PriceType == PriceTypes.LimitPrice)
+                    newOrderObj.SetFieldData(blockName, "OrdprcPtnCode", 0, "00");
+                else
+                    newOrderObj.SetFieldData(blockName, "OrdprcPtnCode", 0, "03");
                 // 신용거래코드
                 //normalOrderObj.SetFieldData(blockName, "MgntrnCode", 0, "");
                 // 대출일
@@ -128,39 +135,32 @@ namespace MTree.EbestTrader
                 // 주문조건구분
                 //normalOrderObj.SetFieldData(blockName, "OrdCndiTpCode", 0, "");
 
-                if (normalOrderObj.Request(false) < 0)
+                if (newOrderObj.Request(false) < 0)
                 {
-                    logger.Error($"Normal order error, {GetLastErrorMessage()}");
-                    return null;
+                    logger.Error($"New order error, {GetLastErrorMessage()}");
+                    return false;
                 }
 
                 if (WaitOrderEvent.WaitOne(WaitTimeout) == false)
                 {
-                    logger.Error($"Normal order timeout");
-                    return null;
+                    logger.Error($"New order timeout");
+                    return false;
                 }
 
-                return orderResult;
+                return true;
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
             }
-            finally
-            {
-                CurrOrderResult = null;
-            }
 
-            return null;
+            return false;
         }
 
-        private OrderResult MakeModifyOrder(Order order)
+        private bool MakeModifyOrder(Order order)
         {
             try
             {
-                var orderResult = new OrderResult();
-                CurrOrderResult = orderResult;
-
                 var blockName = "CSPAT00700InBlock1";
 
                 // 원주문번호
@@ -172,9 +172,12 @@ namespace MTree.EbestTrader
                 // 종목번호
                 modifyOrderObj.SetFieldData(blockName, "IsuNo", 0, order.Code);
                 // 주문수량
-                modifyOrderObj.SetFieldData(blockName, "OrdQty", 0, order.Amount.ToString());
+                modifyOrderObj.SetFieldData(blockName, "OrdQty", 0, order.Quantity.ToString());
                 // 호가유형코드
-                modifyOrderObj.SetFieldData(blockName, "OrdprcPtnCode", 0, "00");
+                if (order.PriceType == PriceTypes.LimitPrice)
+                    modifyOrderObj.SetFieldData(blockName, "OrdprcPtnCode", 0, "00");
+                else
+                    modifyOrderObj.SetFieldData(blockName, "OrdprcPtnCode", 0, "03");
                 // 주문조건구분
                 //modifyOrderObj.SetFieldData(blockName, "OrdCndiTpCode", 0, "");
                 // 주문가
@@ -183,36 +186,29 @@ namespace MTree.EbestTrader
                 if (modifyOrderObj.Request(false) < 0)
                 {
                     logger.Error($"Modify order error, {GetLastErrorMessage()}");
-                    return null;
+                    return false;
                 }
 
                 if (WaitOrderEvent.WaitOne(WaitTimeout) == false)
                 {
                     logger.Error($"Modify order timeout");
-                    return null;
+                    return false;
                 }
 
-                return orderResult;
+                return true;
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
             }
-            finally
-            {
-                CurrOrderResult = null;
-            }
 
-            return null;
+            return false;
         }
 
-        private OrderResult MakeCancelOrder(Order order)
+        private bool MakeCancelOrder(Order order)
         {
             try
             {
-                var orderResult = new OrderResult();
-                CurrOrderResult = orderResult;
-
                 var blockName = "CSPAT00800InBlock1";
 
                 // 원주문번호
@@ -224,32 +220,28 @@ namespace MTree.EbestTrader
                 // 종목번호
                 cancelOrderObj.SetFieldData(blockName, "IsuNo", 0, order.Code);
                 // 주문수량
-                cancelOrderObj.SetFieldData(blockName, "OrdQty", 0, order.Amount.ToString());
+                cancelOrderObj.SetFieldData(blockName, "OrdQty", 0, order.Quantity.ToString());
 
                 if (cancelOrderObj.Request(false) < 0)
                 {
                     logger.Error($"Cancel order error, {GetLastErrorMessage()}");
-                    return null;
+                    return false;
                 }
 
                 if (WaitOrderEvent.WaitOne(WaitTimeout) == false)
                 {
                     logger.Error($"Cancel order timeout");
-                    return null;
+                    return false;
                 }
 
-                return orderResult;
+                return true;
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
             }
-            finally
-            {
-                CurrOrderResult = null;
-            }
 
-            return null;
+            return false;
         }
     }
 }

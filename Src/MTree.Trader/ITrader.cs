@@ -20,7 +20,7 @@ namespace MTree.Trader
         List<HoldingStock> GetHoldingList(string accNum);
 
         [OperationContract]
-        OrderResult MakeOrder(Order order);
+        bool MakeOrder(Order order);
     }
 
     public interface ITraderCallback

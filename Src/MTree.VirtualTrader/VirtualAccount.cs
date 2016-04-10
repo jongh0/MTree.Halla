@@ -17,7 +17,7 @@ namespace MTree.VirtualTrader
 
         public List<HoldingStock> HoldingStockList { get; private set; } = new List<HoldingStock>();
 
-        public OrderResult MakeOrder(Order order)
+        public bool MakeOrder(Order order)
         {
             var result = new OrderResult();
 
@@ -31,7 +31,7 @@ namespace MTree.VirtualTrader
                 logger.Error(ex);
             }
 
-            return result;
+            return false;
         }
     }
 }

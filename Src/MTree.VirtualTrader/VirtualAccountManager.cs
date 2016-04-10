@@ -40,7 +40,7 @@ namespace MTree.VirtualTrader
                 return null;
         }
 
-        public OrderResult MakeOrder(Order order)
+        public bool MakeOrder(Order order)
         {
             try
             {
@@ -53,7 +53,7 @@ namespace MTree.VirtualTrader
                 logger.Error(ex);
             }
 
-            return null;
+            return false;
         }
     }
 }
