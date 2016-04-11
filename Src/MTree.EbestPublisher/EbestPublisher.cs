@@ -97,9 +97,11 @@ namespace MTree.EbestPublisher
                 #endregion
 
                 #region XAReal
+#if false
                 indexSubscribingObj = new XARealClass();
                 indexSubscribingObj.ReceiveRealData += IndexSubscribingObj_ReceiveRealData;
-                indexSubscribingObj.ResFileName = resFilePath + "\\IJ_.res";
+                indexSubscribingObj.ResFileName = resFilePath + "\\IJ_.res"; 
+#endif
 
                 viSubscribingObj = new XARealClass();
                 viSubscribingObj.ReceiveRealData += ViSubscribingObj_ReceiveRealData;
