@@ -269,7 +269,9 @@ namespace MTree.EbestTrader
             OrderResult orderResult = new OrderResult();
             orderResult.OrderNumber = orderSubmittedObj.GetFieldData("OutBlock", "ordno");
             orderResult.Code = orderSubmittedObj.GetFieldData("OutBlock", "shtcode");
-            orderResult.ConcludedAmount = 0;
+            orderResult.OrderedQuantity = Convert.ToInt32(orderSubmittedObj.GetFieldData("OutBlock", "ordqty"));
+            orderResult.OrderedPrice = Convert.ToInt32(orderSubmittedObj.GetFieldData("OutBlock", "ordprice"));
+            orderResult.ConcludedQuantity = 0;
             orderResult.ConcludedPrice = 0;
 
             throw new NotImplementedException();

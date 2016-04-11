@@ -15,11 +15,11 @@ namespace MTree.Trader
 
         public OrderTypes OrderType { get; set; }
 
-        public int ConcludedAmount { get; set; }
+        public int ConcludedQuantity { get; set; }
 
         public int ConcludedPrice { get; set; }
 
-        public int OrderedAmount { get; set; }
+        public int OrderedQuantity { get; set; }
 
         public int OrderedPrice { get; set; }
 
