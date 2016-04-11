@@ -257,5 +257,45 @@ namespace MTree.EbestTrader
 
             return false;
         }
+        
+        private void OrderSubmittedObj_ReceiveRealData(string szTrCode)
+        {
+            if (szTrCode != "SC0")
+            {
+                logger.Error("Wrong tr code");
+                return;
+            }
+
+            OrderResult orderResult = new OrderResult();
+            orderResult.OrderNumber = orderSubmittedObj.GetFieldData("OutBlock", "ordno");
+            orderResult.Code = orderSubmittedObj.GetFieldData("OutBlock", "shtcode");
+            orderResult.ConcludedAmount = 0;
+            orderResult.ConcludedPrice = 0;
+
+            throw new NotImplementedException();
+        }
+
+        private void OrderRejectedObj_ReceiveRealData(string szTrCode)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void OrderConcludedObj_ReceiveRealData(string szTrCode)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void OrderCanceledObj_ReceiveRealData(string szTrCode)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void OrderModifiedObj_ReceiveRealData(string szTrCode)
+        {
+            throw new NotImplementedException();
+        }
+
+        
+
     }
 }

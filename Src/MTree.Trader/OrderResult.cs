@@ -9,7 +9,11 @@ namespace MTree.Trader
     [Serializable]
     public class OrderResult
     {
+        public string OrderNumber { get; set; }
+        
         public string Code { get; set; }
+
+        public OrderTypes OrderType { get; set; }
 
         public int ConcludedAmount { get; set; }
 
@@ -19,8 +23,6 @@ namespace MTree.Trader
 
         public int OrderedPrice { get; set; }
 
-        public ulong OrderNumber { get; set; }
 
-        public OrderTypes OrderType { get; set; }
     }
 }

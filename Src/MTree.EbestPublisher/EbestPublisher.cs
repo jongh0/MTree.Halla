@@ -1,6 +1,4 @@
-﻿#define NOT_USE_QUEUE
-
-using System;
+﻿using System;
 using System.Threading;
 using MTree.DataStructure;
 using MTree.Configuration;
@@ -14,7 +12,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.ComponentModel;
-using MTree.Utility;
 
 namespace MTree.EbestPublisher
 {

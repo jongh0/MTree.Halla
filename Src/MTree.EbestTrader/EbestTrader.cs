@@ -37,6 +37,12 @@ namespace MTree.EbestTrader
         private XAQueryClass modifyOrderObj;
         private XAQueryClass cancelOrderObj;
         private XAQueryClass accDepositObj;
+
+        private XARealClass orderSubmittedObj;
+        private XARealClass orderConcludedObj;
+        private XARealClass orderModifiedObj;
+        private XARealClass orderCanceledObj;
+        private XARealClass orderRejectedObj;
         #endregion
 
         public EbestTrader()
@@ -74,6 +80,33 @@ namespace MTree.EbestTrader
                 accDepositObj = new XAQueryClass();
                 accDepositObj.ResFileName = resFilePath + "\\t0424.res";
                 accDepositObj.ReceiveData += AccDepositObj_ReceiveData;
+                #endregion
+
+                #region XAReal
+                orderSubmittedObj = new XARealClass();
+                orderSubmittedObj.ResFileName = resFilePath + "\\SC0.res";
+                orderSubmittedObj.ReceiveRealData += OrderSubmittedObj_ReceiveRealData;
+                orderSubmittedObj.AdviseRealData();
+
+                orderConcludedObj = new XARealClass();
+                orderConcludedObj.ResFileName = resFilePath + "\\SC1.res";
+                orderConcludedObj.ReceiveRealData += OrderConcludedObj_ReceiveRealData;
+                orderConcludedObj.AdviseRealData();
+
+                orderModifiedObj = new XARealClass();
+                orderModifiedObj.ResFileName = resFilePath + "\\SC2.res";
+                orderModifiedObj.ReceiveRealData += OrderModifiedObj_ReceiveRealData;
+                orderModifiedObj.AdviseRealData();
+
+                orderCanceledObj = new XARealClass();
+                orderCanceledObj.ResFileName = resFilePath + "\\SC3.res";
+                orderCanceledObj.ReceiveRealData += OrderCanceledObj_ReceiveRealData;
+                orderCanceledObj.AdviseRealData();
+
+                orderRejectedObj = new XARealClass();
+                orderRejectedObj.ResFileName = resFilePath + "\\SC3.res";
+                orderRejectedObj.ReceiveRealData += OrderRejectedObj_ReceiveRealData;
+                orderRejectedObj.AdviseRealData();
                 #endregion
 
                 #region Login
