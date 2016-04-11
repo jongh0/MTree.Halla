@@ -19,8 +19,6 @@ namespace MTree.KiwoomPublisher
 
         private AxKHOpenAPILib.AxKHOpenAPI kiwoomObj;
 
-        private int _scrNum = 5000;
-
         public KiwoomPublisher(AxKHOpenAPILib.AxKHOpenAPI axKHOpenAPI) : base()
         {
             try
@@ -92,10 +90,11 @@ namespace MTree.KiwoomPublisher
                 {
                     logger.Info("Login sucess");
                     LoginInstance.State = LoginStates.LoggedIn;
+                    SetLogin();
                 }
                 else
                 {
-                    logger.Error($"Login fail, return code: {e.nErrCode}. Message: {ErrorMessageUtility.GetErrorMessage(e.nErrCode)}");
+                    logger.Error($"Login fail, {KiwoomError.GetErrorMessage(e.nErrCode)}");
                 }
             }
             catch (Exception ex)
@@ -105,7 +104,6 @@ namespace MTree.KiwoomPublisher
             finally
             {
                 ClosePopup();
-                SetLogin();
             }
         }
 
@@ -136,17 +134,6 @@ namespace MTree.KiwoomPublisher
             return false;
         }
         #endregion
-
-        // 화면번호 생산
-        private string GetScreenNum()
-        {
-            if (_scrNum < 9999)
-                _scrNum++;
-            else
-                _scrNum = 5000;
-
-            return _scrNum.ToString();
-        }
 
         private void OnReceiveTrData(object sender, AxKHOpenAPILib._DKHOpenAPIEvents_OnReceiveTrDataEvent e)
         {

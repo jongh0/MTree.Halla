@@ -3,6 +3,15 @@ using System;
 
 namespace MTree.Configuration
 {
+    public enum TraderTypes
+    {
+        Virtual,
+        Ebest,
+        EbestSimul,
+        Kiwoom,
+        KiwoomSimul,
+    }
+
     public class GeneralConfiguration
     {
         [JsonIgnore]
@@ -29,13 +38,13 @@ namespace MTree.Configuration
         [JsonIgnore]
         public bool ExcludeKiwoom { get; } = false;
 
-        public bool SimulTrade { get; set; } = false;
+        [JsonIgnore]
+        public bool OfflineMode { get; } = false;
 
-        public bool VirtualTrade { get; set; } = false;
+        [JsonIgnore]
+        public bool SkipMastering { get; } = false;
 
-        public bool OfflineMode { get; set; } = false;
-
-        public bool SkipMastering { get; set; } = false;
+        public TraderTypes TraderType { get; set; } = TraderTypes.Kiwoom;
 
         public bool SkipBiddingPrice { get; set; } = false;
     }

@@ -25,6 +25,17 @@ namespace MTree.StrategyManager
             }
         }
 
+        public override void NotifyOrderResult(OrderResult result)
+        {
+            try
+            {
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
 

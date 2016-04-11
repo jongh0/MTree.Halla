@@ -1,6 +1,9 @@
-﻿using System;
+﻿#define NOT_USE_QUEUE
+
+using System;
 using MTree.DataStructure;
 using MongoDB.Bson;
+using System.ServiceModel;
 
 namespace MTree.EbestPublisher
 {
@@ -102,7 +105,12 @@ namespace MTree.EbestPublisher
 
                 circuitBreak.InvokePrice = Convert.ToSingle(viSubscribingObj.GetFieldData("OutBlock", "vi_trgprice"));
 
-                CircuitBreakQueue.Enqueue(circuitBreak);
+#if NOT_USE_QUEUE
+                if (ServiceClient.State == CommunicationState.Opened)
+                    ServiceClient.PublishCircuitBreak(circuitBreak);
+#else
+                CircuitBreakQueue.Enqueue(circuitBreak); 
+#endif
             }
             catch (Exception ex)
             {
@@ -148,7 +156,12 @@ namespace MTree.EbestPublisher
 
                 circuitBreak.InvokePrice = Convert.ToSingle(dviSubscribingObj.GetFieldData("OutBlock", "vi_trgprice"));
 
-                CircuitBreakQueue.Enqueue(circuitBreak);
+#if NOT_USE_QUEUE
+                if (ServiceClient.State == CommunicationState.Opened)
+                    ServiceClient.PublishCircuitBreak(circuitBreak);
+#else
+                CircuitBreakQueue.Enqueue(circuitBreak); 
+#endif
             }
             catch (Exception ex)
             {

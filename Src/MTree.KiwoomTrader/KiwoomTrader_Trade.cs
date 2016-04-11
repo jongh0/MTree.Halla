@@ -1,4 +1,5 @@
 ﻿using MTree.Trader;
+using MTree.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +14,9 @@ namespace MTree.KiwoomTrader
         {
             try
             {
-                if (WaitLogin() == false)
+                if (kiwoomObj.GetConnectState() == 0)
                 {
-                    logger.Error("Account list, login error");
+                    logger.Error("Account list query, session not connected");
                     return null;
                 }
 
@@ -40,6 +41,11 @@ namespace MTree.KiwoomTrader
         {
             try
             {
+                if (kiwoomObj.GetConnectState() == 0)
+                {
+                    logger.Error("Deposit query, session not connected");
+                    return 0;
+                }
             }
             catch (Exception ex)
             {
@@ -53,11 +59,17 @@ namespace MTree.KiwoomTrader
         {
             try
             {
+                if (kiwoomObj.GetConnectState() == 0)
+                {
+                    logger.Error("Make order, session not connected");
+                    return false;
+                }
+
                 var hoga = (order.PriceType == PriceTypes.LimitPrice) ? "00" : "03";
 
                 var ret = kiwoomObj.SendOrder(
-                    "주식주문", 
-                    GetScreenNum(), 
+                    "주식주문",
+                    KiwoomScreen.GetScreenNum(), 
                     order.AccountNumber, 
                     (int)order.OrderType, 
                     order.Code, 
@@ -85,6 +97,11 @@ namespace MTree.KiwoomTrader
         {
             try
             {
+                if (kiwoomObj.GetConnectState() == 0)
+                {
+                    logger.Error("Holding list query, session not connected");
+                    return null;
+                }
             }
             catch (Exception ex)
             {

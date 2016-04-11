@@ -18,7 +18,7 @@ namespace MTree.EbestTrader
             {
                 if (sessionObj.IsConnected() == false)
                 {
-                    logger.Error("Session not connected");
+                    logger.Error("Account list query, session not connected");
                     return null;
                 }
 
@@ -45,12 +45,19 @@ namespace MTree.EbestTrader
         {
             try
             {
+                if (sessionObj.IsConnected() == false)
+                {
+                    logger.Error("Deposit query, session not connected");
+                    return 0;
+                }
+
                 accDepositObj.SetFieldData("t0424InBlock", "accno", 0, accNum);
                 accDepositObj.SetFieldData("t0424InBlock", "passwd", 0, accPw);
 
-                if (accDepositObj.Request(false) < 0)
+                var ret = accDepositObj.Request(false);
+                if (ret < 0)
                 {
-                    logger.Error($"Deposit query error, {GetLastErrorMessage()}");
+                    logger.Error($"Deposit query error, {GetLastErrorMessage(ret)}");
                     return 0;
                 }
 
@@ -72,11 +79,30 @@ namespace MTree.EbestTrader
 
         public List<HoldingStock> GetHoldingList(string accNum)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (sessionObj.IsConnected() == false)
+                {
+                    logger.Error("Holding list query, session not connected");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+
+            return null;
         }
 
         public bool MakeOrder(Order order)
         {
+            if (sessionObj.IsConnected() == false)
+            {
+                logger.Error("Make order, session not connected");
+                return false;
+            }
+
             bool ret = false;
 
             switch (order.OrderType)
@@ -135,18 +161,14 @@ namespace MTree.EbestTrader
                 // 주문조건구분
                 //normalOrderObj.SetFieldData(blockName, "OrdCndiTpCode", 0, "");
 
-                if (newOrderObj.Request(false) < 0)
+                var ret = newOrderObj.Request(false);
+                if (ret < 0)
                 {
-                    logger.Error($"New order error, {GetLastErrorMessage()}");
+                    logger.Error($"New order error, {order.ToString()}, {GetLastErrorMessage(ret)}");
                     return false;
                 }
 
-                if (WaitOrderEvent.WaitOne(WaitTimeout) == false)
-                {
-                    logger.Error($"New order timeout");
-                    return false;
-                }
-
+                logger.Info($"New order success, {order.ToString()}");
                 return true;
             }
             catch (Exception ex)
@@ -183,18 +205,14 @@ namespace MTree.EbestTrader
                 // 주문가
                 modifyOrderObj.SetFieldData(blockName, "OrdPrc", 0, order.Price.ToString());
 
-                if (modifyOrderObj.Request(false) < 0)
+                var ret = modifyOrderObj.Request(false);
+                if (ret < 0)
                 {
-                    logger.Error($"Modify order error, {GetLastErrorMessage()}");
+                    logger.Error($"Modify order error , {order.ToString()}, {GetLastErrorMessage(ret)}");
                     return false;
                 }
 
-                if (WaitOrderEvent.WaitOne(WaitTimeout) == false)
-                {
-                    logger.Error($"Modify order timeout");
-                    return false;
-                }
-
+                logger.Info($"Modify order success, {order.ToString()}");
                 return true;
             }
             catch (Exception ex)
@@ -222,18 +240,14 @@ namespace MTree.EbestTrader
                 // 주문수량
                 cancelOrderObj.SetFieldData(blockName, "OrdQty", 0, order.Quantity.ToString());
 
-                if (cancelOrderObj.Request(false) < 0)
+                var ret = cancelOrderObj.Request(false);
+                if (ret < 0)
                 {
-                    logger.Error($"Cancel order error, {GetLastErrorMessage()}");
+                    logger.Error($"Cancel order error, {order.ToString()}, {GetLastErrorMessage(ret)}");
                     return false;
                 }
 
-                if (WaitOrderEvent.WaitOne(WaitTimeout) == false)
-                {
-                    logger.Error($"Cancel order timeout");
-                    return false;
-                }
-
+                logger.Info($"Cancel order success, {order.ToString()}");
                 return true;
             }
             catch (Exception ex)

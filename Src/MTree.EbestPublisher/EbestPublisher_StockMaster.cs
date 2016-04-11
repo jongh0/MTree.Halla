@@ -36,24 +36,21 @@ namespace MTree.EbestPublisher
                 QuotingStockMaster.Code = code;
 
                 stockQuotingObj.SetFieldData("t1102InBlock", "shcode", 0, code);
-                if (stockQuotingObj.Request(false) < 0)
+                var ret = stockQuotingObj.Request(false);
+                if (ret < 0)
                 {
-                    logger.Error($"Quoting request error, {GetLastErrorMessage()}");
+                    logger.Error($"Quoting request error, {GetLastErrorMessage(ret)}");
                     return false;
                 }
 
-                if (WaitQuoting() == true)
+                if (WaitQuoting() == false)
+                    return false;
+
+                if (QuotingStockMaster.Code != string.Empty)
                 {
-                    if (QuotingStockMaster.Code != string.Empty)
-                    {
-                        logger.Info($"Quoting done, Code: {code}");
-                        return true;
-                    }
-
-                    logger.Error($"Quoting fail, Code: {code}");
+                    logger.Info($"Quoting done, Code: {code}");
+                    return true;
                 }
-
-                logger.Error($"Quoting timeout, Code: {code}");
             }
             catch (Exception ex)
             {
@@ -65,6 +62,7 @@ namespace MTree.EbestPublisher
                 Monitor.Exit(QuoteLock);
             }
 
+            logger.Error($"Quoting fail, Code: {code}");
             return false;
         }
 

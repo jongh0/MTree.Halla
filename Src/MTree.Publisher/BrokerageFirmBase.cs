@@ -150,7 +150,13 @@ namespace MTree.Publisher
 
         protected bool WaitQuoting()
         {
-            return WaitQuotingEvent.WaitOne(WaitQuotingTimeout);
+            if (WaitQuotingEvent.WaitOne(WaitQuotingTimeout) == false)
+            {
+                logger.Error($"{GetType().Name} wait quoting timeout");
+                return false;
+            }
+
+            return true;
         }
 
         protected void SetQuoting()
@@ -160,11 +166,20 @@ namespace MTree.Publisher
 
         protected bool WaitLogin()
         {
-            return WaitLoginEvent.WaitOne(WaitLoginTimeout);
+            if (WaitLoginEvent.WaitOne(WaitLoginTimeout) == false)
+            {
+                logger.Error($"{GetType().Name} wait login timeout");
+                return false;
+            }
+
+            return true;
         }
 
         protected void SetLogin()
         {
+            Thread.Sleep(1000 * 3); // 로그인후 대기
+
+            logger.Info($"{GetType().Name} set login");
             WaitLoginEvent.Set();
         }
 

@@ -1,5 +1,8 @@
-﻿using System;
+﻿//#define NOT_USE_QUEUE
+
+using System;
 using MTree.DataStructure;
+using System.ServiceModel;
 
 namespace MTree.EbestPublisher
 {
@@ -140,7 +143,12 @@ namespace MTree.EbestPublisher
                 conclusion.Amount = conclusion.Amount - PrevIndexConclusions[conclusion.Code].Amount;
                 PrevIndexConclusions[conclusion.Code].Amount = newReceived;
 
+#if NOT_USE_QUEUE
+                if (ServiceClient.State == CommunicationState.Opened)
+                    ServiceClient.PublishIndexConclusion(conclusion);
+#else
                 IndexConclusionQueue.Enqueue(conclusion);
+#endif
             }
             catch (Exception ex)
             {

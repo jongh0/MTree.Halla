@@ -9,5 +9,8 @@ namespace MTree.Trader
 {
     public class TraderCallback : ITraderCallback
     {
+        public virtual void NotifyOrderResult(OrderResult result)
+        {
+        }
     }
 }

@@ -25,6 +25,7 @@ namespace MTree.Trader
 
     public interface ITraderCallback
     {
-
+        [OperationContract(IsOneWay = true)]
+        void NotifyOrderResult(OrderResult result);
     }
 }

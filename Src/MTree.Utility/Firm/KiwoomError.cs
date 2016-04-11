@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MTree.Utility
 {
-    public class ErrorMessageUtility
+    public class KiwoomError
     {
         enum KOAErrorCode
         {
@@ -28,7 +28,7 @@ namespace MTree.Utility
 
         private static Dictionary<int, string> ErrorMessageList { get; set; } = new Dictionary<int, string>();
 
-        static ErrorMessageUtility()
+        static KiwoomError()
         {
             ErrorMessageList.Add((int)KOAErrorCode.OP_ERR_NONE, "정상처리");
             ErrorMessageList.Add((int)KOAErrorCode.OP_ERR_LOGIN, "사용자정보교환에 실패하였습니다. 잠시후 다시 시작하여 주십시오.");
@@ -46,12 +46,14 @@ namespace MTree.Utility
             ErrorMessageList.Add((int)KOAErrorCode.OP_ERR_MID_3PER_EXC, "주문수량은 총발행주수의 3%를 초과할 수 없습니다.");
         }
 
-        public static string GetErrorMessage(int errorCode)
+        public static string GetErrorMessage(int errCode)
         {
-            if (ErrorMessageList.ContainsKey(errorCode) == true)
-                return ErrorMessageList[errorCode];
-            else
-                return "알려지지 않은 오류입니다.";
+            var errMsg = "알려지지 않은 오류입니다.";
+
+            if (ErrorMessageList.ContainsKey(errCode) == true)
+                errMsg = ErrorMessageList[errCode];
+
+            return $"errCode: {errCode}, errMsg: {errMsg}";
         }
     }
 }

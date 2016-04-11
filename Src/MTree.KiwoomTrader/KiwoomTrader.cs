@@ -17,10 +17,9 @@ namespace MTree.KiwoomTrader
 
         private AxKHOpenAPILib.AxKHOpenAPI kiwoomObj;
 
-        private int _scrNum = 5000;
-
+        // Login
+        public LoginInfo LoginInstance { get; } = new LoginInfo();
         private int WaitLoginTimeout { get; } = 1000 * 15;
-
         private ManualResetEvent WaitLoginEvent { get; } = new ManualResetEvent(false);
 
         public KiwoomTrader(AxKHOpenAPILib.AxKHOpenAPI axKHOpenAPI)
@@ -41,16 +40,6 @@ namespace MTree.KiwoomTrader
         }
 
         #region Session
-        protected bool WaitLogin()
-        {
-            return WaitLoginEvent.WaitOne(WaitLoginTimeout);
-        }
-
-        protected void SetLogin()
-        {
-            WaitLoginEvent.Set();
-        }
-
         public bool Login()
         {
             try
@@ -76,6 +65,7 @@ namespace MTree.KiwoomTrader
             try
             {
                 kiwoomObj.CommTerminate();
+                LoginInstance.State = LoginStates.LoggedOut;
                 logger.Info("Logout success");
                 return true;
             }
@@ -94,10 +84,11 @@ namespace MTree.KiwoomTrader
                 if (e.nErrCode == 0)
                 {
                     logger.Info("Login sucess");
+                    LoginInstance.State = LoginStates.LoggedIn;
                 }
                 else
                 {
-                    logger.Error($"Login fail, return code: {e.nErrCode}. Message: {ErrorMessageUtility.GetErrorMessage(e.nErrCode)}");
+                    logger.Error($"Login fail, {KiwoomError.GetErrorMessage(e.nErrCode)}");
                 }
             }
             catch (Exception ex)
@@ -107,7 +98,6 @@ namespace MTree.KiwoomTrader
             finally
             {
                 ClosePopup();
-                SetLogin();
             }
         }
 
@@ -138,17 +128,6 @@ namespace MTree.KiwoomTrader
             return false;
         }
         #endregion
-        
-        // 화면번호 생산
-        private string GetScreenNum()
-        {
-            if (_scrNum < 9999)
-                _scrNum++;
-            else
-                _scrNum = 5000;
-
-            return _scrNum.ToString();
-        }
 
         private void OnReceiveTrData(object sender, AxKHOpenAPILib._DKHOpenAPIEvents_OnReceiveTrDataEvent e)
         {

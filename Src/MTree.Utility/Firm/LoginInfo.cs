@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MTree.Publisher
+namespace MTree.Utility
 {
     public enum LoginStates
     {

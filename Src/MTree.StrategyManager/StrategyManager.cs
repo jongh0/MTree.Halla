@@ -25,10 +25,22 @@ namespace MTree.StrategyManager
             RealTimeHandler.CircuitBreakNotified += CircuitBreakNotified;
             RealTimeHandler.ConclusionNotified += ConclusionNotified;
 
-            if (Config.General.VirtualTrade == true)
-                TradeHandler = new TradeHandler("VirtualTraderConfig");
-            else
-                TradeHandler = new TradeHandler("EbestTraderConfig");
+            switch (Config.General.TraderType)
+            {
+                case TraderTypes.Ebest:
+                case TraderTypes.EbestSimul:
+                    TradeHandler = new TradeHandler("EbestTraderConfig");
+                    break;
+
+                case TraderTypes.Kiwoom:
+                case TraderTypes.KiwoomSimul:
+                    TradeHandler = new TradeHandler("KiwoomTraderConfig");
+                    break;
+
+                default:
+                    TradeHandler = new TradeHandler("VirtualTraderConfig");
+                    break;
+            }
         }
 
         private void ConclusionNotified(object sender, Consumer.SubscribableEventArgs e)

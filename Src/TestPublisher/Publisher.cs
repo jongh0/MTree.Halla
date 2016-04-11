@@ -31,7 +31,7 @@ namespace TestPublisher
                     ServiceClient.PublishStockConclusion(conclusion);
                     Console.WriteLine($"{conclusion.Time.ToLongTimeString()} published");
 
-                    Thread.Sleep(10);
+                    Thread.Sleep(2);
                 }
             }, QueueTaskCancelToken);
         }

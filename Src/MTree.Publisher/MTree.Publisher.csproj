@@ -51,7 +51,6 @@
     <Compile Include="PublisherCallback.cs" />
     <Compile Include="BrokerageFirmBase.cs" />
     <Compile Include="PublisherBase.cs" />
-    <Compile Include="LoginInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PublisherClient.cs" />
   </ItemGroup>

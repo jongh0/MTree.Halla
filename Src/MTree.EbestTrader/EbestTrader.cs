@@ -1,6 +1,6 @@
 ﻿using MTree.Configuration;
-using MTree.Publisher;
 using MTree.Trader;
+using MTree.Utility;
 using System;
 using System.ComponentModel;
 using System.ServiceModel;
@@ -22,7 +22,6 @@ namespace MTree.EbestTrader
 
         private int WaitTimeout { get; } = 1000 * 10;
         private AutoResetEvent WaitDepositEvent { get; } = new AutoResetEvent(false);
-        private AutoResetEvent WaitOrderEvent { get; } = new AutoResetEvent(false);
 
         #region Keep session
         private int MaxCommInterval { get; } = 1000 * 60 * 20; // 통신 안한지 20분 넘어가면 Quote 시작
@@ -82,7 +81,7 @@ namespace MTree.EbestTrader
                 LoginInstance.UserPw = Config.Ebest.UserPw;
                 LoginInstance.CertPw = Config.Ebest.CertPw;
                 LoginInstance.AccountPw = Config.Ebest.AccountPw;
-                if (Config.General.SimulTrade == true)
+                if (Config.General.TraderType == TraderTypes.EbestSimul)
                 {
                     LoginInstance.ServerType = ServerTypes.Simul;
                     LoginInstance.ServerAddress = Config.Ebest.SimulServerAddress;
@@ -192,10 +191,12 @@ namespace MTree.EbestTrader
         }
         #endregion
 
-        private string GetLastErrorMessage()
+        private string GetLastErrorMessage(int errCode = 0)
         {
-            var errCode = sessionObj.GetLastError();
+            if (errCode == 0)
+                errCode = sessionObj.GetLastError();
             var errMsg = sessionObj.GetErrorMessage(errCode);
+
             return $"errCode: {errCode}, errMsg: {errMsg}";
         }
 
@@ -214,8 +215,9 @@ namespace MTree.EbestTrader
             try
             {
                 stockQuotingObj.SetFieldData("t1102InBlock", "shcode", 0, "000020");
-                if (stockQuotingObj.Request(false) < 0)
-                    logger.Error($"Keep alive error, {GetLastErrorMessage()}");
+                var ret = stockQuotingObj.Request(false);
+                if (ret < 0)
+                    logger.Error($"Keep alive error, {GetLastErrorMessage(ret)}");
             }
             catch (Exception ex)
             {
@@ -240,10 +242,6 @@ namespace MTree.EbestTrader
             {
                 logger.Error(ex);
             }
-            finally
-            {
-                WaitOrderEvent.Set();
-            }
         }
 
         private void CancelOrderObj_ReceiveData(string szTrCode)
@@ -257,10 +255,6 @@ namespace MTree.EbestTrader
             {
                 logger.Error(ex);
             }
-            finally
-            {
-                WaitOrderEvent.Set();
-            }
         }
 
         private void ModifyOrderObj_ReceiveData(string szTrCode)
@@ -273,10 +267,6 @@ namespace MTree.EbestTrader
             catch (Exception ex)
             {
                 logger.Error(ex);
-            }
-            finally
-            {
-                WaitOrderEvent.Set();
             }
         }
 

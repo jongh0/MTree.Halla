@@ -27,7 +27,7 @@ namespace MTree.StrategyManager
         public event SubscribableEventHandler CircuitBreakNotified;
         public event SubscribableEventHandler ConclusionNotified;
 
-        private void NotifyBidding(BiddingPrice biddingPrice)
+        private void NotifyBiddingPrice(BiddingPrice biddingPrice)
         {
             BiddingPriceNotified?.Invoke(this, new SubscribableEventArgs(biddingPrice));
         }

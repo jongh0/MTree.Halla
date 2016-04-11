@@ -34,8 +34,6 @@ namespace MTree.KiwoomPublisher
                 return false;
             }
 
-            int ret = -1;
-
             try
             {
                 WaitQuoteInterval();
@@ -45,26 +43,20 @@ namespace MTree.KiwoomPublisher
 
                 kiwoomObj.SetInputValue("종목코드", code);
 
-                ret = kiwoomObj.CommRqData("주식기본정보", "OPT10001", 0, GetScreenNum());
-
-                if (ret == 0)
+                var ret = kiwoomObj.CommRqData("주식기본정보", "OPT10001", 0, KiwoomScreen.GetScreenNum());
+                if (ret < 0)
                 {
-                    if (WaitQuoting() == true)
-                    {
-                        if (QuotingStockMaster.Code != string.Empty)
-                        {
-                            logger.Info($"Quoting done, Code: {code}");
-                            return true;
-                        }
-
-                        logger.Error($"Quoting fail, Code: {code}");
-                    }
-
-                    logger.Error($"Quoting timeout, Code: {code}");
+                    logger.Error($"Code list request error, {KiwoomError.GetErrorMessage(ret)}");
+                    return false;
                 }
-                else
+
+                if (WaitQuoting() == false)
+                    return false;
+
+                if (QuotingStockMaster.Code != string.Empty)
                 {
-                    logger.Error($"Quoting request fail, Code: {code}, Quoting result: {ret}. Message: {ErrorMessageUtility.GetErrorMessage(ret)}");
+                    logger.Info($"Quoting done, Code: {code}");
+                    return true;
                 }
             }
             catch (Exception ex)
@@ -77,6 +69,7 @@ namespace MTree.KiwoomPublisher
                 Monitor.Exit(QuoteLock);
             }
 
+            logger.Error($"Quoting fail, Code: {code}");
             return false;
         }
 

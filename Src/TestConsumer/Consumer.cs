@@ -9,17 +9,29 @@ using System.Threading.Tasks;
 using MTree.DataStructure;
 using MTree.Utility;
 using System.Threading;
+using System.Diagnostics;
 
 namespace TestConsumer
 {
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
     public class Consumer : ConsumerBase
     {
+        int count = 0;
+        double tick = 0;
+
         private void ProcessStockConclusionQueue()
         {
             StockConclusion conclusion;
             if (StockConclusionQueue.TryDequeue(out conclusion) == true)
-                Console.WriteLine($"{(DateTime.Now - conclusion.Time).ToString()}, {conclusion.Price}, {conclusion.Code} consumed");
+            {
+                var interval = (DateTime.Now - conclusion.Time);
+                tick += interval.TotalMilliseconds;
+
+                Console.WriteLine($"{interval.ToString()}, {conclusion.Price}, {conclusion.Code} consumed");
+
+                if (count++ > 10000)
+                    Debugger.Break();
+            }
             else
                 Thread.Sleep(10);
         }

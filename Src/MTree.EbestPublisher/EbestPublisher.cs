@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define NOT_USE_QUEUE
+
+using System;
 using System.Threading;
 using MTree.DataStructure;
 using MTree.Configuration;
@@ -12,6 +14,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.ComponentModel;
+using MTree.Utility;
 
 namespace MTree.EbestPublisher
 {
@@ -174,7 +177,9 @@ namespace MTree.EbestPublisher
                     UpdateWarningList();
                 });
 
-                StartCircuitBreakQueueTask();
+#if !NOT_USE_QUEUE
+                StartCircuitBreakQueueTask(); 
+#endif
             }
             catch (Exception ex)
             {
@@ -210,9 +215,9 @@ namespace MTree.EbestPublisher
         {
             if (szCode == "0000")
             {
-                SetLogin();
                 LoginInstance.State = LoginStates.LoggedIn;
                 logger.Info($"Login success, {LoginInstance.ToString()}");
+                SetLogin();
             }
             else
             {
@@ -304,25 +309,22 @@ namespace MTree.EbestPublisher
 
         public Dictionary<string, string> GetIndexCodeList()
         {
-            int ret = -1;
             try
             {
                 WaitQuoteInterval();
 
                 indexListObj.SetFieldData("t8424InBlock", "gubun1", 0, "");
-                ret = indexListObj.Request(false);
-
-                if (ret > 0)
+                var ret = indexListObj.Request(false);
+                if (ret < 0)
                 {
-                    if (WaitQuoting() == true)
-                        logger.Error("Quoting industry list success");
+                    logger.Error($"Index code request error, {GetLastErrorMessage(ret)}");
+                    return null;
+                }
 
-                    logger.Error("Quoting industry list fail");
-                }
-                else
-                {
-                    logger.Error($"Quoting industry list fail. Quoting result: {ret}");
-                }
+                if (WaitQuoting() == false)
+                    return null;
+
+                logger.Info("Quoting industry list success");
             }
             catch (Exception ex)
             {
@@ -334,25 +336,22 @@ namespace MTree.EbestPublisher
 
         public Dictionary<string, string> GetStockCodeList()
         {
-            int ret = -1;
             try
             {
                 WaitQuoteInterval();
 
                 stockListObj.SetFieldData("t8430InBlock", "gubun", 0, "0");
-                ret = stockListObj.Request(false);
-
-                if (ret > 0)
+                var ret = stockListObj.Request(false);
+                if (ret < 0)
                 {
-                    if (WaitQuoting() == true)
-                        logger.Error("Quoting stock list success");
+                    logger.Error($"Stock code request error, {GetLastErrorMessage(ret)}");
+                    return null;
+                }
 
-                    logger.Error("Quoting stock list fail");
-                }
-                else
-                {
-                    logger.Error($"Quoting stock list fail. Quoting result: {ret}");
-                }
+                if (WaitQuoting() == false)
+                    return null;
+
+                logger.Info("Quoting stock list success");
             }
             catch (Exception ex)
             {
@@ -470,15 +469,17 @@ namespace MTree.EbestPublisher
                 warningObj1.SetFieldData("t1404InBlock", "gubun", 0, "0");
                 warningObj1.SetFieldData("t1404InBlock", "jongchk", 0, ((int)warningType).ToString());
 
-                int ret = warningObj1.Request(false);
-
-                if (ret > 0)
+                var ret = warningObj1.Request(false);
+                if (ret < 0)
                 {
-                    if (WaitQuoting() == true)
-                        logger.Info($"Updating {warningType.ToString()} list done. count:{WarningList[warningType.ToString()].Count}");
-                    else
-                        logger.Error($"Updating {warningType.ToString()} list timeout.");
+                    logger.Error($"Warning1 list request error");
+                    return false;
                 }
+
+                if (WaitQuoting() == false)
+                    return false;
+
+                logger.Info($"Updating {warningType.ToString()} list done. count: {WarningList[warningType.ToString()].Count}");
             }
             catch (Exception ex)
             {
@@ -513,15 +514,17 @@ namespace MTree.EbestPublisher
                 warningObj2.SetFieldData("t1405InBlock", "gubun", 0, "0");
                 warningObj2.SetFieldData("t1405InBlock", "jongchk", 0, ((int)warningType).ToString());
 
-                int ret = warningObj2.Request(false);
-
-                if (ret > 0)
+                var ret = warningObj2.Request(false);
+                if (ret < 0)
                 {
-                    if (WaitQuoting() == true)
-                        logger.Info($"Updating {warningType.ToString()} list done. count:{WarningList[warningType.ToString()].Count}");
-                    else
-                        logger.Error($"Updating {warningType.ToString()} list timeout.");
+                    logger.Error($"Warning2 list request error");
+                    return false;
                 }
+
+                if (WaitQuoting() == false)
+                    return false;
+
+                logger.Info($"Updating {warningType.ToString()} list done. count: {WarningList[warningType.ToString()].Count}");
             }
             catch (Exception ex)
             {
@@ -606,10 +609,12 @@ namespace MTree.EbestPublisher
             WarningListUpdatedEvent.Set();
         }
 
-        private string GetLastErrorMessage()
+        private string GetLastErrorMessage(int errCode = 0)
         {
-            var errCode = sessionObj.GetLastError();
+            if (errCode == 0)
+                errCode = sessionObj.GetLastError();
             var errMsg = sessionObj.GetErrorMessage(errCode);
+
             return $"errCode: {errCode}, errMsg: {errMsg}";
         }
 
