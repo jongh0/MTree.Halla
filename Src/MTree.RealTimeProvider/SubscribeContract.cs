@@ -42,17 +42,18 @@ namespace MTree.RealTimeProvider
             Type = type;
         }
 
-        public SubscribeContract(SubscribeTypes type, SubscribeScopes scope)
+        public SubscribeContract(SubscribeTypes type, SubscribeScopes scope, List<string> codes)
         {
             Type = type;
             Scope = scope;
-        }
 
-        public SubscribeContract(SubscribeTypes type, SubscribeScopes scope, HashSet<string> codes)
-        {
-            Type = type;
-            Scope = scope;
-            Codes = codes;
+            if (scope == SubscribeScopes.Partial && codes != null)
+            {
+                foreach (var code in codes)
+                {
+                    Codes.Add(code);
+                }
+            }
         }
 
         public override string ToString()

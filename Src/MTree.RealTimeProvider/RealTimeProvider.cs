@@ -67,6 +67,7 @@ namespace MTree.RealTimeProvider
             StartRefreshTimer();
         }
 
+        #region NotifyMessage
         public void NotifyMessage(MessageTypes type, string message)
         {
             try
@@ -85,6 +86,37 @@ namespace MTree.RealTimeProvider
                 logger.Error(ex);
             }
         }
+
+        private void NotifyMessageToConsumer(MessageTypes type, string message = "")
+        {
+            foreach (var contract in ConsumerContracts)
+            {
+                try
+                {
+                    contract.Value.Callback.NotifyMessage(type, message);
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex);
+                }
+            }
+        }
+
+        private void NotifyMessageToPubliser(MessageTypes type, string message = "")
+        {
+            foreach (var contract in PublisherContracts)
+            {
+                try
+                {
+                    contract.Value.Callback.NotifyMessage(type, message);
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex);
+                }
+            }
+        } 
+        #endregion
 
         private void MarketEndTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
@@ -199,47 +231,23 @@ namespace MTree.RealTimeProvider
             }
         }
 
-        private void ExitProgram(ExitProgramTypes type = ExitProgramTypes.Normal)
+        private void ExitProgram(ExitProgramTypes exitType = ExitProgramTypes.Normal)
         {
             try
             {
                 CanExitProgram = false;
 
-                RealTimeState = $"Exit program, {type.ToString()}";
+                RealTimeState = $"Exit program, {exitType.ToString()}";
                 logger.Info(RealTimeState);
 
                 // Popup stopper 실행 (Ebest error popup 닫아야함)
                 ProcessUtility.Start(ProcessTypes.PopupStopper, ProcessWindowStyle.Minimized);
 
-                #region Publisher 종료
-                foreach (var contract in PublisherContracts)
-                {
-                    try
-                    {
-                        logger.Info($"Close publisher client, {contract.ToString()}");
-                        contract.Value.Callback.NotifyMessage(MessageTypes.CloseClient, type.ToString());
-                    }
-                    catch (Exception ex)
-                    {
-                        logger.Error(ex);
-                    }
-                }
-                #endregion
+                // Publisher 종료
+                NotifyMessageToPubliser(MessageTypes.CloseClient, exitType.ToString());
 
-                #region Consumer 종료
-                foreach (var contract in ConsumerContracts)
-                {
-                    try
-                    {
-                        logger.Info($"Close consumer client, {contract.ToString()}");
-                        contract.Value.Callback.NotifyMessage(MessageTypes.CloseClient, type.ToString());
-                    }
-                    catch (Exception ex)
-                    {
-                        logger.Error(ex);
-                    }
-                }
-                #endregion
+                // Consumer 종료
+                NotifyMessageToConsumer(MessageTypes.CloseClient, exitType.ToString());
 
                 // Count 업데이트 중지
                 StopRefreshTimer();
@@ -249,7 +257,7 @@ namespace MTree.RealTimeProvider
                     // CybosStarter 종료
                     ProcessUtility.Kill(ProcessTypes.CybosStarter);
 
-                    if (type == ExitProgramTypes.Normal)
+                    if (exitType == ExitProgramTypes.Normal)
                     {
                         // 당일 수집된 로그를 Zip해서 Email로 전송함
                         LogUtility.SendLog();
@@ -271,7 +279,7 @@ namespace MTree.RealTimeProvider
                     // PopupStopper 종료
                     ProcessUtility.Kill(ProcessTypes.PopupStopper);
 
-                    if (type == ExitProgramTypes.Restart)
+                    if (exitType == ExitProgramTypes.Restart)
                     {
                         RealTimeState = "RealTimeProvider will be restarted";
                         logger.Info(RealTimeState);

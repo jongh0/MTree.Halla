@@ -6,5 +6,8 @@ using System.Threading.Tasks;
 
 namespace MTree.Consumer
 {
-    public delegate void SubscribableEventHandler(object sender, SubscribableEventArgs e);
+    public interface INotifyMessageReceived
+    {
+        event MessageReceivedEventHandler MessageReceived;
+    }
 }

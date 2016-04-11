@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace MTree.Consumer
 {
-    public class SubscribableEventArgs : EventArgs
+    public class SubscribableNotifiedEventArgs : EventArgs
     {
         public virtual Subscribable Subscribable { get; private set; }
 
-        public SubscribableEventArgs(Subscribable item)
+        public SubscribableNotifiedEventArgs(Subscribable item)
         {
             this.Subscribable = item;
         }

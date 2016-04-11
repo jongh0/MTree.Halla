@@ -15,14 +15,18 @@ using System.Threading.Tasks;
 namespace MTree.StrategyManager
 {
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
-    public class RealTimeHandler : ConsumerBase, INotifyPropertyChanged, INotifySubscribable
+    public class RealTimeHandler : ConsumerBase, INotifyPropertyChanged, INotifySubscribableReceived, INotifyMessageReceived
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public RealTimeHandler()
+        private List<string> ConcernCodeList { get; set; }
+
+        public RealTimeHandler(List<string> codes)
         {
             try
             {
+                ConcernCodeList = codes;
+
                 TaskUtility.Run("RealTimeHandler.CircuitBreakQueue", QueueTaskCancelToken, ProcessCircuitBreakQueue);
                 TaskUtility.Run($"RealTimeHandler.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
                 TaskUtility.Run($"RealTimeHandler.IndexConclusionQueue", QueueTaskCancelToken, ProcessIndexConclusionQueue);
@@ -41,7 +45,7 @@ namespace MTree.StrategyManager
             {
                 IndexConclusion conclusion;
                 if (IndexConclusionQueue.TryDequeue(out conclusion) == true)
-                    NotifyConclusion(conclusion);
+                    NotifyConclusionReceived(conclusion);
                 else
                     Thread.Sleep(10);
             }
@@ -57,7 +61,7 @@ namespace MTree.StrategyManager
             {
                 StockConclusion conclusion;
                 if (StockConclusionQueue.TryDequeue(out conclusion) == true)
-                    NotifyConclusion(conclusion);
+                    NotifyConclusionReceived(conclusion);
                 else
                     Thread.Sleep(10);
             }
@@ -73,7 +77,7 @@ namespace MTree.StrategyManager
             {
                 BiddingPrice biddingPrice;
                 if (BiddingPriceQueue.TryDequeue(out biddingPrice) == true)
-                    NotifyBiddingPrice(biddingPrice);
+                    NotifyBiddingPriceReceived(biddingPrice);
                 else
                     Thread.Sleep(10);
             }
@@ -89,7 +93,7 @@ namespace MTree.StrategyManager
             {
                 CircuitBreak circuitBreak;
                 if (CircuitBreakQueue.TryDequeue(out circuitBreak) == true)
-                    NotifyCircuitBreak(circuitBreak);
+                    NotifyCircuitBreakReceived(circuitBreak);
                 else
                     Thread.Sleep(10);
             }
@@ -105,17 +109,22 @@ namespace MTree.StrategyManager
 
             try
             {
-                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.Mastering));
-                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.CircuitBreak));
-                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.StockConclusion));
-                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.IndexConclusion));
-                if (Config.General.SkipBiddingPrice == false)
-                    ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.BiddingPrice));
+                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.CircuitBreak, SubscribeScopes.Partial, ConcernCodeList));
+                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.StockConclusion, SubscribeScopes.Partial, ConcernCodeList));
+                //ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.IndexConclusion));
+                //if (Config.General.SkipBiddingPrice == false)
+                //    ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.BiddingPrice));
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
             }
+        }
+
+        public override void NotifyMessage(MessageTypes type, string message)
+        {
+            NotifyMessageReceived(type, message);
+            base.NotifyMessage(type, message);
         }
 
         #region INotifyPropertyChanged
@@ -127,25 +136,34 @@ namespace MTree.StrategyManager
         }
         #endregion
 
-        #region INotifySubscribable
-        public event SubscribableEventHandler BiddingPriceNotified;
-        public event SubscribableEventHandler CircuitBreakNotified;
-        public event SubscribableEventHandler ConclusionNotified; 
+        #region INotifySubscribableReceived
+        public event SubscribableReceivedEventHandler BiddingPriceReceived;
+        public event SubscribableReceivedEventHandler CircuitBreakReceived;
+        public event SubscribableReceivedEventHandler ConclusionReceived;
 
-        private void NotifyBiddingPrice(BiddingPrice biddingPrice)
+        private void NotifyBiddingPriceReceived(BiddingPrice biddingPrice)
         {
-            BiddingPriceNotified?.Invoke(this, new SubscribableEventArgs(biddingPrice));
+            BiddingPriceReceived?.Invoke(this, new SubscribableNotifiedEventArgs(biddingPrice));
         }
 
-        private void NotifyCircuitBreak(CircuitBreak circuitBreak)
+        private void NotifyCircuitBreakReceived(CircuitBreak circuitBreak)
         {
-            CircuitBreakNotified?.Invoke(this, new SubscribableEventArgs(circuitBreak));
+            CircuitBreakReceived?.Invoke(this, new SubscribableNotifiedEventArgs(circuitBreak));
         }
 
-        private void NotifyConclusion(Conclusion conclusion)
+        private void NotifyConclusionReceived(Conclusion conclusion)
         {
-            ConclusionNotified?.Invoke(this, new SubscribableEventArgs(conclusion));
+            ConclusionReceived?.Invoke(this, new SubscribableNotifiedEventArgs(conclusion));
         }
+        #endregion
+
+        #region INotifyMessageReceived
+        public event MessageReceivedEventHandler MessageReceived;
+
+        private void NotifyMessageReceived(MessageTypes type, string message = "")
+        {
+            MessageReceived?.Invoke(this, new MessageReceivedEventArgs(type, message));
+        } 
         #endregion
     }
 }

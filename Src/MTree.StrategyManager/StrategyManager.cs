@@ -9,21 +9,27 @@ namespace MTree.StrategyManager
 {
     public class StrategyManager
     {
+        public List<string> ConcernCodeList { get; set; } = new List<string>();
+
         public DbHandler DbHandler { get; set; }
         public RealTimeHandler RealTimeHandler { get; set; }
         public TradeHandler TradeHandler { get; set; }
 
         public StrategyManager()
         {
-            DbHandler = new DbHandler();
-            DbHandler.BiddingPriceNotified += BiddingPriceNotified;
-            DbHandler.CircuitBreakNotified += CircuitBreakNotified;
-            DbHandler.ConclusionNotified += ConclusionNotified;
+            ConcernCodeList.Add("005930"); // 삼성전자
+            ConcernCodeList.Add("035420"); // Naver
 
-            RealTimeHandler = new RealTimeHandler();
-            RealTimeHandler.BiddingPriceNotified += BiddingPriceNotified;
-            RealTimeHandler.CircuitBreakNotified += CircuitBreakNotified;
-            RealTimeHandler.ConclusionNotified += ConclusionNotified;
+            DbHandler = new DbHandler();
+            DbHandler.BiddingPriceReceived += BiddingPriceReceived;
+            DbHandler.CircuitBreakReceived += CircuitBreakReceived;
+            DbHandler.ConclusionReceived += ConclusionReceived;
+
+            RealTimeHandler = new RealTimeHandler(ConcernCodeList);
+            RealTimeHandler.BiddingPriceReceived += BiddingPriceReceived;
+            RealTimeHandler.CircuitBreakReceived += CircuitBreakReceived;
+            RealTimeHandler.ConclusionReceived += ConclusionReceived;
+            RealTimeHandler.MessageReceived += MessageReceived;
 
             switch (Config.General.TraderType)
             {
@@ -43,15 +49,19 @@ namespace MTree.StrategyManager
             }
         }
 
-        private void ConclusionNotified(object sender, Consumer.SubscribableEventArgs e)
+        private void MessageReceived(object sender, Consumer.MessageReceivedEventArgs e)
         {
         }
 
-        private void CircuitBreakNotified(object sender, Consumer.SubscribableEventArgs e)
+        private void ConclusionReceived(object sender, Consumer.SubscribableNotifiedEventArgs e)
         {
         }
 
-        private void BiddingPriceNotified(object sender, Consumer.SubscribableEventArgs e)
+        private void CircuitBreakReceived(object sender, Consumer.SubscribableNotifiedEventArgs e)
+        {
+        }
+
+        private void BiddingPriceReceived(object sender, Consumer.SubscribableNotifiedEventArgs e)
         {
         }
     }

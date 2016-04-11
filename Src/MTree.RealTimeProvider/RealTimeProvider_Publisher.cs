@@ -194,6 +194,8 @@ namespace MTree.RealTimeProvider
                             StartCodeDistributing();
                         }
 
+                        NotifyMessageToConsumer(MessageTypes.MasteringDone);
+
                         ProcessUtility.Kill(ProcessTypes.PopupStopper);
                     });
                 }
