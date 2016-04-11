@@ -168,7 +168,11 @@ namespace MTree.EbestPublisher
                 #endregion
 
                 // Warning List Update
-                Task.Run(() => UpdateWarningList());
+                Task.Run(() =>
+                {
+                    WaitLogin();
+                    UpdateWarningList();
+                });
 
                 StartCircuitBreakQueueTask();
             }
