@@ -66,6 +66,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Collections\ObservableCollectionEx.cs" />
     <Compile Include="Converters\NumberToCurrencyConverter.cs" />
     <Compile Include="Converters\NumberToPercentConverter.cs" />
     <Compile Include="Converters\EnumToStringConverter.cs" />

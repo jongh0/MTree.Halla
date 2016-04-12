@@ -2,6 +2,7 @@
 using GalaSoft.MvvmLight.Command;
 using MTree.Configuration;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -9,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace MTree.Trader
 {
@@ -16,8 +18,8 @@ namespace MTree.Trader
     {
         private ITrader Trader { get; set; }
 
-        private ObservableCollection<string> accountNumbers;
-        public ObservableCollection<string> AccountNumbers
+        private ObservableCollectionEx<string> accountNumbers;
+        public ObservableCollectionEx<string> AccountNumbers
         {
             get
             {
@@ -183,20 +185,23 @@ namespace MTree.Trader
 
             Trader.MakeOrder(newOrder);
         }
+
         public TraderViewModel(ITrader trader)
         {
             Trader = trader;
 
-            Task.Run(() => {
-                AccountNumbers = new ObservableCollection<string>();
+            AccountNumbers = new ObservableCollectionEx<string>();
 
-                foreach (string account in trader.GetAccountList())
+            Task.Run(() =>
+            {
+                var accounts = trader.GetAccountList();
+
+                foreach (string account in accounts)
                 {
                     AccountNumbers.Add(account);
                 }
                 SelectedAccount = AccountNumbers[0];
             });
-
         }
 
         #region INotifyPropertyChanged

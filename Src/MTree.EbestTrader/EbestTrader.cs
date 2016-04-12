@@ -288,63 +288,7 @@ namespace MTree.EbestTrader
             logger.Trace($"szTrCode: {szTrCode}");
         }
 
-        private void NewOrderObj_ReceiveData(string szTrCode)
-        {
-            try
-            {
-                LastCommTick = Environment.TickCount;
-                logger.Trace($"szTrCode: {szTrCode}");
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-            }
-        }
 
-        private void CancelOrderObj_ReceiveData(string szTrCode)
-        {
-            try
-            {
-                LastCommTick = Environment.TickCount;
-                logger.Trace($"szTrCode: {szTrCode}");
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-            }
-        }
-
-        private void ModifyOrderObj_ReceiveData(string szTrCode)
-        {
-            try
-            {
-                LastCommTick = Environment.TickCount;
-                logger.Trace($"szTrCode: {szTrCode}");
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-            }
-        }
-
-        private void AccDepositObj_ReceiveData(string szTrCode)
-        {
-            try
-            {
-                LastCommTick = Environment.TickCount;
-                logger.Trace($"szTrCode: {szTrCode}");
-
-                CurrDeposit = long.Parse(accDepositObj.GetFieldData("t0424OutBlock", "sunamt", 0));
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-            }
-            finally
-            {
-                WaitDepositEvent.Set();
-            }
-        }
 
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
