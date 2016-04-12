@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MTree.StrategyManager
 {
-    public class DbHandler : INotifyPropertyChanged, INotifySubscribableReceived
+    public class DbHandler : INotifyPropertyChanged
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -19,27 +19,6 @@ namespace MTree.StrategyManager
         private void NotifyPropertyChanged(string name)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-        #endregion
-
-        #region INotifySubscribable
-        public event SubscribableReceivedEventHandler BiddingPriceReceived;
-        public event SubscribableReceivedEventHandler CircuitBreakReceived;
-        public event SubscribableReceivedEventHandler ConclusionReceived;
-
-        private void NotifyBiddingPrice(BiddingPrice biddingPrice)
-        {
-            BiddingPriceReceived?.Invoke(this, new SubscribableNotifiedEventArgs(biddingPrice));
-        }
-
-        private void NotifyCircuitBreak(CircuitBreak circuitBreak)
-        {
-            CircuitBreakReceived?.Invoke(this, new SubscribableNotifiedEventArgs(circuitBreak));
-        }
-
-        private void NotifyConclusion(Conclusion conclusion)
-        {
-            ConclusionReceived?.Invoke(this, new SubscribableNotifiedEventArgs(conclusion));
         }
         #endregion
     }

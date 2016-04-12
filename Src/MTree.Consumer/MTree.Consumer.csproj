@@ -61,19 +61,13 @@
   <ItemGroup>
     <Compile Include="Chart.cs" />
     <Compile Include="CodeMap.cs" />
-    <Compile Include="Event\MessageReceivedEventArgs.cs" />
-    <Compile Include="Event\MessageReceivedEventHandler.cs" />
     <Compile Include="Index.cs" />
-    <Compile Include="Interface\INotifyMessageReceived.cs" />
-    <Compile Include="Interface\INotifySubscribableReceived.cs" />
     <Compile Include="Stock.cs" />
     <Compile Include="ConsumerCallback.cs" />
     <Compile Include="ConsumerBase.cs" />
     <Compile Include="IChartable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ConsumerClient.cs" />
-    <Compile Include="Event\SubscribableReceivedEventArgs.cs" />
-    <Compile Include="Event\SubscribableReceivedEventHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

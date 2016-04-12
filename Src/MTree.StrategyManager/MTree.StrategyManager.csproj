@@ -69,7 +69,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Handler\DbHandler.cs" />
-    <Compile Include="Handler\RealTimeHandler.cs" />
     <Compile Include="StrategyManager.cs" />
     <Compile Include="Handler\TradeHandler.cs" />
     <Compile Include="TechnicalAnalysisHelper.cs" />

@@ -1,18 +1,26 @@
 ﻿using MTree.Configuration;
+using MTree.Consumer;
+using MTree.DataStructure;
+using MTree.RealTimeProvider;
+using MTree.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ServiceModel;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MTree.StrategyManager
 {
-    public class StrategyManager
+    [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
+    public class StrategyManager : ConsumerBase
     {
+        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
         public List<string> ConcernCodeList { get; set; } = new List<string>();
 
         public DbHandler DbHandler { get; set; }
-        public RealTimeHandler RealTimeHandler { get; set; }
         public TradeHandler TradeHandler { get; set; }
 
         public StrategyManager()
@@ -21,15 +29,6 @@ namespace MTree.StrategyManager
             ConcernCodeList.Add("035420"); // Naver
 
             DbHandler = new DbHandler();
-            DbHandler.BiddingPriceReceived += BiddingPriceReceived;
-            DbHandler.CircuitBreakReceived += CircuitBreakReceived;
-            DbHandler.ConclusionReceived += ConclusionReceived;
-
-            RealTimeHandler = new RealTimeHandler(ConcernCodeList);
-            RealTimeHandler.BiddingPriceReceived += BiddingPriceReceived;
-            RealTimeHandler.CircuitBreakReceived += CircuitBreakReceived;
-            RealTimeHandler.ConclusionReceived += ConclusionReceived;
-            RealTimeHandler.MessageReceived += MessageReceived;
 
             switch (Config.General.TraderType)
             {
@@ -47,22 +46,127 @@ namespace MTree.StrategyManager
                     TradeHandler = new TradeHandler("VirtualTraderConfig");
                     break;
             }
+
+            TaskUtility.Run("StrategyManager.CircuitBreakQueue", QueueTaskCancelToken, ProcessCircuitBreakQueue);
+            TaskUtility.Run($"StrategyManager.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
+            TaskUtility.Run($"StrategyManager.IndexConclusionQueue", QueueTaskCancelToken, ProcessIndexConclusionQueue);
+            if (Config.General.SkipBiddingPrice == false)
+                TaskUtility.Run($"StrategyManager.BiddingPriceQueue", QueueTaskCancelToken, ProcessBiddingPriceQueue);
         }
 
-        private void MessageReceived(object sender, Consumer.MessageReceivedEventArgs e)
+        private void ProcessBiddingPriceQueue()
         {
+            try
+            {
+                BiddingPrice biddingPrice;
+                if (BiddingPriceQueue.TryDequeue(out biddingPrice) == true)
+                {
+                }
+                else
+                    Thread.Sleep(10);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
         }
 
-        private void ConclusionReceived(object sender, Consumer.SubscribableNotifiedEventArgs e)
+        private void ProcessCircuitBreakQueue()
         {
+            try
+            {
+                CircuitBreak circuitBreak;
+                if (CircuitBreakQueue.TryDequeue(out circuitBreak) == true)
+                {
+                }
+                else
+                    Thread.Sleep(10);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
         }
 
-        private void CircuitBreakReceived(object sender, Consumer.SubscribableNotifiedEventArgs e)
+        private void ProcessStockConclusionQueue()
         {
+            try
+            {
+                StockConclusion conclusion;
+                if (StockConclusionQueue.TryDequeue(out conclusion) == true)
+                {
+                }
+                else
+                    Thread.Sleep(10);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
         }
 
-        private void BiddingPriceReceived(object sender, Consumer.SubscribableNotifiedEventArgs e)
+        private void ProcessIndexConclusionQueue()
         {
+            try
+            {
+                IndexConclusion conclusion;
+                if (IndexConclusionQueue.TryDequeue(out conclusion) == true)
+                {
+                }
+                else
+                    Thread.Sleep(10);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
+        public override void ConsumeBiddingPrice(BiddingPrice biddingPrice)
+        {
+            BiddingPriceQueue.Enqueue(biddingPrice);
+        }
+
+        public override void ConsumeStockConclusion(StockConclusion conclusion)
+        {
+            StockConclusionQueue.Enqueue(conclusion);
+        }
+
+        public override void ConsumeIndexConclusion(IndexConclusion conclusion)
+        {
+            IndexConclusionQueue.Enqueue(conclusion);
+        }
+
+        public override void ConsumeCircuitBreak(CircuitBreak circuitBreak)
+        {
+            CircuitBreakQueue.Enqueue(circuitBreak);
+        }
+
+        public override void NotifyMessage(MessageTypes type, string message)
+        {
+            try
+            {
+                if (type == MessageTypes.CloseClient)
+                {
+                    Task.Run(() =>
+                    {
+                        if (message.Equals(ExitProgramTypes.Normal.ToString()) == true)
+                        {
+                        }
+
+                        logger.Info("Process will be closed");
+                        Thread.Sleep(1000 * 5);
+
+                        Environment.Exit(0);
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+
+            base.NotifyMessage(type, message);
         }
     }
 }

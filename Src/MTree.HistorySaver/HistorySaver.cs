@@ -262,12 +262,6 @@ namespace MTree.HistorySaver
                     // Count 업데이트 중지
                     StopRefreshTimer();
 
-                    if (message.Equals(ExitProgramTypes.Normal.ToString()) == true)
-                    {
-                        // Queue Task가 모두 완료될 때 까지 대기
-                        WaitQueueTask();
-                    }
-
                     Task.Run(() =>
                     {
                         if (message.Equals(ExitProgramTypes.Normal.ToString()) == true)

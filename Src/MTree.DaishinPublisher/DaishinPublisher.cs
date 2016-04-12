@@ -337,12 +337,6 @@ namespace MTree.DaishinPublisher
         {
             if (type == MessageTypes.CloseClient)
             {
-                if (message.Equals(ExitProgramTypes.Normal.ToString()) == true)
-                {
-                    // Queue Task가 모두 완료될 때 까지 대기
-                    WaitQueueTask();
-                }
-
                 Task.Run(() =>
                 {
                     logger.Info("Process will be closed");
