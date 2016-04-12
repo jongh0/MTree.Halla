@@ -74,9 +74,6 @@ namespace MTree.EbestPublisher
         #region Warning
         private Dictionary<string, List<string>> WarningList { get; set; } = new Dictionary<string, List<string>>();
         private string CurrUpdatingWarningType { get; set; }
-
-        private ManualResetEvent WarningListUpdatedEvent { get; } = new ManualResetEvent(false);
-        private int WarningListUpdateTimeout { get; } = 1000 * 30; 
         #endregion
 
         public EbestPublisher() : base()
@@ -169,13 +166,6 @@ namespace MTree.EbestPublisher
                     return;
                 }
                 #endregion
-
-                // Warning List Update
-                Task.Run(() =>
-                {
-                    WaitLogin();
-                    UpdateWarningList();
-                });
 
 #if !NOT_USE_QUEUE
                 StartCircuitBreakQueueTask(); 
@@ -300,10 +290,6 @@ namespace MTree.EbestPublisher
             catch (Exception ex)
             {
                 logger.Error(ex);
-            }
-            finally
-            {
-                SetWarningListUpdated();
             }
         }
 
@@ -599,16 +585,6 @@ namespace MTree.EbestPublisher
             }
         }
 
-        protected bool WaitWarningListUpdated()
-        {
-            return WarningListUpdatedEvent.WaitOne(WarningListUpdateTimeout);
-        }
-
-        protected void SetWarningListUpdated()
-        {
-            WarningListUpdatedEvent.Set();
-        }
-
         private string GetLastErrorMessage(int errCode = 0)
         {
             if (errCode == 0)
@@ -622,7 +598,10 @@ namespace MTree.EbestPublisher
         {
             // Login이 완료된 후에 Publisher contract 등록
             WaitLogin();
-            WaitWarningListUpdated();
+
+            // Warning List Update
+            UpdateWarningList();
+
             base.ServiceClient_Opened(sender, e);
         }
 

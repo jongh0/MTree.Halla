@@ -1,4 +1,4 @@
-﻿#define NOT_USE_QUEUE
+﻿//#define NOT_USE_QUEUE
 
 using System;
 using MTree.DataStructure;

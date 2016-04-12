@@ -206,7 +206,7 @@ namespace MTree.RealTimeProvider
                         logger.Info("RealTimeProvider will be closed after 5sec");
 
                         Thread.Sleep(1000 * 5);
-                        ExitProgram();
+                        ExitProgram(ExitProgramTypes.Force);
                     });
                 }
             }

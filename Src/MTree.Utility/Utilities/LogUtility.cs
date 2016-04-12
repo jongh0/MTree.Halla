@@ -44,9 +44,8 @@ namespace MTree.Utility
 
                         break; // 여기까지 못 오고 Exception 발생하면 1초 간격으로 3회 재시도
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
-                        logger.Error(ex);
                         Thread.Sleep(1000);
                     }
                 }

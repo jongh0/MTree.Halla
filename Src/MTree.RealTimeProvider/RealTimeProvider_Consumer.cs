@@ -1,4 +1,4 @@
-﻿#define PARALLEL_CONSUME
+﻿//#define PARALLEL_CONSUME
 
 using MTree.DataStructure;
 using System;

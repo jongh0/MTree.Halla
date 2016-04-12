@@ -122,8 +122,11 @@ namespace MTree.RealTimeProvider
         {
             logger.Info("Market end timer elapsed");
 
+            // Popup stopper 실행
+            ProcessUtility.Start(ProcessTypes.PopupStopper, ProcessWindowStyle.Minimized);
+
             SaveDayChart();
-            ExitProgram();
+            ExitProgram(ExitProgramTypes.Normal);
         }
 
         private void SaveDayChart()
@@ -231,7 +234,7 @@ namespace MTree.RealTimeProvider
             }
         }
 
-        private void ExitProgram(ExitProgramTypes exitType = ExitProgramTypes.Normal)
+        private void ExitProgram(ExitProgramTypes exitType)
         {
             try
             {
@@ -239,9 +242,6 @@ namespace MTree.RealTimeProvider
 
                 RealTimeState = $"Exit program, {exitType.ToString()}";
                 logger.Info(RealTimeState);
-
-                // Popup stopper 실행 (Ebest error popup 닫아야함)
-                ProcessUtility.Start(ProcessTypes.PopupStopper, ProcessWindowStyle.Minimized);
 
                 // Publisher 종료
                 NotifyMessageToPubliser(MessageTypes.CloseClient, exitType.ToString());
