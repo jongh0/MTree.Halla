@@ -1,5 +1,7 @@
-﻿using System;
+﻿using MTree.Trader;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.ServiceModel;
 using System.Text;
@@ -25,10 +27,12 @@ namespace MTree.EbestTrader
 
         ServiceHost Host { get; set; }
 
+        TraderViewModel traderViewModel { get; set; }
+
         public MainWindow()
         {
             InitializeComponent();
-
+            
             var instance = new EbestTrader();
             Host = new ServiceHost(instance);
             Host.Opened += Host_Opened;
@@ -36,7 +40,9 @@ namespace MTree.EbestTrader
             Host.Faulted += Host_Faulted;
             Host.Open();
 
-            this.DataContext = instance;
+            traderViewModel = new TraderViewModel(instance);
+
+            this.DataContext = traderViewModel;
         }
 
         private void Host_Faulted(object sender, EventArgs e)

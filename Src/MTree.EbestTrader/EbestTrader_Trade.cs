@@ -14,15 +14,21 @@ namespace MTree.EbestTrader
 
         public List<string> GetAccountList()
         {
+            var accList = new List<string>();
+
             try
             {
+                if (WaitLogin() == false)
+                {
+                    logger.Error("Login timeout");
+                    return null;
+                }
+                
                 if (sessionObj.IsConnected() == false)
                 {
                     logger.Error("Account list query, session not connected");
                     return null;
                 }
-
-                var accList = new List<string>();
 
                 var accCount = sessionObj.GetAccountListCount();
                 for (int i = 0; i < accCount; i++)
@@ -30,15 +36,14 @@ namespace MTree.EbestTrader
                     var acc = sessionObj.GetAccountList(i);
                     accList.Add(acc);
                 }
-
-                return accList;
+                
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
             }
 
-            return null;
+            return accList;
         }
 
         public long GetDeposit(string accNum, string accPw)

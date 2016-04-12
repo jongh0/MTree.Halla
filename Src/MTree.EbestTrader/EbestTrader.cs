@@ -23,6 +23,9 @@ namespace MTree.EbestTrader
         private int WaitTimeout { get; } = 1000 * 10;
         private AutoResetEvent WaitDepositEvent { get; } = new AutoResetEvent(false);
 
+        private int WaitLoginTimeout { get; } = 1000 * 15;
+        private ManualResetEvent WaitLoginEvent { get; } = new ManualResetEvent(false);
+
         #region Keep session
         private int MaxCommInterval { get; } = 1000 * 60 * 20; // 통신 안한지 20분 넘어가면 Quote 시작
         private int CommTimerInterval { get; } = 1000 * 60 * 2; // 2분마다 체크
@@ -159,6 +162,7 @@ namespace MTree.EbestTrader
             {
                 LoginInstance.State = LoginStates.LoggedIn;
                 logger.Info($"Login success, {LoginInstance.ToString()}");
+                SetLogin();
             }
             else
             {
@@ -175,6 +179,26 @@ namespace MTree.EbestTrader
         #endregion
 
         #region Login / Logout
+
+        public bool WaitLogin()
+        {
+            if (WaitLoginEvent.WaitOne(WaitLoginTimeout) == false)
+            {
+                logger.Error($"{GetType().Name} wait login timeout");
+                return false;
+            }
+
+            return true;
+        }
+
+        private void SetLogin()
+        {
+            Thread.Sleep(1000 * 3); // 로그인후 대기
+
+            logger.Info($"{GetType().Name} set login");
+            WaitLoginEvent.Set();
+        }
+
         public bool Login()
         {
             try
