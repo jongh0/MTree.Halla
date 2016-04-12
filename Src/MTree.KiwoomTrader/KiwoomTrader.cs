@@ -17,10 +17,7 @@ namespace MTree.KiwoomTrader
 
         private AxKHOpenAPILib.AxKHOpenAPI kiwoomObj;
 
-        // Login
         public LoginInfo LoginInstance { get; } = new LoginInfo();
-        private int WaitLoginTimeout { get; } = 1000 * 60;
-        private ManualResetEvent WaitLoginEvent { get; } = new ManualResetEvent(false);
 
         public KiwoomTrader(AxKHOpenAPILib.AxKHOpenAPI axKHOpenAPI)
         {
