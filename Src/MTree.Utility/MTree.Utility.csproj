@@ -83,6 +83,7 @@
     <Compile Include="Utilities\TaskUtility.cs" />
     <Compile Include="Utilities\ProcessUtility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\TrafficMonitor.cs" />
     <Compile Include="Utilities\WindowUtility.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -97,6 +98,10 @@
     <ProjectReference Include="..\MTree.Configuration\MTree.Configuration.csproj">
       <Project>{9c52064a-188b-449a-89a1-de3a9dd3f766}</Project>
       <Name>MTree.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MTree.DataStructure\MTree.DataStructure.csproj">
+      <Project>{da1959a9-15fa-47aa-98ac-3844a723fea1}</Project>
+      <Name>MTree.DataStructure</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

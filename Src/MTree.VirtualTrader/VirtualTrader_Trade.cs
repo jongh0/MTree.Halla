@@ -9,6 +9,8 @@ namespace MTree.VirtualTrader
 {
     public partial class VirtualTrader
     {
+        private OrderResult CurrOrderResult { get; set; }
+
         public VirtualAccountManager AccountManager { get; set; } = new VirtualAccountManager();
 
         public List<string> GetAccountList()
@@ -35,9 +37,10 @@ namespace MTree.VirtualTrader
             return null;
         }
 
-        public bool MakeOrder(Order order)
+        public OrderResult MakeOrder(Order order)
         {
-            return AccountManager.MakeOrder(order);
+            //return AccountManager.MakeOrder(order);
+            return CurrOrderResult;
         }
     }
 }

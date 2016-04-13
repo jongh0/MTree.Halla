@@ -30,7 +30,7 @@ namespace MTree.Dashboard
 
         private void TestData()
         {
-            Consumer.Latency = TimeSpan.FromMilliseconds(100);
+            Consumer.TrafficMonitor.Latency = TimeSpan.FromMilliseconds(100);
             Consumer.StockItems.Add("000020", new DashboardItem() { Code = "000020", Name = "삼양1", Price = 2000, Volume = 60, BasisPrice = 2000, PreviousVolume = 50 });
             Consumer.StockItems.Add("000030", new DashboardItem() { Code = "000030", Name = "삼양2", Price = (float)102.20, Volume = 243, BasisPrice = (float)101.20, PreviousVolume = 176750 });
             Consumer.StockItems.Add("000040", new DashboardItem() { Code = "000040", Name = "삼양3", Price = 55, Volume = 5435, BasisPrice = 50, PreviousVolume = 7576, CircuitBreakType = DataStructure.CircuitBreakTypes.StaticInvoke });

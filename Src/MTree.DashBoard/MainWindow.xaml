@@ -42,6 +42,6 @@
             </TabItem>
         </TabControl>
         <Label Grid.Column="1" Content="Latency" HorizontalAlignment="Right"/>
-        <Label Grid.Column="2" Content="{Binding Latency}" ContentStringFormat="{}{0:ss\:fff}" HorizontalAlignment="Left"/>
+        <Label Grid.Column="2" Content="{Binding Path=TrafficMonitor.Latency}" ContentStringFormat="{}{0:ss\:fff}" HorizontalAlignment="Left"/>
     </Grid>
 </Window>

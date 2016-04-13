@@ -27,7 +27,7 @@ namespace MTree.Trader
             return base.Channel.GetHoldingList(accNum);
         }
 
-        public bool MakeOrder(Order order)
+        public OrderResult MakeOrder(Order order)
         {
             return base.Channel.MakeOrder(order);
         }

@@ -20,6 +20,7 @@ using GalaSoft.MvvmLight.Command;
 using System.Windows.Input;
 using System.Diagnostics;
 using System.ComponentModel;
+using MTree.TrafficMonitorUtil;
 
 namespace MTree.Dashboard
 {
@@ -32,7 +33,11 @@ namespace MTree.Dashboard
         public ObservableConcurrentDictionary<string, DashboardItem> IndexItems { get; set; } = new ObservableConcurrentDictionary<string, DashboardItem>();
 
 #if VERIFY_ORDERING
-        private ConcurrentDictionary<string, ObjectId> VerifyList { get; set; } = new ConcurrentDictionary<string, ObjectId>(); 
+        private ConcurrentDictionary<string, ObjectId> VerifyList { get; set; } = new ConcurrentDictionary<string, ObjectId>();
+#endif
+
+#if VERIFY_LATENCY
+        public TrafficMonitor TrafficMonitor { get; set; } = new TrafficMonitor();
 #endif
 
         public Dashboard()
@@ -352,16 +357,6 @@ namespace MTree.Dashboard
         #endregion
 
 #if VERIFY_LATENCY
-        private TimeSpan latency = new TimeSpan(0);
-        public TimeSpan Latency
-        {
-            get { return latency; }
-            set
-            {
-                latency = value;
-                NotifyPropertyChanged(nameof(Latency));
-            }
-        }
 
         private void ProcessBiddingPriceQueue()
         {
@@ -369,7 +364,7 @@ namespace MTree.Dashboard
             {
                 BiddingPrice biddingPrice;
                 if (BiddingPriceQueue.TryDequeue(out biddingPrice) == true)
-                    CheckLatency(biddingPrice);
+                    TrafficMonitor.CheckLatency(biddingPrice);
                 else
                     Thread.Sleep(10);
             }
@@ -377,13 +372,6 @@ namespace MTree.Dashboard
             {
                 logger.Error(ex);
             }
-        }
-
-        private void CheckLatency(Subscribable newSubscribale)
-        {
-            Latency = DateTime.Now - newSubscribale.Time;
-            if (Latency.TotalMilliseconds > 1000)
-                logger.Error($"Data transfer delayed. Latency: {Latency.TotalMilliseconds}");
         }
 
         public override void ConsumeBiddingPrice(BiddingPrice biddingPrice)
