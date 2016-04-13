@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:MTree.HistorySaver"
         xmlns:utility="clr-namespace:MTree.Utility;assembly=MTree.Utility"
         mc:Ignorable="d"
-        Title="HistorySaver" Height="273.526" Width="303.892" ResizeMode="CanMinimize">
+        Title="HistorySaver" Height="269.318" Width="351.864" ResizeMode="CanMinimize">
     <Grid>
         <Grid.Resources>
             <utility:NumberToCurrencyConverter x:Key="NumberToCurrencyConverter"/>
@@ -26,19 +26,11 @@
                 <Setter Property="TextAlignment" Value="Left"/>
             </Style>
         </Grid.Resources>
-        
+
         <StackPanel Orientation="Vertical" Margin="10" VerticalAlignment="Center" HorizontalAlignment="Center">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Chart : "/>
                 <TextBox Text="{Binding Path=Counter.ChartCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="CircuitBreak : "/>
-                <TextBox Text="{Binding Path=Counter.CircuitBreakCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="BiddingPrice : "/>
-                <TextBox Text="{Binding Path=Counter.BiddingPriceCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="StockMaster : "/>
@@ -49,12 +41,24 @@
                 <TextBox Text="{Binding Path=Counter.IndexMasterCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
+                <TextBlock Text="CircuitBreak : "/>
+                <TextBox Text="{Binding Path=Counter.CircuitBreakCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}"/>
+                <TextBox Text="{Binding Path=CircuitBreakQueueCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}" Margin="5,0,0,0" Width="55" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="BiddingPrice : "/>
+                <TextBox Text="{Binding Path=Counter.BiddingPriceCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}"/>
+                <TextBox Text="{Binding Path=BiddingPriceQueueCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}" Margin="5,0,0,0" Width="55" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
                 <TextBlock Text="StockConclusion : "/>
                 <TextBox Text="{Binding Path=Counter.StockConclusionCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}"/>
+                <TextBox Text="{Binding Path=StockConclusionQueueCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}" Margin="5,0,0,0" Width="55" />
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="IndexConclusion : "/>
                 <TextBox Text="{Binding Path=Counter.IndexConclusionCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}"/>
+                <TextBox Text="{Binding Path=IndexConclusionQueueCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}" Margin="5,0,0,0" Width="55" />
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Total : "/>

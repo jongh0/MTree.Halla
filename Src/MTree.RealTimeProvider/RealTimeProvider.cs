@@ -321,6 +321,10 @@ namespace MTree.RealTimeProvider
         private void RefreshTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             Counter.NotifyPropertyAll();
+            NotifyPropertyChanged(nameof(CircuitBreakQueueCount));
+            NotifyPropertyChanged(nameof(BiddingPriceQueueCount));
+            NotifyPropertyChanged(nameof(StockConclusionQueueCount));
+            NotifyPropertyChanged(nameof(IndexConclusionQueueCount));
         }
 
         #region Command

@@ -21,7 +21,7 @@ using MongoDB.Bson;
 namespace MTree.HistorySaver
 {
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false, ValidateMustUnderstand = false)]
-    public class HistorySaver : ConsumerBase
+    public class HistorySaver : ConsumerBase, INotifyPropertyChanged
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -293,6 +293,19 @@ namespace MTree.HistorySaver
         private void RefreshTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             Counter.NotifyPropertyAll();
+            NotifyPropertyChanged(nameof(CircuitBreakQueueCount));
+            NotifyPropertyChanged(nameof(BiddingPriceQueueCount));
+            NotifyPropertyChanged(nameof(StockConclusionQueueCount));
+            NotifyPropertyChanged(nameof(IndexConclusionQueueCount));
         }
+
+        #region INotifyPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged(string name)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+        #endregion
     }
 }
