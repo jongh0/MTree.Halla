@@ -108,5 +108,72 @@ namespace MTree.DataCompare
             logger.Info($"Comparing complete result:{compareProcess.ExitCode}");
             return compareProcess.ExitCode == 1;
         }
+
+        public void MakeReport(List<string> src, List<string> dest, string reportPath)
+        {
+            StringBuilder srcString = new StringBuilder();
+            StringBuilder destString = new StringBuilder();
+
+            foreach (string s in src)
+            {
+                srcString.AppendLine(s);
+            }
+            foreach (string d in dest)
+            {
+                destString.AppendLine(d);
+            }
+
+            MakeReport(srcString.ToString(), destString.ToString(), reportPath);
+        }
+
+        public void MakeReport(List<Subscribable> src, List<Subscribable> dest, string reportPath)
+        {
+            StringBuilder srcString = new StringBuilder();
+            StringBuilder destString = new StringBuilder();
+
+            foreach (Subscribable s in src)
+            {
+                srcString.AppendLine(s.ToString());
+            }
+            foreach (Subscribable d in dest)
+            {
+                destString.AppendLine(d.ToString());
+            }
+
+            MakeReport(srcString.ToString(), destString.ToString(), reportPath);
+        }
+
+        public void MakeReport(string src, string dest, string reportPath)
+        {
+            if (File.Exists(beyondComparePath) == false)
+            {
+                logger.Error("Beyond compare path is wrong");
+                return;
+            }
+
+            using (StreamWriter sourceSw = new StreamWriter(sourceFile, false))
+            {
+                sourceSw.WriteLine(src);
+                sourceSw.Flush();
+            }
+
+            using (StreamWriter destinationSw = new StreamWriter(destinationFile, false))
+            {
+                destinationSw.WriteLine(dest);
+                destinationSw.Flush();
+            }
+
+            string param = $"@CompareScript.txt {sourceFile} {destinationFile} {reportPath}";
+
+            Process compareProcess = Process.Start(beyondComparePath, param);
+            compareProcess.WaitForExit();
+
+            if (File.Exists(sourceFile))
+                File.Delete(sourceFile);
+            if (File.Exists(destinationFile))
+                File.Delete(destinationFile);
+
+            logger.Info($"Create report done");
+        }
     }
 }

@@ -57,7 +57,14 @@ namespace MTree.DataCompare
             
             foreach (Subscribable conclusion in DataSource.Find(code, filter).ToList())
             {
-                if (((StockConclusion)conclusion).MarketTimeType == MarketTimeTypes.Normal)
+                if (normalOnly == true)
+                {
+                    if (((StockConclusion)conclusion).MarketTimeType == MarketTimeTypes.Normal)
+                    {
+                        conclusions.Add(conclusion);
+                    }
+                }
+                else
                 {
                     conclusions.Add(conclusion);
                 }

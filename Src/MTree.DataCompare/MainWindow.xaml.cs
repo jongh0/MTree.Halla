@@ -28,22 +28,69 @@ namespace MTree.DataCompare
         {
             InitializeComponent();
 
+            DateTime target = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 12);
+            DataValidator validator = new DataValidator();
+            validator.ValidateCodeList();
+
+            //DateTime target = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 12);
+            //TestMasterCompare(target);
+            //TestDbToDbStockConclusionCompare("123440",target);
+            //TestDbToDaishinStockConclusionCompare("123440", target);
+            //TestDbToDbStockConclusionCompare(target);
+            //TestCodeListCompare();
+
+            //string code = "005930";
+            //DateTime target = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 12);
+            //TestDbToDbStockConclusionCompare(code, target);
+        }
+
+        private void TestCodeListCompare()
+        {
             BeyondCompare compare = new BeyondCompare();
-            DateTime target = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
 
-            string code = "005930";
-#if true
             IDataCollector source = new DbCollector(DbAgent.Instance);
-            //IDataCollector destination = new DbCollector(DbAgent.RemoteInstance);
-            IDataCollector destination = new DaishinCollector();
+            IDataCollector destination = new DbCollector(DbAgent.RemoteInstance);
+            
+            List<string> srcCodes = source.GetCodeList();
+            List<string> destCodes = destination.GetCodeList();
+            bool result = compare.DoCompareItem(srcCodes, destCodes, true);
+        }
+        private void TestMasterCompare(string code, DateTime target)
+        {
+            BeyondCompare compare = new BeyondCompare();
 
-            Stopwatch swTotal = new Stopwatch();
+            IDataCollector source = new DbCollector(DbAgent.Instance);
+            IDataCollector destination = new DbCollector(DbAgent.RemoteInstance);
 
-            swTotal.Start();
-            //Console.WriteLine(compare.DoCompareItem(source.GetCodeList(), destination.GetCodeList()));
+            StockMaster srcMaster = source.GetMaster(code, target);
+            StockMaster destMaster = destination.GetMaster(code, target);
+            bool result = compare.DoCompareItem(srcMaster, destMaster, true);
+        }
 
-           
-            //foreach (string code in source.GetCodeList())
+        private void TestMasterCompare(DateTime target)
+        {
+            BeyondCompare compare = new BeyondCompare();
+
+            IDataCollector source = new DbCollector(DbAgent.Instance);
+            IDataCollector destination = new DbCollector(DbAgent.RemoteInstance);
+
+            foreach (string code in source.GetCodeList())
+            {
+                StockMaster srcMaster = source.GetMaster(code, target);
+                StockMaster destMaster = destination.GetMaster(code, target);
+                bool result = compare.DoCompareItem(srcMaster, destMaster, false);
+                Console.WriteLine($"Code:{code}, Result:{result}");
+            }
+        }
+
+        private void TestDbToDbStockConclusionCompare(DateTime target)
+        {
+            BeyondCompare compare = new BeyondCompare();
+
+            IDataCollector source = new DbCollector(DbAgent.Instance);
+            IDataCollector destination = new DbCollector(DbAgent.RemoteInstance);
+            
+            foreach (string code in source.GetCodeList())
             {
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
@@ -51,27 +98,74 @@ namespace MTree.DataCompare
                 var tasks = new List<Task>();
 
                 List<Subscribable> sourceList = new List<Subscribable>();
-                tasks.Add(Task.Run(() => { sourceList = source.GetStockConclusions(code, target); }));
-                //tasks.Add(Task.Run(() => { sourceList = source.GetIndexConclusions(code, target); }));
-
                 List<Subscribable> destinationList = new List<Subscribable>();
-                tasks.Add(Task.Run(() => { destinationList = destination.GetStockConclusions(code, target); }));
-                //tasks.Add(Task.Run(() => { destinationList = destination.GetIndexConclusions(code, target); }));
+
+                tasks.Add(Task.Run(() => { sourceList = source.GetStockConclusions(code, target, false); }));
+                tasks.Add(Task.Run(() => { destinationList = destination.GetStockConclusions(code, target, false); }));
 
                 Task.WaitAll(tasks.ToArray());
 
-                bool result = compare.DoCompareItem(sourceList, destinationList, true);
+                bool result = compare.DoCompareItem(sourceList, destinationList, false);
                 sw.Stop();
-                Console.WriteLine($"Code:{code}, Elapsed:{sw.Elapsed}");
+
+                Console.WriteLine($"Code:{code}, Result:{result}, Elapsed:{sw.Elapsed}");
                 if (result == false)
                 {
-                    Console.WriteLine(result);
+                    compare.DoCompareItem(sourceList, destinationList, true);
                 }
             }
-            swTotal.Stop();
-            Console.WriteLine($"Done. Elapsed:{swTotal.Elapsed}");
-#endif
+        }
 
+        private void TestDbToDbStockConclusionCompare(string code, DateTime target)
+        {
+            BeyondCompare compare = new BeyondCompare();
+            
+            IDataCollector source = new DbCollector(DbAgent.Instance);
+            IDataCollector destination = new DbCollector(DbAgent.RemoteInstance);
+
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
+            var tasks = new List<Task>();
+
+            List<Subscribable> sourceList = new List<Subscribable>();
+            List<Subscribable> destinationList = new List<Subscribable>();
+
+            tasks.Add(Task.Run(() => { sourceList = source.GetStockConclusions(code, target); }));
+            tasks.Add(Task.Run(() => { destinationList = destination.GetStockConclusions(code, target); }));
+
+            Task.WaitAll(tasks.ToArray());
+
+            bool result = compare.DoCompareItem(sourceList, destinationList, true);
+            sw.Stop();
+
+            Console.WriteLine($"Code:{code}, Result:{result}, Elapsed:{sw.Elapsed}");
+        }
+
+        private void TestDbToDaishinStockConclusionCompare(string code, DateTime target)
+        {
+            BeyondCompare compare = new BeyondCompare();
+
+            IDataCollector source = new DbCollector(DbAgent.Instance);
+            IDataCollector destination = new DaishinCollector();
+
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
+            var tasks = new List<Task>();
+
+            List<Subscribable> sourceList = new List<Subscribable>();
+            List<Subscribable> destinationList = new List<Subscribable>();
+
+            tasks.Add(Task.Run(() => { sourceList = source.GetStockConclusions(code, target); }));
+            tasks.Add(Task.Run(() => { destinationList = destination.GetStockConclusions(code, target); }));
+
+            Task.WaitAll(tasks.ToArray());
+
+            bool result = compare.DoCompareItem(sourceList, destinationList, true);
+            sw.Stop();
+
+            Console.WriteLine($"Code:{code}, Result:{result}, Elapsed:{sw.Elapsed}");
         }
     }
 }

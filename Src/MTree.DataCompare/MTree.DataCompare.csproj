@@ -89,6 +89,7 @@
     <Compile Include="DataCollector\DaishinCollector.cs" />
     <Compile Include="DataCollector\DataCollector.cs" />
     <Compile Include="DataCollector\IDataCollector.cs" />
+    <Compile Include="DataValidator.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -135,6 +136,11 @@
       <Project>{57195e80-20a3-4fd0-83c8-92af91784dda}</Project>
       <Name>MTree.DbProvider</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Comparer\CompareScript.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
