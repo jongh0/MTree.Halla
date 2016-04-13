@@ -1,4 +1,4 @@
-﻿#define VERIFY_ORDERING
+﻿//#define VERIFY_ORDERING
 
 using System;
 using System.ServiceModel;
@@ -155,11 +155,11 @@ namespace MTree.HistorySaver
             }
         }
 
+#if VERIFY_ORDERING
         public override void ConsumeStockConclusion(StockConclusion conclusion)
         {
             base.ConsumeStockConclusion(conclusion);
 
-#if VERIFY_ORDERING
             try
             {
                 var code = conclusion.Code;
@@ -182,8 +182,8 @@ namespace MTree.HistorySaver
             {
                 logger.Error(ex);
             }
-#endif
         }
+#endif
 
         public override void ConsumeStockMaster(List<StockMaster> stockMasters)
         {

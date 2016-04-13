@@ -1,4 +1,4 @@
-﻿#define VERIFY_ORDERING
+﻿//#define VERIFY_ORDERING
 #define VERIFY_LATENCY
 
 using System;
@@ -171,11 +171,11 @@ namespace MTree.Dashboard
             }
         }
 
+#if VERIFY_ORDERING
         public override void ConsumeStockConclusion(StockConclusion conclusion)
         {
             base.ConsumeStockConclusion(conclusion);
 
-#if VERIFY_ORDERING
             try
             {
                 var code = conclusion.Code;
@@ -198,8 +198,8 @@ namespace MTree.Dashboard
             {
                 logger.Error(ex);
             }
-#endif
         }
+#endif
 
         public override void ConsumeStockMaster(List<StockMaster> stockMasters)
         {
