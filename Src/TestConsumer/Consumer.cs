@@ -35,12 +35,7 @@ namespace TestConsumer
             else
                 Thread.Sleep(10);
         }
-
-        public override void ConsumeStockConclusion(StockConclusion conclusion)
-        {
-            StockConclusionQueue.Enqueue(conclusion);
-        }
-
+        
         public void StartConsume()
         {
             TaskUtility.Run("Consumer.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);

@@ -20,11 +20,10 @@ using GalaSoft.MvvmLight.Command;
 using System.Windows.Input;
 using System.Diagnostics;
 using System.ComponentModel;
-using MTree.Utility;
 
 namespace MTree.Dashboard
 {
-    [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
+    [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false, ValidateMustUnderstand = false)]
     public class Dashboard : ConsumerBase, INotifyPropertyChanged
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
@@ -174,7 +173,7 @@ namespace MTree.Dashboard
 
         public override void ConsumeStockConclusion(StockConclusion conclusion)
         {
-            StockConclusionQueue.Enqueue(conclusion);
+            base.ConsumeStockConclusion(conclusion);
 
 #if VERIFY_ORDERING
             try
@@ -200,16 +199,6 @@ namespace MTree.Dashboard
                 logger.Error(ex);
             }
 #endif
-        }
-
-        public override void ConsumeIndexConclusion(IndexConclusion conclusion)
-        {
-            IndexConclusionQueue.Enqueue(conclusion);
-        }
-
-        public override void ConsumeCircuitBreak(CircuitBreak circuitBreak)
-        {
-            CircuitBreakQueue.Enqueue(circuitBreak);
         }
 
         public override void ConsumeStockMaster(List<StockMaster> stockMasters)
@@ -371,11 +360,6 @@ namespace MTree.Dashboard
             {
                 logger.Error(ex);
             }
-        }
-
-        public override void ConsumeBiddingPrice(BiddingPrice biddingPrice)
-        {
-            BiddingPriceQueue.Enqueue(biddingPrice);
         }
 #endif
     }

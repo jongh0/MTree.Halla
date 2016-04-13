@@ -21,8 +21,8 @@ namespace MTree.RealTimeProvider.Tests
             //    instance.LaunchPublisher(PublisherType.Daishin);
             //}
 
-            while (true) ;
-            Assert.Fail();
+            //while (true) ;
+            //Assert.Fail();
         }
     }
 }

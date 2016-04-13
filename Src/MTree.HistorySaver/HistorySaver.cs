@@ -20,7 +20,7 @@ using MongoDB.Bson;
 
 namespace MTree.HistorySaver
 {
-    [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
+    [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false, ValidateMustUnderstand = false)]
     public class HistorySaver : ConsumerBase
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
@@ -155,14 +155,9 @@ namespace MTree.HistorySaver
             }
         }
 
-        public override void ConsumeBiddingPrice(BiddingPrice biddingPrice)
-        {
-            BiddingPriceQueue.Enqueue(biddingPrice);
-        }
-
         public override void ConsumeStockConclusion(StockConclusion conclusion)
         {
-            StockConclusionQueue.Enqueue(conclusion);
+            base.ConsumeStockConclusion(conclusion);
 
 #if VERIFY_ORDERING
             try
@@ -188,16 +183,6 @@ namespace MTree.HistorySaver
                 logger.Error(ex);
             }
 #endif
-        }
-
-        public override void ConsumeIndexConclusion(IndexConclusion conclusion)
-        {
-            IndexConclusionQueue.Enqueue(conclusion);
-        }
-
-        public override void ConsumeCircuitBreak(CircuitBreak circuitBreak)
-        {
-            CircuitBreakQueue.Enqueue(circuitBreak);
         }
 
         public override void ConsumeStockMaster(List<StockMaster> stockMasters)

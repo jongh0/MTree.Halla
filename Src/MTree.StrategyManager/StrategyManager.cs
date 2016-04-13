@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace MTree.StrategyManager
 {
-    [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
+    [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false, ValidateMustUnderstand = false)]
     public class StrategyManager : ConsumerBase
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
@@ -120,26 +120,6 @@ namespace MTree.StrategyManager
             {
                 logger.Error(ex);
             }
-        }
-
-        public override void ConsumeBiddingPrice(BiddingPrice biddingPrice)
-        {
-            BiddingPriceQueue.Enqueue(biddingPrice);
-        }
-
-        public override void ConsumeStockConclusion(StockConclusion conclusion)
-        {
-            StockConclusionQueue.Enqueue(conclusion);
-        }
-
-        public override void ConsumeIndexConclusion(IndexConclusion conclusion)
-        {
-            IndexConclusionQueue.Enqueue(conclusion);
-        }
-
-        public override void ConsumeCircuitBreak(CircuitBreak circuitBreak)
-        {
-            CircuitBreakQueue.Enqueue(circuitBreak);
         }
 
         public override void NotifyMessage(MessageTypes type, string message)

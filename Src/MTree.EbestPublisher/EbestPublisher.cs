@@ -53,7 +53,7 @@ namespace MTree.EbestPublisher
         #region Ebest Specific
         private XASessionClass sessionObj;
         
-        private XARealClass indexSubscribingObj;
+        //private XARealClass indexSubscribingObj;
         private XARealClass viSubscribingObj;
         private XARealClass dviSubscribingObj;
 

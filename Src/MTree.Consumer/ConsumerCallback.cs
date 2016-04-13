@@ -18,18 +18,22 @@ namespace MTree.Consumer
 
         public virtual void ConsumeBiddingPrice(BiddingPrice biddingPrice)
         {
+            BiddingPriceQueue.Enqueue(biddingPrice);
         }
 
         public virtual void ConsumeCircuitBreak(CircuitBreak circuitBreak)
         {
+            CircuitBreakQueue.Enqueue(circuitBreak);
         }
 
         public virtual void ConsumeIndexConclusion(IndexConclusion conclusion)
         {
+            IndexConclusionQueue.Enqueue(conclusion);
         }
 
         public virtual void ConsumeStockConclusion(StockConclusion conclusion)
         {
+            StockConclusionQueue.Enqueue(conclusion);
         }
 
         public virtual void ConsumeStockMaster(List<StockMaster> stockMasters)
