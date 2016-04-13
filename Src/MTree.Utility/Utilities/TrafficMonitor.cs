@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MTree.TrafficMonitorUtil
+namespace MTree.Utility
 {
     public class TrafficMonitor : INotifyPropertyChanged
     {
@@ -29,7 +29,6 @@ namespace MTree.TrafficMonitorUtil
             if (Latency.TotalMilliseconds > 1000)
                 logger.Error($"Data transfer delayed. Latency: {Latency.TotalMilliseconds}");
         }
-
 
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;

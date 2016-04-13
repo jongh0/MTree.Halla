@@ -20,7 +20,7 @@ using GalaSoft.MvvmLight.Command;
 using System.Windows.Input;
 using System.Diagnostics;
 using System.ComponentModel;
-using MTree.TrafficMonitorUtil;
+using MTree.Utility;
 
 namespace MTree.Dashboard
 {
@@ -357,7 +357,6 @@ namespace MTree.Dashboard
         #endregion
 
 #if VERIFY_LATENCY
-
         private void ProcessBiddingPriceQueue()
         {
             try
