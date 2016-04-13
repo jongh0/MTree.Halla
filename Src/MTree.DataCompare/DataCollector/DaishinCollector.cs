@@ -17,7 +17,11 @@ namespace MTree.DataCompare
             ConclusionHistoryQueryObj = new StockBidClass();
         }
 
-        public List<string> GetCodeList()
+        public List<string> GetStockCodeList()
+        {
+            throw new NotImplementedException();
+        }
+        public List<string> GetIndexCodeList()
         {
             throw new NotImplementedException();
         }

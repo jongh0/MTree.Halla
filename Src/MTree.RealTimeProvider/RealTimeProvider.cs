@@ -122,6 +122,9 @@ namespace MTree.RealTimeProvider
         {
             logger.Info("Market end timer elapsed");
 
+            // Data Compare 실행
+            ProcessUtility.Start(ProcessTypes.DataCompare, ProcessWindowStyle.Minimized);
+
             // Popup stopper 실행
             ProcessUtility.Start(ProcessTypes.PopupStopper, ProcessWindowStyle.Minimized);
 

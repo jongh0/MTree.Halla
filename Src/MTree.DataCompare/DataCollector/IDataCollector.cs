@@ -9,7 +9,9 @@ namespace MTree.DataCompare
 {
     public interface IDataCollector
     {
-        List<string> GetCodeList();
+        List<string> GetStockCodeList();
+
+        List<string> GetIndexCodeList();
         
         StockMaster GetMaster(string code, DateTime targetDate);
 

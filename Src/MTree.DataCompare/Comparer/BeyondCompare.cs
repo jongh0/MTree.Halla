@@ -163,7 +163,7 @@ namespace MTree.DataCompare
                 destinationSw.Flush();
             }
 
-            string param = $"@CompareScript.txt {sourceFile} {destinationFile} {reportPath}";
+            string param = $"/qc=binary /silent @CompareScript.txt {sourceFile} {destinationFile} {reportPath}";
 
             Process compareProcess = Process.Start(beyondComparePath, param);
             compareProcess.WaitForExit();

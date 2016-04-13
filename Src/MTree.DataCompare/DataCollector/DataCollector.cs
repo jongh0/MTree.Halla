@@ -19,9 +19,14 @@ namespace MTree.DataCompare
                 DataSource = dataSource;
         }
 
-        public List<string> GetCodeList()
+        public List<string> GetStockCodeList()
         {
             return DataSource.GetCollectionList(DbTypes.StockMaster);
+        }
+
+        public List<string> GetIndexCodeList()
+        {
+            return DataSource.GetCollectionList(DbTypes.IndexMaster);
         }
 
         public StockMaster GetMaster(string code, DateTime targetDate)
