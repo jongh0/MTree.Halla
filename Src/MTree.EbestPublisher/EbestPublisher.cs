@@ -158,7 +158,7 @@ namespace MTree.EbestPublisher
                     string.IsNullOrEmpty(LoginInstance.UserPw) == false &&
                     string.IsNullOrEmpty(LoginInstance.CertPw) == false)
                 {
-                    Task.Run(() => Login());
+                    Login();
                 }
                 else
                 {
