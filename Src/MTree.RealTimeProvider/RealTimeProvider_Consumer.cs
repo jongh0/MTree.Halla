@@ -1,6 +1,8 @@
 ﻿//#define PARALLEL_CONSUME
+#define VERIFY_LATENCY
 
 using MTree.DataStructure;
+using MTree.Utility;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -24,6 +26,10 @@ namespace MTree.RealTimeProvider
         private ConcurrentDictionary<Guid, SubscribeContract> StockConclusionContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
         private ConcurrentDictionary<Guid, SubscribeContract> IndexConclusionContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
         #endregion
+
+#if VERIFY_LATENCY
+        public TrafficMonitor TrafficMonitor { get; set; } = new TrafficMonitor();
+#endif
 
         public List<Candle> GetChart(string code, DateTime startDate, DateTime endDate, CandleTypes candleType)
         {
@@ -150,6 +156,10 @@ namespace MTree.RealTimeProvider
                 BiddingPrice biddingPrice;
                 if (BiddingPriceQueue.TryDequeue(out biddingPrice) == true)
                 {
+#if VERIFY_LATENCY
+                    TrafficMonitor.CheckLatency(biddingPrice);
+#endif
+
 #if PARALLEL_CONSUME
                     Parallel.ForEach(BiddingPriceContracts, (contract) =>
                     {
@@ -254,6 +264,10 @@ namespace MTree.RealTimeProvider
                 StockConclusion conclusion;
                 if (StockConclusionQueue.TryDequeue(out conclusion) == true)
                 {
+#if VERIFY_LATENCY
+                    TrafficMonitor.CheckLatency(conclusion);
+#endif
+
 #if PARALLEL_CONSUME
                     Parallel.ForEach(StockConclusionContracts, (contract) =>
                     {
@@ -306,6 +320,10 @@ namespace MTree.RealTimeProvider
                 IndexConclusion conclusion;
                 if (IndexConclusionQueue.TryDequeue(out conclusion) == true)
                 {
+#if VERIFY_LATENCY
+                    TrafficMonitor.CheckLatency(conclusion);
+#endif
+
 #if PARALLEL_CONSUME
                     Parallel.ForEach(IndexConclusionContracts, (contract) =>
                     {
