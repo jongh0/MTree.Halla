@@ -35,13 +35,15 @@ namespace MTree.HistorySaver
 #endif
 
 #if VERIFY_LATENCY
-        public TrafficMonitor TrafficMonitor { get; set; } = new TrafficMonitor();
+        public TrafficMonitor TrafficMonitor { get; set; }
 #endif
 
         public HistorySaver()
         {
             try
             {
+                TrafficMonitor = new TrafficMonitor(Counter);
+
                 TaskUtility.Run("HistorySaver.CircuitBreakQueue", QueueTaskCancelToken, ProcessCircuitBreakQueue);
 
                 for (int i = 0; i < 5; i++)

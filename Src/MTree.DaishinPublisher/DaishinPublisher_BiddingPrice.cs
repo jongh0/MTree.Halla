@@ -133,6 +133,7 @@ namespace MTree.DaishinPublisher
                 }
 
                 BiddingPriceQueue.Enqueue(biddingPrice);
+                Counter.Increment(CounterTypes.BiddingPrice);
             }
             catch (Exception ex)
             {

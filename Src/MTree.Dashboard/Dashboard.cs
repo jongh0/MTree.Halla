@@ -36,13 +36,17 @@ namespace MTree.Dashboard
 #endif
 
 #if VERIFY_LATENCY
-        public TrafficMonitor TrafficMonitor { get; set; } = new TrafficMonitor();
+        public DataCounter Counter { get; set; } = new DataCounter(DataTypes.DaishinPublisher);
+        public TrafficMonitor TrafficMonitor { get; set; }
 #endif
 
         public Dashboard()
         {
             try
             {
+#if VERIFY_LATENCY
+                TrafficMonitor = new TrafficMonitor(Counter);
+#endif
                 TaskUtility.Run("Dashboard.CircuitBreakQueue", QueueTaskCancelToken, ProcessCircuitBreakQueue);
 
                 for (int i = 0; i < 5; i++)

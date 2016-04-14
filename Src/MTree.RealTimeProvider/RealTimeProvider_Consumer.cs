@@ -28,7 +28,7 @@ namespace MTree.RealTimeProvider
         #endregion
 
 #if VERIFY_LATENCY
-        public TrafficMonitor TrafficMonitor { get; set; } = new TrafficMonitor();
+        public TrafficMonitor TrafficMonitor { get; set; }
 #endif
 
         public List<Candle> GetChart(string code, DateTime startDate, DateTime endDate, CandleTypes candleType)

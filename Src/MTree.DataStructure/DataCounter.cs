@@ -25,6 +25,7 @@ namespace MTree.DataStructure
 
     public enum DataTypes
     {
+        DaishinPublisher,
         RealTimeProvider,
         HistorySaver,
         Database,

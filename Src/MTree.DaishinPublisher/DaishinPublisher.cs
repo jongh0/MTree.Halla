@@ -1,4 +1,6 @@
-﻿using CPUTILLib;
+﻿#define VERIFY_LATENCY
+
+using CPUTILLib;
 using DSCBO1Lib;
 using CPSYSDIBLib;
 using MTree.DataStructure;
@@ -23,6 +25,14 @@ namespace MTree.DaishinPublisher
 
         private bool IsMasterProcess { get; set; } = false;
 
+#if VERIFY_LATENCY
+        public DataCounter Counter { get; set; } = new DataCounter(DataTypes.DaishinPublisher);
+
+        public TrafficMonitor TrafficMonitor { get; set; }
+
+        private System.Timers.Timer RefreshTimer { get; set; }
+#endif
+
         #region Daishin Specific
         private CpCybosClass sessionObj;
         private CpCodeMgrClass codeMgrObj;
@@ -42,6 +52,10 @@ namespace MTree.DaishinPublisher
         {
             try
             {
+#if VERIFY_LATENCY
+                TrafficMonitor = new TrafficMonitor(Counter);
+                StartRefreshTimer();
+#endif 
                 QuoteInterval = 15 * 1000 / 60; // 15초당 60개
 
                 sessionObj = new CpCybosClass();
@@ -110,6 +124,34 @@ namespace MTree.DaishinPublisher
                 logger.Error(ex);
             }
         }
+
+#if VERIFY_LATENCY
+        private void StartRefreshTimer()
+        {
+            if (RefreshTimer == null)
+            {
+                RefreshTimer = new System.Timers.Timer();
+                RefreshTimer.AutoReset = true;
+                RefreshTimer.Interval = 10000;
+                RefreshTimer.Elapsed += RefreshTimer_Elapsed;
+            }
+
+            RefreshTimer?.Start();
+        }
+        private void StopRefreshTimer()
+        {
+            RefreshTimer?.Stop();
+        }
+
+        private void RefreshTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            Counter.NotifyPropertyAll();
+            TrafficMonitor.NotifyPropertyAll();
+            NotifyPropertyChanged(nameof(BiddingPriceQueueCount));
+            NotifyPropertyChanged(nameof(StockConclusionQueueCount));
+            NotifyPropertyChanged(nameof(IndexConclusionQueueCount));
+        }
+#endif
 
         int cnt = 0;
         private void memberTrendObj_Received()

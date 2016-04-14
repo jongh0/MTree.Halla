@@ -264,6 +264,7 @@ namespace MTree.DaishinPublisher
                 }
 
                 StockConclusionQueue.Enqueue(conclusion);
+                Counter.Increment(CounterTypes.StockConclusion);
             }
             catch (Exception ex)
             {

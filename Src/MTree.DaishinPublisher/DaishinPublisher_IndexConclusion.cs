@@ -205,6 +205,7 @@ namespace MTree.DaishinPublisher
 #endif
 
                 IndexConclusionQueue.Enqueue(conclusion);
+                Counter.Increment(CounterTypes.IndexConclusion);
             }
             catch (Exception ex)
             {
