@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 namespace MTree.RealTimeProvider
 {
+    [DeliveryRequirements(RequireOrderedDelivery = true)]
     [ServiceContract(CallbackContract = typeof(IRealTimeConsumerCallback))]
     public interface IRealTimeConsumer
     {
@@ -24,21 +25,22 @@ namespace MTree.RealTimeProvider
         List<Candle> GetChart(string code, DateTime startDate, DateTime endDate, CandleTypes candleType);
     }
 
+    [DeliveryRequirements(RequireOrderedDelivery = true)]
     public interface IRealTimeConsumerCallback
     {
         [OperationContract(IsOneWay = true)]
         void NotifyMessage(MessageTypes type, string message);
 
-        [OperationContract]
+        [OperationContract(IsOneWay = true)]
         void ConsumeBiddingPrice(BiddingPrice biddingPrice);
 
-        [OperationContract]
+        [OperationContract(IsOneWay = true)]
         void ConsumeCircuitBreak(CircuitBreak circuitBreak);
 
-        [OperationContract]
+        [OperationContract(IsOneWay = true)]
         void ConsumeStockConclusion(StockConclusion conclusion);
 
-        [OperationContract]
+        [OperationContract(IsOneWay = true)]
         void ConsumeIndexConclusion(IndexConclusion conclusion);
 
         [OperationContract(IsOneWay = true)]
