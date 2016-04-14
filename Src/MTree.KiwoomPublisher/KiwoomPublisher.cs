@@ -286,9 +286,16 @@ namespace MTree.KiwoomPublisher
 
         protected override void ServiceClient_Opened(object sender, EventArgs e)
         {
-            // Login이 완료된 후에 Publisher contract 등록
-            WaitLogin();
             base.ServiceClient_Opened(sender, e);
+
+            Task.Run(() =>
+            {
+                // Login이 완료된 후에 Publisher contract 등록
+                WaitLogin();
+
+                // Contract 등록
+                RegisterPublishContract();
+            });
         }
 
         public override void NotifyMessage(MessageTypes type, string message)

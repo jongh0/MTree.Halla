@@ -333,6 +333,17 @@ namespace MTree.DaishinPublisher
             return sessionObj.GetLimitRemainCount(LIMIT_TYPE.LT_SUBSCRIBE);
         }
 
+        protected override void ServiceClient_Opened(object sender, EventArgs e)
+        {
+            base.ServiceClient_Opened(sender, e);
+
+            Task.Run(() =>
+            {
+                // Contract 등록
+                RegisterPublishContract();
+            });
+        }
+
         public override void NotifyMessage(MessageTypes type, string message)
         {
             if (type == MessageTypes.CloseClient)

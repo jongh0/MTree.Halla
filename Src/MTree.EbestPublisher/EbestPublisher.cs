@@ -158,7 +158,7 @@ namespace MTree.EbestPublisher
                     string.IsNullOrEmpty(LoginInstance.UserPw) == false &&
                     string.IsNullOrEmpty(LoginInstance.CertPw) == false)
                 {
-                    Login();
+                    Task.Run(() => Login());
                 }
                 else
                 {
@@ -596,13 +596,19 @@ namespace MTree.EbestPublisher
 
         protected override void ServiceClient_Opened(object sender, EventArgs e)
         {
-            // Login이 완료된 후에 Publisher contract 등록
-            WaitLogin();
-
-            // Warning List Update
-            UpdateWarningList();
-
             base.ServiceClient_Opened(sender, e);
+
+            Task.Run(() =>
+            {
+                // Login이 완료된 후에 Publisher contract 등록
+                WaitLogin();
+
+                // Warning List Update
+                UpdateWarningList();
+
+                // Contract 등록
+                RegisterPublishContract();
+            });
         }
 
         public override void NotifyMessage(MessageTypes type, string message)

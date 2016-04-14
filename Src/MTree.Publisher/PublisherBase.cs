@@ -68,35 +68,37 @@ namespace MTree.Publisher
 
         protected virtual void ServiceClient_Opened(object sender, EventArgs e)
         {
-            try
-            {
-                Task.Run(() =>
-                {
-                    var args = Environment.GetCommandLineArgs();
-                    if (args?.Length > 1)
-                    {
-                        logger.Info($"Argument: {string.Join(" ", args)}");
-
-                        var contract = new PublisherContract();
-                        contract.Type = PublisherContract.ConvertToType(args[1]);
-
-                        ServiceClient.RegisterContract(ClientId, contract);
-                    }
-                    else
-                    {
-                        logger.Error($"[{GetType().Name}] Wrong argument");
-                    }
-                });
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-            }
+            logger.Info($"[{GetType().Name}] Channel opened");
         }
 
         protected virtual void ServiceClient_Closed(object sender, EventArgs e)
         {
             logger.Info($"[{GetType().Name}] Channel closed");
+        }
+
+        public void RegisterPublishContract()
+        {
+            try
+            {
+                var args = Environment.GetCommandLineArgs();
+                if (args?.Length > 1)
+                {
+                    logger.Info($"Argument: {string.Join(" ", args)}");
+
+                    var contract = new PublisherContract();
+                    contract.Type = PublisherContract.ConvertToType(args[1]);
+
+                    ServiceClient.RegisterContract(ClientId, contract);
+                }
+                else
+                {
+                    logger.Error($"[{GetType().Name}] Wrong argument");
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
         }
 
         public override void NotifyMessage(MessageTypes type, string message)
