@@ -26,10 +26,6 @@ namespace MTree.DaishinPublisher
         private bool IsMasterProcess { get; set; } = false;
 
 #if VERIFY_LATENCY
-        public DataCounter Counter { get; set; } = new DataCounter(DataTypes.DaishinPublisher);
-
-        public TrafficMonitor TrafficMonitor { get; set; }
-
         private System.Timers.Timer RefreshTimer { get; set; }
 #endif
 

@@ -76,12 +76,16 @@ namespace MTree.Utility
             PrevCounter.StockConclusionCount = Counter.StockConclusionCount;
             PrevCounter.BiddingPriceCount = Counter.BiddingPriceCount;
 
-            AverageLatency = new TimeSpan(Convert.ToInt64(LatencyList.Average(timeSpan => timeSpan.TotalMilliseconds)));
-            LatencyList.Clear();
-
+            if (LatencyList.Count > 0)
+            {
+                AverageLatency = new TimeSpan(Convert.ToInt64(LatencyList.Average(timeSpan => timeSpan.TotalMilliseconds)));
+                LatencyList.Clear();
+            }
             NotifyPropertyChanged(nameof(AverageLatency));
             NotifyPropertyChanged(nameof(StockConclusionThroughput));
             NotifyPropertyChanged(nameof(BiddingPriceThroughput));
+
+            logger.Debug($"[{GetType().Name}] AverageLatency:{AverageLatency}, StockConclusionThroughput:{StockConclusionThroughput} BiddingPriceThroughput:{BiddingPriceThroughput}");
         }
 
         #region INotifyPropertyChanged
