@@ -1,4 +1,6 @@
-﻿using MongoDB.Bson;
+﻿#define VERIFY_LATENCY
+
+using MongoDB.Bson;
 using MTree.DataStructure;
 using System;
 using System.Collections.Generic;
@@ -181,6 +183,9 @@ namespace MTree.DaishinPublisher
                 }
 
                 // 18 - (long) 시간 (초)
+#if VERIFY_LATENCY
+                conclusion.Time = now;
+#else
                 long time = Convert.ToInt64(indexCurObj.GetHeaderValue(18));
                 if (indexPrevTime != time)
                 {
@@ -196,7 +201,8 @@ namespace MTree.DaishinPublisher
                 {
                     conclusion.Time = now;
                     logger.Warn($"Index conclusion time error, time: {time}, code: {conclusion.Code}");
-                }
+                } 
+#endif
 
                 IndexConclusionQueue.Enqueue(conclusion);
             }

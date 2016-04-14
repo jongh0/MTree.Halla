@@ -1,6 +1,4 @@
-﻿#define VERIFY_LATENCY
-
-using MTree.DataStructure;
+﻿using MTree.DataStructure;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,9 +19,6 @@ namespace MTree.Dashboard
 
             Consumer = new Dashboard();
             //TestData();
-#if VERIFY_LATENCY
-            //TestLatency();  
-#endif
 
             this.DataContext = Consumer;
         }
@@ -75,23 +70,5 @@ namespace MTree.Dashboard
                 Consumer.StockItems["000060"].Price = 12203;
             });
         }
-
-#if VERIFY_LATENCY
-        private void TestLatency()
-        {
-            Task.Run(() =>
-            {
-                Thread.Sleep(100);
-                Random rand = new Random(DateTime.Now.Millisecond);
-                while (true)
-                {
-                    BiddingPrice biddingPrice = new BiddingPrice();
-                    biddingPrice.Time = DateTime.Now;
-                    Thread.Sleep(rand.Next(10, 1000));
-                    Consumer.ConsumeBiddingPrice(biddingPrice);
-                }
-            });
-        } 
-#endif
     }
 }

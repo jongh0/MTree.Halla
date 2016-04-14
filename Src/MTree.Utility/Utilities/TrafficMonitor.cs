@@ -18,16 +18,19 @@ namespace MTree.Utility
             get { return latency; }
             set
             {
-                latency = value;
-                NotifyPropertyChanged(nameof(Latency));
+                if (latency != value)
+                {
+                    latency = value;
+                    NotifyPropertyChanged(nameof(Latency));
+                }
             }
         }
         
-        public void CheckLatency(Subscribable newSubscribale)
+        public void CheckLatency(Subscribable subscribable)
         {
-            Latency = DateTime.Now - newSubscribale.Time;
+            Latency = DateTime.Now - subscribable.Time;
             if (Latency.TotalMilliseconds > 1000)
-                logger.Error($"Data transfer delayed. Latency: {Latency.TotalMilliseconds}");
+                logger.Debug($"[{GetType().Name}] {subscribable.GetType().Name} data transfer delayed. Latency: {Latency.TotalMilliseconds}");
         }
 
         #region INotifyPropertyChanged

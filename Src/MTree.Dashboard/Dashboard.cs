@@ -116,6 +116,10 @@ namespace MTree.Dashboard
                 StockConclusion conclusion;
                 if (StockConclusionQueue.TryDequeue(out conclusion) == true)
                 {
+#if VERIFY_LATENCY
+                    TrafficMonitor.CheckLatency(conclusion); 
+#endif
+
                     if (StockItems.ContainsKey(conclusion.Code) == false)
                     {
                         StockItems.Add(conclusion.Code, new DashboardItem(conclusion.Code));
@@ -147,6 +151,10 @@ namespace MTree.Dashboard
                 IndexConclusion conclusion;
                 if (IndexConclusionQueue.TryDequeue(out conclusion) == true)
                 {
+#if VERIFY_LATENCY
+                    TrafficMonitor.CheckLatency(conclusion);
+#endif
+
                     if (IndexItems.ContainsKey(conclusion.Code) == false)
                     {
                         IndexItems.Add(conclusion.Code, new DashboardItem(conclusion.Code));

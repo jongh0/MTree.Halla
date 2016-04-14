@@ -1,4 +1,5 @@
 ﻿//#define VERIFY_ORDERING
+#define VERIFY_LATENCY
 
 using System;
 using System.ServiceModel;
@@ -31,6 +32,10 @@ namespace MTree.HistorySaver
 
 #if VERIFY_ORDERING
         private ConcurrentDictionary<string, ObjectId> VerifyList { get; set; } = new ConcurrentDictionary<string, ObjectId>();
+#endif
+
+#if VERIFY_LATENCY
+        public TrafficMonitor TrafficMonitor { get; set; } = new TrafficMonitor();
 #endif
 
         public HistorySaver()
@@ -86,6 +91,10 @@ namespace MTree.HistorySaver
                 BiddingPrice biddingPrice;
                 if (BiddingPriceQueue.TryDequeue(out biddingPrice) == true)
                 {
+#if VERIFY_LATENCY
+                    TrafficMonitor.CheckLatency(biddingPrice);
+#endif
+
                     DbAgent.Instance.Insert(biddingPrice);
                     Counter.Increment(CounterTypes.BiddingPrice);
                 }
@@ -124,6 +133,10 @@ namespace MTree.HistorySaver
                 StockConclusion conclusion;
                 if (StockConclusionQueue.TryDequeue(out conclusion) == true)
                 {
+#if VERIFY_LATENCY
+                    TrafficMonitor.CheckLatency(conclusion);
+#endif
+
                     DbAgent.Instance.Insert(conclusion);
                     Counter.Increment(CounterTypes.StockConclusion);
                 }
@@ -143,6 +156,10 @@ namespace MTree.HistorySaver
                 IndexConclusion conclusion;
                 if (IndexConclusionQueue.TryDequeue(out conclusion) == true)
                 {
+#if VERIFY_LATENCY
+                    TrafficMonitor.CheckLatency(conclusion);
+#endif
+
                     DbAgent.Instance.Insert(conclusion);
                     Counter.Increment(CounterTypes.IndexConclusion);
                 }
