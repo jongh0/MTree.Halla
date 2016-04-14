@@ -43,7 +43,6 @@
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="CircuitBreak : "/>
                 <TextBox Text="{Binding Path=Counter.CircuitBreakCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}"/>
-                <TextBox Text="{Binding Path=CircuitBreakQueueCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}" Margin="5,0,0,0" Width="55" />
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="BiddingPrice : "/>

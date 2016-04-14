@@ -33,18 +33,11 @@ namespace MTree.PopupStopper
                     try
                     {
                         cancelToken.ThrowIfCancellationRequested();
+
                         popupClosed |= CheckDibPopup();
-
-                        cancelToken.ThrowIfCancellationRequested();
                         popupClosed |= CheckInvestorInfoPopup();
-
-                        cancelToken.ThrowIfCancellationRequested();
                         popupClosed |= CheckRuntimeErrorPopup();
-
-                        cancelToken.ThrowIfCancellationRequested();
-                        popupClosed |= ChecknProtectPopup();
-
-                        cancelToken.ThrowIfCancellationRequested();
+                        //popupClosed |= ChecknProtectPopup();
                         popupClosed |= CheckRegularCheckupPopup();
                     }
                     catch (OperationCanceledException)

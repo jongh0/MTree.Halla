@@ -25,7 +25,7 @@ namespace MTree.RealTimeProvider
         Restart,
     }
 
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false, ValidateMustUnderstand = false)]
     public partial class RealTimeProvider : RealTimeBase, IRealTimePublisher, IRealTimeConsumer, INotifyPropertyChanged
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
@@ -122,13 +122,17 @@ namespace MTree.RealTimeProvider
         {
             logger.Info("Market end timer elapsed");
 
-            // Data Compare 실행
-            ProcessUtility.Start(ProcessTypes.DataCompare, ProcessWindowStyle.Minimized);
-
             // Popup stopper 실행
             ProcessUtility.Start(ProcessTypes.PopupStopper, ProcessWindowStyle.Minimized);
 
             SaveDayChart();
+
+            if (Config.Database.ConnectionString != Config.Database.RemoteConnectionString)
+            {
+                // Data Compare 실행
+                ProcessUtility.Start(ProcessTypes.DataCompare, ProcessWindowStyle.Minimized);
+            }
+
             ExitProgram(ExitProgramTypes.Normal);
         }
 
@@ -310,7 +314,7 @@ namespace MTree.RealTimeProvider
                 RefreshTimer.Elapsed += RefreshTimer_Elapsed;
             }
 
-            RefreshTimer.Start();
+            RefreshTimer?.Start();
         }
 
         private void StopRefreshTimer()
@@ -321,7 +325,6 @@ namespace MTree.RealTimeProvider
         private void RefreshTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             Counter.NotifyPropertyAll();
-            NotifyPropertyChanged(nameof(CircuitBreakQueueCount));
             NotifyPropertyChanged(nameof(BiddingPriceQueueCount));
             NotifyPropertyChanged(nameof(StockConclusionQueueCount));
             NotifyPropertyChanged(nameof(IndexConclusionQueueCount));

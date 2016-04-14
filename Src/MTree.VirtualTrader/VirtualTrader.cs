@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MTree.VirtualTrader
 {
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Single)]
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Single, ValidateMustUnderstand = false)]
     public partial class VirtualTrader : ITrader
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();

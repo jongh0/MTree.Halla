@@ -11,7 +11,7 @@ using XA_SESSIONLib;
 
 namespace MTree.EbestTrader
 {
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Single)]
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Single, ValidateMustUnderstand = false)]
     public partial class EbestTrader : ITrader, INotifyPropertyChanged
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();

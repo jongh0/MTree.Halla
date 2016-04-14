@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MTree.KiwoomTrader
 {
-	[ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Single)]
+	[ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Single, ValidateMustUnderstand = false)]
     public partial class KiwoomTrader : ITrader
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();

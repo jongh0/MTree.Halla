@@ -282,7 +282,7 @@ namespace MTree.HistorySaver
                 RefreshTimer.Elapsed += RefreshTimer_Elapsed;
             }
 
-            RefreshTimer.Start();
+            RefreshTimer?.Start();
         }
 
         private void StopRefreshTimer()
@@ -293,7 +293,6 @@ namespace MTree.HistorySaver
         private void RefreshTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             Counter.NotifyPropertyAll();
-            NotifyPropertyChanged(nameof(CircuitBreakQueueCount));
             NotifyPropertyChanged(nameof(BiddingPriceQueueCount));
             NotifyPropertyChanged(nameof(StockConclusionQueueCount));
             NotifyPropertyChanged(nameof(IndexConclusionQueueCount));
