@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MTree.KiwoomPublisher"
         mc:Ignorable="d"
-        Title="KiwoomPublisher" Height="350" Width="525" Loaded="Window_Loaded">
-    <Grid Name="mainGrid">
-        
+        Title="KiwoomPublisher" Height="200" Width="300" Loaded="Window_Loaded">
+    <Grid>
+        <WindowsFormsHost Name="formsHost" Margin="500,0,0,0" />
     </Grid>
 </Window>

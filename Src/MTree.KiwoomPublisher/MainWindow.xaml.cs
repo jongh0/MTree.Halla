@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AxKHOpenAPILib;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,10 +30,8 @@ namespace MTree.KiwoomPublisher
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            System.Windows.Forms.Integration.WindowsFormsHost host = new System.Windows.Forms.Integration.WindowsFormsHost();
-            AxKHOpenAPILib.AxKHOpenAPI axKHOpenAPI = new AxKHOpenAPILib.AxKHOpenAPI();
-            host.Child = axKHOpenAPI;
-            this.mainGrid.Children.Add(host);
+            AxKHOpenAPI axKHOpenAPI = new AxKHOpenAPI();
+            formsHost.Child = axKHOpenAPI;
 
             Publisher = new KiwoomPublisher(axKHOpenAPI);
             this.DataContext = Publisher;

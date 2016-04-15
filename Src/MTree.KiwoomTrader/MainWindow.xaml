@@ -7,7 +7,8 @@
         xmlns:t="clr-namespace:MTree.Trader;assembly=MTree.Trader"
         mc:Ignorable="d"
         Title="KiwoomTrader" Height="276" Width="279" Loaded="Window_Loaded">
-    <Grid Name="mainGrid">
+    <Grid>
         <t:TraderControl/>
+        <WindowsFormsHost Name="formsHost" Margin="500,0,0,0" />
     </Grid>
 </Window>
