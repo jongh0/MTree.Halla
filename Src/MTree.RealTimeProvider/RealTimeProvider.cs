@@ -327,6 +327,7 @@ namespace MTree.RealTimeProvider
         private void RefreshTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             Counter.NotifyPropertyAll();
+            TrafficMonitor.NotifyPropertyAll();
             NotifyPropertyChanged(nameof(BiddingPriceQueueCount));
             NotifyPropertyChanged(nameof(StockConclusionQueueCount));
             NotifyPropertyChanged(nameof(IndexConclusionQueueCount));
