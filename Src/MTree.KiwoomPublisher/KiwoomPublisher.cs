@@ -19,7 +19,7 @@ namespace MTree.KiwoomPublisher
 
         private AxKHOpenAPILib.AxKHOpenAPI kiwoomObj;
 
-        public KiwoomPublisher(AxKHOpenAPILib.AxKHOpenAPI axKHOpenAPI) : base()
+        public KiwoomPublisher(AxKHOpenAPILib.AxKHOpenAPI axKHOpenAPI)
         {
             try
             {

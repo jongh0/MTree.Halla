@@ -76,7 +76,7 @@ namespace MTree.EbestPublisher
         private string CurrUpdatingWarningType { get; set; }
         #endregion
 
-        public EbestPublisher() : base()
+        public EbestPublisher()
         {
             try
             {

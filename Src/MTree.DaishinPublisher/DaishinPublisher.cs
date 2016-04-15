@@ -38,7 +38,7 @@ namespace MTree.DaishinPublisher
         private CpSvr8561TClass themeTypeObj;
         #endregion
 
-        public DaishinPublisher() : base()
+        public DaishinPublisher()
         {
             try
             {
