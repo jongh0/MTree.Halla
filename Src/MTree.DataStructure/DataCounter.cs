@@ -29,6 +29,7 @@ namespace MTree.DataStructure
         RealTimeProvider,
         HistorySaver,
         Database,
+        Dashboard,
     }
 
     [BsonDiscriminator(RootClass = true)]

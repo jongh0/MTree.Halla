@@ -5,7 +5,6 @@ using System.Collections.Generic;
 
 namespace MTree.RealTimeProvider
 {
-    [DeliveryRequirements(RequireOrderedDelivery = true)]
     [ServiceContract(CallbackContract = typeof(IRealTimePublisherCallback))]
     public interface IRealTimePublisher
     {
@@ -18,20 +17,19 @@ namespace MTree.RealTimeProvider
         [OperationContract(IsOneWay = true)]
         void UnregisterContract(Guid clientId);
 
-        [OperationContract(IsOneWay = true)]
+        [OperationContract]
         void PublishBiddingPrice(BiddingPrice biddingPrice);
 
-        [OperationContract(IsOneWay = true)]
+        [OperationContract]
         void PublishCircuitBreak(CircuitBreak circuitBreak);
 
-        [OperationContract(IsOneWay = true)]
+        [OperationContract]
         void PublishStockConclusion(StockConclusion conclusion);
 
-        [OperationContract(IsOneWay = true)]
+        [OperationContract]
         void PublishIndexConclusion(IndexConclusion conclusion);
     }
 
-    [DeliveryRequirements(RequireOrderedDelivery = true)]
     public interface IRealTimePublisherCallback
     {
         [OperationContract(IsOneWay = true)]

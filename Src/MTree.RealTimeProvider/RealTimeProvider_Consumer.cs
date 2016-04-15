@@ -1,7 +1,4 @@
-﻿//#define PARALLEL_CONSUME
-#define VERIFY_LATENCY
-
-using MTree.DataStructure;
+﻿using MTree.DataStructure;
 using MTree.Utility;
 using System;
 using System.Collections.Concurrent;
@@ -26,10 +23,6 @@ namespace MTree.RealTimeProvider
         private ConcurrentDictionary<Guid, SubscribeContract> StockConclusionContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
         private ConcurrentDictionary<Guid, SubscribeContract> IndexConclusionContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
         #endregion
-
-#if VERIFY_LATENCY
-        public TrafficMonitor TrafficMonitor { get; set; }
-#endif
 
         public List<Candle> GetChart(string code, DateTime startDate, DateTime endDate, CandleTypes candleType)
         {
@@ -156,27 +149,6 @@ namespace MTree.RealTimeProvider
                 BiddingPrice biddingPrice;
                 if (BiddingPriceQueue.TryDequeue(out biddingPrice) == true)
                 {
-#if VERIFY_LATENCY
-                    TrafficMonitor.CheckLatency(biddingPrice);
-#endif
-
-#if PARALLEL_CONSUME
-                    Parallel.ForEach(BiddingPriceContracts, (contract) =>
-                    {
-                        if (contract.Value.Scope == SubscribeScopes.All ||
-                            contract.Value.ContainCode(biddingPrice.Code) == true)
-                        {
-                            try
-                            {
-                                contract.Value.Callback.ConsumeBiddingPrice(biddingPrice);
-                            }
-                            catch (Exception ex)
-                            {
-                                logger.Error(ex);
-                            }
-                        }
-                    });
-#else
                     foreach (var contract in BiddingPriceContracts)
                     {
                         if (contract.Value.Scope == SubscribeScopes.All ||
@@ -192,7 +164,6 @@ namespace MTree.RealTimeProvider
                             }
                         }
                     } 
-#endif
                 }
                 else
                 {
@@ -212,23 +183,6 @@ namespace MTree.RealTimeProvider
                 CircuitBreak circuitBreak;
                 if (CircuitBreakQueue.TryDequeue(out circuitBreak) == true)
                 {
-#if PARALLEL_CONSUME
-                    Parallel.ForEach(CircuitBreakContracts, (contract) =>
-                    {
-                        if (contract.Value.Scope == SubscribeScopes.All ||
-                            contract.Value.ContainCode(circuitBreak.Code) == true)
-                        {
-                            try
-                            {
-                                contract.Value.Callback.ConsumeCircuitBreak(circuitBreak);
-                            }
-                            catch (Exception ex)
-                            {
-                                logger.Error(ex);
-                            }
-                        }
-                    });
-#else
                     foreach (var contract in CircuitBreakContracts)
                     {
                         if (contract.Value.Scope == SubscribeScopes.All ||
@@ -244,7 +198,6 @@ namespace MTree.RealTimeProvider
                             }
                         }
                     } 
-#endif
                 }
                 else
                 {
@@ -264,27 +217,6 @@ namespace MTree.RealTimeProvider
                 StockConclusion conclusion;
                 if (StockConclusionQueue.TryDequeue(out conclusion) == true)
                 {
-#if VERIFY_LATENCY
-                    TrafficMonitor.CheckLatency(conclusion);
-#endif
-
-#if PARALLEL_CONSUME
-                    Parallel.ForEach(StockConclusionContracts, (contract) =>
-                    {
-                        if (contract.Value.Scope == SubscribeScopes.All ||
-                            contract.Value.ContainCode(conclusion.Code) == true)
-                        {
-                            try
-                            {
-                                contract.Value.Callback.ConsumeStockConclusion(conclusion);
-                            }
-                            catch (Exception ex)
-                            {
-                                logger.Error(ex);
-                            }
-                        }
-                    });
-#else
                     foreach (var contract in StockConclusionContracts)
                     {
                         if (contract.Value.Scope == SubscribeScopes.All ||
@@ -300,7 +232,6 @@ namespace MTree.RealTimeProvider
                             }
                         }
                     } 
-#endif
                 }
                 else
                 {
@@ -320,27 +251,6 @@ namespace MTree.RealTimeProvider
                 IndexConclusion conclusion;
                 if (IndexConclusionQueue.TryDequeue(out conclusion) == true)
                 {
-#if VERIFY_LATENCY
-                    TrafficMonitor.CheckLatency(conclusion);
-#endif
-
-#if PARALLEL_CONSUME
-                    Parallel.ForEach(IndexConclusionContracts, (contract) =>
-                    {
-                        if (contract.Value.Scope == SubscribeScopes.All ||
-                            contract.Value.ContainCode(conclusion.Code) == true)
-                        {
-                            try
-                            {
-                                contract.Value.Callback.ConsumeIndexConclusion(conclusion);
-                            }
-                            catch (Exception ex)
-                            {
-                                logger.Error(ex);
-                            }
-                        }
-                    });
-#else
                     foreach (var contract in IndexConclusionContracts)
                     {
                         if (contract.Value.Scope == SubscribeScopes.All ||
@@ -356,7 +266,6 @@ namespace MTree.RealTimeProvider
                             }
                         }
                     } 
-#endif
                 }
                 else
                 {

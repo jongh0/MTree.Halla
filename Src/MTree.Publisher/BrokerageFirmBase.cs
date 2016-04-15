@@ -1,6 +1,4 @@
-﻿#define VERIFY_LATENCY
-
-using MTree.Configuration;
+﻿using MTree.Configuration;
 using MTree.DataStructure;
 using MTree.Utility;
 using System;
@@ -45,12 +43,6 @@ namespace MTree.Publisher
 
         protected ConcurrentDictionary<string, IndexConclusion> PrevIndexConclusions { get; } = new ConcurrentDictionary<string, IndexConclusion>();
 
-#if VERIFY_LATENCY
-        public DataCounter Counter { get; set; } = new DataCounter(DataTypes.DaishinPublisher);
-
-        public TrafficMonitor TrafficMonitor { get; set; }
-#endif
-
         protected void StartBiddingPriceQueueTask()
         {
             if (Config.General.SkipBiddingPrice == false)
@@ -80,9 +72,6 @@ namespace MTree.Publisher
                 if (ServiceClient.State == CommunicationState.Opened &&
                     BiddingPriceQueue.TryDequeue(out biddingPrice) == true)
                 {
-#if VERIFY_LATENCY
-                    TrafficMonitor.CheckLatency(biddingPrice); 
-#endif
                     ServiceClient.PublishBiddingPrice(biddingPrice);
                 }
                 else
@@ -125,9 +114,6 @@ namespace MTree.Publisher
                 if (ServiceClient.State == CommunicationState.Opened &&
                     StockConclusionQueue.TryDequeue(out conclusion) == true)
                 {
-#if VERIFY_LATENCY
-                    TrafficMonitor.CheckLatency(conclusion); 
-#endif
                     ServiceClient.PublishStockConclusion(conclusion);
                 }
                 else
@@ -149,9 +135,6 @@ namespace MTree.Publisher
                 if (ServiceClient.State == CommunicationState.Opened &&
                     IndexConclusionQueue.TryDequeue(out conclusion) == true)
                 {
-#if VERIFY_LATENCY
-                    TrafficMonitor.CheckLatency(conclusion); 
-#endif
                     ServiceClient.PublishIndexConclusion(conclusion);
                 }
                 else

@@ -1,6 +1,5 @@
-﻿#define VERIFY_LATENCY
-
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
+using MTree.Configuration;
 using MTree.DataStructure;
 using System;
 using System.Collections.Generic;
@@ -183,29 +182,31 @@ namespace MTree.DaishinPublisher
                 }
 
                 // 18 - (long) 시간 (초)
-#if VERIFY_LATENCY
-                conclusion.Time = now;
-#else
-                long time = Convert.ToInt64(indexCurObj.GetHeaderValue(18));
-                if (indexPrevTime != time)
-                {
-                    indexPrevTime = time;
-                    indexMillisecond = 0;
-                }
-
-                try
-                {
-                    conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100, indexMillisecond++); // Daishin doesn't provide milisecond 
-                }
-                catch (ArgumentOutOfRangeException)
+                if (Config.General.VerifyLatency == true)
                 {
                     conclusion.Time = now;
-                    logger.Warn($"Index conclusion time error, time: {time}, code: {conclusion.Code}");
-                } 
-#endif
+                }
+                else
+                {
+                    long time = Convert.ToInt64(indexCurObj.GetHeaderValue(18));
+                    if (indexPrevTime != time)
+                    {
+                        indexPrevTime = time;
+                        indexMillisecond = 0;
+                    }
+
+                    try
+                    {
+                        conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100, indexMillisecond++); // Daishin doesn't provide milisecond 
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                        conclusion.Time = now;
+                        logger.Warn($"Index conclusion time error, time: {time}, code: {conclusion.Code}");
+                    }
+                }
 
                 IndexConclusionQueue.Enqueue(conclusion);
-                Counter.Increment(CounterTypes.IndexConclusion);
             }
             catch (Exception ex)
             {

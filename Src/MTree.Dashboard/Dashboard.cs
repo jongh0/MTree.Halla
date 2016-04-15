@@ -1,7 +1,4 @@
-﻿#define VERIFY_ORDERING
-#define VERIFY_LATENCY
-
-using System;
+﻿using System;
 using System.ServiceModel;
 using System.Threading;
 using MTree.DataStructure;
@@ -31,24 +28,15 @@ namespace MTree.Dashboard
         public ObservableConcurrentDictionary<string, DashboardItem> StockItems { get; set; } = new ObservableConcurrentDictionary<string, DashboardItem>();
         public ObservableConcurrentDictionary<string, DashboardItem> IndexItems { get; set; } = new ObservableConcurrentDictionary<string, DashboardItem>();
 
-#if VERIFY_ORDERING
-        private ConcurrentDictionary<string, ObjectId> VerifyList { get; set; } = new ConcurrentDictionary<string, ObjectId>();
-#endif
+        private ConcurrentDictionary<string, ObjectId> VerifyOrderingList { get; set; } = new ConcurrentDictionary<string, ObjectId>();
 
-#if VERIFY_LATENCY
-        public DataCounter Counter { get; set; } = new DataCounter(DataTypes.DaishinPublisher);
-        public TrafficMonitor TrafficMonitor { get; set; }
-#endif
+        public DataCounter Counter { get; set; } = null;
+        public TrafficMonitor Monitor { get; set; } = null;
 
         public Dashboard()
         {
             try
             {
-#if VERIFY_LATENCY
-                TrafficMonitor = new TrafficMonitor(Counter);
-                StartRefreshTimer();
-#endif
-
                 TaskUtility.Run("Dashboard.CircuitBreakQueue", QueueTaskCancelToken, ProcessCircuitBreakQueue);
 
                 for (int i = 0; i < 5; i++)
@@ -57,13 +45,13 @@ namespace MTree.Dashboard
                 for (int i = 0; i < 2; i++)
                     TaskUtility.Run($"Dashboard.IndexConclusionQueue_{i + 1}", QueueTaskCancelToken, ProcessIndexConclusionQueue);
 
-#if VERIFY_LATENCY
-                if (Config.General.SkipBiddingPrice == false)
+                if (Config.General.VerifyLatency == true)
                 {
+                    Monitor = new TrafficMonitor();
+
                     for (int i = 0; i < 10; i++)
                         TaskUtility.Run($"Dashboard.BiddingPriceQueue_{i + 1}", QueueTaskCancelToken, ProcessBiddingPriceQueue);
                 }
-#endif
             }
             catch (Exception ex)
             {
@@ -81,10 +69,25 @@ namespace MTree.Dashboard
                 ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.CircuitBreak));
                 ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.StockConclusion));
                 ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.IndexConclusion));
-#if VERIFY_LATENCY
-                if (Config.General.SkipBiddingPrice == false)
+
+                if (Config.General.VerifyLatency == true)
                     ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.BiddingPrice));
-#endif
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
+        private void ProcessBiddingPriceQueue()
+        {
+            try
+            {
+                BiddingPrice biddingPrice;
+                if (BiddingPriceQueue.TryDequeue(out biddingPrice) == true)
+                    Monitor?.CheckLatency(biddingPrice);
+                else
+                    Thread.Sleep(10);
             }
             catch (Exception ex)
             {
@@ -122,9 +125,7 @@ namespace MTree.Dashboard
                 StockConclusion conclusion;
                 if (StockConclusionQueue.TryDequeue(out conclusion) == true)
                 {
-#if VERIFY_LATENCY
-                    TrafficMonitor.CheckLatency(conclusion); 
-#endif
+                    Monitor?.CheckLatency(conclusion);
 
                     if (StockItems.ContainsKey(conclusion.Code) == false)
                     {
@@ -157,9 +158,7 @@ namespace MTree.Dashboard
                 IndexConclusion conclusion;
                 if (IndexConclusionQueue.TryDequeue(out conclusion) == true)
                 {
-#if VERIFY_LATENCY
-                    TrafficMonitor.CheckLatency(conclusion);
-#endif
+                    Monitor?.CheckLatency(conclusion);
 
                     if (IndexItems.ContainsKey(conclusion.Code) == false)
                     {
@@ -185,35 +184,36 @@ namespace MTree.Dashboard
             }
         }
 
-#if VERIFY_ORDERING
         public override void ConsumeStockConclusion(StockConclusion conclusion)
         {
             base.ConsumeStockConclusion(conclusion);
 
-            try
+            if (Config.General.VerifyOrdering == true)
             {
-                var code = conclusion.Code;
-                var newId = conclusion.Id;
-
-                if (VerifyList.ContainsKey(code) == false)
+                try
                 {
-                    VerifyList.TryAdd(code, newId);
-                }
-                else
-                {
-                    var prevId = VerifyList[code];
-                    if (prevId >= newId)
-                        logger.Error($"Conclusion ordering fail, code: {code}, prevId: {prevId}, newId: {newId}");
+                    var code = conclusion.Code;
+                    var newId = conclusion.Id;
 
-                    prevId = newId;
+                    if (VerifyOrderingList.ContainsKey(code) == false)
+                    {
+                        VerifyOrderingList.TryAdd(code, newId);
+                    }
+                    else
+                    {
+                        var prevId = VerifyOrderingList[code];
+                        if (prevId >= newId)
+                            logger.Error($"Conclusion ordering fail, code: {code}, prevId: {prevId}, newId: {newId}");
+
+                        prevId = newId;
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
+                catch (Exception ex)
+                {
+                    logger.Error(ex);
+                }
             }
         }
-#endif
 
         public override void ConsumeStockMaster(List<StockMaster> stockMasters)
         {
@@ -358,28 +358,5 @@ namespace MTree.Dashboard
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
         #endregion
-
-#if VERIFY_LATENCY
-        private void ProcessBiddingPriceQueue()
-        {
-            try
-            {
-                BiddingPrice biddingPrice;
-                if (BiddingPriceQueue.TryDequeue(out biddingPrice) == true)
-                    TrafficMonitor.CheckLatency(biddingPrice);
-                else
-                    Thread.Sleep(10);
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-            }
-        }
-
-        public override void RefreshTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            TrafficMonitor.NotifyPropertyAll();
-        }
-#endif
     }
 }

@@ -15,33 +15,8 @@ namespace MTree.Utility
         private DataCounter PrevCounter;
         private DataCounter Counter;
 
-        private TimeSpan latency = new TimeSpan(0);
-        public TimeSpan Latency
-        {
-            get { return latency; }
-            set
-            {
-                if (latency != value)
-                {
-                    latency = value;
-                    NotifyPropertyChanged(nameof(Latency));
-                }
-            }
-        }
-
-        public TimeSpan averageLatency = new TimeSpan(0);
-        public TimeSpan AverageLatency
-        {
-            get { return averageLatency; }
-            set
-            {
-                if (averageLatency != value)
-                {
-                    averageLatency = value;
-                    NotifyPropertyChanged(nameof(AverageLatency));
-                }
-            }
-        }
+        public TimeSpan Latency { get; set; }
+        public TimeSpan AverageLatency { get; set; }
         
         public float StockConclusionThroughput { get; set; }
         public float BiddingPriceThroughput { get; set; }
@@ -50,11 +25,19 @@ namespace MTree.Utility
 
         private DateTime lastRefreshed;
 
+        public TrafficMonitor()
+        {
+        }
+
         public TrafficMonitor(DataCounter Counter)
         {
             this.Counter = Counter;
-            PrevCounter = new DataCounter(Counter.Type);
-            lastRefreshed = DateTime.Now;
+
+            if (this.Counter != null)
+            {
+                PrevCounter = new DataCounter(Counter.Type);
+                lastRefreshed = DateTime.Now;
+            }
         }
 
         public void CheckLatency(Subscribable subscribable)
@@ -62,11 +45,16 @@ namespace MTree.Utility
             Latency = DateTime.Now - subscribable.Time;
             if (Latency.TotalMilliseconds > 1000)
                 logger.Debug($"[{GetType().Name}] {subscribable.GetType().Name} data transfer delayed. Latency: {Latency.TotalMilliseconds}");
-            LatencyList.Add(Latency);
+
+            if (this.Counter != null)
+                LatencyList.Add(Latency);
         }
 
         public void NotifyPropertyAll()
         {
+            if (this.Counter == null)
+                return;
+
             int StockConclusionCountHandled = Counter.StockConclusionCount - PrevCounter.StockConclusionCount;
             int BiddingPriceCountHandled = Counter.BiddingPriceCount - PrevCounter.BiddingPriceCount;
 
@@ -85,9 +73,9 @@ namespace MTree.Utility
                 LatencyList.Clear();
             }
 
-            NotifyPropertyChanged(nameof(AverageLatency));
-            NotifyPropertyChanged(nameof(StockConclusionThroughput));
-            NotifyPropertyChanged(nameof(BiddingPriceThroughput));
+            //NotifyPropertyChanged(nameof(AverageLatency));
+            //NotifyPropertyChanged(nameof(StockConclusionThroughput));
+            //NotifyPropertyChanged(nameof(BiddingPriceThroughput));
 
             logger.Debug($"[{GetType().Name}] AverageLatency: {AverageLatency}, StockConclusionThroughput: {StockConclusionThroughput}, BiddingPriceThroughput: {BiddingPriceThroughput}");
         }

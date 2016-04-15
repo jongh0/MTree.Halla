@@ -56,8 +56,6 @@ namespace MTree.RealTimeProvider
 
         public RealTimeProvider()
         {
-            TrafficMonitor = new TrafficMonitor(Counter);
-
             TaskUtility.Run("RealTimeProvider.CircuitBreakQueue", QueueTaskCancelToken, ProcessCircuitBreakQueue);
             TaskUtility.Run("RealTimeProvider.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
             TaskUtility.Run("RealTimeProvider.IndexConclusionQueue", QueueTaskCancelToken, ProcessIndexConclusionQueue);
@@ -306,7 +304,6 @@ namespace MTree.RealTimeProvider
         
         public override void RefreshTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            TrafficMonitor.NotifyPropertyAll();
             Counter.NotifyPropertyAll();
             NotifyPropertyChanged(nameof(BiddingPriceQueueCount));
             NotifyPropertyChanged(nameof(StockConclusionQueueCount));

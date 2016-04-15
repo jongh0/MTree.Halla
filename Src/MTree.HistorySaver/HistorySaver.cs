@@ -1,7 +1,4 @@
-﻿#define VERIFY_ORDERING
-#define VERIFY_LATENCY
-
-using System;
+﻿using System;
 using System.ServiceModel;
 using MTree.DbProvider;
 using System.Threading;
@@ -28,20 +25,10 @@ namespace MTree.HistorySaver
 
         public DataCounter Counter { get; set; } = new DataCounter(DataTypes.HistorySaver);
 
-#if VERIFY_ORDERING
-        private ConcurrentDictionary<string, ObjectId> VerifyList { get; set; } = new ConcurrentDictionary<string, ObjectId>();
-#endif
-
-#if VERIFY_LATENCY
-        public TrafficMonitor TrafficMonitor { get; set; }
-#endif
-
         public HistorySaver()
         {
             try
             {
-                TrafficMonitor = new TrafficMonitor(Counter);
-
                 TaskUtility.Run("HistorySaver.CircuitBreakQueue", QueueTaskCancelToken, ProcessCircuitBreakQueue);
 
                 for (int i = 0; i < 5; i++)
@@ -91,10 +78,6 @@ namespace MTree.HistorySaver
                 BiddingPrice biddingPrice;
                 if (BiddingPriceQueue.TryDequeue(out biddingPrice) == true)
                 {
-#if VERIFY_LATENCY
-                    TrafficMonitor.CheckLatency(biddingPrice);
-#endif
-
                     DbAgent.Instance.Insert(biddingPrice);
                     Counter.Increment(CounterTypes.BiddingPrice);
                 }
@@ -133,10 +116,6 @@ namespace MTree.HistorySaver
                 StockConclusion conclusion;
                 if (StockConclusionQueue.TryDequeue(out conclusion) == true)
                 {
-#if VERIFY_LATENCY
-                    TrafficMonitor.CheckLatency(conclusion);
-#endif
-
                     DbAgent.Instance.Insert(conclusion);
                     Counter.Increment(CounterTypes.StockConclusion);
                 }
@@ -156,10 +135,6 @@ namespace MTree.HistorySaver
                 IndexConclusion conclusion;
                 if (IndexConclusionQueue.TryDequeue(out conclusion) == true)
                 {
-#if VERIFY_LATENCY
-                    TrafficMonitor.CheckLatency(conclusion);
-#endif
-
                     DbAgent.Instance.Insert(conclusion);
                     Counter.Increment(CounterTypes.IndexConclusion);
                 }
@@ -171,36 +146,6 @@ namespace MTree.HistorySaver
                 logger.Error(ex);
             }
         }
-
-#if VERIFY_ORDERING
-        public override void ConsumeStockConclusion(StockConclusion conclusion)
-        {
-            base.ConsumeStockConclusion(conclusion);
-
-            try
-            {
-                var code = conclusion.Code;
-                var newId = conclusion.Id;
-
-                if (VerifyList.ContainsKey(code) == false)
-                {
-                    VerifyList.TryAdd(code, newId);
-                }
-                else
-                {
-                    var prevId = VerifyList[code];
-                    if (prevId >= newId)
-                        logger.Error($"Conclusion ordering fail, code: {code}, prevId: {prevId}, newId: {newId}");
-
-                    prevId = newId;
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-            }
-        }
-#endif
 
         public override void ConsumeStockMaster(List<StockMaster> stockMasters)
         {
@@ -291,7 +236,6 @@ namespace MTree.HistorySaver
 
         public override void RefreshTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            TrafficMonitor.NotifyPropertyAll();
             Counter.NotifyPropertyAll();
             NotifyPropertyChanged(nameof(BiddingPriceQueueCount));
             NotifyPropertyChanged(nameof(StockConclusionQueueCount));

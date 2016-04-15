@@ -1,5 +1,4 @@
-﻿#define VERIFY_ORDERING
-#define EVENLY_DISTRIBUTION
+﻿#define EVENLY_DISTRIBUTION
 
 using MongoDB.Bson;
 using MTree.Configuration;
@@ -23,10 +22,6 @@ namespace MTree.RealTimeProvider
     {
         public int PublisherContractCount { get { return PublisherContracts.Count; } }
         private ConcurrentDictionary<Guid, PublisherContract> PublisherContracts { get; set; } = new ConcurrentDictionary<Guid, PublisherContract>();
-
-#if VERIFY_ORDERING
-        private ConcurrentDictionary<string, ObjectId> VerifyList { get; set; } = new ConcurrentDictionary<string, ObjectId>();
-#endif
 
         #region Contract Property
         #region Daishin
@@ -691,31 +686,6 @@ namespace MTree.RealTimeProvider
         {
             StockConclusionQueue.Enqueue(conclusion);
             Counter.Increment(CounterTypes.StockConclusion);
-
-#if VERIFY_ORDERING
-            try
-            {
-                var code = conclusion.Code;
-                var newId = conclusion.Id;
-
-                if (VerifyList.ContainsKey(code) == false)
-                {
-                    VerifyList.TryAdd(code, newId);
-                }
-                else
-                {
-                    var prevId = VerifyList[code];
-                    if (prevId >= newId)
-                        logger.Error($"Conclusion ordering fail, code: {code}, prevId: {prevId}, newId: {newId}");
-
-                    prevId = newId;
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-            }
-#endif
         }
     }
 }

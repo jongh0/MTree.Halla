@@ -1,6 +1,5 @@
-﻿#define VERIFY_LATENCY
-
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
+using MTree.Configuration;
 using MTree.DataStructure;
 using System;
 using System.Threading;
@@ -155,18 +154,21 @@ namespace MTree.DaishinPublisher
                 conclusion.Code = CodeEntity.RemovePrefix(fullCode);
 
                 // 1 - (long) 시간 (초)
-#if VERIFY_LATENCY
-                conclusion.Time = now;
-#else
-                long time = Convert.ToInt64(stockOutCurObj.GetHeaderValue(1));
-                if (stockOutPrevTime != time)
+                if (Config.General.VerifyLatency == true)
                 {
-                    stockOutPrevTime = time;
-                    stockOutMillisecond = 0;
+                    conclusion.Time = now;
                 }
-                conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100, stockOutMillisecond++); // Daishin doesn't provide milisecond 
+                else
+                {
+                    long time = Convert.ToInt64(stockOutCurObj.GetHeaderValue(1));
+                    if (stockOutPrevTime != time)
+                    {
+                        stockOutPrevTime = time;
+                        stockOutMillisecond = 0;
+                    }
+                    conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100, stockOutMillisecond++); // Daishin doesn't provide milisecond 
+                }
 
-#endif
                 // 5 - (long) 현재가
                 conclusion.Price = Convert.ToSingle(stockOutCurObj.GetHeaderValue(5));
                 if (conclusion.Price <= 0)
@@ -264,7 +266,6 @@ namespace MTree.DaishinPublisher
                 }
 
                 StockConclusionQueue.Enqueue(conclusion);
-                Counter.Increment(CounterTypes.StockConclusion);
             }
             catch (Exception ex)
             {

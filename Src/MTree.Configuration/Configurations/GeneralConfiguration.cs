@@ -38,14 +38,16 @@ namespace MTree.Configuration
         [JsonIgnore]
         public bool ExcludeKiwoom { get; } = false;
 
-        [JsonIgnore]
-        public bool OfflineMode { get; } = false;
-
-        [JsonIgnore]
-        public bool SkipMastering { get; } = false;
-
         public TraderTypes TraderType { get; set; } = TraderTypes.Kiwoom;
 
+        public bool OfflineMode { get; set; } = false;
+
+        public bool SkipMastering { get; set; } = false;
+
         public bool SkipBiddingPrice { get; set; } = false;
+
+        public bool VerifyOrdering { get; set; } = false;
+
+        public bool VerifyLatency { get; set; } = false;
     }
 }

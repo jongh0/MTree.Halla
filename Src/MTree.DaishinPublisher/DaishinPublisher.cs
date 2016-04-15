@@ -1,6 +1,4 @@
-﻿#define VERIFY_LATENCY
-
-using CPUTILLib;
+﻿using CPUTILLib;
 using DSCBO1Lib;
 using CPSYSDIBLib;
 using MTree.DataStructure;
@@ -44,10 +42,6 @@ namespace MTree.DaishinPublisher
         {
             try
             {
-#if VERIFY_LATENCY
-                TrafficMonitor = new TrafficMonitor(Counter);
-                StartRefreshTimer();
-#endif 
                 QuoteInterval = 15 * 1000 / 60; // 15초당 60개
 
                 sessionObj = new CpCybosClass();
@@ -116,13 +110,6 @@ namespace MTree.DaishinPublisher
                 logger.Error(ex);
             }
         }
-
-#if VERIFY_LATENCY
-        public override void RefreshTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            TrafficMonitor.NotifyPropertyAll();
-        }
-#endif
 
         int cnt = 0;
         private void memberTrendObj_Received()

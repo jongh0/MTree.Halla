@@ -22,14 +22,50 @@ namespace TestPublisher
                     if (QueueTaskCancelToken.IsCancellationRequested)
                         break;
 
-                    var conclusion = new StockConclusion();
-                    conclusion.Id = ObjectId.GenerateNewId();
-                    conclusion.Code = "000020";
-                    conclusion.Price = 100;
-                    conclusion.Time = DateTime.Now;
+                    var subscribable = new StockConclusion();
+                    subscribable.Id = ObjectId.GenerateNewId();
+                    subscribable.Code = "000020";
+                    subscribable.Price = 100;
+                    subscribable.Time = DateTime.Now;
                     
-                    ServiceClient.PublishStockConclusion(conclusion);
-                    Console.WriteLine($"{conclusion.Time.ToLongTimeString()} published");
+                    ServiceClient.PublishStockConclusion(subscribable);
+
+                    Thread.Sleep(2);
+                }
+            }, QueueTaskCancelToken);
+
+            Task.Run(() =>
+            {
+                while (true)
+                {
+                    if (QueueTaskCancelToken.IsCancellationRequested)
+                        break;
+
+                    var subscribable = new IndexConclusion();
+                    subscribable.Id = ObjectId.GenerateNewId();
+                    subscribable.Code = "000020";
+                    subscribable.Price = 100;
+                    subscribable.Time = DateTime.Now;
+
+                    ServiceClient.PublishIndexConclusion(subscribable);
+
+                    Thread.Sleep(2);
+                }
+            }, QueueTaskCancelToken);
+
+            Task.Run(() =>
+            {
+                while (true)
+                {
+                    if (QueueTaskCancelToken.IsCancellationRequested)
+                        break;
+
+                    var subscribable = new BiddingPrice();
+                    subscribable.Id = ObjectId.GenerateNewId();
+                    subscribable.Code = "000020";
+                    subscribable.Time = DateTime.Now;
+
+                    ServiceClient.PublishBiddingPrice(subscribable);
 
                     Thread.Sleep(2);
                 }
