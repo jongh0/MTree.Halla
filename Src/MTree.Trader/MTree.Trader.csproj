@@ -61,6 +61,7 @@
       <HintPath>..\packages\MvvmLightLibs.5.2.0.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -78,6 +79,9 @@
     <Compile Include="TraderBase.cs" />
     <Compile Include="TraderCallback.cs" />
     <Compile Include="TraderClient.cs" />
+    <Compile Include="TraderControl.xaml.cs">
+      <DependentUpon>TraderControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TraderViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -93,6 +97,12 @@
       <Project>{d8291168-4d81-4acd-81c4-da122a249102}</Project>
       <Name>MTree.Utility</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="TraderControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

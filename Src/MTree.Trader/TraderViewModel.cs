@@ -1,5 +1,4 @@
-﻿
-using GalaSoft.MvvmLight.Command;
+﻿using GalaSoft.MvvmLight.Command;
 using MTree.Configuration;
 using System;
 using System.Collections.Concurrent;
@@ -122,17 +121,16 @@ namespace MTree.Trader
             }
         }
 
-        private RelayCommand orderCommand;
+        private RelayCommand _OrderCommand;
         public ICommand OrderCommand
         {
             get
             {
-                if (orderCommand == null)
-                    orderCommand = new RelayCommand(() => ExcuteOrder());
+                if (_OrderCommand == null)
+                    _OrderCommand = new RelayCommand(() => ExecuteOrder());
 
-                return orderCommand;
+                return _OrderCommand;
             }
-
         }
         
         public bool CanOrder
@@ -158,7 +156,7 @@ namespace MTree.Trader
             }
         }
 
-        public void ExcuteOrder()
+        public void ExecuteOrder()
         {
             Order newOrder = new Order();
             newOrder.AccountNumber = SelectedAccount;

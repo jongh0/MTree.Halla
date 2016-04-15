@@ -4,9 +4,10 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MTree.VirtualTrader"
+        xmlns:t="clr-namespace:MTree.Trader;assembly=MTree.Trader"
         mc:Ignorable="d"
-        Title="VirtualTrader" Height="350" Width="525">
+        Title="VirtualTrader" Height="276" Width="279">
     <Grid>
-        
+        <t:TraderControl/>
     </Grid>
 </Window>
