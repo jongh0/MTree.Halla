@@ -43,8 +43,6 @@ namespace MTree.RealTimeProvider
 
         public DataCounter Counter { get; set; } = new DataCounter(DataTypes.RealTimeProvider);
 
-        private System.Timers.Timer RefreshTimer { get; set; }
-
         private string _RealTimeState = string.Empty;
         public string RealTimeState
         {
@@ -305,29 +303,11 @@ namespace MTree.RealTimeProvider
                 logger.Error(ex);
             }
         }
-
-        private void StartRefreshTimer()
+        
+        public override void RefreshTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            if (RefreshTimer == null)
-            {
-                RefreshTimer = new System.Timers.Timer();
-                RefreshTimer.AutoReset = true;
-                RefreshTimer.Interval = 1000;
-                RefreshTimer.Elapsed += RefreshTimer_Elapsed;
-            }
-
-            RefreshTimer?.Start();
-        }
-
-        private void StopRefreshTimer()
-        {
-            RefreshTimer?.Stop();
-        }
-
-        private void RefreshTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            Counter.NotifyPropertyAll();
             TrafficMonitor.NotifyPropertyAll();
+            Counter.NotifyPropertyAll();
             NotifyPropertyChanged(nameof(BiddingPriceQueueCount));
             NotifyPropertyChanged(nameof(StockConclusionQueueCount));
             NotifyPropertyChanged(nameof(IndexConclusionQueueCount));

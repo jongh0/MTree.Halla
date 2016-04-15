@@ -46,7 +46,9 @@ namespace MTree.Dashboard
             {
 #if VERIFY_LATENCY
                 TrafficMonitor = new TrafficMonitor(Counter);
+                StartRefreshTimer();
 #endif
+
                 TaskUtility.Run("Dashboard.CircuitBreakQueue", QueueTaskCancelToken, ProcessCircuitBreakQueue);
 
                 for (int i = 0; i < 5; i++)
@@ -372,6 +374,11 @@ namespace MTree.Dashboard
             {
                 logger.Error(ex);
             }
+        }
+
+        public override void RefreshTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            TrafficMonitor.NotifyPropertyAll();
         }
 #endif
     }

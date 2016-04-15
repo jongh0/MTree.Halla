@@ -25,10 +25,6 @@ namespace MTree.DaishinPublisher
 
         private bool IsMasterProcess { get; set; } = false;
 
-#if VERIFY_LATENCY
-        private System.Timers.Timer RefreshTimer { get; set; }
-#endif
-
         #region Daishin Specific
         private CpCybosClass sessionObj;
         private CpCodeMgrClass codeMgrObj;
@@ -122,30 +118,9 @@ namespace MTree.DaishinPublisher
         }
 
 #if VERIFY_LATENCY
-        private void StartRefreshTimer()
+        public override void RefreshTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            if (RefreshTimer == null)
-            {
-                RefreshTimer = new System.Timers.Timer();
-                RefreshTimer.AutoReset = true;
-                RefreshTimer.Interval = 10000;
-                RefreshTimer.Elapsed += RefreshTimer_Elapsed;
-            }
-
-            RefreshTimer?.Start();
-        }
-        private void StopRefreshTimer()
-        {
-            RefreshTimer?.Stop();
-        }
-
-        private void RefreshTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            Counter.NotifyPropertyAll();
             TrafficMonitor.NotifyPropertyAll();
-            NotifyPropertyChanged(nameof(BiddingPriceQueueCount));
-            NotifyPropertyChanged(nameof(StockConclusionQueueCount));
-            NotifyPropertyChanged(nameof(IndexConclusionQueueCount));
         }
 #endif
 

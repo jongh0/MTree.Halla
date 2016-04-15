@@ -80,7 +80,9 @@ namespace MTree.Publisher
                 if (ServiceClient.State == CommunicationState.Opened &&
                     BiddingPriceQueue.TryDequeue(out biddingPrice) == true)
                 {
-                    TrafficMonitor.CheckLatency(biddingPrice);
+#if VERIFY_LATENCY
+                    TrafficMonitor.CheckLatency(biddingPrice); 
+#endif
                     ServiceClient.PublishBiddingPrice(biddingPrice);
                 }
                 else
@@ -123,7 +125,9 @@ namespace MTree.Publisher
                 if (ServiceClient.State == CommunicationState.Opened &&
                     StockConclusionQueue.TryDequeue(out conclusion) == true)
                 {
-                    TrafficMonitor.CheckLatency(conclusion);
+#if VERIFY_LATENCY
+                    TrafficMonitor.CheckLatency(conclusion); 
+#endif
                     ServiceClient.PublishStockConclusion(conclusion);
                 }
                 else
@@ -145,7 +149,9 @@ namespace MTree.Publisher
                 if (ServiceClient.State == CommunicationState.Opened &&
                     IndexConclusionQueue.TryDequeue(out conclusion) == true)
                 {
-                    TrafficMonitor.CheckLatency(conclusion);
+#if VERIFY_LATENCY
+                    TrafficMonitor.CheckLatency(conclusion); 
+#endif
                     ServiceClient.PublishIndexConclusion(conclusion);
                 }
                 else

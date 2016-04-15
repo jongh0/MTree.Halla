@@ -28,8 +28,6 @@ namespace MTree.HistorySaver
 
         public DataCounter Counter { get; set; } = new DataCounter(DataTypes.HistorySaver);
 
-        private System.Timers.Timer RefreshTimer { get; set; }
-
 #if VERIFY_ORDERING
         private ConcurrentDictionary<string, ObjectId> VerifyList { get; set; } = new ConcurrentDictionary<string, ObjectId>();
 #endif
@@ -291,28 +289,10 @@ namespace MTree.HistorySaver
             base.NotifyMessage(type, message);
         }
 
-        private void StartRefreshTimer()
+        public override void RefreshTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            if (RefreshTimer == null)
-            {
-                RefreshTimer = new System.Timers.Timer();
-                RefreshTimer.AutoReset = true;
-                RefreshTimer.Interval = 1000;
-                RefreshTimer.Elapsed += RefreshTimer_Elapsed;
-            }
-
-            RefreshTimer?.Start();
-        }
-
-        private void StopRefreshTimer()
-        {
-            RefreshTimer?.Stop();
-        }
-
-        private void RefreshTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            Counter.NotifyPropertyAll();
             TrafficMonitor.NotifyPropertyAll();
+            Counter.NotifyPropertyAll();
             NotifyPropertyChanged(nameof(BiddingPriceQueueCount));
             NotifyPropertyChanged(nameof(StockConclusionQueueCount));
             NotifyPropertyChanged(nameof(IndexConclusionQueueCount));

@@ -44,8 +44,10 @@ namespace MTree.RealTimeProvider
 
         #region Queue Task
         protected CancellationTokenSource QueueTaskCancelSource { get; } = new CancellationTokenSource();
-        protected CancellationToken QueueTaskCancelToken { get; set; } 
+        protected CancellationToken QueueTaskCancelToken { get; set; }
         #endregion
+
+        private System.Timers.Timer RefreshTimer { get; set; }
 
         public RealTimeBase()
         {
@@ -71,6 +73,28 @@ namespace MTree.RealTimeProvider
             }
 
             logger.Info($"[{GetType().Name}] Queue task done");
+        }
+
+        public void StartRefreshTimer()
+        {
+            if (RefreshTimer == null)
+            {
+                RefreshTimer = new System.Timers.Timer();
+                RefreshTimer.AutoReset = true;
+                RefreshTimer.Interval = 1000;
+                RefreshTimer.Elapsed += RefreshTimer_Elapsed;
+            }
+
+            RefreshTimer?.Start();
+        }
+
+        public void StopRefreshTimer()
+        {
+            RefreshTimer?.Stop();
+        }
+
+        public virtual void RefreshTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
         }
     }
 }

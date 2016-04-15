@@ -35,8 +35,11 @@ namespace MTree.Utility
             get { return averageLatency; }
             set
             {
-                averageLatency = value;
-                NotifyPropertyChanged(nameof(AverageLatency));
+                if (averageLatency != value)
+                {
+                    averageLatency = value;
+                    NotifyPropertyChanged(nameof(AverageLatency));
+                }
             }
         }
         
@@ -81,11 +84,12 @@ namespace MTree.Utility
                 AverageLatency = new TimeSpan(Convert.ToInt64(LatencyList.Average(timeSpan => timeSpan.TotalMilliseconds)));
                 LatencyList.Clear();
             }
+
             NotifyPropertyChanged(nameof(AverageLatency));
             NotifyPropertyChanged(nameof(StockConclusionThroughput));
             NotifyPropertyChanged(nameof(BiddingPriceThroughput));
 
-            logger.Debug($"[{GetType().Name}] AverageLatency:{AverageLatency}, StockConclusionThroughput:{StockConclusionThroughput} BiddingPriceThroughput:{BiddingPriceThroughput}");
+            logger.Debug($"[{GetType().Name}] AverageLatency: {AverageLatency}, StockConclusionThroughput: {StockConclusionThroughput}, BiddingPriceThroughput: {BiddingPriceThroughput}");
         }
 
         #region INotifyPropertyChanged
