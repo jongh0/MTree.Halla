@@ -21,7 +21,6 @@ namespace MTree.Utility
         DaishinPublisherMaster,
         EbestPublisher,
         KiwoomPublisher,
-        KrxPublisher,
         TestPublisher,
         EbestTrader,
         KiwoomTrader,
@@ -54,7 +53,6 @@ namespace MTree.Utility
             ProcessList.Add(ProcessTypes.DaishinPublisherMaster, "MTree.DaishinPublisher");
             ProcessList.Add(ProcessTypes.EbestPublisher, "MTree.EbestPublisher");
             ProcessList.Add(ProcessTypes.KiwoomPublisher, "MTree.KiwoomPublisher");
-            ProcessList.Add(ProcessTypes.KrxPublisher, "MTree.KrxPublisher");
             ProcessList.Add(ProcessTypes.TestPublisher, "TestPublisher");
             ProcessList.Add(ProcessTypes.EbestTrader, "MTree.EbestTrader");
             ProcessList.Add(ProcessTypes.KiwoomTrader, "MTree.KiwoomTrader");

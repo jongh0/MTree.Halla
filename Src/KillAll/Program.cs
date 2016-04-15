@@ -20,7 +20,6 @@ namespace KillAll
             "MTree.DaishinPublisherTests",
             "MTree.EbestPublisher",
             "MTree.KiwoomPublisher",
-            "MTree.KrxPublisher",
             "MTree.EbestTrader",
             "MTree.KiwoomTrader",
             "MTree.VirtualTrader",
