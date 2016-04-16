@@ -31,6 +31,7 @@
             <Style TargetType="ComboBox">
                 <Setter Property="FontSize" Value="14"/>
                 <Setter Property="Height" Value="25"/>
+                <Setter Property="HorizontalAlignment" Value="Stretch"/>
                 <Setter Property="HorizontalContentAlignment" Value="Left"/>
             </Style>
             <Style TargetType="ComboBoxItem">
@@ -66,7 +67,7 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
                 <TextBlock Text="Order Type : "/>
-                <ComboBox ItemsSource="{Binding Source={StaticResource OrderTypesValues}}" SelectedItem="{Binding OrderType}" Width="110"/>
+                <ComboBox ItemsSource="{Binding Source={StaticResource OrderTypesValues}}" SelectedItem="{Binding OrderType}" Width="110" HorizontalContentAlignment="Left" HorizontalAlignment="Left" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
                 <Button Content="Make Order" Command="{Binding OrderCommand}" IsEnabled="{Binding CanOrder}" Width="240"/>

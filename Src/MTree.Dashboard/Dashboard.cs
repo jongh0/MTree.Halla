@@ -39,8 +39,15 @@ namespace MTree.Dashboard
             {
                 TaskUtility.Run("Dashboard.CircuitBreakQueue", QueueTaskCancelToken, ProcessCircuitBreakQueue);
 
-                for (int i = 0; i < 5; i++)
-                    TaskUtility.Run($"Dashboard.StockConclusionQueue_{i + 1}", QueueTaskCancelToken, ProcessStockConclusionQueue);
+                if (Config.General.VerifyOrdering == true)
+                {
+                    TaskUtility.Run($"Dashboard.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
+                }
+                else
+                {
+                    for (int i = 0; i < 5; i++)
+                        TaskUtility.Run($"Dashboard.StockConclusionQueue_{i + 1}", QueueTaskCancelToken, ProcessStockConclusionQueue);
+                }
 
                 for (int i = 0; i < 2; i++)
                     TaskUtility.Run($"Dashboard.IndexConclusionQueue_{i + 1}", QueueTaskCancelToken, ProcessIndexConclusionQueue);
@@ -137,6 +144,25 @@ namespace MTree.Dashboard
                         item.Price = conclusion.Price;
                         item.Volume += conclusion.Amount;
                     }
+
+                    if (Config.General.VerifyOrdering == true)
+                    {
+                        var code = conclusion.Code;
+                        var newId = conclusion.Id;
+
+                        if (VerifyOrderingList.ContainsKey(code) == false)
+                        {
+                            VerifyOrderingList.TryAdd(code, newId);
+                        }
+                        else
+                        {
+                            var prevId = VerifyOrderingList[code];
+                            if (prevId >= newId)
+                                logger.Error($"Conclusion ordering fail, code: {code}, prevId: {prevId}, newId: {newId}");
+
+                            prevId = newId;
+                        }
+                    }
                 }
                 else
                 {
@@ -177,37 +203,6 @@ namespace MTree.Dashboard
             catch (Exception ex)
             {
                 logger.Error(ex);
-            }
-        }
-
-        public override void ConsumeStockConclusion(StockConclusion conclusion)
-        {
-            base.ConsumeStockConclusion(conclusion);
-
-            if (Config.General.VerifyOrdering == true)
-            {
-                try
-                {
-                    var code = conclusion.Code;
-                    var newId = conclusion.Id;
-
-                    if (VerifyOrderingList.ContainsKey(code) == false)
-                    {
-                        VerifyOrderingList.TryAdd(code, newId);
-                    }
-                    else
-                    {
-                        var prevId = VerifyOrderingList[code];
-                        if (prevId >= newId)
-                            logger.Error($"Conclusion ordering fail, code: {code}, prevId: {prevId}, newId: {newId}");
-
-                        prevId = newId;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    logger.Error(ex);
-                }
             }
         }
 
