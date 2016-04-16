@@ -14,8 +14,6 @@ namespace MTree.Trader
         SellCancel = 4,
         BuyModify = 5,
         SellModify = 6,
-        
-        // TODO : Cancel을 Sell/Buy로 구분해야하는지 검토 필요함
     }
 
     public enum PriceTypes
