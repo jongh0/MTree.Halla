@@ -182,7 +182,10 @@ namespace MTree.EbestTrader
                 // 주문수량
                 newOrderObj.SetFieldData(blockName, "OrdQty", 0, order.Quantity.ToString());
                 // 매매구분
-                newOrderObj.SetFieldData(blockName, "BnsTpCode", 0, order.OrderType.ToString());
+                if (order.OrderType == OrderTypes.BuyNew)
+                    newOrderObj.SetFieldData(blockName, "BnsTpCode", 0, "2");
+                else
+                    newOrderObj.SetFieldData(blockName, "BnsTpCode", 0, "1");
 
                 // 00@지정가
                 // 03@시장가
