@@ -74,14 +74,46 @@ namespace MTree.DataCompare
                 tasks.Add(Task.Run(() => { destinationList = destination.GetStockConclusions(code, target, false); }));
 
                 Task.WaitAll(tasks.ToArray());
-
-                bool result = comparator.DoCompareItem(sourceList, destinationList, false);
-
-                Console.WriteLine($"Code:{code}, Result:{result}");
-                if (result == false)
+                if (sourceList.Count != 0 && destinationList.Count != 0)
                 {
-                    comparator.MakeReport(sourceList, destinationList, Path.Combine(compareResultPath, $"{DateTime.Now.Year}{DateTime.Now.Month}{DateTime.Now.Day}", stockConclusionCompareResultPath, code + ".html"));
+                    bool result = comparator.DoCompareItem(sourceList, destinationList, false);
+
+                    Console.WriteLine($"Code:{code}, Result:{result}");
+                    if (result == false)
+                    {
+                        comparator.MakeReport(sourceList, destinationList, Path.Combine(compareResultPath, $"{DateTime.Now.Year}{DateTime.Now.Month}{DateTime.Now.Day}", stockConclusionCompareResultPath, code + ".html"));
+                    }
                 }
+            }
+        }
+
+        public void ValidateStockConclusionCompareWithDaishin(DateTime target)
+        {
+            int cnt = 0;
+            IDataCollector daishin = new DaishinCollector();
+
+            foreach (string code in source.GetStockCodeList())
+            {
+                var tasks = new List<Task>();
+
+                List<Subscribable> sourceList = new List<Subscribable>();
+                List<Subscribable> destinationList = new List<Subscribable>();
+
+                tasks.Add(Task.Run(() => { sourceList = source.GetStockConclusions(code, target, true); }));
+                tasks.Add(Task.Run(() => { destinationList = daishin.GetStockConclusions(code, target, true); }));
+
+                Task.WaitAll(tasks.ToArray());
+                if (sourceList.Count != 0 && destinationList.Count != 0)
+                {
+                    bool result = comparator.DoCompareItem(sourceList, destinationList, false);
+
+                    Console.WriteLine($"{cnt}/{source.GetStockCodeList().Count} Code:{code}, Result:{result}");
+                    if (result == false)
+                    {
+                        comparator.MakeReport(sourceList, destinationList, Path.Combine(compareResultPath, $"{DateTime.Now.Year}{DateTime.Now.Month}{DateTime.Now.Day}", stockConclusionCompareResultPath, code + ".html"));
+                    }
+                }
+                cnt++;
             }
         }
 

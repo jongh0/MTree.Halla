@@ -60,18 +60,21 @@ namespace MTree.DataCompare
             var builder = Builders<StockConclusion>.Filter;
             var filter = builder.Gte(i => i.Time, targetDate) & builder.Lt(i => i.Time, targetDate.AddDays(1));
             
-            foreach (Subscribable conclusion in DataSource.Find(code, filter).ToList())
+            foreach (Subscribable conclusion in DataSource.Find(code, filter).SortBy(o => o.Id).ToList())
             {
-                if (normalOnly == true)
+                if (conclusion.Time < new DateTime(targetDate.Year, targetDate.Month, targetDate.Day, 15, 00, 0))
                 {
-                    if (((StockConclusion)conclusion).MarketTimeType == MarketTimeTypes.Normal)
+                    if (normalOnly == true)
+                    {
+                        if (((StockConclusion)conclusion).MarketTimeType == MarketTimeTypes.Normal)
+                        {
+                            conclusions.Add(conclusion);
+                        }
+                    }
+                    else
                     {
                         conclusions.Add(conclusion);
                     }
-                }
-                else
-                {
-                    conclusions.Add(conclusion);
                 }
             }
             

@@ -79,6 +79,7 @@ namespace MTree.EbestPublisher
                 circuitBreak.Code = viSubscribingObj.GetFieldData("OutBlock", "shcode");
 
                 var circuitBreakType = Convert.ToInt32(viSubscribingObj.GetFieldData("OutBlock", "vi_gubun"));
+                circuitBreak.InvokePrice = Convert.ToSingle(viSubscribingObj.GetFieldData("OutBlock", "vi_trgprice"));
                 switch (circuitBreakType)
                 {
                     case 0:
@@ -97,13 +98,13 @@ namespace MTree.EbestPublisher
                         break;
 
                     default:
-                        logger.Error($"Unknown circuit break type: {circuitBreakType}");
+                        logger.Error($"Unknown circuit break type: {circuitBreakType}. {circuitBreak.ToString()}");
                         circuitBreak.CircuitBreakType = CircuitBreakTypes.Unknown;
                         circuitBreak.BasePrice = 0;
                         break;
                 }
 
-                circuitBreak.InvokePrice = Convert.ToSingle(viSubscribingObj.GetFieldData("OutBlock", "vi_trgprice"));
+                
 
 #if NOT_USE_QUEUE
                 if (ServiceClient.State == CommunicationState.Opened)

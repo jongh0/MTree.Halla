@@ -45,8 +45,7 @@ namespace MTree.DataCompare
             ConclusionHistoryQueryObj.SetInputValue(2, 80);
             ConclusionHistoryQueryObj.SetInputValue(3, 'C');
             ConclusionHistoryQueryObj.SetInputValue(4, "1900");
-            ConclusionHistoryQueryObj.BlockRequest();
-
+            
             do
             {
                 ConclusionHistoryQueryObj.BlockRequest();
@@ -81,7 +80,8 @@ namespace MTree.DataCompare
             while (conclusions.Count > 0)
             {
                 StockConclusion c = conclusions.Pop();
-                if (normalOnly == true && c.MarketTimeType == MarketTimeTypes.Normal)
+                if (normalOnly == true && c.MarketTimeType == MarketTimeTypes.Normal &&
+                    c.Time < new DateTime(targetDate.Year, targetDate.Month, targetDate.Day, 15, 00, 0))
                     ret.Add(c);
             }
             return ret;

@@ -28,12 +28,44 @@ namespace MTree.DataCompare
         {
             InitializeComponent();
 
+            //CompareWithDaishin();
             DateTime target = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+            
             DataValidator validator = new DataValidator();
-            validator.ValidateCodeList();
-            validator.ValidateMasterCompare(target);
+            //validator.ValidateStockConclusionCompareWithDaishin(target);
+            //validator.ValidateCodeList();
+            //validator.ValidateMasterCompare(target);
             validator.ValidateStockConclusionCompare(target);
-            validator.ValidateIndexConclusionCompare(target);
+            //validator.ValidateIndexConclusionCompare(target);
+            
+        }
+        void CompareWithDaishin()
+        {
+            //string code = "001065";
+            BeyondCompare comparator = new BeyondCompare();
+
+            DateTime target = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+            IDataCollector source = new DbCollector(DbAgent.Instance);
+            IDataCollector destination = new DaishinCollector();
+
+            foreach (string code in source.GetStockCodeList())
+            {
+                var tasks = new List<Task>();
+                List<Subscribable> sourceList = new List<Subscribable>();
+                List<Subscribable> destinationList = new List<Subscribable>();
+
+                tasks.Add(Task.Run(() => { sourceList = source.GetStockConclusions(code, target, true); }));
+                tasks.Add(Task.Run(() => { destinationList = destination.GetStockConclusions(code, target, true); }));
+
+                Task.WaitAll(tasks.ToArray());
+
+                bool result = comparator.DoCompareItem(sourceList, destinationList, false);
+                if (result == false)
+                {
+                    comparator.DoCompareItem(sourceList, destinationList, true);
+                }
+                Console.WriteLine($"Code:{code}, Result:{result}");
+            }
         }
     }
 }

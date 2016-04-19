@@ -93,6 +93,7 @@ namespace MTree.RealTimeProvider
 #if EVENLY_DISTRIBUTION
                 daishinProcessCount += 6;
 #endif
+                daishinProcessCount = 39;
 
                 for (int i = 0; i < daishinProcessCount; i++)
                     ProcessUtility.Start(ProcessTypes.DaishinPublisher, ProcessWindowStyle.Minimized);
