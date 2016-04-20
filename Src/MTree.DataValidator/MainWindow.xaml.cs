@@ -28,18 +28,25 @@ namespace MTree.DataValidator
         {
             InitializeComponent();
 
-            Task.Run(() =>
+            foreach (string arg in Environment.GetCommandLineArgs())
             {
-                DateTime targetDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+                if (arg == "/R")
+                {
+                    Task.Run(() =>
+                    {
+                        DateTime targetDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
 
-                DataValidator validator = new DataValidator();
-                //validator.ValidateStockConclusionCompareWithDaishin(target);
-                validator.ValidateCodeList();
-                validator.ValidateMasterCompare(targetDate);
-                validator.ValidateStockConclusionCompare(targetDate);
-                validator.ValidateIndexConclusionCompare(targetDate);
-                validator.ValidateCircuitBreakCompare(targetDate);
-            });
+                        DataValidator validator = new DataValidator();
+
+                        validator.ValidateCodeList();
+                        validator.ValidateMasterCompare(targetDate);
+                        validator.ValidateStockConclusionCompare(targetDate);
+                        validator.ValidateIndexConclusionCompare(targetDate);
+                        validator.ValidateCircuitBreakCompare(targetDate);
+                        //validator.ValidateStockConclusionCompareWithDaishin(target);
+                    });
+                }
+            }
         }
     }
 }

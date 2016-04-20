@@ -74,6 +74,14 @@ namespace MTree.Utility
             return null;
         }
 
+        public static Process Start(ProcessTypes type, string arguments, ProcessWindowStyle windowStyle = ProcessWindowStyle.Normal)
+        {
+            if (ProcessList.ContainsKey(type) == true)
+                return Start(ProcessList[type] + ".exe", type.ToString(), windowStyle: windowStyle);
+
+            return null;
+        }
+
         public static Process Start(string filePath, string arguments = "", ProcessWindowStyle windowStyle = ProcessWindowStyle.Normal)
         {
             try
