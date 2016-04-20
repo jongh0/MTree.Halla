@@ -161,12 +161,16 @@ namespace MTree.DaishinPublisher
                 else
                 {
                     long time = Convert.ToInt64(stockOutCurObj.GetHeaderValue(1));
+<<<<<<< HEAD
                     if (stockOutPrevTime != time)
                     {
                         stockOutPrevTime = time;
                         stockOutMillisecond = 0;
                     }
                     conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100, 0); // Daishin doesn't provide milisecond 
+=======
+                    conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100); // Daishin doesn't provide milisecond 
+>>>>>>> origin/master
                 }
 
                 // 5 - (long) 현재가

@@ -189,15 +189,13 @@ namespace MTree.DaishinPublisher
                 else
                 {
                     long time = Convert.ToInt64(indexCurObj.GetHeaderValue(18));
-                    if (indexPrevTime != time)
-                    {
-                        indexPrevTime = time;
-                        indexMillisecond = 0;
-                    }
-
                     try
                     {
+<<<<<<< HEAD
                         conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100, 0); // Daishin doesn't provide milisecond 
+=======
+                        conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100); // Daishin doesn't provide milisecond 
+>>>>>>> origin/master
                     }
                     catch (ArgumentOutOfRangeException)
                     {
