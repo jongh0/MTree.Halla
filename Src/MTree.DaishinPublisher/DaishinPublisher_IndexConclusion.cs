@@ -197,7 +197,7 @@ namespace MTree.DaishinPublisher
 
                     try
                     {
-                        conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100, indexMillisecond++); // Daishin doesn't provide milisecond 
+                        conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100, 0); // Daishin doesn't provide milisecond 
                     }
                     catch (ArgumentOutOfRangeException)
                     {

@@ -166,7 +166,7 @@ namespace MTree.DaishinPublisher
                         stockOutPrevTime = time;
                         stockOutMillisecond = 0;
                     }
-                    conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100, stockOutMillisecond++); // Daishin doesn't provide milisecond 
+                    conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100, 0); // Daishin doesn't provide milisecond 
                 }
 
                 // 5 - (long) 현재가
@@ -214,7 +214,7 @@ namespace MTree.DaishinPublisher
                     stockPrevTime = time;
                     stockMillisecond = 0;
                 }
-                conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100, stockMillisecond++); // Daishin doesn't provide milisecond 
+                conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100, 0); // Daishin doesn't provide milisecond 
 
                 // 13 - (long) 현재가
                 conclusion.Price = Convert.ToSingle(stockCurObj.GetHeaderValue(13));
