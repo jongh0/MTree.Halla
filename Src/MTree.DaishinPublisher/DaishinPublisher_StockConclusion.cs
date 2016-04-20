@@ -8,11 +8,6 @@ namespace MTree.DaishinPublisher
 {
     public partial class DaishinPublisher
     {
-        private long stockPrevTime = 0;
-        private int stockMillisecond = 0;
-        private long stockOutPrevTime = 0;
-        private int stockOutMillisecond = 0;
-
         private int _StockSubscribeCount = 0;
         public int StockSubscribeCount
         {
@@ -161,16 +156,7 @@ namespace MTree.DaishinPublisher
                 else
                 {
                     long time = Convert.ToInt64(stockOutCurObj.GetHeaderValue(1));
-<<<<<<< HEAD
-                    if (stockOutPrevTime != time)
-                    {
-                        stockOutPrevTime = time;
-                        stockOutMillisecond = 0;
-                    }
-                    conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100, 0); // Daishin doesn't provide milisecond 
-=======
                     conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100); // Daishin doesn't provide milisecond 
->>>>>>> origin/master
                 }
 
                 // 5 - (long) 현재가
@@ -213,12 +199,8 @@ namespace MTree.DaishinPublisher
 
                 // 18 - (long) 시간 (초)
                 long time = Convert.ToInt64(stockCurObj.GetHeaderValue(18));
-                if (stockPrevTime != time)
-                {
-                    stockPrevTime = time;
-                    stockMillisecond = 0;
-                }
-                conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100, 0); // Daishin doesn't provide milisecond 
+
+                conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100); // Daishin doesn't provide milisecond 
 
                 // 13 - (long) 현재가
                 conclusion.Price = Convert.ToSingle(stockCurObj.GetHeaderValue(13));
