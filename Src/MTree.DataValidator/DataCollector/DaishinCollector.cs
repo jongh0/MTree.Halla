@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MTree.DataCompare
+namespace MTree.DataValidator
 {
     public class DaishinCollector: IDataCollector
     {
@@ -86,6 +86,11 @@ namespace MTree.DataCompare
             }
             return ret;
 
+        }
+
+        public List<Subscribable> GetCircuitBreaks(string code, DateTime targetDatex)
+        {
+            throw new NotImplementedException();
         }
     }
 }

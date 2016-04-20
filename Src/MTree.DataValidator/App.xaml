@@ -1,7 +1,7 @@
-﻿<Application x:Class="MTree.DataCompare.App"
+﻿<Application x:Class="MTree.DataValidator.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:MTree.DataCompare"
+             xmlns:local="clr-namespace:MTree.DataValidator"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
          

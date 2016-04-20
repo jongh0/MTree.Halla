@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MTree.DataCompare
+namespace MTree.DataValidator
 {
     public interface IDataCollector
     {
@@ -18,5 +18,7 @@ namespace MTree.DataCompare
         List<Subscribable> GetIndexConclusions(string code, DateTime targetDate, bool normalOnly = true);
 
         List<Subscribable> GetStockConclusions(string code, DateTime targetDate, bool normalOnly = true);
+
+        List<Subscribable> GetCircuitBreaks(string code, DateTime targetDatex);
     }
 }

@@ -128,7 +128,7 @@ namespace MTree.RealTimeProvider
             if (Config.Database.ConnectionString != Config.Database.RemoteConnectionString)
             {
                 // Data Compare 실행
-                ProcessUtility.Start(ProcessTypes.DataCompare, ProcessWindowStyle.Minimized);
+                ProcessUtility.Start(ProcessTypes.DataValidator, ProcessWindowStyle.Minimized);
             }
 
             ExitProgram(ExitProgramTypes.Normal);

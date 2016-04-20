@@ -28,7 +28,7 @@ namespace MTree.Utility
         KillAll,
         AutoLauncher,
         DaishinSessionManager,
-        DataCompare,
+        DataValidator,
         PopupStopper,
         SendLog,
         TestConsole,
@@ -60,7 +60,7 @@ namespace MTree.Utility
             ProcessList.Add(ProcessTypes.KillAll, "KillAll");
             ProcessList.Add(ProcessTypes.AutoLauncher, "MTree.AutoLauncher");
             ProcessList.Add(ProcessTypes.DaishinSessionManager, "MTree.DaishinSessionManager");
-            ProcessList.Add(ProcessTypes.DataCompare, "MTree.DataCompare");
+            ProcessList.Add(ProcessTypes.DataValidator, "MTree.DataValidator");
             ProcessList.Add(ProcessTypes.PopupStopper, "MTree.PopupStopper");
             ProcessList.Add(ProcessTypes.SendLog, "MTree.SendLog");
             ProcessList.Add(ProcessTypes.TestConsole, "TestConsole");

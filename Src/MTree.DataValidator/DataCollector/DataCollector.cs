@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MTree.DataCompare
+namespace MTree.DataValidator
 {
     public class DbCollector : IDataCollector
     {
@@ -80,6 +80,19 @@ namespace MTree.DataCompare
             
             return conclusions;
         }
+        public List<Subscribable> GetCircuitBreaks(string code, DateTime targetDate)
+        {
+            List<Subscribable> cbs = new List<Subscribable>();
 
+            var builder = Builders<CircuitBreak>.Filter;
+            var filter = builder.Gte(i => i.Time, targetDate) & builder.Lt(i => i.Time, targetDate.AddDays(1));
+
+            foreach (Subscribable conclusion in DataSource.Find(code, filter).SortBy(o => o.Id).ToList())
+            {
+                cbs.Add(conclusion);
+            }
+
+            return cbs;
+        }
     }
 }

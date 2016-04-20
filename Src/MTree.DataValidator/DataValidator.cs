@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MTree.DataCompare
+namespace MTree.DataValidator
 {
     public class DataValidator
     {
@@ -21,6 +21,7 @@ namespace MTree.DataCompare
         private const string masterCompareResultFile = "MasterCompare.html";
         private const string stockConclusionCompareResultPath = "StockConclusion";
         private const string indexConclusionCompareResultPath = "IndexConclusion";
+        private const string circuitbreakCompareResultFile = "CircuitBreak.html";
 
         public DataValidator()
         {
@@ -139,6 +140,28 @@ namespace MTree.DataCompare
                     comparator.MakeReport(sourceList, destinationList, Path.Combine(compareResultPath, $"{DateTime.Now.Year}{DateTime.Now.Month}{DateTime.Now.Day}", indexConclusionCompareResultPath, code + ".html"));
                 }
             }
+        }
+        public void ValidateCircuitBreakCompare(DateTime target)
+        {
+            var tasks = new List<Task>();
+
+            List<Subscribable> sourceList = new List<Subscribable>();
+            List<Subscribable> destinationList = new List<Subscribable>();
+            foreach (string code in source.GetStockCodeList())
+            {
+                tasks.Add(Task.Run(() => { sourceList.AddRange(source.GetCircuitBreaks(code, target)); }));
+                tasks.Add(Task.Run(() => { destinationList.AddRange(destination.GetCircuitBreaks(code, target)); }));
+                
+                Task.WaitAll(tasks.ToArray());
+            }
+            bool result = comparator.DoCompareItem(sourceList, destinationList, true);
+
+            Console.WriteLine($"Result:{result}");
+            if (result == false)
+            {
+                comparator.MakeReport(sourceList, destinationList, Path.Combine(compareResultPath, $"{DateTime.Now.Year}{DateTime.Now.Month}{DateTime.Now.Day}", circuitbreakCompareResultFile));
+            }
+
         }
     }
 }

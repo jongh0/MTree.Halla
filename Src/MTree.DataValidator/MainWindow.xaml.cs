@@ -17,7 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace MTree.DataCompare
+namespace MTree.DataValidator
 {
     /// <summary>
     /// MainWindow.xaml에 대한 상호 작용 논리
@@ -28,14 +28,18 @@ namespace MTree.DataCompare
         {
             InitializeComponent();
 
-            DateTime target = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
-            
-            DataValidator validator = new DataValidator();
-            //validator.ValidateStockConclusionCompareWithDaishin(target);
-            validator.ValidateCodeList();
-            validator.ValidateMasterCompare(target);
-            validator.ValidateStockConclusionCompare(target);
-            validator.ValidateIndexConclusionCompare(target);
+            Task.Run(() =>
+            {
+                DateTime targetDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+
+                DataValidator validator = new DataValidator();
+                //validator.ValidateStockConclusionCompareWithDaishin(target);
+                validator.ValidateCodeList();
+                validator.ValidateMasterCompare(targetDate);
+                validator.ValidateStockConclusionCompare(targetDate);
+                validator.ValidateIndexConclusionCompare(targetDate);
+                validator.ValidateCircuitBreakCompare(targetDate);
+            });
         }
     }
 }

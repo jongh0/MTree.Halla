@@ -53,7 +53,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestPublisher", "TestPublis
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.Dashboard", "MTree.Dashboard\MTree.Dashboard.csproj", "{FB13D3B5-8653-4218-9B58-2F715EB02B2B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.DataCompare", "MTree.DataCompare\MTree.DataCompare.csproj", "{872A62AB-F004-4F03-9905-981017E33BC9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.DataValidator", "MTree.DataValidator\MTree.DataValidator.csproj", "{872A62AB-F004-4F03-9905-981017E33BC9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.StrategyManager", "MTree.StrategyManager\MTree.StrategyManager.csproj", "{D4D0E0C1-A6D0-4455-9079-1A4F3633F9E5}"
 EndProject

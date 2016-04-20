@@ -24,7 +24,7 @@ namespace KillAll
             "MTree.KiwoomTrader",
             "MTree.VirtualTrader",
             "MTree.DaishinSessionManager",
-            "MTree.DataCompare",
+            "MTree.DataValidator",
             "MTree.PopupStopper",
             "MTree.SendLog",
             "TestConsole",

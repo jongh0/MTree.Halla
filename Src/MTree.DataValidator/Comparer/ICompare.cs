@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MTree.DataCompare
+namespace MTree.DataValidator
 {
     public interface ICompare
     {
