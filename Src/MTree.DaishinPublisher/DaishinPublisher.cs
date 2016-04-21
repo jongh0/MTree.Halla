@@ -88,7 +88,7 @@ namespace MTree.DaishinPublisher
                 StartStockConclusionQueueTask();
                 StartIndexConclusionQueueTask();
 
-                if (Environment.GetCommandLineArgs()[1] == "DaishinMaster")
+                if (Environment.GetCommandLineArgs()[1] == ProcessTypes.DaishinPublisherMaster.ToString())
                     IsMasterProcess = true;
 
 #if false // Chart test code
@@ -97,7 +97,7 @@ namespace MTree.DaishinPublisher
                 Debugger.Break();
 #endif
 #if false // Member Subscribing test
-                if (Environment.GetCommandLineArgs()[1] == "DaishinMaster")
+                if (Environment.GetCommandLineArgs()[1] == ProcessTypes.DaishinPublisherMaster.ToString())
                 {
                     memberTrendObj.SetInputValue(0, "*");
                     memberTrendObj.SetInputValue(1, "*");
