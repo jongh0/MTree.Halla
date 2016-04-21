@@ -49,5 +49,9 @@ namespace MTree.Configuration
         public bool VerifyOrdering { get; set; } = false;
 
         public bool VerifyLatency { get; set; } = false;
+
+        public bool LaunchDashboard { get; set; } = true;
+
+        public bool LaunchHistorySaver { get; set; } = true;
     }
 }

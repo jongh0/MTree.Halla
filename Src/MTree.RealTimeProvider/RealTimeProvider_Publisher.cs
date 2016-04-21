@@ -74,10 +74,12 @@ namespace MTree.RealTimeProvider
                 logger.Info(RealTimeState);
 
                 // HistorySaver
-                ProcessUtility.Start(ProcessTypes.HistorySaver);
+                if (Config.General.LaunchHistorySaver == true)
+                    ProcessUtility.Start(ProcessTypes.HistorySaver);
 
                 // Dashboard
-                ProcessUtility.Start(ProcessTypes.Dashboard);
+                if (Config.General.LaunchDashboard == true)
+                    ProcessUtility.Start(ProcessTypes.Dashboard);
 
                 // Kiwoom
                 if (Config.General.SkipMastering == false &&
