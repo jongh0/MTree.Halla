@@ -30,6 +30,7 @@ namespace MTree.DataValidator
             {
                 srcString.AppendLine(s);
             }
+
             foreach (string d in dest)
             {
                 destString.AppendLine(d);
@@ -47,6 +48,7 @@ namespace MTree.DataValidator
             {
                 srcString.AppendLine(s.ToString());
             }
+
             foreach (Subscribable d in dest)
             {
                 destString.AppendLine(d.ToString());
@@ -62,6 +64,7 @@ namespace MTree.DataValidator
                 logger.Info("Source and Destination data is null. result is true");
                 return true;
             }
+
             if (src == null || dest == null)
             {
                 logger.Info("Source or Destination data is null. result is false");
@@ -118,6 +121,7 @@ namespace MTree.DataValidator
             {
                 srcString.AppendLine(s);
             }
+
             foreach (string d in dest)
             {
                 destString.AppendLine(d);
@@ -135,6 +139,7 @@ namespace MTree.DataValidator
             {
                 srcString.AppendLine(s.ToString());
             }
+
             foreach (Subscribable d in dest)
             {
                 destString.AppendLine(d.ToString());

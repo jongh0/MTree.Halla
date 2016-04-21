@@ -21,6 +21,7 @@ namespace MTree.DataValidator
         {
             throw new NotImplementedException();
         }
+
         public List<string> GetIndexCodeList()
         {
             throw new NotImplementedException();
@@ -56,7 +57,7 @@ namespace MTree.DataValidator
                     if (timeType == '1') continue;
 
                     StockConclusion conclusion = new StockConclusion();
-                    conclusion.Code = ((String)ConclusionHistoryQueryObj.GetHeaderValue(0)).Substring(1);
+                    conclusion.Code = ((string)ConclusionHistoryQueryObj.GetHeaderValue(0)).Substring(1);
                     conclusion.Price = Convert.ToSingle(ConclusionHistoryQueryObj.GetDataValue(4, i));
                     conclusion.Amount = Convert.ToInt64(ConclusionHistoryQueryObj.GetDataValue(6, i));
                     
@@ -64,7 +65,7 @@ namespace MTree.DataValidator
                     if (concludeType == '1') conclusion.ConclusionType = ConclusionTypes.Buy;
                     else if (concludeType == '2') conclusion.ConclusionType = ConclusionTypes.Sell;
 
-                    Int32 concludedTime = Convert.ToInt32(ConclusionHistoryQueryObj.GetDataValue(9, i));
+                    int concludedTime = Convert.ToInt32(ConclusionHistoryQueryObj.GetDataValue(9, i));
                     conclusion.Time = new DateTime(targetDate.Year, targetDate.Month, targetDate.Day,
                         (int)concludedTime / 10000, (int)(concludedTime / 100) % 100, (int)concludedTime % 100);
                     
@@ -84,8 +85,8 @@ namespace MTree.DataValidator
                     c.Time < new DateTime(targetDate.Year, targetDate.Month, targetDate.Day, 15, 00, 0))
                     ret.Add(c);
             }
-            return ret;
 
+            return ret;
         }
 
         public List<Subscribable> GetCircuitBreaks(string code, DateTime targetDatex)

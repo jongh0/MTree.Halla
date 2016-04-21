@@ -50,6 +50,7 @@ namespace MTree.DataValidator
                     conclusions.Add(conclusion);
                 }
             }
+
             return conclusions;
         }
 
@@ -80,6 +81,7 @@ namespace MTree.DataValidator
             
             return conclusions;
         }
+
         public List<Subscribable> GetCircuitBreaks(string code, DateTime targetDate)
         {
             List<Subscribable> cbs = new List<Subscribable>();

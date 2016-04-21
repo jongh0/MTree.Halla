@@ -250,7 +250,7 @@ namespace MTree.DataStructure
             {
                 logger.Info($"Save {Type.ToString()}");
 
-                var fileName = $"MTree.{DateTime.Now.ToString(Config.General.DateFormat)}_{Type.ToString()}.csv";
+                var fileName = $"MTree.{Config.General.DateNow}_{Type.ToString()}.csv";
                 var filePath = Path.Combine(Environment.CurrentDirectory, "Logs", Config.General.DateNow, fileName);
 
                 using (var sw = new StreamWriter(new FileStream(filePath, FileMode.Create), Encoding.Default))

@@ -9,9 +9,6 @@ namespace MTree.DaishinPublisher
 {
     public partial class DaishinPublisher
     {
-        private long indexPrevTime = 0;
-        private int indexMillisecond = 0;
-
         private int _IndexSubscribeCount = 0;
         public int IndexSubscribeCount
         {

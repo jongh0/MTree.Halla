@@ -46,6 +46,7 @@ namespace MTree.DataValidator
         {
             List<string> srcMasters = new List<string>();
             List<string> destMasters = new List<string>();
+
             foreach (string code in source.GetStockCodeList())
             {
                 StockMaster srcMaster = source.GetMaster(code, target);
@@ -56,6 +57,7 @@ namespace MTree.DataValidator
                 if (destMaster != null)
                     destMasters.Add(destMaster.ToString());
             }
+
             if (comparator.DoCompareItem(srcMasters, destMasters, false) == false)
             {
                 comparator.MakeReport(srcMasters, destMasters, Path.Combine(compareResultPath, $"{DateTime.Now.Year}{DateTime.Now.Month}{DateTime.Now.Day}", masterCompareResultFile));
@@ -75,6 +77,7 @@ namespace MTree.DataValidator
                 tasks.Add(Task.Run(() => { destinationList = destination.GetStockConclusions(code, target, false); }));
 
                 Task.WaitAll(tasks.ToArray());
+
                 if (sourceList.Count != 0 && destinationList.Count != 0)
                 {
                     bool result = comparator.DoCompareItem(sourceList, destinationList, false);
@@ -104,6 +107,7 @@ namespace MTree.DataValidator
                 tasks.Add(Task.Run(() => { destinationList = daishin.GetStockConclusions(code, target, true); }));
 
                 Task.WaitAll(tasks.ToArray());
+
                 if (sourceList.Count != 0 && destinationList.Count != 0)
                 {
                     bool result = comparator.DoCompareItem(sourceList, destinationList, false);
@@ -114,6 +118,7 @@ namespace MTree.DataValidator
                         comparator.MakeReport(sourceList, destinationList, Path.Combine(compareResultPath, $"{DateTime.Now.Year}{DateTime.Now.Month}{DateTime.Now.Day}", stockConclusionCompareResultPath, code + ".html"));
                     }
                 }
+
                 cnt++;
             }
         }
@@ -135,6 +140,7 @@ namespace MTree.DataValidator
                 bool result = comparator.DoCompareItem(sourceList, destinationList, false);
 
                 Console.WriteLine($"Code:{code}, Result:{result}");
+
                 if (result == false)
                 {
                     comparator.MakeReport(sourceList, destinationList, Path.Combine(compareResultPath, $"{DateTime.Now.Year}{DateTime.Now.Month}{DateTime.Now.Day}", indexConclusionCompareResultPath, code + ".html"));
@@ -147,6 +153,7 @@ namespace MTree.DataValidator
 
             List<Subscribable> sourceList = new List<Subscribable>();
             List<Subscribable> destinationList = new List<Subscribable>();
+
             foreach (string code in source.GetStockCodeList())
             {
                 tasks.Add(Task.Run(() => { sourceList.AddRange(source.GetCircuitBreaks(code, target)); }));
@@ -154,14 +161,15 @@ namespace MTree.DataValidator
                 
                 Task.WaitAll(tasks.ToArray());
             }
+
             bool result = comparator.DoCompareItem(sourceList, destinationList, true);
 
             Console.WriteLine($"Result:{result}");
+
             if (result == false)
             {
                 comparator.MakeReport(sourceList, destinationList, Path.Combine(compareResultPath, $"{DateTime.Now.Year}{DateTime.Now.Month}{DateTime.Now.Day}", circuitbreakCompareResultFile));
             }
-
         }
     }
 }
