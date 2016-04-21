@@ -12,22 +12,7 @@ namespace MTree.DataStructure
     {
         [BsonElement("MC")]
         public long MarketCapitalization { get; set; }
-
-        [BsonElement("ULIC")]
-        public int UpperLimitedItemCount { get; set; }
-
-        [BsonElement("IIC")]
-        public int IncreasingItemCount { get; set; }
-
-        [BsonElement("SIC")]
-        public int SteadyItemCount { get; set; }
-
-        [BsonElement("DIC")]
-        public int DecreasingItemCount { get; set; }
-
-        [BsonElement("LLIC")]
-        public int LowerLimitedItemCount { get; set; }
-
+        
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
