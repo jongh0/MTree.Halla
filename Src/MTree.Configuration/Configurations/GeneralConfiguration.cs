@@ -24,6 +24,15 @@ namespace MTree.Configuration
         public string DateTimeFormat { get; } = "yyyy-MM-dd HH:mm:ss.fff";
 
         [JsonIgnore]
+        public string DateNow { get { return DateTime.Now.ToString(DateFormat); } }
+
+        [JsonIgnore]
+        public string TimeNow { get { return DateTime.Now.ToString(TimeFormat); } }
+
+        [JsonIgnore]
+        public string DateTimeNow { get { return DateTime.Now.ToString(DateTimeFormat); } }
+
+        [JsonIgnore]
         public string CurrencyFormat { get; } = "#,###.##";
 
         [JsonIgnore]
