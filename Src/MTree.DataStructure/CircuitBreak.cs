@@ -10,10 +10,10 @@ namespace MTree.DataStructure
     #region enum
     public enum CircuitBreakTypes
     {
-        Unknown,
         Clear,
         StaticInvoke,
         DynamicInvoke,
+        StaticAndDynamicInvoke,
     } 
     #endregion
 
@@ -23,8 +23,8 @@ namespace MTree.DataStructure
         [BsonElement("CBT")]
         public CircuitBreakTypes CircuitBreakType { get; set; }
 
-        [BsonElement("BP")]
-        public float BasePrice { get; set; }
+        [BsonElement("IBP")]
+        public float InvokeBasisPrice { get; set; }
 
         [BsonElement("IP")]
         public float InvokePrice { get; set; }

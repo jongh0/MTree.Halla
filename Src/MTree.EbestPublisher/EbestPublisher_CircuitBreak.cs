@@ -1,9 +1,8 @@
-﻿//#define NOT_USE_QUEUE
-
-using System;
+﻿using System;
 using MTree.DataStructure;
 using MongoDB.Bson;
 using System.ServiceModel;
+using XA_DATASETLib;
 
 namespace MTree.EbestPublisher
 {
@@ -68,101 +67,52 @@ namespace MTree.EbestPublisher
 
         private void ViSubscribingObj_ReceiveRealData(string szTrCode)
         {
-            try
-            {
-                LastCommTick = Environment.TickCount;
-                logger.Trace($"szTrCode: {szTrCode}");
-
-                var circuitBreak = new CircuitBreak();
-                circuitBreak.Id = ObjectId.GenerateNewId();
-                circuitBreak.Time = DateTime.Now;
-                circuitBreak.Code = viSubscribingObj.GetFieldData("OutBlock", "shcode");
-
-                var circuitBreakType = Convert.ToInt32(viSubscribingObj.GetFieldData("OutBlock", "vi_gubun"));
-                circuitBreak.InvokePrice = Convert.ToSingle(viSubscribingObj.GetFieldData("OutBlock", "vi_trgprice"));
-                switch (circuitBreakType)
-                {
-                    case 0:
-                        circuitBreak.CircuitBreakType = CircuitBreakTypes.Clear;
-                        circuitBreak.BasePrice = 0;
-                        break;
-
-                    case 1:
-                        circuitBreak.CircuitBreakType = CircuitBreakTypes.StaticInvoke;
-                        circuitBreak.BasePrice = Convert.ToSingle(viSubscribingObj.GetFieldData("OutBlock", "svi_recprice"));
-                        break;
-
-                    case 2:
-                        circuitBreak.CircuitBreakType = CircuitBreakTypes.DynamicInvoke;
-                        circuitBreak.BasePrice = Convert.ToSingle(viSubscribingObj.GetFieldData("OutBlock", "dvi_recprice"));
-                        break;
-
-                    default:
-                        logger.Error($"Unknown circuit break type: {circuitBreakType}. {circuitBreak.ToString()}");
-                        circuitBreak.CircuitBreakType = CircuitBreakTypes.Unknown;
-                        circuitBreak.BasePrice = 0;
-                        break;
-                }
-
-                
-
-#if NOT_USE_QUEUE
-                if (ServiceClient.State == CommunicationState.Opened)
-                    ServiceClient.PublishCircuitBreak(circuitBreak);
-#else
-                CircuitBreakQueue.Enqueue(circuitBreak); 
-#endif
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-            }
+            LastCommTick = Environment.TickCount;
+            CircuitBreakReceived(viSubscribingObj);
         }
 
         private void DviSubscribingObj_ReceiveRealData(string szTrCode)
         {
+            LastCommTick = Environment.TickCount;
+            CircuitBreakReceived(dviSubscribingObj);
+        }
+
+        private void CircuitBreakReceived(XARealClass subscribingObj)
+        {
             try
             {
-                LastCommTick = Environment.TickCount;
-                logger.Trace($"szTrCode: {szTrCode}");
-
                 var circuitBreak = new CircuitBreak();
+                circuitBreak.Id = ObjectId.GenerateNewId();
                 circuitBreak.Time = DateTime.Now;
-                circuitBreak.Code = dviSubscribingObj.GetFieldData("OutBlock", "shcode");
+                circuitBreak.Code = subscribingObj.GetFieldData("OutBlock", "shcode");
 
-                var circuitBreakType = Convert.ToInt32(dviSubscribingObj.GetFieldData("OutBlock", "vi_gubun"));
+                var circuitBreakType = Convert.ToInt32(subscribingObj.GetFieldData("OutBlock", "vi_gubun"));
                 switch (circuitBreakType)
                 {
-                    case 0:
-                        circuitBreak.CircuitBreakType = CircuitBreakTypes.Clear;
-                        circuitBreak.BasePrice = 0;
-                        break;
-
                     case 1:
                         circuitBreak.CircuitBreakType = CircuitBreakTypes.StaticInvoke;
-                        circuitBreak.BasePrice = Convert.ToSingle(dviSubscribingObj.GetFieldData("OutBlock", "svi_recprice"));
+                        circuitBreak.InvokeBasisPrice = Convert.ToSingle(subscribingObj.GetFieldData("OutBlock", "svi_recprice"));
                         break;
 
                     case 2:
                         circuitBreak.CircuitBreakType = CircuitBreakTypes.DynamicInvoke;
-                        circuitBreak.BasePrice = Convert.ToSingle(dviSubscribingObj.GetFieldData("OutBlock", "dvi_recprice"));
+                        circuitBreak.InvokeBasisPrice = Convert.ToSingle(subscribingObj.GetFieldData("OutBlock", "dvi_recprice"));
                         break;
 
-                    default:
-                        logger.Error($"Unknown circuit break type: {circuitBreakType}");
-                        circuitBreak.CircuitBreakType = CircuitBreakTypes.Unknown;
-                        circuitBreak.BasePrice = 0;
+                    case 3:
+                        circuitBreak.CircuitBreakType = CircuitBreakTypes.StaticAndDynamicInvoke;
+                        circuitBreak.InvokeBasisPrice = Convert.ToSingle(subscribingObj.GetFieldData("OutBlock", "dvi_recprice")); // TODO: dvi_recprice 맞나?
+                        break;
+
+                    default: // 0
+                        circuitBreak.CircuitBreakType = CircuitBreakTypes.Clear;
+                        circuitBreak.InvokeBasisPrice = 0;
                         break;
                 }
 
-                circuitBreak.InvokePrice = Convert.ToSingle(dviSubscribingObj.GetFieldData("OutBlock", "vi_trgprice"));
+                circuitBreak.InvokePrice = Convert.ToSingle(subscribingObj.GetFieldData("OutBlock", "vi_trgprice"));
 
-#if NOT_USE_QUEUE
-                if (ServiceClient.State == CommunicationState.Opened)
-                    ServiceClient.PublishCircuitBreak(circuitBreak);
-#else
-                CircuitBreakQueue.Enqueue(circuitBreak); 
-#endif
+                CircuitBreakQueue.Enqueue(circuitBreak);
             }
             catch (Exception ex)
             {

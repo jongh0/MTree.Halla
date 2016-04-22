@@ -92,12 +92,6 @@ namespace MTree.EbestPublisher
                 #endregion
 
                 #region XAReal
-#if false
-                indexSubscribingObj = new XARealClass();
-                indexSubscribingObj.ReceiveRealData += IndexSubscribingObj_ReceiveRealData;
-                indexSubscribingObj.ResFileName = resFilePath + "\\IJ_.res"; 
-#endif
-
                 viSubscribingObj = new XARealClass();
                 viSubscribingObj.ReceiveRealData += ViSubscribingObj_ReceiveRealData;
                 viSubscribingObj.ResFileName = resFilePath + "\\VI_.res";
@@ -167,9 +161,7 @@ namespace MTree.EbestPublisher
                 }
                 #endregion
 
-#if !NOT_USE_QUEUE
                 StartCircuitBreakQueueTask(); 
-#endif
             }
             catch (Exception ex)
             {
