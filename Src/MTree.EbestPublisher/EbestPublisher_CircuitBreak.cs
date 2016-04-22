@@ -83,7 +83,7 @@ namespace MTree.EbestPublisher
             {
                 var circuitBreak = new CircuitBreak();
                 circuitBreak.Id = ObjectId.GenerateNewId();
-                circuitBreak.Time = DateTime.Now;
+                circuitBreak.Time = circuitBreak.ReceivedTime = DateTime.Now;
                 circuitBreak.Code = subscribingObj.GetFieldData("OutBlock", "shcode");
 
                 var circuitBreakType = Convert.ToInt32(subscribingObj.GetFieldData("OutBlock", "vi_gubun"));

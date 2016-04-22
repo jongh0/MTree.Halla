@@ -110,17 +110,14 @@ namespace MTree.DaishinPublisher
             try
             {
                 var now = DateTime.Now;
+
                 var conclusion = new IndexConclusion();
                 conclusion.Id = ObjectId.GenerateNewId();
+                conclusion.ReceivedTime = now;
 
                 // 0 - (string) 종목 코드
                 string fullCode = indexCurObj.GetHeaderValue(0).ToString();
                 conclusion.Code = CodeEntity.RemovePrefix(fullCode);
-
-                // 13 - (long) 현재가
-                conclusion.Price = Convert.ToSingle(indexCurObj.GetHeaderValue(13)) / 100;
-                if (conclusion.Price <= 0)
-                    logger.Error($"Index conclusion price error, Price: {conclusion.Price}");
 
                 // 9 - (long) 누적거래량
                 conclusion.Amount = Convert.ToInt64(indexCurObj.GetHeaderValue(9));
@@ -148,9 +145,26 @@ namespace MTree.DaishinPublisher
                     PrevIndexMarketCapitalization.Add(conclusion.Code, conclusion.MarketCapitalization);
                 }
 
+                // 13 - (long) 현재가
+                conclusion.Price = Convert.ToSingle(indexCurObj.GetHeaderValue(13)) / 100;
+                if (conclusion.Price <= 0)
+                    logger.Error($"Index conclusion price error, Price: {conclusion.Price}");
+
+                // 18 - (long) 시간 (초)
+                long time = Convert.ToInt64(indexCurObj.GetHeaderValue(18));
+                try
+                {
+                    conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100); // Daishin doesn't provide milisecond 
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    conclusion.Time = now;
+                    logger.Warn($"Index conclusion time error, time: {time}, code: {conclusion.Code}");
+                }
+
                 // 20 - (char) 장 구분 플래그
-                char marketTime = Convert.ToChar(indexCurObj.GetHeaderValue(20));
-                switch (marketTime)
+                char marketTimeType = Convert.ToChar(indexCurObj.GetHeaderValue(20));
+                switch (marketTimeType)
                 {
                     case '1':
                         conclusion.MarketTimeType = MarketTimeTypes.BeforeExpect;
@@ -174,27 +188,8 @@ namespace MTree.DaishinPublisher
 
                     default:
                         conclusion.MarketTimeType = MarketTimeTypes.Unknown;
-                        logger.Error($"Index conclusion market time type error, marketTime: {marketTime}");
+                        logger.Error($"Index conclusion market time type error, {marketTimeType}");
                         break;
-                }
-
-                // 18 - (long) 시간 (초)
-                if (Config.General.VerifyLatency == true)
-                {
-                    conclusion.Time = now;
-                }
-                else
-                {
-                    long time = Convert.ToInt64(indexCurObj.GetHeaderValue(18));
-                    try
-                    {
-                        conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100); // Daishin doesn't provide milisecond 
-                    }
-                    catch (ArgumentOutOfRangeException)
-                    {
-                        conclusion.Time = now;
-                        logger.Warn($"Index conclusion time error, time: {time}, code: {conclusion.Code}");
-                    }
                 }
 
                 IndexConclusionQueue.Enqueue(conclusion);

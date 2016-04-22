@@ -56,8 +56,11 @@ namespace MTree.Dashboard
                 {
                     Monitor = new TrafficMonitor();
 
-                    for (int i = 0; i < 10; i++)
-                        TaskUtility.Run($"Dashboard.BiddingPriceQueue_{i + 1}", QueueTaskCancelToken, ProcessBiddingPriceQueue);
+                    if (Config.General.SkipBiddingPrice == false)
+                    {
+                        for (int i = 0; i < 10; i++)
+                            TaskUtility.Run($"Dashboard.BiddingPriceQueue_{i + 1}", QueueTaskCancelToken, ProcessBiddingPriceQueue);
+                    }
                 }
             }
             catch (Exception ex)
@@ -77,7 +80,7 @@ namespace MTree.Dashboard
                 ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.StockConclusion));
                 ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.IndexConclusion));
 
-                if (Config.General.VerifyLatency == true)
+                if (Config.General.VerifyLatency == true && Config.General.SkipBiddingPrice == false)
                     ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.BiddingPrice));
             }
             catch (Exception ex)
@@ -92,7 +95,10 @@ namespace MTree.Dashboard
             {
                 BiddingPrice biddingPrice;
                 if (BiddingPriceQueue.TryDequeue(out biddingPrice) == true)
-                    Monitor?.CheckLatency(biddingPrice);
+                {
+                    if (Config.General.VerifyLatency == true)
+                        Monitor.CheckLatency(biddingPrice);
+                }
                 else
                     Thread.Sleep(10);
             }
@@ -109,6 +115,9 @@ namespace MTree.Dashboard
                 CircuitBreak circuitBreak;
                 if (CircuitBreakQueue.TryDequeue(out circuitBreak) == true)
                 {
+                    if (Config.General.VerifyLatency == true)
+                        Monitor.CheckLatency(circuitBreak);
+
                     if (StockItems.ContainsKey(circuitBreak.Code) == true)
                         StockItems[circuitBreak.Code].CircuitBreakType = circuitBreak.CircuitBreakType;
                     else
@@ -132,6 +141,9 @@ namespace MTree.Dashboard
                 StockConclusion conclusion;
                 if (StockConclusionQueue.TryDequeue(out conclusion) == true)
                 {
+                    if (Config.General.VerifyLatency == true)
+                        Monitor.CheckLatency(conclusion);
+
                     if (StockItems.ContainsKey(conclusion.Code) == false)
                     {
                         StockItems.Add(conclusion.Code, new DashboardItem(conclusion.Code));
@@ -182,6 +194,9 @@ namespace MTree.Dashboard
                 IndexConclusion conclusion;
                 if (IndexConclusionQueue.TryDequeue(out conclusion) == true)
                 {
+                    if (Config.General.VerifyLatency == true)
+                        Monitor.CheckLatency(conclusion);
+
                     if (IndexItems.ContainsKey(conclusion.Code) == false)
                     {
                         IndexItems.Add(conclusion.Code, new DashboardItem(conclusion.Code));

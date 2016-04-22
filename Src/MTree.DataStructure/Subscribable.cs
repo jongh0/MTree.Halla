@@ -49,6 +49,9 @@ namespace MTree.DataStructure
         [BsonElement("T")]
         public DateTime Time { get; set; }
 
+        [BsonIgnore]
+        public DateTime ReceivedTime { get; set; }
+
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();

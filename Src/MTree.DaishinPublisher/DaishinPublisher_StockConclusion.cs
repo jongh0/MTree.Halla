@@ -130,23 +130,18 @@ namespace MTree.DaishinPublisher
             try
             {
                 var now = DateTime.Now;
+
                 var conclusion = new StockConclusion();
                 conclusion.Id = ObjectId.GenerateNewId();
+                conclusion.ReceivedTime = now;
 
                 // 0 - (string) 종목 코드
                 string fullCode = stockOutCurObj.GetHeaderValue(0).ToString();
                 conclusion.Code = CodeEntity.RemovePrefix(fullCode);
 
                 // 1 - (long) 시각
-                if (Config.General.VerifyLatency == true)
-                {
-                    conclusion.Time = now;
-                }
-                else
-                {
-                    long time = Convert.ToInt64(stockOutCurObj.GetHeaderValue(1));
-                    conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100); // Daishin doesn't provide milisecond 
-                }
+                long time = Convert.ToInt64(stockOutCurObj.GetHeaderValue(1));
+                conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), 0); // Daishin doesn't provide second & milisecond 
 
                 // 5 - (long) 현재가
                 conclusion.Price = Convert.ToSingle(stockOutCurObj.GetHeaderValue(5));
@@ -190,23 +185,14 @@ namespace MTree.DaishinPublisher
             try
             {
                 var now = DateTime.Now;
+
                 var conclusion = new StockConclusion();
                 conclusion.Id = ObjectId.GenerateNewId();
+                conclusion.ReceivedTime = now;
 
                 // 0 - (string) 종목 코드
                 string fullCode = stockCurObj.GetHeaderValue(0).ToString();
                 conclusion.Code = CodeEntity.RemovePrefix(fullCode);
-
-                // 18 - (long) 시간 (초)
-                if (Config.General.VerifyLatency == true)
-                {
-                    conclusion.Time = now;
-                }
-                else
-                {
-                    long time = Convert.ToInt64(stockCurObj.GetHeaderValue(18));
-                    conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100); // Daishin doesn't provide milisecond 
-                }
 
                 // 13 - (long) 현재가
                 conclusion.Price = Convert.ToSingle(stockCurObj.GetHeaderValue(13));
@@ -233,7 +219,11 @@ namespace MTree.DaishinPublisher
 
                 // 17 - (long) 순간체결수량
                 conclusion.Amount = Convert.ToInt64(stockCurObj.GetHeaderValue(17));
-                
+
+                // 18 - (long) 시간 (초)
+                long time = Convert.ToInt64(stockCurObj.GetHeaderValue(18));
+                conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100); // Daishin doesn't provide milisecond 
+
                 // 20 - (char) 장 구분 플래그
                 char marketTimeType = Convert.ToChar(stockCurObj.GetHeaderValue(20));
                 switch (marketTimeType)
