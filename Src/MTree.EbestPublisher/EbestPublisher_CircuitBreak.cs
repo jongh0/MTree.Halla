@@ -84,6 +84,8 @@ namespace MTree.EbestPublisher
                 var circuitBreak = new CircuitBreak();
                 circuitBreak.Id = ObjectId.GenerateNewId();
                 circuitBreak.Time = circuitBreak.ReceivedTime = DateTime.Now;
+                var time = subscribingObj.GetFieldData("OutBlock", "time");
+                logger.Info($"Circuit Break Time Format:{time}"); // For debug
                 circuitBreak.Code = subscribingObj.GetFieldData("OutBlock", "shcode");
 
                 var circuitBreakType = Convert.ToInt32(subscribingObj.GetFieldData("OutBlock", "vi_gubun"));
