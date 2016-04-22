@@ -129,17 +129,6 @@ namespace MTree.DaishinPublisher
         {
             try
             {
-#if false
-                logger.Info($"Code: {stockOutCurObj.GetHeaderValue(0).ToString()}");
-                logger.Info($"Time: {stockOutCurObj.GetHeaderValue(1).ToString()}");
-                logger.Info($"Current: {stockOutCurObj.GetHeaderValue(5).ToString()}");
-                logger.Info($"Concluded: {stockOutCurObj.GetHeaderValue(6).ToString()}");
-                logger.Info($"Accum Amount: {stockOutCurObj.GetHeaderValue(7).ToString()}");
-                logger.Info($"Sell/Buy: {stockOutCurObj.GetHeaderValue(9).ToString()}");
-                logger.Info($"Amount: {stockOutCurObj.GetHeaderValue(10).ToString()}");
-                logger.Info($"Flag: {stockOutCurObj.GetHeaderValue(11).ToString()}");
-                logger.Info($"Capital: {stockOutCurObj.GetHeaderValue(12).ToString()}");
-#endif
                 var now = DateTime.Now;
                 var conclusion = new StockConclusion();
                 conclusion.Id = ObjectId.GenerateNewId();
@@ -148,7 +137,7 @@ namespace MTree.DaishinPublisher
                 string fullCode = stockOutCurObj.GetHeaderValue(0).ToString();
                 conclusion.Code = CodeEntity.RemovePrefix(fullCode);
 
-                // 1 - (long) 시간 (초)
+                // 1 - (long) 시각
                 if (Config.General.VerifyLatency == true)
                 {
                     conclusion.Time = now;
@@ -162,19 +151,30 @@ namespace MTree.DaishinPublisher
                 // 5 - (long) 현재가
                 conclusion.Price = Convert.ToSingle(stockOutCurObj.GetHeaderValue(5));
                 if (conclusion.Price <= 0)
-                    logger.Error($"Stock conclusion price error, {conclusion.Price}/{stockOutCurObj.GetHeaderValue(5)}");
+                    logger.Error($"Stock conclusion price error, {conclusion.Price}");
 
-                // 9 - (char)체결 상태
-                char type = Convert.ToChar(stockOutCurObj.GetHeaderValue(9));
-                if (type == '1')
-                    conclusion.ConclusionType = ConclusionTypes.Buy;
-                else
-                    conclusion.ConclusionType = ConclusionTypes.Sell;
+                // 9 - (char)  체결매수매도플래그
+                char conclusionType = Convert.ToChar(stockOutCurObj.GetHeaderValue(9));
+                switch (conclusionType)
+                {
+                    case '1':
+                        conclusion.ConclusionType = ConclusionTypes.Buy;
+                        break;
+
+                    case '2':
+                        conclusion.ConclusionType = ConclusionTypes.Sell;
+                        break;
+
+                    default:
+                        conclusion.ConclusionType = ConclusionTypes.Unknown;
+                        logger.Error($"Stock conclusion type error, {conclusionType}");
+                        break;
+                }
 
                 // 10 - (long) 순간체결수량
                 conclusion.Amount = Convert.ToInt64(stockOutCurObj.GetHeaderValue(17));
-                
-                // 장 구분 플래그
+
+                // 11 - (char) 장전시간외플래그 ('3'으로 나옴)
                 conclusion.MarketTimeType = MarketTimeTypes.BeforeOffTheClock;
 
                 StockConclusionQueue.Enqueue(conclusion);
@@ -198,45 +198,69 @@ namespace MTree.DaishinPublisher
                 conclusion.Code = CodeEntity.RemovePrefix(fullCode);
 
                 // 18 - (long) 시간 (초)
-                long time = Convert.ToInt64(stockCurObj.GetHeaderValue(18));
-
-                conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100); // Daishin doesn't provide milisecond 
+                if (Config.General.VerifyLatency == true)
+                {
+                    conclusion.Time = now;
+                }
+                else
+                {
+                    long time = Convert.ToInt64(stockCurObj.GetHeaderValue(18));
+                    conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100); // Daishin doesn't provide milisecond 
+                }
 
                 // 13 - (long) 현재가
                 conclusion.Price = Convert.ToSingle(stockCurObj.GetHeaderValue(13));
                 if (conclusion.Price <= 0)
-                    logger.Error($"Stock conclusion price error, {conclusion.Price}/{stockCurObj.GetHeaderValue(13)}");
+                    logger.Error($"Stock conclusion price error, {conclusion.Price}");
 
                 // 14 - (char)체결 상태
-                char type = Convert.ToChar(stockCurObj.GetHeaderValue(14));
-                if (type == '1') conclusion.ConclusionType = ConclusionTypes.Buy;
-                else conclusion.ConclusionType = ConclusionTypes.Sell;
+                char conclusionType = Convert.ToChar(stockCurObj.GetHeaderValue(14));
+                switch (conclusionType)
+                {
+                    case '1':
+                        conclusion.ConclusionType = ConclusionTypes.Buy;
+                        break;
+
+                    case '2':
+                        conclusion.ConclusionType = ConclusionTypes.Sell;
+                        break;
+
+                    default:
+                        conclusion.ConclusionType = ConclusionTypes.Unknown;
+                        logger.Error($"Stock conclusion type error, {conclusionType}");
+                        break;
+                }
 
                 // 17 - (long) 순간체결수량
                 conclusion.Amount = Convert.ToInt64(stockCurObj.GetHeaderValue(17));
                 
                 // 20 - (char) 장 구분 플래그
-                char marketTime = Convert.ToChar(stockCurObj.GetHeaderValue(20));
-                switch (marketTime)
+                char marketTimeType = Convert.ToChar(stockCurObj.GetHeaderValue(20));
+                switch (marketTimeType)
                 {
                     case '1':
                         conclusion.MarketTimeType = MarketTimeTypes.BeforeExpect;
                         break;
+
                     case '2':
                         conclusion.MarketTimeType = MarketTimeTypes.Normal;
                         break;
+
                     case '3':
                         conclusion.MarketTimeType = MarketTimeTypes.BeforeOffTheClock;
                         break;
+
                     case '4':
                         conclusion.MarketTimeType = MarketTimeTypes.AfterOffTheClock;
                         break;
+
                     case '5':
                         conclusion.MarketTimeType = MarketTimeTypes.AfterExpect;
                         break;
+
                     default:
                         conclusion.MarketTimeType = MarketTimeTypes.Unknown;
-                        logger.Error($"Stock conclusion market time type error, {marketTime}");
+                        logger.Error($"Stock conclusion market time type error, {marketTimeType}");
                         break;
                 }
 

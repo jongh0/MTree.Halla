@@ -11,6 +11,7 @@ namespace MTree.DataStructure
     #region enum
     public enum ConclusionTypes
     {
+        Unknown,
         Sell,
         Buy,
     } 
