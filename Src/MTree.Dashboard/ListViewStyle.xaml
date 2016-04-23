@@ -25,9 +25,12 @@
     <Style x:Key="GridViewItemStyle" TargetType="ListViewItem" x:Shared="False" BasedOn="{StaticResource BaseListViewItem}">
         <Style.Triggers>
             <DataTrigger Binding="{Binding CircuitBreakType}" Value="StaticInvoke">
-                <Setter Property="Background" Value="PaleGoldenrod"/>
+                <Setter Property="Background" Value="Yellow"/>
             </DataTrigger>
             <DataTrigger Binding="{Binding CircuitBreakType}" Value="DynamicInvoke">
+                <Setter Property="Background" Value="Yellow"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding CircuitBreakType}" Value="StaticAndDynamicInvoke">
                 <Setter Property="Background" Value="Yellow"/>
             </DataTrigger>
         </Style.Triggers>
