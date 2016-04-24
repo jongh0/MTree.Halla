@@ -71,7 +71,7 @@ namespace MTree.DataStructure
 
         // 전일종가(Daishin)
         [BsonElement("PCP")]
-        public float PreviousClosedPrice { get; set; }
+        public float PreviousClosingPrice { get; set; }
 
         // 전일거래량(Daishin)
         [BsonElement("PV")]

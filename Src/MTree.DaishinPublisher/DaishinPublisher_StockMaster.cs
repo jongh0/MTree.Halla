@@ -107,7 +107,7 @@ namespace MTree.DaishinPublisher
                 QuotingStockMaster.LowerLimit = (int)stockMstObj.GetHeaderValue(9);
 
                 // 10 - (long) 전일종가
-                QuotingStockMaster.PreviousClosedPrice = (int)stockMstObj.GetHeaderValue(10);
+                QuotingStockMaster.PreviousClosingPrice = (int)stockMstObj.GetHeaderValue(10);
 
                 // 11 - (long) 현재가
                 //currentQuotingkMaster.LastSale = (int)currentPriceQueryObj.GetHeaderValue(11);  

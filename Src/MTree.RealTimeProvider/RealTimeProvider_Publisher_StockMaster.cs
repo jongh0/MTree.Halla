@@ -413,7 +413,7 @@ namespace MTree.RealTimeProvider
                     //dest.Name = source.Name;
                     dest.UpperLimit = source.UpperLimit;
                     dest.LowerLimit = source.LowerLimit;
-                    dest.PreviousClosedPrice = source.PreviousClosedPrice;
+                    dest.PreviousClosingPrice = source.PreviousClosingPrice;
                     dest.SettlementMonth = source.SettlementMonth;
                     dest.BasisPrice = source.BasisPrice;
                     dest.ShareVolume = source.ShareVolume;
