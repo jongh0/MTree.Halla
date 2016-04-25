@@ -153,7 +153,7 @@ namespace MTree.RealTimeProvider
                 for (int i = 0; i < stockCount; i++)
                 {
                     var mastering = StockMasteringList[i];
-                    var startDate = DateTime.Now.AddYears(-5); // 최근 5년치만 저장
+                    var startDate = DateTime.Now.AddYears(-3); // 최근 3년치만 저장
                     var endDate = DateTime.Now;
                     var code = mastering.Stock.Code;
                     var fullCode = CodeEntity.ConvertToDaishinCode(StockCodeList[code]);
@@ -192,7 +192,7 @@ namespace MTree.RealTimeProvider
                 for (int i = 0; i < indexCount; i++)
                 {
                     var mastering = IndexMasteringList[i];
-                    var startDate = DateTime.Now.AddYears(-5); // 최근 5년치만 저장
+                    var startDate = DateTime.Now.AddYears(-3); // 최근 3년치만 저장
                     var endDate = DateTime.Now;
                     var code = mastering.Index.Code;
                     var fullCode = CodeEntity.ConvertToDaishinCode(IndexCodeList[code]);
