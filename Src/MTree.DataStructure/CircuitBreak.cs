@@ -23,9 +23,6 @@ namespace MTree.DataStructure
         [BsonElement("CBT")]
         public CircuitBreakTypes CircuitBreakType { get; set; }
 
-        [BsonElement("IBP")]
-        public float InvokeBasisPrice { get; set; }
-
         [BsonElement("IP")]
         public float InvokePrice { get; set; }
 
