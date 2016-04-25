@@ -55,12 +55,12 @@ namespace MTree.DaishinPublisher
             {
                 if (status == 0)
                 {
-                    logger.Info($"Subscribe index, Code: {code}");
+                    logger.Trace($"Subscribe IndexConclusion success, Code: {code}");
                     IndexSubscribeCount++;
                 }
                 else
                 {
-                    logger.Error($"Subscribe index error, Code: {code}, Status: {status}, Msg: {indexCurObj.GetDibMsg1()}");
+                    logger.Error($"Subscribe IndexConclusion fail, Code: {code}, Status: {status}, Msg: {indexCurObj.GetDibMsg1()}");
                 }
             }
 
@@ -93,12 +93,12 @@ namespace MTree.DaishinPublisher
             {
                 if (status == 0)
                 {
-                    logger.Trace($"Unsubscribe index, Code: {code}");
+                    logger.Trace($"Unsubscribe IndexConclusion success, Code: {code}");
                     IndexSubscribeCount--;
                 }
                 else
                 {
-                    logger.Error($"Unsubscribe index error, Code: {code}, Status: {status}, Msg: {indexCurObj.GetDibMsg1()}");
+                    logger.Error($"Unsubscribe IndexConclusion fail, Code: {code}, Status: {status}, Msg: {indexCurObj.GetDibMsg1()}");
                 }
             }
 

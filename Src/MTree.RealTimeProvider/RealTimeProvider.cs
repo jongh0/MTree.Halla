@@ -167,10 +167,6 @@ namespace MTree.RealTimeProvider
                         logger.Info($"{msg}, chart not exists");
                         continue;
                     }
-                    else
-                    {
-                        logger.Info($"{msg}, chart count: {candleList.Count}");
-                    }
 
                     Counter.Add(CounterTypes.Chart, candleList.Count);
 
@@ -209,10 +205,6 @@ namespace MTree.RealTimeProvider
                     {
                         logger.Info($"{msg}, chart not exists");
                         continue;
-                    }
-                    else
-                    {
-                        logger.Info($"{msg}, chart count: {candleList.Count}");
                     }
 
                     Counter.Add(CounterTypes.Chart, candleList.Count);

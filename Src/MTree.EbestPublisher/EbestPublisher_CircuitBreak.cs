@@ -30,7 +30,7 @@ namespace MTree.EbestPublisher
                 dviSubscribingObj.AdviseRealData();
 
                 CircuitBreakSubscribeCount++;
-                logger.Info($"Subscribe circuit break success, Code: {code}");
+                logger.Trace($"Subscribe CircuitBreak success, Code: {code}");
                 return true;
             }
             catch (Exception ex)
@@ -38,7 +38,7 @@ namespace MTree.EbestPublisher
                 logger.Error(ex);
             }
 
-            logger.Error($"Subscribe circuit break fail, Code: {code}");
+            logger.Error($"Subscribe CircuitBreak fail, Code: {code}");
             return false;
         }
 
@@ -53,7 +53,7 @@ namespace MTree.EbestPublisher
                 dviSubscribingObj.UnadviseRealData();
 
                 CircuitBreakSubscribeCount--;
-                logger.Info($"Subscribe circuit break success, Code: {code}");
+                logger.Trace($"Subscribe CircuitBreak success, Code: {code}");
                 return true;
             }
             catch (Exception ex)
@@ -61,7 +61,7 @@ namespace MTree.EbestPublisher
                 logger.Error(ex);
             }
 
-            logger.Error($"Subscribe circuit break fail, Code: {code}");
+            logger.Error($"Subscribe CircuitBreak fail, Code: {code}");
             return false;
         }
 

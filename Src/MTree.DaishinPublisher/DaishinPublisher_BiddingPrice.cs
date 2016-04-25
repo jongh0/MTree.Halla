@@ -53,12 +53,12 @@ namespace MTree.DaishinPublisher
             {
                 if (status == 0)
                 {
-                    logger.Info($"Subscribe bidding, Code: {code}");
+                    logger.Trace($"Subscribe BiddingPrice success, Code: {code}");
                     BiddingSubscribeCount++;
                 }
                 else
                 {
-                    logger.Error($"Subscribe bidding error, Code: {code}, Status: {status}, Msg: {stockJpbidObj.GetDibMsg1()}");
+                    logger.Error($"Subscribe BiddingPrice fail, Code: {code}, Status: {status}, Msg: {stockJpbidObj.GetDibMsg1()}");
                 }
             }
 
@@ -91,12 +91,12 @@ namespace MTree.DaishinPublisher
             {
                 if (status == 0)
                 {
-                    logger.Trace($"Unsubscribe bidding, Code: {code}");
+                    logger.Trace($"Unsubscribe BiddingPrice success, Code: {code}");
                     BiddingSubscribeCount--;
                 }
                 else
                 {
-                    logger.Error($"Unsubscribe bidding error, Code: {code}, Status: {status}, Msg: {stockJpbidObj.GetDibMsg1()}");
+                    logger.Error($"Unsubscribe BiddingPrice fail, Code: {code}, Status: {status}, Msg: {stockJpbidObj.GetDibMsg1()}");
                 }
             }
 

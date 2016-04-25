@@ -63,12 +63,12 @@ namespace MTree.DaishinPublisher
             {
                 if (status == 0)
                 {
-                    logger.Info($"Subscribe stock, Code: {code}");
+                    logger.Trace($"Subscribe StockConclusion success, Code: {code}");
                     StockSubscribeCount += 2;
                 }
                 else
                 {
-                    logger.Error($"Subscribe stock error, Code: {code}, Status: {status}, Msg: {stockCurObj.GetDibMsg1()}");
+                    logger.Error($"Subscribe StockConclusion fail, Code: {code}, Status: {status}, Msg: {stockCurObj.GetDibMsg1()}");
                 }
             }
 
@@ -113,12 +113,12 @@ namespace MTree.DaishinPublisher
             {
                 if (status == 0)
                 {
-                    logger.Trace($"Unsubscribe stock, Code: {code}");
+                    logger.Trace($"Unsubscribe StockConclusion success, Code: {code}");
                     StockSubscribeCount -= 2;
                 }
                 else
                 {
-                    logger.Error($"Unsubscribe stock error, Code: {code}, Status: {status}, Msg: {stockCurObj.GetDibMsg1()}");
+                    logger.Error($"Unsubscribe StockConclusion fail, Code: {code}, Status: {status}, Msg: {stockCurObj.GetDibMsg1()}");
                 }
             }
 
