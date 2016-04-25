@@ -40,8 +40,6 @@ namespace MTree.AutoLauncher
 
                 this.DataContext = launcher;
                 launcher.Start();
-
-                logger.Info("AutoLauncher started");
             }
             catch (Exception ex)
             {

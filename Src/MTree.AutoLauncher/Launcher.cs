@@ -64,8 +64,6 @@ namespace MTree.AutoLauncher
                 LaunchTimer.Start();
 
                 NotifyPropertyChanged(nameof(LauncherInfo));
-
-                logger.Info($"{LaunchProcess} next launch at {Time.ToString()}");
             }
             catch (Exception ex)
             {
