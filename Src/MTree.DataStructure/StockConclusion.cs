@@ -31,17 +31,7 @@ namespace MTree.DataStructure
                 foreach (var property in typeof(StockConclusion).GetProperties())
                 {
                     if (property.Name != "Id")
-                    {
-                        //if (property.Name == "Time")
-                        //    sb.Append($"{property.Name}: {((DateTime)property.GetValue(this)).Year}{((DateTime)property.GetValue(this)).Month}{((DateTime)property.GetValue(this)).Day} {((DateTime)property.GetValue(this)).Hour}:{((DateTime)property.GetValue(this)).Minute}:{((DateTime)property.GetValue(this)).Second}.{((DateTime)property.GetValue(this)).Millisecond}, ");
-                        //else
-                            sb.Append($"{property.Name}: {property.GetValue(this)}, ");
-                    }
-                    else
-                    {
-                        //sb.Append($"{property.Name}: {((ObjectId)property.GetValue(this))}, ");
-                        //sb.Append($"TimeStamp: {((ObjectId)property.GetValue(this)).Timestamp}, ");
-                    }
+                        sb.Append($"{property.Name}: {property.GetValue(this)}, ");
                 }
             }
             catch { }

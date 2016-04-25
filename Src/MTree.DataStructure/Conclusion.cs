@@ -39,7 +39,8 @@ namespace MTree.DataStructure
             {
                 foreach (var property in typeof(Conclusion).GetProperties())
                 {
-                    sb.AppendLine($"{property.Name}: {property.GetValue(this)}");
+                    if (property.Name != "Id")
+                        sb.Append($"{property.Name}: {property.GetValue(this)}, ");
                 }
             }
             catch { }
