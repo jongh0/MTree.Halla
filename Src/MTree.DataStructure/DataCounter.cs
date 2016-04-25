@@ -248,8 +248,6 @@ namespace MTree.DataStructure
         {
             try
             {
-                logger.Info($"Save {Type.ToString()}");
-
                 var fileName = $"MTree.{Config.General.DateNow}_{Type.ToString()}.csv";
                 var filePath = Path.Combine(Environment.CurrentDirectory, "Logs", Config.General.DateNow, fileName);
 
@@ -265,7 +263,7 @@ namespace MTree.DataStructure
                     sw.WriteLine($"Total, {TotalCount}");
                 }
 
-                logger.Info($"Save {Type.ToString()} done, {filePath}");
+                logger.Info($"Save {Type.ToString()} done, {fileName}\n{ToString()}");
             }
             catch (Exception ex)
             {

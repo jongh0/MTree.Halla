@@ -442,9 +442,7 @@ namespace MTree.DbProvider
                     Counter.IndexConclusionCount += (int)collection.Find(filter).Count();
                 }
 
-                var msg = "DB Statistics" + Environment.NewLine + Counter.ToString();
-                logger.Info(msg);
-                PushUtility.NotifyMessage(msg);
+                PushUtility.NotifyMessage("DB Statistics" + Environment.NewLine + Counter.ToString());
 
                 // DB 통계를 파일로 저장
                 Counter.SaveToFile();
