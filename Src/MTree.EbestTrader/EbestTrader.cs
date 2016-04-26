@@ -288,8 +288,6 @@ namespace MTree.EbestTrader
             logger.Trace($"szTrCode: {szTrCode}");
         }
 
-
-
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
 
