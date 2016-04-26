@@ -30,7 +30,6 @@ namespace MTree.Utility
                     }
                     catch (OperationCanceledException)
                     {
-                        logger.Info($"{_taskName} task canceled");
                         break;
                     }
                     catch (Exception ex)

@@ -263,7 +263,7 @@ namespace MTree.DataStructure
                     sw.WriteLine($"Total, {TotalCount}");
                 }
 
-                logger.Info($"Save {Type.ToString()} done, {fileName}\n{ToString()}");
+                logger.Info($"Save {Type.ToString()} done, {fileName}{Environment.NewLine}{ToString()}");
             }
             catch (Exception ex)
             {
