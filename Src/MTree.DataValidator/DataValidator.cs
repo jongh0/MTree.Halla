@@ -1,4 +1,5 @@
-﻿using MTree.DataStructure;
+﻿using MTree.Configuration;
+using MTree.DataStructure;
 using MTree.DbProvider;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ namespace MTree.DataValidator
         private IDataCollector source = new DbCollector(DbAgent.Instance);
         private IDataCollector destination = new DbCollector(DbAgent.RemoteInstance);
 
+        private const string logBasePath = "Logs";
         private const string compareResultPath = "CompareResult";
         private const string codeCompareResultFile = "CodeCompare.html";
         private const string masterCompareResultFile = "MasterCompare.html";
@@ -34,15 +36,15 @@ namespace MTree.DataValidator
         {
             logger.Info("Code List Validation Start");
             List<string> srcCodes = new List<string>();
-            srcCodes.AddRange(source.GetStockCodeList());
-            srcCodes.AddRange(source.GetIndexCodeList());
+            srcCodes.AddRange(source.GetStockCodeList().OrderBy(s => s));
+            srcCodes.AddRange(source.GetIndexCodeList().OrderBy(s => s));
 
             List<string> destCodes = new List<string>();
-            destCodes.AddRange(destination.GetStockCodeList());
-            destCodes.AddRange(destination.GetIndexCodeList());
+            destCodes.AddRange(destination.GetStockCodeList().OrderBy(s => s));
+            destCodes.AddRange(destination.GetIndexCodeList().OrderBy(s => s));
 
             bool result = comparator.DoCompareItem(srcCodes, destCodes, false);
-            comparator.MakeReport(srcCodes, destCodes, Path.Combine(compareResultPath, $"{DateTime.Now.Year}{DateTime.Now.Month}{DateTime.Now.Day}", codeCompareResultFile));
+            comparator.MakeReport(srcCodes, destCodes, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, codeCompareResultFile));
 
             if (result == true)
                 logger.Info($"Code List Validation Success");
@@ -72,7 +74,7 @@ namespace MTree.DataValidator
             bool result = comparator.DoCompareItem(srcMasters, destMasters, false);
             if (result == false)
             {
-                comparator.MakeReport(srcMasters, destMasters, Path.Combine(compareResultPath, $"{DateTime.Now.Year}{DateTime.Now.Month}{DateTime.Now.Day}", masterCompareResultFile));
+                comparator.MakeReport(srcMasters, destMasters, Path.Combine(logBasePath, Config.General.DateNow, masterCompareResultFile));
                 logger.Error($"Stock Master Validation Fail");
             }
             else
@@ -84,6 +86,7 @@ namespace MTree.DataValidator
         public void ValidateStockConclusionCompare(DateTime target)
         {
             logger.Info("Stock Conclusion Validation Start");
+            int cnt = 0;
             foreach (string code in source.GetStockCodeList())
             {
                 var tasks = new List<Task>();
@@ -105,10 +108,15 @@ namespace MTree.DataValidator
 
                     if (comparator.DoCompareItem(sourceList, destinationList, false) == false)
                     {
-                        logger.Error($"Stock Conclusion Validation for {code} Fail");
-                        comparator.MakeReport(sourceList, destinationList, Path.Combine(compareResultPath, $"{DateTime.Now.Year}{DateTime.Now.Month}{DateTime.Now.Day}", stockConclusionCompareResultPath, code + ".html"));
+                        logger.Error($"Stock Conclusion Validation for {code} Fail. {cnt}/{source.GetStockCodeList().Count}");
+                        comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, stockConclusionCompareResultPath, code + ".html"));
+                    }
+                    else
+                    {
+                        logger.Info($"Stock Conclusion Validation for {code} success. {cnt}/{source.GetStockCodeList().Count}");
                     }
                 }
+                cnt++;
             }
             logger.Info("Stock Conclusion Validation Done.");
         }
@@ -141,7 +149,7 @@ namespace MTree.DataValidator
                     if (comparator.DoCompareItem(sourceList, destinationList, false) == false)
                     {
                         logger.Error($"Stock Conclusion Validation for {code} Fail. {cnt}/{source.GetStockCodeList().Count}");
-                        comparator.MakeReport(sourceList, destinationList, Path.Combine(compareResultPath, $"{DateTime.Now.Year}{DateTime.Now.Month}{DateTime.Now.Day}", stockConclusionCompareResultPath, code + ".html"));
+                        comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, stockConclusionCompareResultPath, code + ".html"));
                     }
                     else
                     {
@@ -172,7 +180,7 @@ namespace MTree.DataValidator
                 if (comparator.DoCompareItem(sourceList, destinationList, false) == false)
                 {
                     logger.Error($"Index Conclusion Validation for {code} Fail.");
-                    comparator.MakeReport(sourceList, destinationList, Path.Combine(compareResultPath, $"{DateTime.Now.Year}{DateTime.Now.Month}{DateTime.Now.Day}", indexConclusionCompareResultPath, code + ".html"));
+                    comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, indexConclusionCompareResultPath, code + ".html"));
                 }
             }
             logger.Info("Index Conclusion Validation Done.");
@@ -193,10 +201,10 @@ namespace MTree.DataValidator
                 Task.WaitAll(tasks.ToArray());
             }
             
-            if (comparator.DoCompareItem(sourceList, destinationList, true) == false)
+            if (comparator.DoCompareItem(sourceList, destinationList, false) == false)
             {
                 logger.Error("Circuit Break Validation Fail.");
-                comparator.MakeReport(sourceList, destinationList, Path.Combine(compareResultPath, $"{DateTime.Now.Year}{DateTime.Now.Month}{DateTime.Now.Day}", circuitbreakCompareResultFile));
+                comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, circuitbreakCompareResultFile));
             }
             logger.Info("Circuit Break Validation Done.");
         }
