@@ -62,5 +62,7 @@ namespace MTree.Configuration
         public bool LaunchDashboard { get; set; } = true;
 
         public bool LaunchHistorySaver { get; set; } = true;
+
+        public bool KeepAliveDashboardAfterMarketEnd { get; set; } = true;
     }
 }

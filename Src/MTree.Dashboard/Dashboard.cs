@@ -306,25 +306,20 @@ namespace MTree.Dashboard
             {
                 if (type == MessageTypes.CloseClient)
                 {
-                    if (message.Equals(ExitProgramTypes.Force.ToString()) == true ||
-                        message.Equals(ExitProgramTypes.Restart.ToString()) == true)
+                    Task.Run(() =>
                     {
-                        Task.Run(() =>
+                        if (message.Equals(ExitProgramTypes.Normal.ToString()) == true)
+                            SaveDashboard();
+
+                        if (message.Equals(ExitProgramTypes.Normal.ToString()) == false ||
+                            Config.General.KeepAliveDashboardAfterMarketEnd == false)
                         {
                             logger.Info("Process will be closed");
                             Thread.Sleep(1000 * 5);
 
                             Environment.Exit(0);
-                        });
-                    }
-                    else if (message.Equals(ExitProgramTypes.Normal.ToString()) == true)
-                    {
-                        Task.Run(() =>
-                        {
-                            // 장종료 후 CloseClient-Normal 일 때는 Dashboard 종료하지 않는다
-                            SaveDashboard();
-                        });
-                    }
+                        }
+                    });
                 }
             }
             catch (Exception ex)
