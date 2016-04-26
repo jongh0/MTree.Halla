@@ -108,7 +108,6 @@ namespace MTree.DataValidator
             if (File.Exists(destinationFile))
                 File.Delete(destinationFile);
 
-            logger.Info($"Comparing complete result:{compareProcess.ExitCode}");
             return compareProcess.ExitCode == 1;
         }
 
@@ -178,7 +177,7 @@ namespace MTree.DataValidator
             if (File.Exists(destinationFile))
                 File.Delete(destinationFile);
 
-            logger.Info($"Create report done");
+            logger.Info($"Compare result report created at {reportPath}");
         }
     }
 }

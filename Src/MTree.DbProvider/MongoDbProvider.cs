@@ -45,7 +45,7 @@ namespace MTree.DbProvider
             try
             {
                 Client = new MongoClient(connectionString);
-                logger.Info("MongoDb Connected");
+                logger.Info($"MongoDb Connected to {connectionString}");
             }
             catch (Exception ex)
             {

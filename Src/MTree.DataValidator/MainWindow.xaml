@@ -3,10 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:nlog ="clr-namespace:NlogViewer;assembly=NlogViewer"
         xmlns:local="clr-namespace:MTree.DataValidator"
         mc:Ignorable="d"
-        Title="DataValidator" Height="350" Width="525">
+        Title="DataValidator" Height="350" Width="700">
     <Grid>
-        
+        <nlog:NlogViewer Grid.Row="1" x:Name="logCtrl" TimeWidth="AUTO" LoggerNameWidth="0" LevelWidth="auto" ExceptionWidth="auto" MessageWidth="450" />
     </Grid>
+    
 </Window>

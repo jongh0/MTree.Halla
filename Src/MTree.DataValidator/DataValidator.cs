@@ -5,12 +5,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MTree.DataValidator
 {
     public class DataValidator
     {
+        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
         private BeyondCompare comparator { get; set; } = new BeyondCompare();
 
         private IDataCollector source = new DbCollector(DbAgent.Instance);
@@ -29,6 +32,7 @@ namespace MTree.DataValidator
 
         public bool ValidateCodeList()
         {
+            logger.Info("Code List Validation Start");
             List<string> srcCodes = new List<string>();
             srcCodes.AddRange(source.GetStockCodeList());
             srcCodes.AddRange(source.GetIndexCodeList());
@@ -39,11 +43,18 @@ namespace MTree.DataValidator
 
             bool result = comparator.DoCompareItem(srcCodes, destCodes, false);
             comparator.MakeReport(srcCodes, destCodes, Path.Combine(compareResultPath, $"{DateTime.Now.Year}{DateTime.Now.Month}{DateTime.Now.Day}", codeCompareResultFile));
+
+            if (result == true)
+                logger.Info($"Code List Validation Success");
+            else
+                logger.Error($"Code List Validation Fail");
+
             return result;
         }
 
         public void ValidateMasterCompare(DateTime target)
         {
+            logger.Info("Stock Master Validation Start");
             List<string> srcMasters = new List<string>();
             List<string> destMasters = new List<string>();
 
@@ -58,14 +69,21 @@ namespace MTree.DataValidator
                     destMasters.Add(destMaster.ToString());
             }
 
-            if (comparator.DoCompareItem(srcMasters, destMasters, false) == false)
+            bool result = comparator.DoCompareItem(srcMasters, destMasters, false);
+            if (result == false)
             {
                 comparator.MakeReport(srcMasters, destMasters, Path.Combine(compareResultPath, $"{DateTime.Now.Year}{DateTime.Now.Month}{DateTime.Now.Day}", masterCompareResultFile));
+                logger.Error($"Stock Master Validation Fail");
+            }
+            else
+            {
+                logger.Info($"Stock Master Validation Success");
             }
         }
         
         public void ValidateStockConclusionCompare(DateTime target)
         {
+            logger.Info("Stock Conclusion Validation Start");
             foreach (string code in source.GetStockCodeList())
             {
                 var tasks = new List<Task>();
@@ -80,19 +98,24 @@ namespace MTree.DataValidator
 
                 if (sourceList.Count != 0 && destinationList.Count != 0)
                 {
-                    bool result = comparator.DoCompareItem(sourceList, destinationList, false);
+                    if (sourceList.Count == 0)
+                        logger.Error($"Conclusion list is empty in local db.");
+                    if (destinationList.Count == 0)
+                        logger.Error($"Conclusion list is empty in remote db.");
 
-                    Console.WriteLine($"Code:{code}, Result:{result}");
-                    if (result == false)
+                    if (comparator.DoCompareItem(sourceList, destinationList, false) == false)
                     {
+                        logger.Error($"Stock Conclusion Validation for {code} Fail");
                         comparator.MakeReport(sourceList, destinationList, Path.Combine(compareResultPath, $"{DateTime.Now.Year}{DateTime.Now.Month}{DateTime.Now.Day}", stockConclusionCompareResultPath, code + ".html"));
                     }
                 }
             }
+            logger.Info("Stock Conclusion Validation Done.");
         }
 
         public void ValidateStockConclusionCompareWithDaishin(DateTime target)
         {
+            logger.Info("Stock Conclusion Validation with Daishin Start.");
             int cnt = 0;
             IDataCollector daishin = new DaishinCollector();
 
@@ -107,24 +130,33 @@ namespace MTree.DataValidator
                 tasks.Add(Task.Run(() => { destinationList = daishin.GetStockConclusions(code, target, true); }));
 
                 Task.WaitAll(tasks.ToArray());
-
+                
                 if (sourceList.Count != 0 && destinationList.Count != 0)
                 {
-                    bool result = comparator.DoCompareItem(sourceList, destinationList, false);
+                    if (sourceList.Count == 0)
+                        logger.Error($"Conclusion list is empty in local db.");
+                    if (destinationList.Count == 0)
+                        logger.Error($"Conclusion list is empty in Daishin.");
 
-                    Console.WriteLine($"{cnt}/{source.GetStockCodeList().Count} Code:{code}, Result:{result}");
-                    if (result == false)
+                    if (comparator.DoCompareItem(sourceList, destinationList, false) == false)
                     {
+                        logger.Error($"Stock Conclusion Validation for {code} Fail. {cnt}/{source.GetStockCodeList().Count}");
                         comparator.MakeReport(sourceList, destinationList, Path.Combine(compareResultPath, $"{DateTime.Now.Year}{DateTime.Now.Month}{DateTime.Now.Day}", stockConclusionCompareResultPath, code + ".html"));
+                    }
+                    else
+                    {
+                        logger.Info($"Stock Conclusion Validation for {code} success. {cnt}/{source.GetStockCodeList().Count}");
                     }
                 }
 
                 cnt++;
             }
+            logger.Info("Stock Conclusion Validation with Daishin Done.");
         }
 
         public void ValidateIndexConclusionCompare(DateTime target)
         {
+            logger.Info("Index Conclusion Validation Start.");
             foreach (string code in source.GetIndexCodeList())
             {
                 var tasks = new List<Task>();
@@ -136,19 +168,18 @@ namespace MTree.DataValidator
                 tasks.Add(Task.Run(() => { destinationList = destination.GetIndexConclusions(code, target, false); }));
 
                 Task.WaitAll(tasks.ToArray());
-
-                bool result = comparator.DoCompareItem(sourceList, destinationList, false);
-
-                Console.WriteLine($"Code:{code}, Result:{result}");
-
-                if (result == false)
+                
+                if (comparator.DoCompareItem(sourceList, destinationList, false) == false)
                 {
+                    logger.Error($"Index Conclusion Validation for {code} Fail.");
                     comparator.MakeReport(sourceList, destinationList, Path.Combine(compareResultPath, $"{DateTime.Now.Year}{DateTime.Now.Month}{DateTime.Now.Day}", indexConclusionCompareResultPath, code + ".html"));
                 }
             }
+            logger.Info("Index Conclusion Validation Done.");
         }
         public void ValidateCircuitBreakCompare(DateTime target)
         {
+            logger.Info("Circuit Break Validation Start.");
             var tasks = new List<Task>();
 
             List<Subscribable> sourceList = new List<Subscribable>();
@@ -161,15 +192,13 @@ namespace MTree.DataValidator
                 
                 Task.WaitAll(tasks.ToArray());
             }
-
-            bool result = comparator.DoCompareItem(sourceList, destinationList, true);
-
-            Console.WriteLine($"Result:{result}");
-
-            if (result == false)
+            
+            if (comparator.DoCompareItem(sourceList, destinationList, true) == false)
             {
+                logger.Error("Circuit Break Validation Fail.");
                 comparator.MakeReport(sourceList, destinationList, Path.Combine(compareResultPath, $"{DateTime.Now.Year}{DateTime.Now.Month}{DateTime.Now.Day}", circuitbreakCompareResultFile));
             }
+            logger.Info("Circuit Break Validation Done.");
         }
     }
 }

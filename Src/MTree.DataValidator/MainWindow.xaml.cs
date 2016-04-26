@@ -1,11 +1,13 @@
 ﻿using MongoDB.Driver;
 using MTree.DataStructure;
 using MTree.DbProvider;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -24,29 +26,24 @@ namespace MTree.DataValidator
     /// </summary>
     public partial class MainWindow : Window
     {
+        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         public MainWindow()
         {
             InitializeComponent();
 
-            foreach (string arg in Environment.GetCommandLineArgs())
+            Task.Run(() =>
             {
-                if (arg == "/R")
-                {
-                    Task.Run(() =>
-                    {
-                        DateTime targetDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+                DateTime targetDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
 
-                        DataValidator validator = new DataValidator();
+                DataValidator validator = new DataValidator();
 
-                        validator.ValidateCodeList();
-                        validator.ValidateMasterCompare(targetDate);
-                        validator.ValidateStockConclusionCompare(targetDate);
-                        validator.ValidateIndexConclusionCompare(targetDate);
-                        validator.ValidateCircuitBreakCompare(targetDate);
-                        //validator.ValidateStockConclusionCompareWithDaishin(target);
-                    });
-                }
-            }
+                validator.ValidateCodeList();
+                validator.ValidateMasterCompare(targetDate);
+                validator.ValidateStockConclusionCompare(targetDate);
+                validator.ValidateIndexConclusionCompare(targetDate);
+                validator.ValidateCircuitBreakCompare(targetDate);
+                //validator.ValidateStockConclusionCompareWithDaishin(target);
+            });
         }
     }
 }
