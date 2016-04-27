@@ -150,7 +150,7 @@ namespace MTree.DataValidator
                 if (comparator.DoCompareItem(sourceList, destinationList, false) == false)
                 {
                     logger.Error($"Stock Conclusion Validation for {code} Fail.");
-                    comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, stockConclusionCompareResultPath, code + ".html"));
+                    comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, stockConclusionCompareResultPath, code + ".html"));
                 }
                 else
                 {
@@ -189,7 +189,7 @@ namespace MTree.DataValidator
                     if (comparator.DoCompareItem(sourceList, destinationList, false) == false)
                     {
                         logger.Error($"Stock Conclusion Validation for {code} Fail. {cnt}/{source.GetStockCodeList().Count}");
-                        comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, stockConclusionCompareResultPath, code + ".html"));
+                        comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, stockConclusionCompareResultPath, code + ".html"));
                     }
                     else
                     {
@@ -228,7 +228,7 @@ namespace MTree.DataValidator
                 if (comparator.DoCompareItem(sourceList, destinationList, false) == false)
                 {
                     logger.Error($"Stock Conclusion Validation for {code} Fail.");
-                    comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, stockConclusionCompareResultPath, code + ".html"));
+                    comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, stockConclusionCompareResultPath, code + ".html"));
                 }
                 else
                 {
@@ -257,7 +257,7 @@ namespace MTree.DataValidator
                 if (comparator.DoCompareItem(sourceList, destinationList, false) == false)
                 {
                     logger.Error($"Index Conclusion Validation for {code} Fail.");
-                    comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, indexConclusionCompareResultPath, code + ".html"));
+                    comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, indexConclusionCompareResultPath, code + ".html"));
                 }
             }
             logger.Info("Index Conclusion Validation Done.");
@@ -286,7 +286,7 @@ namespace MTree.DataValidator
             if (comparator.DoCompareItem(sourceList, destinationList, false) == false)
             {
                 logger.Error($"Index Conclusion Validation for {code} Fail.");
-                comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, indexConclusionCompareResultPath, code + ".html"));
+                comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, indexConclusionCompareResultPath, code + ".html"));
             }
 
             logger.Info($"Index Conclusion Validation for {code} Done.");
