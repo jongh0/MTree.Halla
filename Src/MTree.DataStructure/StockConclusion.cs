@@ -30,8 +30,29 @@ namespace MTree.DataStructure
             {
                 foreach (var property in typeof(StockConclusion).GetProperties())
                 {
-                    if (property.Name != "Id")
-                        sb.Append($"{property.Name}: {property.GetValue(this)}, ");
+                    sb.Append($"{property.Name}: {property.GetValue(this)}, ");
+                }
+            }
+            catch { }
+
+            return sb.ToString();
+        }
+        public override string ToString(bool excludeId = true)
+        {
+            StringBuilder sb = new StringBuilder();
+            try
+            {
+                if (excludeId == true)
+                {
+                    foreach (var property in typeof(StockConclusion).GetProperties())
+                    {
+                        if (property.Name != "Id")
+                            sb.Append($"{property.Name}: {property.GetValue(this)}, ");
+                    }
+                }
+                else
+                {
+                    return ToString();
                 }
             }
             catch { }

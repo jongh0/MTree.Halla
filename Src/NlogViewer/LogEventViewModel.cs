@@ -23,8 +23,7 @@ namespace NlogViewer
 
             SetupColors(logEventInfo);
         }
-
-
+        
         public string Time { get; private set; }
         public string LoggerName { get; private set; }
         public string Level { get; private set; }

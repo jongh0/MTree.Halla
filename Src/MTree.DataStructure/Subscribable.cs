@@ -67,5 +67,9 @@ namespace MTree.DataStructure
 
             return sb.ToString();
         }
+        public virtual string ToString(bool excludeId)
+        {
+            return ToString();
+        }
     }
 }

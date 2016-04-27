@@ -1,0 +1,172 @@
+﻿using GalaSoft.MvvmLight.Command;
+using MTree.Utility;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Input;
+
+namespace MTree.DataValidator
+{
+    public class DataValidatorViewModel : INotifyPropertyChanged
+    {
+        private DataValidator validator = new DataValidator();
+
+        private DateTime _TargetDate = DateTime.Now;
+        public DateTime TargetDate
+        {
+            get
+            {
+                return _TargetDate;
+            }
+            set
+            {
+                _TargetDate = value;
+                NotifyPropertyChanged(nameof(TargetDate));
+            }
+        }
+
+        private string _Code;
+        public string Code
+        {
+            get
+            {
+                return _Code;
+            }
+            set
+            {
+                _Code = value;
+                NotifyPropertyChanged(nameof(Code));
+            }
+        }
+
+        private RelayCommand _ValidateAllCommand;
+        public ICommand ValidateAllCommand
+        {
+            get
+            {
+                if (_ValidateAllCommand == null)
+                    _ValidateAllCommand = new RelayCommand(() => ValidateAllExecute());
+
+                return _ValidateAllCommand;
+            }
+        }
+        private void ValidateAllExecute()
+        {
+            validator.ValidateCodeList();
+            validator.ValidateMasterCompare(TargetDate);
+            validator.ValidateStockConclusionCompare(TargetDate);
+            validator.ValidateIndexConclusionCompare(TargetDate);
+            validator.ValidateCircuitBreakCompare(TargetDate);
+        }
+
+        private RelayCommand _ValidateMasterCommand;
+        public ICommand ValidateMasterCommand
+        {
+            get
+            {
+                if (_ValidateMasterCommand == null)
+                    _ValidateMasterCommand = new RelayCommand(() => validator.ValidateMasterCompare(TargetDate));
+
+                return _ValidateMasterCommand;
+            }
+        }
+
+        private RelayCommand _ValidateAllStockConclusionCommand;
+        public ICommand ValidateAllStockConclusionCommand
+        {
+            get
+            {
+                if (_ValidateAllStockConclusionCommand == null)
+                    _ValidateAllStockConclusionCommand = new RelayCommand(() => validator.ValidateStockConclusionCompare(TargetDate));
+
+                return _ValidateAllStockConclusionCommand;
+            }
+        }
+
+        private RelayCommand _ValidateIndivisualStockConclusionCommand;
+        public ICommand ValidateIndivisualStockConclusionCommand
+        {
+            get
+            {
+                if (_ValidateIndivisualStockConclusionCommand == null)
+                    _ValidateIndivisualStockConclusionCommand = new RelayCommand(() => validator.ValidateStockConclusionCompare(TargetDate, Code));
+
+                return _ValidateIndivisualStockConclusionCommand;
+            }
+        }
+
+        private RelayCommand _ValidateIndivisualStockConclusionWithDaishinCommand;
+        public ICommand ValidateIndivisualStockConclusionWithDaishinCommand
+        {
+            get
+            {
+                if (_ValidateIndivisualStockConclusionWithDaishinCommand == null)
+                    _ValidateIndivisualStockConclusionWithDaishinCommand = new RelayCommand(() => validator.ValidateStockConclusionCompareWithDaishin(TargetDate, Code));
+
+                return _ValidateIndivisualStockConclusionWithDaishinCommand;
+            }
+        }
+
+        private RelayCommand _ValidateAllIndexConclusionCommand;
+        public ICommand ValidateAllIndexConclusionCommand
+        {
+            get
+            {
+                if (_ValidateAllIndexConclusionCommand == null)
+                    _ValidateAllIndexConclusionCommand = new RelayCommand(() => validator.ValidateIndexConclusionCompare(TargetDate));
+
+                return _ValidateAllIndexConclusionCommand;
+            }
+        }
+        
+        private RelayCommand _ValidateIndivisualIndexConclusionCommand;
+        public ICommand ValidateIndivisualIndexConclusionCommand
+        {
+            get
+            {
+                if (_ValidateIndivisualIndexConclusionCommand == null)
+                    _ValidateIndivisualIndexConclusionCommand = new RelayCommand(() => validator.ValidateIndexConclusionCompare(TargetDate, Code));
+
+                return _ValidateIndivisualIndexConclusionCommand;
+            }
+        }
+
+        private RelayCommand _ValidateCircuitBreakCommand;
+        public ICommand ValidateCircuitBreakCommand
+        {
+            get
+            {
+                if (_ValidateCircuitBreakCommand == null)
+                    _ValidateCircuitBreakCommand = new RelayCommand(() => validator.ValidateCircuitBreakCompare(TargetDate));
+
+                return _ValidateCircuitBreakCommand;
+            }
+        }
+
+        public DataValidatorViewModel()
+        {
+            if (Environment.GetCommandLineArgs().Count() > 1)
+            {
+                if (Environment.GetCommandLineArgs()[1] == ProcessTypes.DataValidatorRegularCheck.ToString())
+                {
+                    Task.Run(() =>
+                    {
+                        ValidateAllExecute();
+                        Environment.Exit(0);
+                    });
+                }
+            }
+        }
+        #region INotifyPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged(string name)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+        #endregion
+    }
+}

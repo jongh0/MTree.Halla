@@ -134,14 +134,31 @@ namespace MTree.DataValidator
             StringBuilder srcString = new StringBuilder();
             StringBuilder destString = new StringBuilder();
 
+            StringBuilder outputString = new StringBuilder();
+
             foreach (Subscribable s in src)
             {
-                srcString.AppendLine(s.ToString());
+                srcString.AppendLine(s.ToString(true));
+                outputString.AppendLine(s.ToString());
             }
 
+            using (StreamWriter sw = new StreamWriter($"{src[0].Code}.txt", false))
+            {
+                sw.WriteLine(outputString);
+                sw.Flush();
+            }
+
+            outputString.Clear();
             foreach (Subscribable d in dest)
             {
-                destString.AppendLine(d.ToString());
+                destString.AppendLine(d.ToString(true));
+                outputString.AppendLine(d.ToString());
+            }
+
+            using (StreamWriter sw = new StreamWriter($"{dest[0].Code}.txt", false))
+            {
+                sw.WriteLine(outputString);
+                sw.Flush();
             }
 
             MakeReport(srcString.ToString(), destString.ToString(), reportPath);

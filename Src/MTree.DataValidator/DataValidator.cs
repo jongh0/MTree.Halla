@@ -1,13 +1,16 @@
-﻿using MTree.Configuration;
+﻿using GalaSoft.MvvmLight.Command;
+using MTree.Configuration;
 using MTree.DataStructure;
 using MTree.DbProvider;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace MTree.DataValidator
 {
@@ -27,11 +30,7 @@ namespace MTree.DataValidator
         private const string stockConclusionCompareResultPath = "StockConclusion";
         private const string indexConclusionCompareResultPath = "IndexConclusion";
         private const string circuitbreakCompareResultFile = "CircuitBreak.html";
-
-        public DataValidator()
-        {
-        }
-
+        
         public bool ValidateCodeList()
         {
             logger.Info("Code List Validation Start");
@@ -121,6 +120,47 @@ namespace MTree.DataValidator
             logger.Info("Stock Conclusion Validation Done.");
         }
 
+        public void ValidateStockConclusionCompare(DateTime target, string code)
+        {
+            if (code == null)
+            {
+                logger.Warn("Code is empty");
+                return;
+            }
+
+            logger.Info($"Stock Conclusion Validation for {code} Start");
+            
+            var tasks = new List<Task>();
+
+            List<Subscribable> sourceList = new List<Subscribable>();
+            List<Subscribable> destinationList = new List<Subscribable>();
+
+            tasks.Add(Task.Run(() => { sourceList = source.GetStockConclusions(code, target, false); }));
+            tasks.Add(Task.Run(() => { destinationList = destination.GetStockConclusions(code, target, false); }));
+
+            Task.WaitAll(tasks.ToArray());
+
+            if (sourceList.Count != 0 && destinationList.Count != 0)
+            {
+                if (sourceList.Count == 0)
+                    logger.Error($"Conclusion list is empty in local db.");
+                if (destinationList.Count == 0)
+                    logger.Error($"Conclusion list is empty in remote db.");
+
+                if (comparator.DoCompareItem(sourceList, destinationList, false) == false)
+                {
+                    logger.Error($"Stock Conclusion Validation for {code} Fail.");
+                    comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, stockConclusionCompareResultPath, code + ".html"));
+                }
+                else
+                {
+                    logger.Info($"Stock Conclusion Validation for {code} success.");
+                }
+            }
+
+            logger.Info($"Stock Conclusion Validation for {code} Done.");
+        }
+
         public void ValidateStockConclusionCompareWithDaishin(DateTime target)
         {
             logger.Info("Stock Conclusion Validation with Daishin Start.");
@@ -162,6 +202,43 @@ namespace MTree.DataValidator
             logger.Info("Stock Conclusion Validation with Daishin Done.");
         }
 
+        public void ValidateStockConclusionCompareWithDaishin(DateTime target, string code)
+        {
+            logger.Info($"Stock Conclusion Validation for {code} with Daishin Start.");
+            int cnt = 0;
+            IDataCollector daishin = new DaishinCollector();
+
+            var tasks = new List<Task>();
+
+            List<Subscribable> sourceList = new List<Subscribable>();
+            List<Subscribable> destinationList = new List<Subscribable>();
+
+            tasks.Add(Task.Run(() => { sourceList = source.GetStockConclusions(code, target, true); }));
+            tasks.Add(Task.Run(() => { destinationList = daishin.GetStockConclusions(code, target, true); }));
+
+            Task.WaitAll(tasks.ToArray());
+
+            if (sourceList.Count != 0 && destinationList.Count != 0)
+            {
+                if (sourceList.Count == 0)
+                    logger.Error($"Conclusion list is empty in local db.");
+                if (destinationList.Count == 0)
+                    logger.Error($"Conclusion list is empty in Daishin.");
+
+                if (comparator.DoCompareItem(sourceList, destinationList, false) == false)
+                {
+                    logger.Error($"Stock Conclusion Validation for {code} Fail.");
+                    comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, stockConclusionCompareResultPath, code + ".html"));
+                }
+                else
+                {
+                    logger.Info($"Stock Conclusion Validation for {code} success.");
+                }
+
+            }
+            logger.Info($"Stock Conclusion Validation for {code} with Daishin Done.");
+        }
+
         public void ValidateIndexConclusionCompare(DateTime target)
         {
             logger.Info("Index Conclusion Validation Start.");
@@ -185,6 +262,36 @@ namespace MTree.DataValidator
             }
             logger.Info("Index Conclusion Validation Done.");
         }
+
+        public void ValidateIndexConclusionCompare(DateTime target, string code)
+        {
+            if (code == null)
+            {
+                logger.Warn("Code is empty");
+                return;
+            }
+
+            logger.Info($"Index Conclusion Validation for {code} Start.");
+
+            var tasks = new List<Task>();
+
+            List<Subscribable> sourceList = new List<Subscribable>();
+            List<Subscribable> destinationList = new List<Subscribable>();
+
+            tasks.Add(Task.Run(() => { sourceList = source.GetIndexConclusions(code, target, false); }));
+            tasks.Add(Task.Run(() => { destinationList = destination.GetIndexConclusions(code, target, false); }));
+
+            Task.WaitAll(tasks.ToArray());
+
+            if (comparator.DoCompareItem(sourceList, destinationList, false) == false)
+            {
+                logger.Error($"Index Conclusion Validation for {code} Fail.");
+                comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, indexConclusionCompareResultPath, code + ".html"));
+            }
+
+            logger.Info($"Index Conclusion Validation for {code} Done.");
+        }
+
         public void ValidateCircuitBreakCompare(DateTime target)
         {
             logger.Info("Circuit Break Validation Start.");

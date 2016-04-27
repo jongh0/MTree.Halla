@@ -5,10 +5,43 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:nlog ="clr-namespace:NlogViewer;assembly=NlogViewer"
         xmlns:local="clr-namespace:MTree.DataValidator"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Title="DataValidator" Height="350" Width="700">
+    <Window.DataContext>
+        <local:DataValidatorViewModel />
+    </Window.DataContext>
     <Grid>
-        <nlog:NlogViewer x:Name="logCtrl" TimeWidth="AUTO" LoggerNameWidth="0" LevelWidth="auto" ExceptionWidth="auto" MessageWidth="450" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                <Label Content="Compare Date" Margin="5,5,0,5" VerticalAlignment="Center" />
+                <DatePicker SelectedDate="{Binding Path=TargetDate, Mode=TwoWay, TargetNullValue={x:Static sys:DateTime.Now}}" VerticalAlignment="Center"/>
+            </StackPanel>
+            <GroupBox Header="Validate For All Codes">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                    <Button Content="All" Command="{Binding ValidateAllCommand}" Margin="5,5,5,5"/>
+                    <Button Content="Master" Command="{Binding ValidateMasterCommand}" Margin="5,5,5,5" HorizontalAlignment="Left"/>
+                    <Button Content="Stock Conclusions" Command="{Binding ValidateAllStockConclusionCommand}" Margin="5,5,5,5" HorizontalAlignment="Left"/>
+                    <Button Content="Index Conclusions" Command="{Binding ValidateAllIndexConclusionCommand}" Margin="5,5,5,5" HorizontalAlignment="Left"/>
+                    <Button Content="Circuit Break" Command="{Binding ValidateCircuitBreakCommand}" Margin="5,5,5,5" HorizontalAlignment="Left"/>
+                    <Button Content="Chart" Command="{Binding ValidateCircuitBreakCommand}" Margin="5,5,5,5" HorizontalAlignment="Left"/>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="For Indivisual Codes">
+                <StackPanel Orientation="Horizontal"  HorizontalAlignment="Left">
+                    <Label Content="Code" Margin="5,5,0,5" />
+                    <TextBox Margin="0,5,5,5" Width="50"/>
+                    <Button Content="Stock Conclusion" Command="{Binding ValidateIndivisualStockConclusionCommand}" Margin="5,5,5,5"/>
+                    <Button Content="Stock Conclusion with Daishin" Command="{Binding ValidateIndivisualStockConclusionWithDaishinCommand}" Margin="5,5,5,5"/>
+                    <Button Content="Index Conclusion" Command="{Binding ValidateIndivisualIndexConclusionCommand}" Margin="5,5,5,5"/>
+                </StackPanel>
+            </GroupBox>
+        </StackPanel>
+        <nlog:NlogViewer Grid.Row="1" x:Name="logCtrl" TimeWidth="AUTO" LoggerNameWidth="0" LevelWidth="auto" ExceptionWidth="auto" MessageWidth="450" />
     </Grid>
     
 </Window>

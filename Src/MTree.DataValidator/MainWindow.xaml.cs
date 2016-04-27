@@ -30,20 +30,6 @@ namespace MTree.DataValidator
         public MainWindow()
         {
             InitializeComponent();
-
-            Task.Run(() =>
-            {
-                DateTime targetDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
-
-                DataValidator validator = new DataValidator();
-
-                validator.ValidateCodeList();
-                validator.ValidateMasterCompare(targetDate);
-                validator.ValidateStockConclusionCompare(targetDate);
-                validator.ValidateIndexConclusionCompare(targetDate);
-                validator.ValidateCircuitBreakCompare(targetDate);
-                //validator.ValidateStockConclusionCompareWithDaishin(target);
-            });
         }
     }
 }
