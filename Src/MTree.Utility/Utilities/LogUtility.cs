@@ -22,24 +22,23 @@ namespace MTree.Utility
 
                 var date = Config.General.DateNow;
                 var logFolder = Path.Combine(Environment.CurrentDirectory, "Logs", date);
-                var targetFile = $"MTree.Log.{date}.zip";
-                var targetPath = Path.Combine(logFolder, targetFile);
+                var targetFileName = $"MTree.Log.{date}.zip";
+                var targetFilePath = Path.Combine(Environment.CurrentDirectory, "Logs", targetFileName);
 
                 int retry = 3;
                 while (retry-- > 0)
                 {
                     try
                     {
-                        if (File.Exists(targetPath) == true)
-                            File.Delete(targetPath);
+                        if (File.Exists(targetFilePath) == true)
+                            File.Delete(targetFilePath);
 
-                        using (var zip = ZipFile.Open(targetPath, ZipArchiveMode.Create))
+                        using (var stream = File.Create(targetFilePath))
+                        using (var zip = new Ionic.Zip.ZipFile())
                         {
-                            foreach (var file in Directory.GetFiles(logFolder, "*.log", SearchOption.TopDirectoryOnly))
-                            {
-                                if (file.IndexOf(date) != -1)
-                                    zip.CreateEntryFromFile(file, Path.GetFileName(file));
-                            }
+                            zip.AddDirectory(logFolder);
+                            zip.Save(stream);
+                            stream.Flush(true);
                         }
 
                         break; // 여기까지 못 오고 Exception 발생하면 1초 간격으로 3회 재시도
@@ -50,10 +49,10 @@ namespace MTree.Utility
                     }
                 }
 
-                logger.Info($"{targetFile} file created");
+                logger.Info($"{targetFileName} file created");
 
                 // 압축한 로그 파일을 Email로 전송
-                EmailUtility.SendEmail($"[{Environment.MachineName}] MTree log {date}", "Log attached", targetPath);
+                EmailUtility.SendEmail($"[{Environment.MachineName}] MTree log {date}", "Log attached", targetFilePath);
             }
             catch (Exception ex)
             {

@@ -125,12 +125,6 @@ namespace MTree.RealTimeProvider
 
             SaveDayChart();
 
-            if (Config.Database.ConnectionString != Config.Database.RemoteConnectionString)
-            {
-                // Data Compare 실행
-                ProcessUtility.Start(ProcessTypes.DataValidatorRegularCheck, ProcessWindowStyle.Minimized);
-            }
-
             ExitProgram(ExitProgramTypes.Normal);
         }
 
@@ -264,14 +258,21 @@ namespace MTree.RealTimeProvider
 
                     if (exitType == ExitProgramTypes.Normal)
                     {
-                        // 당일 수집된 로그를 Zip해서 Email로 전송함
-                        LogUtility.SendLog();
-
                         // Queue에 입력된 Count를 파일로 저장
                         Counter.SaveToFile();
 
                         // Queue에 입력된 Count를 DB에 저장
                         DbAgent.Instance.Insert(Counter);
+
+                        if (Config.Database.ConnectionString != Config.Database.RemoteConnectionString)
+                        {
+                            // Data Compare 실행
+                            if (ProcessUtility.Start(ProcessTypes.DataValidatorRegularCheck, ProcessWindowStyle.Minimized).WaitForExit((int)TimeSpan.FromMinutes(30).TotalMilliseconds) == false)
+                                logger.Error("Data validator time out");
+                        }
+
+                        // 당일 수집된 로그를 Zip해서 Email로 전송함
+                        LogUtility.SendLog();
 
                         // 20초후 프로그램 종료
                         RealTimeState = "RealTimeProvider will be closed after 20sec";
