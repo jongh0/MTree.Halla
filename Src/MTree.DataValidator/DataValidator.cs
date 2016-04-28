@@ -96,6 +96,7 @@ namespace MTree.DataValidator
             sw.Start();
             int cnt = 0;
             List<string> codeList = source.GetStockCodeList().OrderBy(c => c).ToList();
+            
 
             Parallel.For(0, codeList.Count, (i) =>
             {
@@ -128,7 +129,7 @@ namespace MTree.DataValidator
                 }
             });
             sw.Stop();
-            logger.Info($"Stock Conclusion Validation Done. Elapsed:{sw.Elapsed.TotalMilliseconds}ms");
+            logger.Info($"Stock Conclusion Validation Done. Elapsed:{sw.Elapsed}");
         }
 
         public void ValidateStockConclusionCompare(DateTime target, string code)
@@ -276,7 +277,7 @@ namespace MTree.DataValidator
                 }
             });
             sw.Stop();
-            logger.Info($"Index Conclusion Validation Done. Elapsed:{sw.Elapsed.TotalMilliseconds}ms");
+            logger.Info($"Index Conclusion Validation Done. Elapsed:{sw.Elapsed}");
         }
 
         public void ValidateIndexConclusionCompare(DateTime target, string code)

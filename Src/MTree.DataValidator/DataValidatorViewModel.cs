@@ -58,13 +58,25 @@ namespace MTree.DataValidator
         }
         private void ValidateAllExecute()
         {
+            //var task = Task.Run(() =>
+            //{
+            //    validator.ValidateCodeList();
+            //    validator.ValidateStockConclusionCompare(TargetDate);
+            //    validator.ValidateIndexConclusionCompare(TargetDate);
+            //    validator.ValidateMasterCompare(TargetDate);
+            //    validator.ValidateCircuitBreakCompare(TargetDate);
+            //});
+            //task.Wait();
+
             var task = Task.Run(() =>
             {
-                validator.ValidateCodeList();
-                validator.ValidateStockConclusionCompare(TargetDate);
-                validator.ValidateIndexConclusionCompare(TargetDate);
-                validator.ValidateMasterCompare(TargetDate);
-                validator.ValidateCircuitBreakCompare(TargetDate);
+                List<Task> tasks = new List<Task>();
+                tasks.Add(Task.Run(() => validator.ValidateCodeList()));
+                tasks.Add(Task.Run(() => validator.ValidateStockConclusionCompare(TargetDate)));
+                tasks.Add(Task.Run(() => validator.ValidateIndexConclusionCompare(TargetDate)));
+                tasks.Add(Task.Run(() => validator.ValidateMasterCompare(TargetDate)));
+                tasks.Add(Task.Run(() => validator.ValidateCircuitBreakCompare(TargetDate)));
+                Task.WaitAll(tasks.ToArray());
             });
             task.Wait();
         }
