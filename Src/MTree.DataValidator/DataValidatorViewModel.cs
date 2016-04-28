@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -12,6 +13,8 @@ namespace MTree.DataValidator
 {
     public class DataValidatorViewModel : INotifyPropertyChanged
     {
+        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
         private DataValidator validator = new DataValidator();
 
         private DateTime _TargetDate = DateTime.Now;
@@ -148,17 +151,20 @@ namespace MTree.DataValidator
 
         public DataValidatorViewModel()
         {
-            if (Environment.GetCommandLineArgs().Count() > 1)
+            Task.Run(() =>
             {
-                if (Environment.GetCommandLineArgs()[1] == ProcessTypes.DataValidatorRegularCheck.ToString())
+                Thread.Sleep(1000);
+                logger.Info("Data Validator Started");
+                
+                if (Environment.GetCommandLineArgs().Count() > 1)
                 {
-                    Task.Run(() =>
+                    if (Environment.GetCommandLineArgs()[1] == ProcessTypes.DataValidatorRegularCheck.ToString())
                     {
                         ValidateAllExecute();
                         Environment.Exit(0);
-                    });
+                    }
                 }
-            }
+            });
         }
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;

@@ -30,7 +30,11 @@ namespace MTree.DataValidator
         private const string stockConclusionCompareResultPath = "StockConclusion";
         private const string indexConclusionCompareResultPath = "IndexConclusion";
         private const string circuitbreakCompareResultFile = "CircuitBreak.html";
-        
+
+        public DataValidator()
+        {
+        }
+
         public bool ValidateCodeList()
         {
             logger.Info("Code List Validation Start");
@@ -73,7 +77,7 @@ namespace MTree.DataValidator
             bool result = comparator.DoCompareItem(srcMasters, destMasters, false);
             if (result == false)
             {
-                comparator.MakeReport(srcMasters, destMasters, Path.Combine(logBasePath, Config.General.DateNow, masterCompareResultFile));
+                comparator.MakeReport(srcMasters, destMasters, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, masterCompareResultFile));
                 logger.Error($"Stock Master Validation Fail");
             }
             else
@@ -108,7 +112,7 @@ namespace MTree.DataValidator
                     if (comparator.DoCompareItem(sourceList, destinationList, false) == false)
                     {
                         logger.Error($"Stock Conclusion Validation for {code} Fail. {cnt}/{source.GetStockCodeList().Count}");
-                        comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, stockConclusionCompareResultPath, code + ".html"));
+                        comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, stockConclusionCompareResultPath, code + ".html"));
                     }
                     else
                     {

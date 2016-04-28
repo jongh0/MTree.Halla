@@ -18,6 +18,10 @@ namespace MTree.DataValidator
 
         private string beyondComparePath = Config.Compare.BeyondComparePath;
 
+        private const string logBasePath = "Logs";
+        private const string compareResultPath = "CompareResult";
+        private const string codeDifferentPath = "DifferentRaw";
+
         private string sourceFile = "source.txt";
         private string destinationFile = "destination.txt";
 
@@ -46,12 +50,12 @@ namespace MTree.DataValidator
 
             foreach (Subscribable s in src)
             {
-                srcString.AppendLine(s.ToString());
+                srcString.AppendLine(s.ToString(true));
             }
 
             foreach (Subscribable d in dest)
             {
-                destString.AppendLine(d.ToString());
+                destString.AppendLine(d.ToString(true));
             }
             
             return DoCompareItem(srcString.ToString(), destString.ToString(), showWindow);
@@ -142,7 +146,13 @@ namespace MTree.DataValidator
                 outputString.AppendLine(s.ToString());
             }
 
-            using (StreamWriter sw = new StreamWriter($"{src[0].Code}.txt", false))
+            string path = Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, codeDifferentPath);
+            if (Directory.Exists(path) == false)
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            using (StreamWriter sw = new StreamWriter(Path.Combine(path, src[0].Code + "_source.txt"), false))
             {
                 sw.WriteLine(outputString);
                 sw.Flush();
@@ -155,7 +165,13 @@ namespace MTree.DataValidator
                 outputString.AppendLine(d.ToString());
             }
 
-            using (StreamWriter sw = new StreamWriter($"{dest[0].Code}.txt", false))
+            path = Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, codeDifferentPath);
+            if (Directory.Exists(path) == false)
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            using (StreamWriter sw = new StreamWriter(Path.Combine(path, dest[0].Code + "_destination.txt"), false))
             {
                 sw.WriteLine(outputString);
                 sw.Flush();
