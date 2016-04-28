@@ -268,7 +268,10 @@ namespace MTree.RealTimeProvider
                         {
                             // Data Compare 실행
                             if (ProcessUtility.Start(ProcessTypes.DataValidatorRegularCheck, ProcessWindowStyle.Minimized).WaitForExit((int)TimeSpan.FromMinutes(30).TotalMilliseconds) == false)
+                            {
                                 logger.Error("Data validator time out");
+                                ProcessUtility.Kill(ProcessTypes.DataValidatorRegularCheck);
+                            }
                         }
 
                         // 당일 수집된 로그를 Zip해서 Email로 전송함
