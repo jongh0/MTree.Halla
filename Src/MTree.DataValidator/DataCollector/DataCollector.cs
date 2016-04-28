@@ -32,7 +32,7 @@ namespace MTree.DataValidator
         public StockMaster GetMaster(string code, DateTime targetDate)
         {
             var builder = Builders<StockMaster>.Filter;
-            var filter = builder.Eq(i => i.Time, targetDate);
+            var filter = builder.Gte(i => i.Time, targetDate) & builder.Lt(i => i.Time, targetDate.AddDays(1));
             return DataSource.Find(code, filter).FirstOrDefault();
         }
 

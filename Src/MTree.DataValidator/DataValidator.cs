@@ -5,6 +5,7 @@ using MTree.DbProvider;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -63,13 +64,15 @@ namespace MTree.DataValidator
             List<string> srcMasters = new List<string>();
             List<string> destMasters = new List<string>();
 
-            foreach (string code in source.GetStockCodeList())
+            foreach (string code in source.GetStockCodeList().OrderBy(c => c))
             {
                 StockMaster srcMaster = source.GetMaster(code, target);
-                if(srcMaster != null)
+                logger.Info($"Get Stock Master for {code} from source done.");
+                if (srcMaster != null)
                     srcMasters.Add(srcMaster.ToString());
 
                 StockMaster destMaster = destination.GetMaster(code, target);
+                logger.Info($"Get Stock Master for {code} from destination done.");
                 if (destMaster != null)
                     destMasters.Add(destMaster.ToString());
             }
@@ -89,16 +92,20 @@ namespace MTree.DataValidator
         public void ValidateStockConclusionCompare(DateTime target)
         {
             logger.Info("Stock Conclusion Validation Start");
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
             int cnt = 0;
-            foreach (string code in source.GetStockCodeList())
+            List<string> codeList = source.GetStockCodeList().OrderBy(c => c).ToList();
+
+            Parallel.For(0, codeList.Count, (i) =>
             {
                 var tasks = new List<Task>();
 
                 List<Subscribable> sourceList = new List<Subscribable>();
                 List<Subscribable> destinationList = new List<Subscribable>();
 
-                tasks.Add(Task.Run(() => { sourceList = source.GetStockConclusions(code, target, false); }));
-                tasks.Add(Task.Run(() => { destinationList = destination.GetStockConclusions(code, target, false); }));
+                tasks.Add(Task.Run(() => { sourceList = source.GetStockConclusions(codeList[i], target, false); }));
+                tasks.Add(Task.Run(() => { destinationList = destination.GetStockConclusions(codeList[i], target, false); }));
 
                 Task.WaitAll(tasks.ToArray());
 
@@ -111,17 +118,17 @@ namespace MTree.DataValidator
 
                     if (comparator.DoCompareItem(sourceList, destinationList, false) == false)
                     {
-                        logger.Error($"Stock Conclusion Validation for {code} Fail. {cnt}/{source.GetStockCodeList().Count}");
-                        comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, stockConclusionCompareResultPath, code + ".html"));
+                        logger.Error($"Stock Conclusion Validation for {codeList[i]} Fail. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
+                        comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, stockConclusionCompareResultPath, codeList[i] + ".html"));
                     }
                     else
                     {
-                        logger.Info($"Stock Conclusion Validation for {code} success. {cnt}/{source.GetStockCodeList().Count}");
+                        logger.Info($"Stock Conclusion Validation for {codeList[i]} success. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
                     }
                 }
-                cnt++;
-            }
-            logger.Info("Stock Conclusion Validation Done.");
+            });
+            sw.Stop();
+            logger.Info($"Stock Conclusion Validation Done. Elapsed:{sw.Elapsed.TotalMilliseconds}ms");
         }
 
         public void ValidateStockConclusionCompare(DateTime target, string code)
@@ -171,7 +178,7 @@ namespace MTree.DataValidator
             int cnt = 0;
             IDataCollector daishin = new DaishinCollector();
 
-            foreach (string code in source.GetStockCodeList())
+            foreach (string code in source.GetStockCodeList().OrderBy(c => c))
             {
                 var tasks = new List<Task>();
 
@@ -246,25 +253,30 @@ namespace MTree.DataValidator
         public void ValidateIndexConclusionCompare(DateTime target)
         {
             logger.Info("Index Conclusion Validation Start.");
-            foreach (string code in source.GetIndexCodeList())
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            List<string> codeList = source.GetIndexCodeList().OrderBy(c => c).ToList();
+
+            Parallel.For(0, codeList.Count, (i) =>
             {
                 var tasks = new List<Task>();
 
                 List<Subscribable> sourceList = new List<Subscribable>();
                 List<Subscribable> destinationList = new List<Subscribable>();
 
-                tasks.Add(Task.Run(() => { sourceList = source.GetIndexConclusions(code, target, false); }));
-                tasks.Add(Task.Run(() => { destinationList = destination.GetIndexConclusions(code, target, false); }));
+                tasks.Add(Task.Run(() => { sourceList = source.GetIndexConclusions(codeList[i], target, false); }));
+                tasks.Add(Task.Run(() => { destinationList = destination.GetIndexConclusions(codeList[i], target, false); }));
 
                 Task.WaitAll(tasks.ToArray());
-                
+
                 if (comparator.DoCompareItem(sourceList, destinationList, false) == false)
                 {
-                    logger.Error($"Index Conclusion Validation for {code} Fail.");
-                    comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, indexConclusionCompareResultPath, code + ".html"));
+                    logger.Error($"Index Conclusion Validation for {codeList[i]} Fail.");
+                    comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, indexConclusionCompareResultPath, codeList[i] + ".html"));
                 }
-            }
-            logger.Info("Index Conclusion Validation Done.");
+            });
+            sw.Stop();
+            logger.Info($"Index Conclusion Validation Done. Elapsed:{sw.Elapsed.TotalMilliseconds}ms");
         }
 
         public void ValidateIndexConclusionCompare(DateTime target, string code)
@@ -315,7 +327,7 @@ namespace MTree.DataValidator
             if (comparator.DoCompareItem(sourceList, destinationList, false) == false)
             {
                 logger.Error("Circuit Break Validation Fail.");
-                comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, circuitbreakCompareResultFile));
+                comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, circuitbreakCompareResultFile));
             }
             logger.Info("Circuit Break Validation Done.");
         }

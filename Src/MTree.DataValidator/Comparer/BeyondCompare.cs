@@ -18,12 +18,10 @@ namespace MTree.DataValidator
 
         private string beyondComparePath = Config.Compare.BeyondComparePath;
 
+        private const string tempPath = "Temp";
         private const string logBasePath = "Logs";
         private const string compareResultPath = "CompareResult";
         private const string codeDifferentPath = "DifferentRaw";
-
-        private string sourceFile = "source.txt";
-        private string destinationFile = "destination.txt";
 
         public bool DoCompareItem(List<string> src, List<string> dest, bool showWindow = false)
         {
@@ -86,12 +84,18 @@ namespace MTree.DataValidator
                 return false;
             }
 
+            if (Directory.Exists(tempPath) == false)
+            {
+                Directory.CreateDirectory(tempPath);
+            }
+
+            string sourceFile = Path.Combine(tempPath, Guid.NewGuid().ToString());
             using (StreamWriter sourceSw = new StreamWriter(sourceFile, false))
             {
                 sourceSw.WriteLine(src);
                 sourceSw.Flush();
             }
-
+            string destinationFile = Path.Combine(tempPath, Guid.NewGuid().ToString());
             using (StreamWriter destinationSw = new StreamWriter(destinationFile, false))
             {
                 destinationSw.WriteLine(dest);
@@ -188,12 +192,14 @@ namespace MTree.DataValidator
                 return;
             }
 
+            string sourceFile = Path.Combine(tempPath, Guid.NewGuid().ToString());
             using (StreamWriter sourceSw = new StreamWriter(sourceFile, false))
             {
                 sourceSw.WriteLine(src);
                 sourceSw.Flush();
             }
 
+            string destinationFile = Path.Combine(tempPath, Guid.NewGuid().ToString());
             using (StreamWriter destinationSw = new StreamWriter(destinationFile, false))
             {
                 destinationSw.WriteLine(dest);

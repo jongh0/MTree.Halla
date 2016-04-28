@@ -58,11 +58,15 @@ namespace MTree.DataValidator
         }
         private void ValidateAllExecute()
         {
-            validator.ValidateCodeList();
-            validator.ValidateMasterCompare(TargetDate);
-            validator.ValidateStockConclusionCompare(TargetDate);
-            validator.ValidateIndexConclusionCompare(TargetDate);
-            validator.ValidateCircuitBreakCompare(TargetDate);
+            var task = Task.Run(() =>
+            {
+                validator.ValidateCodeList();
+                validator.ValidateStockConclusionCompare(TargetDate);
+                validator.ValidateIndexConclusionCompare(TargetDate);
+                validator.ValidateMasterCompare(TargetDate);
+                validator.ValidateCircuitBreakCompare(TargetDate);
+            });
+            task.Wait();
         }
 
         private RelayCommand _ValidateMasterCommand;
@@ -71,7 +75,11 @@ namespace MTree.DataValidator
             get
             {
                 if (_ValidateMasterCommand == null)
-                    _ValidateMasterCommand = new RelayCommand(() => validator.ValidateMasterCompare(TargetDate));
+                    _ValidateMasterCommand = new RelayCommand(() =>
+                    Task.Run(() =>
+                    {
+                        validator.ValidateMasterCompare(TargetDate);
+                    }));
 
                 return _ValidateMasterCommand;
             }
@@ -83,7 +91,11 @@ namespace MTree.DataValidator
             get
             {
                 if (_ValidateAllStockConclusionCommand == null)
-                    _ValidateAllStockConclusionCommand = new RelayCommand(() => validator.ValidateStockConclusionCompare(TargetDate));
+                    _ValidateAllStockConclusionCommand = new RelayCommand(() => 
+                    Task.Run(() => 
+                    {
+                        validator.ValidateStockConclusionCompare(TargetDate);
+                    }));
 
                 return _ValidateAllStockConclusionCommand;
             }
@@ -95,7 +107,11 @@ namespace MTree.DataValidator
             get
             {
                 if (_ValidateIndivisualStockConclusionCommand == null)
-                    _ValidateIndivisualStockConclusionCommand = new RelayCommand(() => validator.ValidateStockConclusionCompare(TargetDate, Code));
+                    _ValidateIndivisualStockConclusionCommand = new RelayCommand(() =>
+                    Task.Run(() =>
+                    {
+                        validator.ValidateStockConclusionCompare(TargetDate, Code);
+                    }));
 
                 return _ValidateIndivisualStockConclusionCommand;
             }
@@ -107,7 +123,11 @@ namespace MTree.DataValidator
             get
             {
                 if (_ValidateIndivisualStockConclusionWithDaishinCommand == null)
-                    _ValidateIndivisualStockConclusionWithDaishinCommand = new RelayCommand(() => validator.ValidateStockConclusionCompareWithDaishin(TargetDate, Code));
+                    _ValidateIndivisualStockConclusionWithDaishinCommand = new RelayCommand(() =>
+                    Task.Run(() =>
+                    {
+                        validator.ValidateStockConclusionCompareWithDaishin(TargetDate, Code);
+                    }));
 
                 return _ValidateIndivisualStockConclusionWithDaishinCommand;
             }
@@ -119,7 +139,11 @@ namespace MTree.DataValidator
             get
             {
                 if (_ValidateAllIndexConclusionCommand == null)
-                    _ValidateAllIndexConclusionCommand = new RelayCommand(() => validator.ValidateIndexConclusionCompare(TargetDate));
+                    _ValidateAllIndexConclusionCommand = new RelayCommand(() =>
+                    Task.Run(() =>
+                    {
+                        validator.ValidateIndexConclusionCompare(TargetDate);
+                    }));
 
                 return _ValidateAllIndexConclusionCommand;
             }
@@ -131,7 +155,11 @@ namespace MTree.DataValidator
             get
             {
                 if (_ValidateIndivisualIndexConclusionCommand == null)
-                    _ValidateIndivisualIndexConclusionCommand = new RelayCommand(() => validator.ValidateIndexConclusionCompare(TargetDate, Code));
+                    _ValidateIndivisualIndexConclusionCommand = new RelayCommand(() =>
+                    Task.Run(() =>
+                    {
+                        validator.ValidateIndexConclusionCompare(TargetDate, Code);
+                    }));
 
                 return _ValidateIndivisualIndexConclusionCommand;
             }
@@ -143,7 +171,11 @@ namespace MTree.DataValidator
             get
             {
                 if (_ValidateCircuitBreakCommand == null)
-                    _ValidateCircuitBreakCommand = new RelayCommand(() => validator.ValidateCircuitBreakCompare(TargetDate));
+                    _ValidateCircuitBreakCommand = new RelayCommand(() =>
+                    Task.Run(() =>
+                    {
+                        validator.ValidateCircuitBreakCompare(TargetDate);
+                    }));
 
                 return _ValidateCircuitBreakCommand;
             }
@@ -166,6 +198,7 @@ namespace MTree.DataValidator
                 }
             });
         }
+
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
 
