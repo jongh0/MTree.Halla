@@ -49,7 +49,8 @@ namespace MTree.DataStructure
         [BsonElement("T")]
         public DateTime Time { get; set; }
 
-        [BsonIgnore]
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
+        [BsonElement("RT")]
         public DateTime ReceivedTime { get; set; }
 
         public override string ToString()

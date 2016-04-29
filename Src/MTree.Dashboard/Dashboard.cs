@@ -28,7 +28,7 @@ namespace MTree.Dashboard
         public ObservableConcurrentDictionary<string, DashboardItem> StockItems { get; set; } = new ObservableConcurrentDictionary<string, DashboardItem>();
         public ObservableConcurrentDictionary<string, DashboardItem> IndexItems { get; set; } = new ObservableConcurrentDictionary<string, DashboardItem>();
 
-        private ConcurrentDictionary<string, ObjectId> VerifyOrderingList { get; set; } = new ConcurrentDictionary<string, ObjectId>();
+        private ConcurrentDictionary<string, DateTime> VerifyOrderingList { get; set; } = new ConcurrentDictionary<string, DateTime>();
 
         public DataCounter Counter { get; set; } = null;
         public TrafficMonitor Monitor { get; set; } = null;
@@ -160,19 +160,19 @@ namespace MTree.Dashboard
                     if (Config.General.VerifyOrdering == true)
                     {
                         var code = conclusion.Code;
-                        var newId = conclusion.Id;
+                        var newTime = conclusion.ReceivedTime;
 
                         if (VerifyOrderingList.ContainsKey(code) == false)
                         {
-                            VerifyOrderingList.TryAdd(code, newId);
+                            VerifyOrderingList.TryAdd(code, newTime);
                         }
                         else
                         {
-                            var prevId = VerifyOrderingList[code];
-                            if (prevId >= newId)
-                                logger.Error($"Conclusion ordering fail, code: {code}, prevId: {prevId}, newId: {newId}");
+                            var prevTime = VerifyOrderingList[code];
+                            if (prevTime >= newTime)
+                                logger.Error($"Conclusion ordering fail, code: {code}, prevTime: {prevTime}, newTime: {newTime}");
 
-                            prevId = newId;
+                            prevTime = newTime;
                         }
                     }
                 }
