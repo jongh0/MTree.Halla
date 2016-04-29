@@ -61,6 +61,10 @@ namespace MTree.DataValidator
         public void ValidateMasterCompare(DateTime target)
         {
             logger.Info("Stock Master Validation Start");
+
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
             List<string> srcMasters = new List<string>();
             List<string> destMasters = new List<string>();
 
@@ -87,6 +91,9 @@ namespace MTree.DataValidator
             {
                 logger.Info($"Stock Master Validation Success");
             }
+
+            sw.Stop();
+            logger.Info($"Stock Master Validation Done. Elapsed:{sw.Elapsed}");
         }
         
         public void ValidateStockConclusionCompare(DateTime target)
@@ -312,6 +319,8 @@ namespace MTree.DataValidator
         public void ValidateCircuitBreakCompare(DateTime target)
         {
             logger.Info("Circuit Break Validation Start.");
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
             var tasks = new List<Task>();
 
             List<Subscribable> sourceList = new List<Subscribable>();
@@ -330,7 +339,8 @@ namespace MTree.DataValidator
                 logger.Error("Circuit Break Validation Fail.");
                 comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, circuitbreakCompareResultFile));
             }
-            logger.Info("Circuit Break Validation Done.");
+            sw.Stop();
+            logger.Info($"Circuit Break Validation Done. Elapsed:{sw.Elapsed}");
         }
     }
 }

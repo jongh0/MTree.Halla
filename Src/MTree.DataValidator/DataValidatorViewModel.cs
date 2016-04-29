@@ -51,7 +51,10 @@ namespace MTree.DataValidator
             get
             {
                 if (_ValidateAllCommand == null)
-                    _ValidateAllCommand = new RelayCommand(() => ValidateAllExecute());
+                    _ValidateAllCommand = new RelayCommand(() => Task.Run(() =>
+                    {
+                        ValidateAllExecute();
+                    }));
 
                 return _ValidateAllCommand;
             }
