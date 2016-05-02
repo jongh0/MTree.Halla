@@ -50,7 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config.cs" />
-    <Compile Include="Configurations\CompareConfiguration.cs" />
+    <Compile Include="Configurations\ValidatorConfiguration.cs" />
     <Compile Include="Configurations\DaishinConfiguration.cs" />
     <Compile Include="Configurations\DatabaseConfiguration.cs" />
     <Compile Include="Configurations\EbestConfiguration.cs" />
