@@ -10,6 +10,7 @@ using MTree.DataStructure;
 using MTree.Utility;
 using MongoDB.Driver;
 using System.Diagnostics;
+using MongoDB.Bson;
 
 namespace TestConsole
 {

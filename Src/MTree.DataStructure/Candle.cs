@@ -50,14 +50,14 @@ namespace MTree.DataStructure
             Code = code;
         }
 
-        public override string ToString()
+        public override string ToString(params string[] excludeProperties)
         {
             StringBuilder sb = new StringBuilder();
             try
             {
                 foreach (var property in typeof(Candle).GetProperties())
                 {
-                    if (property.Name != "Id")
+                    if (excludeProperties.Contains(property.Name) == false)
                         sb.Append($"{property.Name}: {property.GetValue(this)}, ");
                 }
             }

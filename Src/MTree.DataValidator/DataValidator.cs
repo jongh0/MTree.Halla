@@ -224,7 +224,7 @@ namespace MTree.DataValidator
         public void ValidateStockConclusionCompareWithDaishin(DateTime target, string code)
         {
             logger.Info($"Stock Conclusion Validation for {code} with Daishin Start.");
-            int cnt = 0;
+
             IDataCollector daishin = new DaishinCollector();
 
             var tasks = new List<Task>();
