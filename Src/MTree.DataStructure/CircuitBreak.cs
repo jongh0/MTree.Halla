@@ -7,27 +7,33 @@ using System.Threading.Tasks;
 
 namespace MTree.DataStructure
 {
-    [Serializable]
-    public class IndexMaster : Subscribable
+    #region enum
+    public enum CircuitBreakTypes
     {
-        [BsonElement("N")]
-        public string Name { get; set; }
+        Clear,
+        StaticInvoke,
+        DynamicInvoke,
+        StaticAndDynamicInvoke,
+    } 
+    #endregion
 
-        [BsonElement("BP")]
-        public float BasisPrice { get; set; }
+    [Serializable]
+    public class CircuitBreak : Subscribable
+    {
+        [BsonElement("CBT")]
+        public CircuitBreakTypes CircuitBreakType { get; set; }
+
+        [BsonElement("IP")]
+        public float InvokePrice { get; set; }
 
         public override string ToString(params string[] excludeProperties)
         {
             StringBuilder sb = new StringBuilder();
             try
             {
-                foreach (var property in typeof(IndexMaster).GetProperties())
+                foreach (var property in typeof(CircuitBreak).GetProperties())
                 {
-<<<<<<< HEAD
-                    if (property.Name != "Id" && property.Name != "ReceivedTime")
-=======
                     if (excludeProperties.Contains(property.Name) == false)
->>>>>>> origin/master
                         sb.Append($"{property.Name}: {property.GetValue(this)}, ");
                 }
             }

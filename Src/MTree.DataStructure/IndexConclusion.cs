@@ -12,31 +12,27 @@ namespace MTree.DataStructure
     {
         [BsonElement("MC")]
         public long MarketCapitalization { get; set; }
-        
-        public override string ToString()
-        {
-            StringBuilder sb = new StringBuilder();
-            try
-            {
-                foreach (var property in typeof(IndexConclusion).GetProperties())
-                {
-                    sb.Append($"{property.Name}: {property.GetValue(this)}, ");
-                }
-            }
-            catch { }
 
+<<<<<<< HEAD
             return sb.ToString();
         }
         public override string ToString(bool excludeId = true, bool excludeRxTime = true)
+=======
+        public override string ToString(params string[] excludeProperties)
+>>>>>>> origin/master
         {
             StringBuilder sb = new StringBuilder();
             try
             {
                 foreach (var property in typeof(IndexConclusion).GetProperties())
                 {
+<<<<<<< HEAD
                     if (property.Name != "Id")
                         sb.Append($"{property.Name}: {property.GetValue(this)}, ");
                     else if (excludeRxTime == true && property.Name != "ReceivedTime")
+=======
+                    if (excludeProperties.Contains(property.Name) == false)
+>>>>>>> origin/master
                         sb.Append($"{property.Name}: {property.GetValue(this)}, ");
                 }
             }

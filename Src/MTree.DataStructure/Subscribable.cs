@@ -55,12 +55,21 @@ namespace MTree.DataStructure
 
         public override string ToString()
         {
+            return ToString(string.Empty);
+        }
+
+        public virtual string ToString(params string[] excludeProperties)
+        {
             StringBuilder sb = new StringBuilder();
             try
             {
                 foreach (var property in typeof(Subscribable).GetProperties())
                 {
+<<<<<<< HEAD
                     if (property.Name != "Id" && property.Name != "ReceivedTime")
+=======
+                    if (excludeProperties.Contains(property.Name) == false)
+>>>>>>> origin/master
                         sb.Append($"{property.Name}: {property.GetValue(this)}, ");
                 }
             }
@@ -68,9 +77,12 @@ namespace MTree.DataStructure
 
             return sb.ToString();
         }
+<<<<<<< HEAD
         public virtual string ToString(bool excludeId, bool excludeRxTime)
         {
             return ToString();
         }
+=======
+>>>>>>> origin/master
     }
 }

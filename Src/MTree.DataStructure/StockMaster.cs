@@ -187,14 +187,18 @@ namespace MTree.DataStructure
         [BsonElement("VAT")]
         public ValueAlteredTypes ValueAlteredType { get; set; }
 
-        public override string ToString()
+        public override string ToString(params string[] excludeProperties)
         {
             StringBuilder sb = new StringBuilder();
             try
             {
                 foreach (var property in typeof(StockMaster).GetProperties())
                 {
+<<<<<<< HEAD
                     if (property.Name != "Id" && property.Name != "ReceivedTime")
+=======
+                    if (excludeProperties.Contains(property.Name) == false)
+>>>>>>> origin/master
                         sb.Append($"{property.Name}: {property.GetValue(this)}, ");
                 }
             }

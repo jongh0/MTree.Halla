@@ -32,14 +32,14 @@ namespace MTree.DataStructure
         [BsonElement("P")]
         public float Price { get; set; }
 
-        public override string ToString()
+        public override string ToString(params string[] excludeProperties)
         {
             StringBuilder sb = new StringBuilder();
             try
             {
                 foreach (var property in typeof(Conclusion).GetProperties())
                 {
-                    if (property.Name != "Id")
+                    if (excludeProperties.Contains(property.Name) == false)
                         sb.Append($"{property.Name}: {property.GetValue(this)}, ");
                 }
             }
@@ -47,6 +47,7 @@ namespace MTree.DataStructure
 
             return sb.ToString();
         }
+<<<<<<< HEAD
         public override string ToString(bool excludeId = true, bool excludeRxTime = true)
         {
             StringBuilder sb = new StringBuilder();
@@ -64,5 +65,7 @@ namespace MTree.DataStructure
 
             return sb.ToString();
         }
+=======
+>>>>>>> origin/master
     }
 }
