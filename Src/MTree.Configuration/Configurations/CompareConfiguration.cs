@@ -12,6 +12,6 @@ namespace MTree.Configuration
 
         public bool UseSimultaneousCompare { get; set; } = false;
 
-        public int ThreaLimit { get; set; } = 4;
+        public int ThreadLimit { get; set; } = 4;
     }
 }
