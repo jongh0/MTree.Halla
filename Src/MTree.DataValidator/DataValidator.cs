@@ -105,15 +105,15 @@ namespace MTree.DataValidator
             List<string> codeList = source.GetStockCodeList().OrderBy(c => c).ToList();
             
 
-            Parallel.For(0, codeList.Count, (i) =>
+            Parallel.ForEach(codeList, new ParallelOptions { MaxDegreeOfParallelism = 4 }, code =>
             {
                 var tasks = new List<Task>();
 
                 List<Subscribable> sourceList = new List<Subscribable>();
                 List<Subscribable> destinationList = new List<Subscribable>();
 
-                tasks.Add(Task.Run(() => { sourceList = source.GetStockConclusions(codeList[i], target, false); }));
-                tasks.Add(Task.Run(() => { destinationList = destination.GetStockConclusions(codeList[i], target, false); }));
+                tasks.Add(Task.Run(() => { sourceList = source.GetStockConclusions(code, target, false); }));
+                tasks.Add(Task.Run(() => { destinationList = destination.GetStockConclusions(code, target, false); }));
 
                 Task.WaitAll(tasks.ToArray());
 
@@ -126,12 +126,12 @@ namespace MTree.DataValidator
 
                     if (comparator.DoCompareItem(sourceList, destinationList, false) == false)
                     {
-                        logger.Error($"Stock Conclusion Validation for {codeList[i]} Fail. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
-                        comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, stockConclusionCompareResultPath, codeList[i] + ".html"));
+                        logger.Error($"Stock Conclusion Validation for {code} Fail. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
+                        comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, stockConclusionCompareResultPath, code + ".html"));
                     }
                     else
                     {
-                        logger.Info($"Stock Conclusion Validation for {codeList[i]} success. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
+                        logger.Info($"Stock Conclusion Validation for {code} success. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
                     }
                 }
             });
@@ -265,22 +265,22 @@ namespace MTree.DataValidator
             sw.Start();
             List<string> codeList = source.GetIndexCodeList().OrderBy(c => c).ToList();
 
-            Parallel.For(0, codeList.Count, (i) =>
+            Parallel.ForEach(codeList, new ParallelOptions { MaxDegreeOfParallelism = 4 }, code =>
             {
                 var tasks = new List<Task>();
 
                 List<Subscribable> sourceList = new List<Subscribable>();
                 List<Subscribable> destinationList = new List<Subscribable>();
 
-                tasks.Add(Task.Run(() => { sourceList = source.GetIndexConclusions(codeList[i], target, false); }));
-                tasks.Add(Task.Run(() => { destinationList = destination.GetIndexConclusions(codeList[i], target, false); }));
+                tasks.Add(Task.Run(() => { sourceList = source.GetIndexConclusions(code, target, false); }));
+                tasks.Add(Task.Run(() => { destinationList = destination.GetIndexConclusions(code, target, false); }));
 
                 Task.WaitAll(tasks.ToArray());
 
                 if (comparator.DoCompareItem(sourceList, destinationList, false) == false)
                 {
-                    logger.Error($"Index Conclusion Validation for {codeList[i]} Fail.");
-                    comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, indexConclusionCompareResultPath, codeList[i] + ".html"));
+                    logger.Error($"Index Conclusion Validation for {code} Fail.");
+                    comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, indexConclusionCompareResultPath, code + ".html"));
                 }
             });
             sw.Stop();
