@@ -45,10 +45,8 @@ namespace MTree.DbProvider
         {
             try
             {
-                if (ProcessUtility.IsServiceRunning("MongoDb") == false)
-                {
-                    ProcessUtility.StartService("MongoDb");
-                }
+                if (ServiceUtility.IsServiceRunning("MongoDb") == false)
+                    ServiceUtility.StartService("MongoDb");
 
                 Client = new MongoClient(connectionString);
                 try

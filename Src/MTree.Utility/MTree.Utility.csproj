@@ -78,6 +78,7 @@
     <Compile Include="Firm\KiwoomScreen.cs" />
     <Compile Include="Firm\KiwoomError.cs" />
     <Compile Include="Firm\LoginInfo.cs" />
+    <Compile Include="Utilities\ServiceUtility.cs" />
     <Compile Include="Utilities\KiwoomSessionUtility.cs" />
     <Compile Include="Sort\GridViewSort.cs" />
     <Compile Include="Collections\ObservableConcurrentDictionary.cs" />
