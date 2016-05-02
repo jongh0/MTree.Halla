@@ -6,8 +6,12 @@ using System.Threading.Tasks;
 
 namespace MTree.Configuration
 {
-    public class CompareConfiguration
+    public class ValidatorConfiguration
     {
         public string BeyondComparePath { get; set; } = @"C:\Program Files (x86)\Beyond Compare 3\BComp.exe";
+
+        public bool UseSimultaneousCompare { get; set; } = false;
+
+        public int ThreaLimit { get; set; } = 4;
     }
 }

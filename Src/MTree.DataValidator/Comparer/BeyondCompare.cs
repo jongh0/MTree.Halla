@@ -16,7 +16,7 @@ namespace MTree.DataValidator
 
         public string ResultOutput { get; set; }
 
-        private string beyondComparePath = Config.Compare.BeyondComparePath;
+        private string beyondComparePath = Config.Validator.BeyondComparePath;
 
         private const string tempPath = "Temp";
         private const string logBasePath = "Logs";

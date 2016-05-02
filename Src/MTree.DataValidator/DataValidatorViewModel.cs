@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Command;
+using MTree.Configuration;
 using MTree.Utility;
 using System;
 using System.Collections.Generic;
@@ -61,27 +62,32 @@ namespace MTree.DataValidator
         }
         private void ValidateAllExecute()
         {
-            var task = Task.Run(() =>
+            if (Config.Validator.UseSimultaneousCompare == true)
             {
-                validator.ValidateCodeList();
-                validator.ValidateStockConclusionCompare(TargetDate);
-                validator.ValidateIndexConclusionCompare(TargetDate);
-                validator.ValidateMasterCompare(TargetDate);
-                validator.ValidateCircuitBreakCompare(TargetDate);
-            });
-            task.Wait();
-
-            //var task = Task.Run(() =>
-            //{
-            //    List<Task> tasks = new List<Task>();
-            //    tasks.Add(Task.Run(() => validator.ValidateCodeList()));
-            //    tasks.Add(Task.Run(() => validator.ValidateStockConclusionCompare(TargetDate)));
-            //    tasks.Add(Task.Run(() => validator.ValidateIndexConclusionCompare(TargetDate)));
-            //    tasks.Add(Task.Run(() => validator.ValidateMasterCompare(TargetDate)));
-            //    tasks.Add(Task.Run(() => validator.ValidateCircuitBreakCompare(TargetDate)));
-            //    Task.WaitAll(tasks.ToArray());
-            //});
-            //task.Wait();
+                var task = Task.Run(() =>
+                {
+                    List<Task> tasks = new List<Task>();
+                    tasks.Add(Task.Run(() => validator.ValidateCodeList()));
+                    tasks.Add(Task.Run(() => validator.ValidateStockConclusionCompare(TargetDate)));
+                    tasks.Add(Task.Run(() => validator.ValidateIndexConclusionCompare(TargetDate)));
+                    tasks.Add(Task.Run(() => validator.ValidateMasterCompare(TargetDate)));
+                    tasks.Add(Task.Run(() => validator.ValidateCircuitBreakCompare(TargetDate)));
+                    Task.WaitAll(tasks.ToArray());
+                });
+                task.Wait();
+            }
+            else
+            {
+                var task = Task.Run(() =>
+                {
+                    validator.ValidateCodeList();
+                    validator.ValidateStockConclusionCompare(TargetDate);
+                    validator.ValidateIndexConclusionCompare(TargetDate);
+                    validator.ValidateMasterCompare(TargetDate);
+                    validator.ValidateCircuitBreakCompare(TargetDate);
+                });
+                task.Wait();
+            }
         }
 
         private RelayCommand _ValidateMasterCommand;

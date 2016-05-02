@@ -105,7 +105,7 @@ namespace MTree.DataValidator
             List<string> codeList = source.GetStockCodeList().OrderBy(c => c).ToList();
             
 
-            Parallel.ForEach(codeList, new ParallelOptions { MaxDegreeOfParallelism = 4 }, code =>
+            Parallel.ForEach(codeList, new ParallelOptions { MaxDegreeOfParallelism = Config.Validator.ThreaLimit }, code =>
             {
                 var tasks = new List<Task>();
 
@@ -265,7 +265,7 @@ namespace MTree.DataValidator
             sw.Start();
             List<string> codeList = source.GetIndexCodeList().OrderBy(c => c).ToList();
 
-            Parallel.ForEach(codeList, new ParallelOptions { MaxDegreeOfParallelism = 4 }, code =>
+            Parallel.ForEach(codeList, new ParallelOptions { MaxDegreeOfParallelism = Config.Validator.ThreaLimit }, code =>
             {
                 var tasks = new List<Task>();
 

@@ -16,7 +16,7 @@ namespace MTree.Configuration
         public EbestConfiguration ebest { get; set; } = new EbestConfiguration();
         public KiwoomConfiguration kiwoom { get; set; } = new KiwoomConfiguration();
         public EmailConfiguration email { get; set; } = new EmailConfiguration();
-        public CompareConfiguration compare { get; set; } = new CompareConfiguration();
+        public ValidatorConfiguration validator { get; set; } = new ValidatorConfiguration();
 
         public static GeneralConfiguration General { get { return Instance.general; } }
         public static PushConfiguration Push { get { return Instance.push; } }
@@ -25,7 +25,7 @@ namespace MTree.Configuration
         public static EbestConfiguration Ebest { get { return Instance.ebest; } }
         public static KiwoomConfiguration Kiwoom { get { return Instance.kiwoom; } }
         public static EmailConfiguration Email { get { return Instance.email; } }
-        public static CompareConfiguration Compare { get { return Instance.compare; } }
+        public static ValidatorConfiguration Validator { get { return Instance.validator; } }
 
         #region Instance
         private static object lockObject = new object();
