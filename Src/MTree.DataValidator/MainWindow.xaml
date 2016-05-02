@@ -34,7 +34,7 @@
             <GroupBox Header="For Indivisual Codes">
                 <StackPanel Orientation="Horizontal"  HorizontalAlignment="Left">
                     <Label Content="Code" Margin="5,5,0,5" />
-                    <TextBox Margin="0,5,5,5" Width="50"/>
+                    <TextBox Margin="0,5,5,5" Width="50" Text="{Binding Code}"/>
                     <Button Content="Stock Conclusion" Command="{Binding ValidateIndivisualStockConclusionCommand}" Margin="5,5,5,5"/>
                     <Button Content="Stock Conclusion with Daishin" Command="{Binding ValidateIndivisualStockConclusionWithDaishinCommand}" Margin="5,5,5,5"/>
                     <Button Content="Index Conclusion" Command="{Binding ValidateIndivisualIndexConclusionCommand}" Margin="5,5,5,5"/>
