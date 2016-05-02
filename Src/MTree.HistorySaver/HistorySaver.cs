@@ -45,7 +45,7 @@ namespace MTree.HistorySaver
 
                 StartRefreshTimer();
 
-                DbAgent.Instance.DbProvider.Connect(Config.Database.ConnectionString);
+                var instance = DbAgent.Instance;
             }
             catch (Exception ex)
             {

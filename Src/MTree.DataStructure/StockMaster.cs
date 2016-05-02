@@ -194,11 +194,7 @@ namespace MTree.DataStructure
             {
                 foreach (var property in typeof(StockMaster).GetProperties())
                 {
-<<<<<<< HEAD
-                    if (property.Name != "Id" && property.Name != "ReceivedTime")
-=======
                     if (excludeProperties.Contains(property.Name) == false)
->>>>>>> origin/master
                         sb.Append($"{property.Name}: {property.GetValue(this)}, ");
                 }
             }

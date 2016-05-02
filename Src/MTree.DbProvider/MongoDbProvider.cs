@@ -41,7 +41,7 @@ namespace MTree.DbProvider
             Connect(connectionString);
         }
 
-        public void Connect(string connectionString)
+        private void Connect(string connectionString)
         {
             try
             {

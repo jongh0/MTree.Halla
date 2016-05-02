@@ -65,11 +65,7 @@ namespace MTree.DataStructure
             {
                 foreach (var property in typeof(Subscribable).GetProperties())
                 {
-<<<<<<< HEAD
-                    if (property.Name != "Id" && property.Name != "ReceivedTime")
-=======
                     if (excludeProperties.Contains(property.Name) == false)
->>>>>>> origin/master
                         sb.Append($"{property.Name}: {property.GetValue(this)}, ");
                 }
             }
@@ -77,12 +73,5 @@ namespace MTree.DataStructure
 
             return sb.ToString();
         }
-<<<<<<< HEAD
-        public virtual string ToString(bool excludeId, bool excludeRxTime)
-        {
-            return ToString();
-        }
-=======
->>>>>>> origin/master
     }
 }
