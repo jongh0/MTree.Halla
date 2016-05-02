@@ -55,22 +55,23 @@ namespace MTree.DataStructure
 
         public override string ToString()
         {
+            return ToString(string.Empty);
+        }
+
+        public virtual string ToString(params string[] excludeProperties)
+        {
             StringBuilder sb = new StringBuilder();
             try
             {
                 foreach (var property in typeof(Subscribable).GetProperties())
                 {
-                    if (property.Name != "Id")
+                    if (excludeProperties.Contains(property.Name) == false)
                         sb.Append($"{property.Name}: {property.GetValue(this)}, ");
                 }
             }
             catch { }
 
             return sb.ToString();
-        }
-        public virtual string ToString(bool excludeId)
-        {
-            return ToString();
         }
     }
 }
