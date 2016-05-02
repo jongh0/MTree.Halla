@@ -53,7 +53,7 @@ namespace MTree.DataValidator
 
             foreach (Subscribable d in dest)
             {
-                destString.AppendLine(d.ToString(true));
+                 destString.AppendLine(d.ToString(true));
             }
             
             return DoCompareItem(srcString.ToString(), destString.ToString(), showWindow);

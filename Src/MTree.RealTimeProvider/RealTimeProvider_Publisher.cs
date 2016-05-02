@@ -190,9 +190,9 @@ namespace MTree.RealTimeProvider
                         }
                         else
                         {
+                            StartCodeDistributing();
                             StartStockMastering();
                             StartIndexMastering();
-                            StartCodeDistributing();
                         }
 
                         NotifyMessageToConsumer(MessageTypes.MasteringDone);
