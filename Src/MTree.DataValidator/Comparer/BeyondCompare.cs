@@ -55,7 +55,7 @@ namespace MTree.DataValidator
             {
                 destString.AppendLine(d.ToString(nameof(d.Id), nameof(d.ReceivedTime)));
             }
-            
+
             return DoCompareItem(srcString.ToString(), destString.ToString(), showWindow);
         }
 

@@ -2,6 +2,7 @@
 using MongoDB.Driver;
 using MTree.Configuration;
 using MTree.DataStructure;
+using MTree.Utility;
 using System;
 
 namespace MTree.DbProvider
@@ -40,12 +41,26 @@ namespace MTree.DbProvider
             Connect(connectionString);
         }
 
-        private void Connect(string connectionString)
+        public void Connect(string connectionString)
         {
             try
             {
-                Client = new MongoClient(connectionString);
-                logger.Info($"MongoDb Connected to {connectionString}");
+                if (ProcessUtility.IsServiceRunning("MongoDb") == false)
+                {
+                    if (ProcessUtility.StartService("MongoDb") == true)
+                    {
+                        Client = new MongoClient(connectionString);
+                        try
+                        {
+                            Client.ListDatabases();
+                            logger.Info($"MongoDb Connected to {connectionString}");
+                        }
+                        catch (TimeoutException)
+                        {
+                            logger.Info($"MongoDb Server is not accessable");
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
