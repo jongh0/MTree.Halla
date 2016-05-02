@@ -21,7 +21,7 @@ namespace MTree.Configuration
         public string TimeFormat { get; } = "HH:mm:ss.fff";
 
         [JsonIgnore]
-        public string DateTimeFormat { get; } = "yyyy-MM-dd HH:mm:ss.fff";
+        public string DateTimeFormat { get; } = "yyyy-MM-dd HH:mm:ss.ffff";
 
         [JsonIgnore]
         public string DateNow { get { return DateTime.Now.ToString(DateFormat); } }

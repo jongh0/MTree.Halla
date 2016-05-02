@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using MTree.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,7 +50,7 @@ namespace MTree.DataStructure
         [BsonElement("T")]
         public DateTime Time { get; set; }
 
-        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local, Representation = BsonType.Document)]
         [BsonElement("RT")]
         public DateTime ReceivedTime { get; set; }
 
@@ -66,7 +67,19 @@ namespace MTree.DataStructure
                 foreach (var property in typeof(Subscribable).GetProperties())
                 {
                     if (excludeProperties.Contains(property.Name) == false)
-                        sb.Append($"{property.Name}: {property.GetValue(this)}, ");
+                    {
+                        object value = property.GetValue(this);
+
+                        if (value is DateTime)
+                        {
+                            DateTime dateTime = (DateTime)value;
+                            sb.Append($"{property.Name}: {dateTime.ToString(Config.General.DateTimeFormat)}, ");
+                        }
+                        else
+                        {
+                            sb.Append($"{property.Name}: {value}, ");
+                        }
+                    }
                 }
             }
             catch { }
