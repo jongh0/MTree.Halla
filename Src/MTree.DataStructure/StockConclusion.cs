@@ -37,22 +37,17 @@ namespace MTree.DataStructure
 
             return sb.ToString();
         }
-        public override string ToString(bool excludeId = true)
+        public override string ToString(bool excludeId = true, bool excludeRxTime = true)
         {
             StringBuilder sb = new StringBuilder();
             try
             {
-                if (excludeId == true)
+                foreach (var property in typeof(StockConclusion).GetProperties())
                 {
-                    foreach (var property in typeof(StockConclusion).GetProperties())
-                    {
-                        if (property.Name != "Id")
-                            sb.Append($"{property.Name}: {property.GetValue(this)}, ");
-                    }
-                }
-                else
-                {
-                    return ToString();
+                    if (excludeId == true && property.Name != "Id")
+                        sb.Append($"{property.Name}: {property.GetValue(this)}, ");
+                    else if (excludeRxTime == true && property.Name != "ReceivedTime")
+                        sb.Append($"{property.Name}: {property.GetValue(this)}, ");
                 }
             }
             catch { }

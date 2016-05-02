@@ -60,7 +60,7 @@ namespace MTree.DataStructure
             {
                 foreach (var property in typeof(Subscribable).GetProperties())
                 {
-                    if (property.Name != "Id")
+                    if (property.Name != "Id" && property.Name != "ReceivedTime")
                         sb.Append($"{property.Name}: {property.GetValue(this)}, ");
                 }
             }
@@ -68,7 +68,7 @@ namespace MTree.DataStructure
 
             return sb.ToString();
         }
-        public virtual string ToString(bool excludeId)
+        public virtual string ToString(bool excludeId, bool excludeRxTime)
         {
             return ToString();
         }

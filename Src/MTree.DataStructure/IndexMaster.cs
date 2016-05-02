@@ -23,7 +23,7 @@ namespace MTree.DataStructure
             {
                 foreach (var property in typeof(IndexMaster).GetProperties())
                 {
-                    if (property.Name != "Id")
+                    if (property.Name != "Id" && property.Name != "ReceivedTime")
                         sb.Append($"{property.Name}: {property.GetValue(this)}, ");
                 }
             }

@@ -47,20 +47,19 @@ namespace MTree.DbProvider
             {
                 if (ProcessUtility.IsServiceRunning("MongoDb") == false)
                 {
-                    if (ProcessUtility.StartService("MongoDb") == true)
-                    {
-                        Client = new MongoClient(connectionString);
-                        try
-                        {
-                            Client.ListDatabases();
-                            logger.Info($"MongoDb Connected to {connectionString}");
-                        }
-                        catch (TimeoutException)
-                        {
-                            logger.Info($"MongoDb Server is not accessable");
-                        }
-                    }
+                    ProcessUtility.StartService("MongoDb");
                 }
+
+                Client = new MongoClient(connectionString);
+                try
+                {
+                    Client.ListDatabases();
+                    logger.Info($"MongoDb Connected to {connectionString}");
+                }
+                catch (TimeoutException)
+                {
+                    logger.Info($"MongoDb Server is not accessable");
+                } 
             }
             catch (Exception ex)
             {
