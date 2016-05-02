@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -103,6 +104,49 @@ namespace MTree.Utility
             }
 
             return null;
+        }
+
+        public static bool IsServiceRunning(string serviceName)
+        {
+            ServiceController controller = new ServiceController(serviceName);
+            return controller.Status == ServiceControllerStatus.Running;
+        }
+
+        public static bool StartService(string serviceName, int waitSec = 60)
+        {
+            try
+            {
+                ServiceController controller = new ServiceController(serviceName);
+                logger.Info($"Starting {serviceName} Service");
+                controller.Start();
+                controller.WaitForStatus(ServiceControllerStatus.Running, new TimeSpan(waitSec * 1000 * 1000));
+                logger.Info($"Starting {serviceName} Service done. Service Status:{controller.Status}");
+
+                return controller.Status == ServiceControllerStatus.Running;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+            return false;
+        }
+
+        public static bool StopService(string serviceName, int waitSec = 60)
+        {
+            try
+            {
+                ServiceController controller = new ServiceController(serviceName);
+                logger.Info($"Stopping {serviceName} Service");
+                controller.Stop();
+                controller.WaitForStatus(ServiceControllerStatus.Stopped, new TimeSpan(waitSec * 1000 * 1000));
+                logger.Info($"Stopping {serviceName} Service done. Service Status:{controller.Status}");
+                return controller.Status == ServiceControllerStatus.Stopped;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+            return false;
         }
 
         public static void Kill(ProcessTypes type)
