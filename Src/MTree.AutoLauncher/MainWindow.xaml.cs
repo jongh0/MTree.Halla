@@ -1,6 +1,8 @@
 ﻿using MTree.Utility;
 using System;
 using System.ComponentModel;
+using System.IO;
+using System.Reflection;
 using System.Windows;
 
 namespace MTree.AutoLauncher
@@ -17,6 +19,10 @@ namespace MTree.AutoLauncher
         public MainWindow()
         {
             InitializeComponent();
+
+            var buildTime = new FileInfo(Assembly.GetEntryAssembly().Location).LastWriteTime;
+            Title += $" Built at {buildTime}";
+            logger.Info($"Build Time : {buildTime}");
 
             try
             {
