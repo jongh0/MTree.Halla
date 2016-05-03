@@ -70,8 +70,8 @@ namespace NlogViewer
             {
                 //if (LogEntries.Count >= 50)
                 //    LogEntries.RemoveAt(0);
-                
-                LogEntries.Add(vm);
+                //LogEntries.Add(vm);
+                LogEntries.Insert(0, vm);
             }));
         }
     }
