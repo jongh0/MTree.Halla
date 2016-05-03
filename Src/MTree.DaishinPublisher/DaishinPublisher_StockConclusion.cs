@@ -133,7 +133,7 @@ namespace MTree.DaishinPublisher
 
                 var conclusion = new StockConclusion();
                 conclusion.Id = ObjectId.GenerateNewId();
-                conclusion.ReceivedTime = now;
+                conclusion.Timestamp = now.Ticks;
 
                 // 0 - (string) 종목 코드
                 string fullCode = stockOutCurObj.GetHeaderValue(0).ToString();
@@ -188,7 +188,7 @@ namespace MTree.DaishinPublisher
 
                 var conclusion = new StockConclusion();
                 conclusion.Id = ObjectId.GenerateNewId();
-                conclusion.ReceivedTime = now;
+                conclusion.Timestamp = now.Ticks;
 
                 // 0 - (string) 종목 코드
                 string fullCode = stockCurObj.GetHeaderValue(0).ToString();

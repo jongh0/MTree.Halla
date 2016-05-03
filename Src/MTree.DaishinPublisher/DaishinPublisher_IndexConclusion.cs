@@ -113,7 +113,7 @@ namespace MTree.DaishinPublisher
 
                 var conclusion = new IndexConclusion();
                 conclusion.Id = ObjectId.GenerateNewId();
-                conclusion.ReceivedTime = now;
+                conclusion.Timestamp = now.Ticks;
 
                 // 0 - (string) 종목 코드
                 string fullCode = indexCurObj.GetHeaderValue(0).ToString();

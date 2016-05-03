@@ -28,7 +28,7 @@ namespace MTree.Dashboard
         public ObservableConcurrentDictionary<string, DashboardItem> StockItems { get; set; } = new ObservableConcurrentDictionary<string, DashboardItem>();
         public ObservableConcurrentDictionary<string, DashboardItem> IndexItems { get; set; } = new ObservableConcurrentDictionary<string, DashboardItem>();
 
-        private ConcurrentDictionary<string, DateTime> VerifyOrderingList { get; set; } = new ConcurrentDictionary<string, DateTime>();
+        private ConcurrentDictionary<string, long> VerifyOrderingList { get; set; } = new ConcurrentDictionary<string, long>();
 
         public DataCounter Counter { get; set; } = null;
         public TrafficMonitor Monitor { get; set; } = null;
@@ -160,7 +160,7 @@ namespace MTree.Dashboard
                     if (Config.General.VerifyOrdering == true)
                     {
                         var code = conclusion.Code;
-                        var newTime = conclusion.ReceivedTime;
+                        var newTime = conclusion.Timestamp;
 
                         if (VerifyOrderingList.ContainsKey(code) == false)
                         {

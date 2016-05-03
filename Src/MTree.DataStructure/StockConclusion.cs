@@ -31,16 +31,7 @@ namespace MTree.DataStructure
                 foreach (var property in typeof(StockConclusion).GetProperties())
                 {
                     if (excludeProperties.Contains(property.Name) == false)
-                    {
-                        if (property.PropertyType.Name == "DateTime")
-                        {
-                            sb.Append($"{property.Name}: {ReceivedTime.Hour}:{ReceivedTime.Minute}:{ReceivedTime.Second}:{ReceivedTime.Millisecond}, ");
-                        }
-                        else
-                        {
-                            sb.Append($"{property.Name}: {property.GetValue(this)}, ");
-                        }
-                    }
+                        sb.Append($"{property.Name}: {property.GetValue(this)}, ");
                 }
             }
             catch { }

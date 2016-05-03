@@ -85,7 +85,7 @@ namespace MTree.EbestPublisher
 
                 var circuitBreak = new CircuitBreak();
                 circuitBreak.Id = ObjectId.GenerateNewId();
-                circuitBreak.ReceivedTime = now;
+                circuitBreak.Timestamp = now.Ticks;
 
                 int time = Convert.ToInt32(subscribingObj.GetFieldData("OutBlock", "time"));
                 circuitBreak.Time = new DateTime(now.Year, now.Month, now.Day, time / 10000, time / 100 % 100, time % 100);

@@ -48,13 +48,13 @@ namespace MTree.DataValidator
 
             foreach (Subscribable s in src)
             {
-                srcString.AppendLine(s.ToString(nameof(s.Id), nameof(s.ReceivedTime)));
+                srcString.AppendLine(s.ToString(nameof(s.Id), nameof(s.Timestamp)));
             }
 
             foreach (Subscribable d in dest)
             {
 
-                destString.AppendLine(d.ToString(nameof(d.Id), nameof(d.ReceivedTime)));
+                destString.AppendLine(d.ToString(nameof(d.Id), nameof(d.Timestamp)));
             }
 
             return DoCompareItem(srcString.ToString(), destString.ToString(), showWindow);
@@ -147,7 +147,7 @@ namespace MTree.DataValidator
 
             foreach (Subscribable s in src)
             {
-                srcString.AppendLine(s.ToString(nameof(s.Id), nameof(s.ReceivedTime)));
+                srcString.AppendLine(s.ToString(nameof(s.Id), nameof(s.Timestamp)));
                 outputString.AppendLine(s.ToString());
             }
 
@@ -166,7 +166,7 @@ namespace MTree.DataValidator
             outputString.Clear();
             foreach (Subscribable d in dest)
             {
-                destString.AppendLine(d.ToString(nameof(d.Id), nameof(d.ReceivedTime)));
+                destString.AppendLine(d.ToString(nameof(d.Id), nameof(d.Timestamp)));
                 outputString.AppendLine(d.ToString());
             }
 

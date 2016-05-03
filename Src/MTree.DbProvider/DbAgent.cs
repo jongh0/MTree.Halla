@@ -280,78 +280,78 @@ namespace MTree.DbProvider
                 foreach (var collectionName in GetCollectionList(DbTypes.Chart))
                 {
                     var collection = GetCollection<Candle>(collectionName);
-                    var keys = Builders<Candle>.IndexKeys.Ascending(i => i.CandleType).Ascending(i => i.ReceivedTime);
 
                     if (recreate == true)
                         collection.Indexes.DropAll();
 
-                    collection.Indexes.CreateOne(keys);
+                    collection.Indexes.CreateOne(Builders<Candle>.IndexKeys.Ascending(i => i.CandleType).Ascending(i => i.Time));
+                    collection.Indexes.CreateOne(Builders<Candle>.IndexKeys.Ascending(i => i.Timestamp));
                 }
 
                 foreach (var collectionName in GetCollectionList(DbTypes.BiddingPrice))
                 {
                     var collection = GetCollection<BiddingPrice>(collectionName);
-                    var keys = Builders<BiddingPrice>.IndexKeys.Ascending(i => i.ReceivedTime);
 
                     if (recreate == true)
                         collection.Indexes.DropAll();
 
-                    collection.Indexes.CreateOne(keys);
+                    collection.Indexes.CreateOne(Builders<BiddingPrice>.IndexKeys.Ascending(i => i.Time));
+                    collection.Indexes.CreateOne(Builders<BiddingPrice>.IndexKeys.Ascending(i => i.Timestamp));
                 }
 
                 foreach (var collectionName in GetCollectionList(DbTypes.CircuitBreak))
                 {
                     var collection = GetCollection<CircuitBreak>(collectionName);
-                    var keys = Builders<CircuitBreak>.IndexKeys.Ascending(i => i.ReceivedTime);
 
                     if (recreate == true)
                         collection.Indexes.DropAll();
 
-                    collection.Indexes.CreateOne(keys);
+                    collection.Indexes.CreateOne(Builders<CircuitBreak>.IndexKeys.Ascending(i => i.Time));
+                    collection.Indexes.CreateOne(Builders<CircuitBreak>.IndexKeys.Ascending(i => i.Timestamp));
                 }
 
                 foreach (var collectionName in GetCollectionList(DbTypes.StockMaster))
                 {
                     var collection = GetCollection<StockMaster>(collectionName);
-                    var keys = Builders<StockMaster>.IndexKeys.Ascending(i => i.ReceivedTime);
 
                     if (recreate == true)
                         collection.Indexes.DropAll();
 
-                    collection.Indexes.CreateOne(keys);
+                    collection.Indexes.CreateOne(Builders<StockMaster>.IndexKeys.Ascending(i => i.Time));
+                    collection.Indexes.CreateOne(Builders<StockMaster>.IndexKeys.Ascending(i => i.Timestamp));
                 }
 
                 foreach (var collectionName in GetCollectionList(DbTypes.IndexMaster))
                 {
                     var collection = GetCollection<IndexMaster>(collectionName);
-                    var keys = Builders<IndexMaster>.IndexKeys.Ascending(i => i.ReceivedTime);
 
                     if (recreate == true)
                         collection.Indexes.DropAll();
 
-                    collection.Indexes.CreateOne(keys);
+                    collection.Indexes.CreateOne(Builders<IndexMaster>.IndexKeys.Ascending(i => i.Time));
+                    collection.Indexes.CreateOne(Builders<IndexMaster>.IndexKeys.Ascending(i => i.Timestamp));
                 }
 
                 foreach (var collectionName in GetCollectionList(DbTypes.StockConclusion))
                 {
                     var collection = GetCollection<StockConclusion>(collectionName);
-                    var keys = Builders<StockConclusion>.IndexKeys.Ascending(i => i.ReceivedTime);
 
                     if (recreate == true)
                         collection.Indexes.DropAll();
 
-                    collection.Indexes.CreateOne(keys);
+                    collection.Indexes.CreateOne(Builders<StockConclusion>.IndexKeys.Ascending(i => i.Time));
+                    collection.Indexes.CreateOne(Builders<StockConclusion>.IndexKeys.Ascending(i => i.Timestamp));
                 }
 
                 foreach (var collectionName in GetCollectionList(DbTypes.IndexConclusion))
                 {
                     var collection = GetCollection<IndexConclusion>(collectionName);
-                    var keys = Builders<IndexConclusion>.IndexKeys.Ascending(i => i.ReceivedTime);
 
                     if (recreate == true)
                         collection.Indexes.DropAll();
 
-                    collection.Indexes.CreateOne(keys);
+                    collection.Indexes.CreateOne(Builders<IndexConclusion>.IndexKeys.Ascending(i => i.Time));
+                    collection.Indexes.CreateOne(Builders<IndexConclusion>.IndexKeys.Ascending(i => i.Timestamp));
                 }
 
                 var msg = "Database indexing done";

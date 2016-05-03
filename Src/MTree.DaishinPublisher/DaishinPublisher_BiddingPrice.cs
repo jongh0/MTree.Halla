@@ -107,9 +107,12 @@ namespace MTree.DaishinPublisher
         {
             try
             {
+                var now = DateTime.Now;
+
                 var biddingPrice = new BiddingPrice();
                 biddingPrice.Id = ObjectId.GenerateNewId();
-                biddingPrice.Time = biddingPrice.ReceivedTime = DateTime.Now;
+                biddingPrice.Time = now;
+                biddingPrice.Timestamp = now.Ticks;
 
                 biddingPrice.Bids = new List<BiddingPriceEntity>();
                 biddingPrice.Offers = new List<BiddingPriceEntity>();

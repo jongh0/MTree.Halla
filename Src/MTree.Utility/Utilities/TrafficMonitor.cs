@@ -42,7 +42,7 @@ namespace MTree.Utility
 
         public void CheckLatency(Subscribable subscribable)
         {
-            Latency = DateTime.Now - subscribable.ReceivedTime;
+            Latency = DateTime.Now - new DateTime(subscribable.Timestamp);
             if (Latency.TotalMilliseconds > 1000)
                 logger.Debug($"[{GetType().Name}] {subscribable.GetType().Name} data transfer delayed. Latency: {Latency.TotalMilliseconds}");
 

@@ -43,7 +43,7 @@ namespace MTree.DataValidator
             var builder = Builders<IndexConclusion>.Filter;
             var filter = builder.Gte(i => i.Time, targetDate) & builder.Lt(i => i.Time, targetDate.AddDays(1));
 
-            foreach (Subscribable conclusion in DataSource.Find(code, filter).SortBy(o => o.ReceivedTime).ToList())
+            foreach (Subscribable conclusion in DataSource.Find(code, filter).SortBy(o => o.Timestamp).ToList())
             {
                 if (((IndexConclusion)conclusion).MarketTimeType == MarketTimeTypes.Normal)
                 {
@@ -61,7 +61,7 @@ namespace MTree.DataValidator
             var builder = Builders<StockConclusion>.Filter;
             var filter = builder.Gte(i => i.Time, targetDate) & builder.Lt(i => i.Time, targetDate.AddDays(1));
             
-            foreach (Subscribable conclusion in DataSource.Find(code, filter).SortBy(o => o.ReceivedTime).ToList())
+            foreach (Subscribable conclusion in DataSource.Find(code, filter).SortBy(o => o.Timestamp).ToList())
             {
                 if (conclusion.Time < new DateTime(targetDate.Year, targetDate.Month, targetDate.Day, 15, 00, 0))
                 {
@@ -89,7 +89,7 @@ namespace MTree.DataValidator
             var builder = Builders<CircuitBreak>.Filter;
             var filter = builder.Gte(i => i.Time, targetDate) & builder.Lt(i => i.Time, targetDate.AddDays(1));
 
-            foreach (Subscribable conclusion in DataSource.Find(code, filter).SortBy(o => o.ReceivedTime).ToList())
+            foreach (Subscribable conclusion in DataSource.Find(code, filter).SortBy(o => o.Timestamp).ToList())
             {
                 cbs.Add(conclusion);
             }
