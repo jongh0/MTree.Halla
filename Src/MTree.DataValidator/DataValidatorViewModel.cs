@@ -46,6 +46,34 @@ namespace MTree.DataValidator
             }
         }
 
+        private string _SourceAddress;
+        public string SourceAddress
+        {
+            get
+            {
+                return _SourceAddress;
+            }
+            set
+            {
+                _SourceAddress = value;
+                NotifyPropertyChanged(nameof(SourceAddress));
+            }
+        }
+
+        private string _DestinationAddress;
+        public string DestinationAddress
+        {
+            get
+            {
+                return _DestinationAddress;
+            }
+            set
+            {
+                _DestinationAddress = value;
+                NotifyPropertyChanged(nameof(_DestinationAddress));
+            }
+        }
+        
         private RelayCommand _ValidateAllCommand;
         public ICommand ValidateAllCommand
         {
@@ -204,6 +232,9 @@ namespace MTree.DataValidator
 
         public DataValidatorViewModel()
         {
+            SourceAddress = Config.Database.ConnectionString;
+            DestinationAddress = Config.Database.RemoteConnectionString;
+
             Task.Run(() =>
             {
                 Thread.Sleep(1000);

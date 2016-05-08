@@ -33,6 +33,12 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,5,0,5">
+                <Label Content="Source Address" Margin="5,0,5,0" VerticalAlignment="Center"/>
+                <TextBox Text="{Binding SourceAddress}" VerticalAlignment="Center" Width="150"/>
+                <Label Content="Destination Address" Margin="5,0,5,0" VerticalAlignment="Center" />
+                <TextBox Text="{Binding DestinationAddress}" VerticalAlignment="Center" Width="150"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,5,0,5">
                 <Label Content="Compare Date" Margin="5,0,5,0" VerticalAlignment="Center" />
                 <DatePicker SelectedDate="{Binding Path=TargetDate, Mode=TwoWay, TargetNullValue={x:Static sys:DateTime.Now}}"/>
             </StackPanel>
@@ -46,7 +52,7 @@
                     <Button Content=" Chart " Command="{Binding ValidateCircuitBreakCommand}" Margin="5,0,5,0"/>
                 </StackPanel>
             </GroupBox>
-            <GroupBox Header="For Indivisual Codes" Margin="0,5,0,0">
+            <GroupBox Header="Validate For Indivisual Codes" Margin="0,5,0,0">
                 <StackPanel Orientation="Horizontal"  HorizontalAlignment="Left" Margin="0,5,0,5">
                     <Label Content="Code " Margin="5,0,5,0" />
                     <TextBox Margin="5,0,5,0" Width="50" Text="{Binding Code}" VerticalContentAlignment="Center" MaxLength="6" TextAlignment="Center"/>
