@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MTree.DataStructure;
+using MTree.Utility;
 using System;
 using System.Threading;
 
@@ -10,7 +11,7 @@ namespace MTree.DaishinPublisher
         public override IndexMaster GetIndexMaster(string code)
         {
             var master = new IndexMaster();
-            master.Id = ObjectId.GenerateNewId();
+            master.Id = ObjectIdUtility.GenerateNewId();
             master.Code = code;
 
             if (GetQuote(code, ref master) == true)

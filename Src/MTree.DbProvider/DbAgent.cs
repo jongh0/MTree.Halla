@@ -285,7 +285,6 @@ namespace MTree.DbProvider
                         collection.Indexes.DropAll();
 
                     collection.Indexes.CreateOne(Builders<Candle>.IndexKeys.Ascending(i => i.CandleType).Ascending(i => i.Time));
-                    collection.Indexes.CreateOne(Builders<Candle>.IndexKeys.Ascending(i => i.Timestamp));
                 }
 
                 foreach (var collectionName in GetCollectionList(DbTypes.BiddingPrice))
@@ -296,7 +295,6 @@ namespace MTree.DbProvider
                         collection.Indexes.DropAll();
 
                     collection.Indexes.CreateOne(Builders<BiddingPrice>.IndexKeys.Ascending(i => i.Time));
-                    collection.Indexes.CreateOne(Builders<BiddingPrice>.IndexKeys.Ascending(i => i.Timestamp));
                 }
 
                 foreach (var collectionName in GetCollectionList(DbTypes.CircuitBreak))
@@ -307,7 +305,6 @@ namespace MTree.DbProvider
                         collection.Indexes.DropAll();
 
                     collection.Indexes.CreateOne(Builders<CircuitBreak>.IndexKeys.Ascending(i => i.Time));
-                    collection.Indexes.CreateOne(Builders<CircuitBreak>.IndexKeys.Ascending(i => i.Timestamp));
                 }
 
                 foreach (var collectionName in GetCollectionList(DbTypes.StockMaster))
@@ -318,7 +315,6 @@ namespace MTree.DbProvider
                         collection.Indexes.DropAll();
 
                     collection.Indexes.CreateOne(Builders<StockMaster>.IndexKeys.Ascending(i => i.Time));
-                    collection.Indexes.CreateOne(Builders<StockMaster>.IndexKeys.Ascending(i => i.Timestamp));
                 }
 
                 foreach (var collectionName in GetCollectionList(DbTypes.IndexMaster))
@@ -329,7 +325,6 @@ namespace MTree.DbProvider
                         collection.Indexes.DropAll();
 
                     collection.Indexes.CreateOne(Builders<IndexMaster>.IndexKeys.Ascending(i => i.Time));
-                    collection.Indexes.CreateOne(Builders<IndexMaster>.IndexKeys.Ascending(i => i.Timestamp));
                 }
 
                 foreach (var collectionName in GetCollectionList(DbTypes.StockConclusion))
@@ -340,7 +335,6 @@ namespace MTree.DbProvider
                         collection.Indexes.DropAll();
 
                     collection.Indexes.CreateOne(Builders<StockConclusion>.IndexKeys.Ascending(i => i.Time));
-                    collection.Indexes.CreateOne(Builders<StockConclusion>.IndexKeys.Ascending(i => i.Timestamp));
                 }
 
                 foreach (var collectionName in GetCollectionList(DbTypes.IndexConclusion))
@@ -351,7 +345,6 @@ namespace MTree.DbProvider
                         collection.Indexes.DropAll();
 
                     collection.Indexes.CreateOne(Builders<IndexConclusion>.IndexKeys.Ascending(i => i.Time));
-                    collection.Indexes.CreateOne(Builders<IndexConclusion>.IndexKeys.Ascending(i => i.Timestamp));
                 }
 
                 var msg = "Database indexing done";

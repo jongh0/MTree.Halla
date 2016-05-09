@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson;
 using MTree.Configuration;
 using MTree.DataStructure;
+using MTree.Utility;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -112,8 +113,8 @@ namespace MTree.DaishinPublisher
                 var now = DateTime.Now;
 
                 var conclusion = new IndexConclusion();
-                conclusion.Id = ObjectId.GenerateNewId();
-                conclusion.Timestamp = now.Ticks;
+                conclusion.Id = ObjectIdUtility.GenerateNewId(now);
+                conclusion.ReceivedTime = now;
 
                 // 0 - (string) 종목 코드
                 string fullCode = indexCurObj.GetHeaderValue(0).ToString();

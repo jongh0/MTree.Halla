@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MTree.DataStructure;
+using MTree.Utility;
 using System;
 using System.Threading;
 
@@ -10,7 +11,7 @@ namespace MTree.DaishinPublisher
         public override StockMaster GetStockMaster(string code)
         {
             var stockMaster = new StockMaster();
-            stockMaster.Id = ObjectId.GenerateNewId();
+            stockMaster.Id = ObjectIdUtility.GenerateNewId();
             stockMaster.Code = code;
 
             if (GetQuote(code, ref stockMaster) == true)

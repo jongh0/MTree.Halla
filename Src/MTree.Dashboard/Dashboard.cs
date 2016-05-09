@@ -28,7 +28,7 @@ namespace MTree.Dashboard
         public ObservableConcurrentDictionary<string, DashboardItem> StockItems { get; set; } = new ObservableConcurrentDictionary<string, DashboardItem>();
         public ObservableConcurrentDictionary<string, DashboardItem> IndexItems { get; set; } = new ObservableConcurrentDictionary<string, DashboardItem>();
 
-        private ConcurrentDictionary<string, long> VerifyOrderingList { get; set; } = new ConcurrentDictionary<string, long>();
+        private ConcurrentDictionary<string, ObjectId> VerifyOrderingList { get; set; } = new ConcurrentDictionary<string, ObjectId>();
 
         public DataCounter Counter { get; set; } = null;
         public TrafficMonitor Monitor { get; set; } = null;
@@ -160,19 +160,19 @@ namespace MTree.Dashboard
                     if (Config.General.VerifyOrdering == true)
                     {
                         var code = conclusion.Code;
-                        var newTime = conclusion.Timestamp;
+                        var newId = conclusion.Id;
 
                         if (VerifyOrderingList.ContainsKey(code) == false)
                         {
-                            VerifyOrderingList.TryAdd(code, newTime);
+                            VerifyOrderingList.TryAdd(code, newId);
                         }
                         else
                         {
-                            var prevTime = VerifyOrderingList[code];
-                            if (prevTime >= newTime)
-                                logger.Error($"Conclusion ordering fail, code: {code}, prevTime: {prevTime}, newTime: {newTime}");
+                            var prevId = VerifyOrderingList[code];
+                            if (prevId >= newId)
+                                logger.Error($"Conclusion ordering fail, code: {code}, prevId: {prevId}, newId: {newId}");
 
-                            prevTime = newTime;
+                            prevId = newId;
                         }
                     }
                 }

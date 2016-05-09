@@ -3,6 +3,7 @@ using MTree.DataStructure;
 using MongoDB.Bson;
 using System.ServiceModel;
 using XA_DATASETLib;
+using MTree.Utility;
 
 namespace MTree.EbestPublisher
 {
@@ -84,8 +85,8 @@ namespace MTree.EbestPublisher
                 var now = DateTime.Now;
 
                 var circuitBreak = new CircuitBreak();
-                circuitBreak.Id = ObjectId.GenerateNewId();
-                circuitBreak.Timestamp = now.Ticks;
+                circuitBreak.Id = ObjectIdUtility.GenerateNewId(now);
+                circuitBreak.ReceivedTime = now;
 
                 int time = Convert.ToInt32(subscribingObj.GetFieldData("OutBlock", "time"));
                 circuitBreak.Time = new DateTime(now.Year, now.Month, now.Day, time / 10000, time / 100 % 100, time % 100);

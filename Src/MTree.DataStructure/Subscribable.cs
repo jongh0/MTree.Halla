@@ -50,8 +50,8 @@ namespace MTree.DataStructure
         [BsonElement("T")]
         public DateTime Time { get; set; }
 
-        [BsonElement("Ts")]
-        public long Timestamp { get; set; }
+        [BsonIgnore]
+        public DateTime ReceivedTime { get; set; }
 
         public override string ToString()
         {

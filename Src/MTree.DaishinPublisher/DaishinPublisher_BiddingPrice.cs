@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MTree.DataStructure;
+using MTree.Utility;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -110,9 +111,9 @@ namespace MTree.DaishinPublisher
                 var now = DateTime.Now;
 
                 var biddingPrice = new BiddingPrice();
-                biddingPrice.Id = ObjectId.GenerateNewId();
+                biddingPrice.Id = ObjectIdUtility.GenerateNewId(now);
                 biddingPrice.Time = now;
-                biddingPrice.Timestamp = now.Ticks;
+                biddingPrice.ReceivedTime = now;
 
                 biddingPrice.Bids = new List<BiddingPriceEntity>();
                 biddingPrice.Offers = new List<BiddingPriceEntity>();

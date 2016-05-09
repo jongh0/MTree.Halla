@@ -22,6 +22,7 @@ namespace TestConsole
         {
             Config.Initialize();
 
+            //TestObjectId();
             //TestDataCounter();
             //TestLogging();
             //TestConfig();
@@ -34,6 +35,19 @@ namespace TestConsole
 
             Console.WriteLine("Press any key..");
             Console.ReadLine();
+        }
+
+        private static void TestObjectId()
+        {
+            var id = ObjectIdUtility.GenerateNewId();
+            var id1 = ObjectIdUtility.GenerateNewId();
+            var id2 = ObjectIdUtility.GenerateNewId();
+            var id3 = ObjectIdUtility.GenerateNewId();
+
+            Console.WriteLine(id);
+            Console.WriteLine(id1);
+            Console.WriteLine(id2);
+            Console.WriteLine(id3);
         }
 
         private static void TestDataCounter()

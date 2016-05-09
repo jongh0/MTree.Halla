@@ -4,6 +4,7 @@ using MTree.DataStructure;
 using MTree.Configuration;
 using System.Threading;
 using MongoDB.Bson;
+using MTree.Utility;
 
 namespace MTree.DaishinPublisher
 {
@@ -81,7 +82,7 @@ namespace MTree.DaishinPublisher
                 for (int i = 0; i < count; i++)
                 {
                     var candle = new Candle(code);
-                    candle.Id = ObjectId.GenerateNewId();
+                    candle.Id = ObjectIdUtility.GenerateNewId();
                     candle.CandleType = QuotingCandleType;
 
                     ulong date = Convert.ToUInt64(stockChartObj.GetDataValue(0, i));
