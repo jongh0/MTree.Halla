@@ -35,6 +35,11 @@ namespace MTree.DataValidator
         public DataValidator()
         {
         }
+        public DataValidator(IDataCollector src, IDataCollector dest)
+        {
+            source = src;
+            destination = dest;
+        }
 
         public bool ValidateCodeList()
         {
@@ -221,7 +226,17 @@ namespace MTree.DataValidator
             logger.Info("Stock Conclusion Validation with Daishin Done.");
         }
 
-        public void ValidateStockConclusionCompareWithDaishin(DateTime target, string code)
+        public void ValidateSourceConclusionWithDaishin(string code)
+        {
+            ValidateConclusionWithDaishin(source, code);
+        }
+
+        public void ValidateDestinationConclusionWithDaishin(string code)
+        {
+            ValidateConclusionWithDaishin(destination, code);
+        }
+
+        public void ValidateConclusionWithDaishin(IDataCollector dbCollector, string code)
         {
             logger.Info($"Stock Conclusion Validation for {code} with Daishin Start.");
 
@@ -232,7 +247,9 @@ namespace MTree.DataValidator
             List<Subscribable> sourceList = new List<Subscribable>();
             List<Subscribable> destinationList = new List<Subscribable>();
 
-            tasks.Add(Task.Run(() => { sourceList = source.GetStockConclusions(code, target, true); }));
+            DateTime target = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+
+            tasks.Add(Task.Run(() => { sourceList = dbCollector.GetStockConclusions(code, target, true); }));
             tasks.Add(Task.Run(() => { destinationList = daishin.GetStockConclusions(code, target, true); }));
 
             Task.WaitAll(tasks.ToArray());

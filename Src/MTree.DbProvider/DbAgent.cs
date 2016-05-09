@@ -70,7 +70,11 @@ namespace MTree.DbProvider
         public IMongoDatabase IndexConclusionDb { get; set; }
         public IMongoDatabase CommonDb { get; set; }
 
-        public DbAgent(string connectionString = null)
+        private DbAgent(string connectionString = null)
+        {
+            InitDatabase(connectionString);
+        }
+        private void InitDatabase(string connectionString)
         {
             DbProvider = new MongoDbProvider(connectionString);
 
@@ -82,6 +86,11 @@ namespace MTree.DbProvider
             StockConclusionDb = DbProvider.GetDatabase(DbTypes.StockConclusion);
             IndexConclusionDb = DbProvider.GetDatabase(DbTypes.IndexConclusion);
             CommonDb = DbProvider.GetDatabase(DbTypes.Common);
+        }
+
+        public void ChangeServer(string connectionString)
+        {
+            InitDatabase(connectionString);
         }
 
         public List<string> GetCollectionList(DbTypes type)

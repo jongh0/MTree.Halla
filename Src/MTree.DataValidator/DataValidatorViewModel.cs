@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using MTree.Configuration;
+using MTree.DbProvider;
 using MTree.Utility;
 using System;
 using System.Collections.Generic;
@@ -46,6 +47,20 @@ namespace MTree.DataValidator
             }
         }
 
+        private string _CodeForDaishinValidate;
+        public string CodeForDaishinValidate
+        {
+            get
+            {
+                return _CodeForDaishinValidate;
+            }
+            set
+            {
+                _CodeForDaishinValidate = value;
+                NotifyPropertyChanged(nameof(CodeForDaishinValidate));
+            }
+        }
+
         private string _SourceAddress;
         public string SourceAddress
         {
@@ -73,7 +88,24 @@ namespace MTree.DataValidator
                 NotifyPropertyChanged(nameof(_DestinationAddress));
             }
         }
-        
+
+        private RelayCommand _UpdateServerCommand;
+        public ICommand UpdateServerCommand
+        {
+            get
+            {
+                if (_UpdateServerCommand == null)
+                    _UpdateServerCommand = new RelayCommand(() => Task.Run(() =>
+                    {
+                        DbAgent.Instance.ChangeServer(SourceAddress);
+                        DbAgent.RemoteInstance.ChangeServer(DestinationAddress);
+                        validator = new DataValidator(new DbCollector(DbAgent.Instance), new DbCollector(DbAgent.RemoteInstance));
+                    }));
+
+                return _UpdateServerCommand;
+            }
+        }
+
         private RelayCommand _ValidateAllCommand;
         public ICommand ValidateAllCommand
         {
@@ -166,19 +198,36 @@ namespace MTree.DataValidator
             }
         }
 
-        private RelayCommand _ValidateIndivisualStockConclusionWithDaishinCommand;
-        public ICommand ValidateIndivisualStockConclusionWithDaishinCommand
+        private RelayCommand _ValidateSourceConclusionWithDaishinCommand;
+        public ICommand ValidateSourceConclusionWithDaishinCommand
         {
             get
             {
-                if (_ValidateIndivisualStockConclusionWithDaishinCommand == null)
-                    _ValidateIndivisualStockConclusionWithDaishinCommand = new RelayCommand(() =>
+                if (_ValidateSourceConclusionWithDaishinCommand == null)
+                    _ValidateSourceConclusionWithDaishinCommand = new RelayCommand(() =>
                     Task.Run(() =>
                     {
-                        validator.ValidateStockConclusionCompareWithDaishin(TargetDate, Code);
+                        validator.ValidateSourceConclusionWithDaishin(CodeForDaishinValidate);
                     }));
 
-                return _ValidateIndivisualStockConclusionWithDaishinCommand;
+                return _ValidateSourceConclusionWithDaishinCommand;
+            }
+        }
+
+        
+        private RelayCommand _ValidateDestinationConclusionWithDaishinCommand;
+        public ICommand ValidateDestinationConclusionWithDaishinCommand
+        {
+            get
+            {
+                if (_ValidateDestinationConclusionWithDaishinCommand == null)
+                    _ValidateDestinationConclusionWithDaishinCommand = new RelayCommand(() =>
+                    Task.Run(() =>
+                    {
+                        validator.ValidateDestinationConclusionWithDaishin(CodeForDaishinValidate);
+                    }));
+
+                return _ValidateDestinationConclusionWithDaishinCommand;
             }
         }
 
