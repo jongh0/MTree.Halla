@@ -34,9 +34,9 @@
         <StackPanel Grid.Row="0">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,5,0,5">
                 <Label Content="Source Address" Margin="5,0,5,0" VerticalAlignment="Center"/>
-                <TextBox Text="{Binding SourceAddress}" VerticalAlignment="Center" Width="150"/>
+                <TextBox Text="{Binding SourceAddress}" VerticalAlignment="Center" Width="170"/>
                 <Label Content="Destination Address" Margin="5,0,5,0" VerticalAlignment="Center" />
-                <TextBox Text="{Binding DestinationAddress}" VerticalAlignment="Center" Width="150"/>
+                <TextBox Text="{Binding DestinationAddress}" VerticalAlignment="Center" Width="170"/>
                 <Button Content="Change Server" Margin="5,0,0,0" Command="{Binding UpdateServerCommand}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,5,0,5">
