@@ -80,7 +80,7 @@ namespace MTree.Utility
         public static Process Start(ProcessTypes type, string arguments, ProcessWindowStyle windowStyle = ProcessWindowStyle.Normal)
         {
             if (ProcessList.ContainsKey(type) == true)
-                return Start(ProcessList[type] + ".exe", type.ToString(), windowStyle: windowStyle);
+                return Start(ProcessList[type] + ".exe", arguments, windowStyle: windowStyle);
 
             return null;
         }

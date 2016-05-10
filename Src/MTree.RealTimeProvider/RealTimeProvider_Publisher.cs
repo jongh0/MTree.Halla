@@ -82,8 +82,7 @@ namespace MTree.RealTimeProvider
                     ProcessUtility.Start(ProcessTypes.Dashboard);
 
                 // Kiwoom
-                if (Config.General.SkipMastering == false &&
-                    Config.General.ExcludeKiwoom == false)
+                if (SkipMastering == false && Config.General.ExcludeKiwoom == false)
                     ProcessUtility.Start(ProcessTypes.KiwoomPublisher, ProcessWindowStyle.Minimized);
 
                 // Daishin
@@ -184,7 +183,7 @@ namespace MTree.RealTimeProvider
 
                         Thread.Sleep(1000 * 20);
 
-                        if (Config.General.SkipMastering == true)
+                        if (SkipMastering == true)
                         {
                             StartCodeDistributing();
                         }

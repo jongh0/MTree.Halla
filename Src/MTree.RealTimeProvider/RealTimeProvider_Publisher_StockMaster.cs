@@ -68,7 +68,7 @@ namespace MTree.RealTimeProvider
                     logger.Info($"{RealTimeState}, Elapsed time: {sw.Elapsed.ToString()}");
                     PushUtility.NotifyMessage(RealTimeState);
 
-                    Task.Run(() => StartStockMasterPublishing());
+                    Task.Run(() => StartStockMasterPublishing()).ContinueWith((x) => MasteringDone = true);
                 }
                 else
                 {
