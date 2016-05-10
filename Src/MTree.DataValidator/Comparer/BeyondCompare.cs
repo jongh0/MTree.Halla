@@ -91,16 +91,21 @@ namespace MTree.DataValidator
             }
 
             string sourceFile = Path.Combine(tempPath, Guid.NewGuid().ToString());
-            using (StreamWriter sourceSw = new StreamWriter(sourceFile, false))
+            using (var fs = new FileStream(sourceFile, FileMode.Create))
+            using (var sourceSw = new StreamWriter(fs, Encoding.Default))
             {
                 sourceSw.WriteLine(src);
                 sourceSw.Flush();
+                fs.Flush(true);
             }
+
             string destinationFile = Path.Combine(tempPath, Guid.NewGuid().ToString());
-            using (StreamWriter destinationSw = new StreamWriter(destinationFile, false))
+            using (var fs = new FileStream(destinationFile, FileMode.Create))
+            using (var destinationSw = new StreamWriter(fs, Encoding.Default))
             {
                 destinationSw.WriteLine(dest);
                 destinationSw.Flush();
+                fs.Flush(true);
             }
 
             string param = $"{sourceFile} {destinationFile}";
@@ -153,10 +158,12 @@ namespace MTree.DataValidator
                 Directory.CreateDirectory(path);
             }
 
-            using (StreamWriter sw = new StreamWriter(Path.Combine(path, src.Code + "_source.txt"), false))
+            using (var fs = new FileStream(Path.Combine(path, src.Code + "_source.txt"), FileMode.Create))
+            using (var sw = new StreamWriter(fs, Encoding.Default))
             {
                 sw.WriteLine(outputString);
                 sw.Flush();
+                fs.Flush(true);
             }
 
             outputString.Clear();
@@ -169,10 +176,12 @@ namespace MTree.DataValidator
                 Directory.CreateDirectory(path);
             }
 
-            using (StreamWriter sw = new StreamWriter(Path.Combine(path, dest.Code + "_destination.txt"), false))
+            using (var fs = new FileStream(Path.Combine(path, dest.Code + "_destination.txt"), FileMode.Create))
+            using (var sw = new StreamWriter(fs, Encoding.Default))
             {
                 sw.WriteLine(outputString);
                 sw.Flush();
+                fs.Flush(true);
             }
 
             MakeReport(srcString.ToString(), destString.ToString(), reportPath);
@@ -196,10 +205,12 @@ namespace MTree.DataValidator
                 Directory.CreateDirectory(path);
             }
 
-            using (StreamWriter sw = new StreamWriter(Path.Combine(path, src[0].Code + "_source.txt"), false))
+            using (var fs = new FileStream(Path.Combine(path, src[0].Code + "_source.txt"), FileMode.Create))
+            using (var sw = new StreamWriter(fs, Encoding.Default))
             {
                 sw.WriteLine(outputString);
                 sw.Flush();
+                fs.Flush(true);
             }
 
             outputString.Clear();
@@ -215,10 +226,12 @@ namespace MTree.DataValidator
                 Directory.CreateDirectory(path);
             }
 
-            using (StreamWriter sw = new StreamWriter(Path.Combine(path, dest[0].Code + "_destination.txt"), false))
+            using (var fs = new FileStream(Path.Combine(path, dest[0].Code + "_destination.txt"), FileMode.Create))
+            using (var sw = new StreamWriter(fs, Encoding.Default))
             {
                 sw.WriteLine(outputString);
                 sw.Flush();
+                fs.Flush(true);
             }
 
             MakeReport(srcString.ToString(), destString.ToString(), reportPath);
@@ -233,17 +246,21 @@ namespace MTree.DataValidator
             }
 
             string sourceFile = Path.Combine(tempPath, Guid.NewGuid().ToString());
-            using (StreamWriter sourceSw = new StreamWriter(sourceFile, false))
+            using (var fs = new FileStream(sourceFile, FileMode.Create))
+            using (var sourceSw = new StreamWriter(fs, Encoding.Default))
             {
                 sourceSw.WriteLine(src);
                 sourceSw.Flush();
+                fs.Flush(true);
             }
 
             string destinationFile = Path.Combine(tempPath, Guid.NewGuid().ToString());
-            using (StreamWriter destinationSw = new StreamWriter(destinationFile, false))
+            using (var fs = new FileStream(destinationFile, FileMode.Create))
+            using (var destinationSw = new StreamWriter(fs, Encoding.Default))
             {
                 destinationSw.WriteLine(dest);
                 destinationSw.Flush();
+                fs.Flush(true);
             }
 
             string param = $"/qc=binary /silent @CompareScript.txt {sourceFile} {destinationFile} {reportPath}";
