@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         Title="DataValidator" Height="550" Width="700">
     <Window.DataContext>
-        <local:DataValidatorViewModel />
+        <local:MainViewModel/>
     </Window.DataContext>
     <Grid>
         <Grid.Resources>
@@ -31,7 +31,7 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0">
+        <StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,5,0,5">
                 <Label Content="Source Address" Margin="5,0,5,0" VerticalAlignment="Center"/>
                 <TextBox Text="{Binding SourceAddress}" VerticalAlignment="Center" Width="170"/>
@@ -39,36 +39,75 @@
                 <TextBox Text="{Binding DestinationAddress}" VerticalAlignment="Center" Width="170"/>
                 <Button Content="Change Server" Margin="5,0,0,0" Command="{Binding UpdateServerCommand}"/>
             </StackPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,5,0,5">
-                <Label Content="Compare Date" Margin="5,0,5,0" VerticalAlignment="Center" />
-                <DatePicker SelectedDate="{Binding Path=TargetDate, Mode=TwoWay, TargetNullValue={x:Static sys:DateTime.Now}}"/>
-            </StackPanel>
-            <GroupBox Header="Validate For All Code" Margin="0,5,0,0">
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,5,0,5">
-                    <Button Content=" All " Command="{Binding ValidateAllCommand}" Margin="5,0,5,0"/>
-                    <Button Content=" Master " Command="{Binding ValidateMasterCommand}" Margin="5,0,5,0"/>
-                    <Button Content=" Stock Conclusion " Command="{Binding ValidateAllStockConclusionCommand}" Margin="5,0,5,0"/>
-                    <Button Content=" Index Conclusion " Command="{Binding ValidateAllIndexConclusionCommand}" Margin="5,0,5,0"/>
-                    <Button Content=" Circuit Break " Command="{Binding ValidateCircuitBreakCommand}" Margin="5,0,5,0"/>
-                    <Button Content=" Chart " Command="{Binding ValidateCircuitBreakCommand}" Margin="5,0,5,0"/>
-                </StackPanel>
-            </GroupBox>
-            <GroupBox Header="Validate For Indivisual Codes" Margin="0,5,0,0">
-                <StackPanel Orientation="Horizontal"  HorizontalAlignment="Left" Margin="0,5,0,5">
-                    <Label Content="Code " Margin="5,0,5,0" />
-                    <TextBox Margin="5,0,5,0" Width="50" Text="{Binding Code}" VerticalContentAlignment="Center" MaxLength="6" TextAlignment="Center"/>
-                    <Button Content=" Stock Conclusion " Command="{Binding ValidateIndivisualStockConclusionCommand}" Margin="5,0,5,0"/>
-                    <Button Content=" Index Conclusion " Command="{Binding ValidateIndivisualIndexConclusionCommand}" Margin="5,0,5,0"/>
-                </StackPanel>
-            </GroupBox>
-            <GroupBox Header="Validate Conclusion with Daishin" Margin="0,5,0,0">
-                <StackPanel Orientation="Horizontal"  HorizontalAlignment="Left" Margin="0,5,0,5">
-                    <Label Content="Code " Margin="5,0,5,0" />
-                    <TextBox Margin="5,0,5,0" Width="50" Text="{Binding CodeForDaishinValidate}" VerticalContentAlignment="Center" MaxLength="6" TextAlignment="Center"/>
-                    <Button Content="Source Validate" Command="{Binding ValidateSourceConclusionWithDaishinCommand}" Margin="5,0,5,0"/>
-                    <Button Content="Destination Validate" Command="{Binding ValidateDestinationConclusionWithDaishinCommand}" Margin="5,0,5,0"/>
-                </StackPanel>
-            </GroupBox>
+            <TabControl>
+                <TabItem Header="Validation">
+                    <StackPanel DataContext="{Binding ValidatorViewModel}">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,5,0,5">
+                            <Label Content="Date for Validation" Margin="5,0,5,0" VerticalAlignment="Center" />
+                            <DatePicker SelectedDate="{Binding Path=TargetDate, Mode=TwoWay, TargetNullValue={x:Static sys:DateTime.Now}}"/>
+                        </StackPanel>
+                        <GroupBox Header="Validate For All Code" Margin="0,5,0,0">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,5,0,5">
+                                <Button Content=" All " Command="{Binding ValidateAllCommand}" Margin="5,0,5,0"/>
+                                <Button Content=" Master " Command="{Binding ValidateMasterCommand}" Margin="5,0,5,0"/>
+                                <Button Content=" Stock Conclusion " Command="{Binding ValidateAllStockConclusionCommand}" Margin="5,0,5,0"/>
+                                <Button Content=" Index Conclusion " Command="{Binding ValidateAllIndexConclusionCommand}" Margin="5,0,5,0"/>
+                                <Button Content=" Circuit Break " Command="{Binding ValidateCircuitBreakCommand}" Margin="5,0,5,0"/>
+                                <Button Content=" Chart " Command="{Binding ValidateCircuitBreakCommand}" Margin="5,0,5,0"/>
+                            </StackPanel>
+                        </GroupBox>
+                        <GroupBox Header="Validate For Indivisual Codes" Margin="0,5,0,0">
+                            <StackPanel Orientation="Horizontal"  HorizontalAlignment="Left" Margin="0,5,0,5">
+                                <Label Content="Code " Margin="5,0,5,0" />
+                                <TextBox Margin="5,0,5,0" Width="50" Text="{Binding Code}" VerticalContentAlignment="Center" MaxLength="6" TextAlignment="Center"/>
+                                <Button Content=" Stock Conclusion " Command="{Binding ValidateIndivisualStockConclusionCommand}" Margin="5,0,5,0"/>
+                                <Button Content=" Index Conclusion " Command="{Binding ValidateIndivisualIndexConclusionCommand}" Margin="5,0,5,0"/>
+                            </StackPanel>
+                        </GroupBox>
+                        <GroupBox Header="Validate Conclusion with Daishin" Margin="0,5,0,0">
+                            <StackPanel Orientation="Horizontal"  HorizontalAlignment="Left" Margin="0,5,0,5">
+                                <Label Content="Code " Margin="5,0,5,0" />
+                                <TextBox Margin="5,0,5,0" Width="50" Text="{Binding CodeForDaishinValidate}" VerticalContentAlignment="Center" MaxLength="6" TextAlignment="Center"/>
+                                <Button Content="Source Validate" Command="{Binding ValidateSourceConclusionWithDaishinCommand}" Margin="5,0,5,0"/>
+                                <Button Content="Destination Validate" Command="{Binding ValidateDestinationConclusionWithDaishinCommand}" Margin="5,0,5,0"/>
+                            </StackPanel>
+                        </GroupBox>
+                    </StackPanel>
+                </TabItem>
+                <TabItem Header="Recovery">
+                    <StackPanel DataContext="{Binding RecoveryViewModel}">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,5,0,5">
+                            <Label Content="Date for Recovery" Margin="5,0,5,0" VerticalAlignment="Center"/>
+                            <DatePicker SelectedDate="{Binding Path=TargetDate, Mode=TwoWay, TargetNullValue={x:Static sys:DateTime.Now}}"/>
+                        </StackPanel>
+                        <GroupBox Header="Recovery Direction" Height="65">
+                            <StackPanel Orientation="Horizontal">
+                                <RadioButton GroupName="RecoveryDirection" Content="Source -> Destination" VerticalAlignment="Center" Margin="5,0,0,0" IsChecked="True"/>
+                                <RadioButton GroupName="RecoveryDirection" Content="Destination -> Source" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                                <CheckBox Content="Show Difference" VerticalAlignment="Center" Margin="50,0,0,0" IsChecked="{Binding ShowDifferent}"/>
+                            </StackPanel>
+                        </GroupBox>
+                        <GroupBox Header="Recovery For All Code" Margin="0,5,0,0">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,5,0,5">
+                                <Button Content=" All " Margin="5,0,5,0"/>
+                                <Button Content=" Master " Margin="5,0,5,0"/>
+                                <Button Content=" Stock Conclusion " Margin="5,0,5,0"/>
+                                <Button Content=" Index Conclusion " Margin="5,0,5,0"/>
+                                <Button Content=" Circuit Break " Margin="5,0,5,0"/>
+                                <Button Content=" Chart " Margin="5,0,5,0"/>
+                            </StackPanel>
+                        </GroupBox>
+                        <GroupBox Header="Recovery For Indivisual Codes" Margin="0,5,0,0">
+                            <StackPanel Orientation="Horizontal"  HorizontalAlignment="Left" Margin="0,5,0,5">
+                                <Label Content="Code " Margin="5,0,5,0"/>
+                                <TextBox Margin="5,0,5,0" Width="50" Text="{Binding Code}" VerticalContentAlignment="Center" MaxLength="6" TextAlignment="Center"/>
+                                <Button Content=" Stock Conclusion " Margin="5,0,5,0"/>
+                                <Button Content=" Index Conclusion " Margin="5,0,5,0"/>
+                            </StackPanel>
+                        </GroupBox>
+                    </StackPanel>
+                </TabItem>
+            </TabControl>
         </StackPanel>
         <nlog:NlogViewer Grid.Row="1" x:Name="logCtrl" TimeWidth="AUTO" LoggerNameWidth="0" LevelWidth="auto" ExceptionWidth="auto" MessageWidth="450" Margin="0,5,0,0"/>
     </Grid>

@@ -74,6 +74,7 @@ namespace MTree.DbProvider
         {
             InitDatabase(connectionString);
         }
+
         private void InitDatabase(string connectionString)
         {
             DbProvider = new MongoDbProvider(connectionString);

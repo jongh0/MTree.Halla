@@ -110,10 +110,13 @@
     <Compile Include="Comparer\BeyondCompare.cs" />
     <Compile Include="Comparer\ICompare.cs" />
     <Compile Include="DataCollector\DaishinCollector.cs" />
-    <Compile Include="DataCollector\DataCollector.cs" />
+    <Compile Include="DataCollector\DbCollector.cs" />
     <Compile Include="DataCollector\IDataCollector.cs" />
+    <Compile Include="DataRecoverer.cs" />
     <Compile Include="DataValidator.cs" />
-    <Compile Include="DataValidatorViewModel.cs" />
+    <Compile Include="RecoveryViewModel.cs" />
+    <Compile Include="ValidatorViewModel.cs" />
+    <Compile Include="MainViewModel.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

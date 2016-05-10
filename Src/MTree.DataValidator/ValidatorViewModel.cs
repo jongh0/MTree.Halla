@@ -1,23 +1,18 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using MTree.Configuration;
-using MTree.DbProvider;
-using MTree.Utility;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace MTree.DataValidator
 {
-    public class DataValidatorViewModel : INotifyPropertyChanged
+    public class ValidatorViewModel : INotifyPropertyChanged
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-
-        private DataValidator validator = new DataValidator();
+        public DataValidator Validator { get; set; } = new DataValidator();
 
         private DateTime _TargetDate = DateTime.Now;
         public DateTime TargetDate
@@ -61,51 +56,6 @@ namespace MTree.DataValidator
             }
         }
 
-        private string _SourceAddress;
-        public string SourceAddress
-        {
-            get
-            {
-                return _SourceAddress;
-            }
-            set
-            {
-                _SourceAddress = value;
-                NotifyPropertyChanged(nameof(SourceAddress));
-            }
-        }
-
-        private string _DestinationAddress;
-        public string DestinationAddress
-        {
-            get
-            {
-                return _DestinationAddress;
-            }
-            set
-            {
-                _DestinationAddress = value;
-                NotifyPropertyChanged(nameof(_DestinationAddress));
-            }
-        }
-
-        private RelayCommand _UpdateServerCommand;
-        public ICommand UpdateServerCommand
-        {
-            get
-            {
-                if (_UpdateServerCommand == null)
-                    _UpdateServerCommand = new RelayCommand(() => Task.Run(() =>
-                    {
-                        DbAgent.Instance.ChangeServer(SourceAddress);
-                        DbAgent.RemoteInstance.ChangeServer(DestinationAddress);
-                        validator = new DataValidator(new DbCollector(DbAgent.Instance), new DbCollector(DbAgent.RemoteInstance));
-                    }));
-
-                return _UpdateServerCommand;
-            }
-        }
-
         private RelayCommand _ValidateAllCommand;
         public ICommand ValidateAllCommand
         {
@@ -120,18 +70,19 @@ namespace MTree.DataValidator
                 return _ValidateAllCommand;
             }
         }
-        private void ValidateAllExecute()
+
+        public void ValidateAllExecute()
         {
             if (Config.Validator.UseSimultaneousCompare == true)
             {
                 var task = Task.Run(() =>
                 {
                     List<Task> tasks = new List<Task>();
-                    tasks.Add(Task.Run(() => validator.ValidateCodeList()));
-                    tasks.Add(Task.Run(() => validator.ValidateStockConclusionCompare(TargetDate)));
-                    tasks.Add(Task.Run(() => validator.ValidateIndexConclusionCompare(TargetDate)));
-                    tasks.Add(Task.Run(() => validator.ValidateMasterCompare(TargetDate)));
-                    tasks.Add(Task.Run(() => validator.ValidateCircuitBreakCompare(TargetDate)));
+                    tasks.Add(Task.Run(() => Validator.ValidateCodeList()));
+                    tasks.Add(Task.Run(() => Validator.ValidateStockConclusion(TargetDate)));
+                    tasks.Add(Task.Run(() => Validator.ValidateIndexConclusion(TargetDate)));
+                    tasks.Add(Task.Run(() => Validator.ValidateMasters(TargetDate)));
+                    tasks.Add(Task.Run(() => Validator.ValidateCircuitBreak(TargetDate)));
                     Task.WaitAll(tasks.ToArray());
                 });
                 task.Wait();
@@ -140,11 +91,11 @@ namespace MTree.DataValidator
             {
                 var task = Task.Run(() =>
                 {
-                    validator.ValidateCodeList();
-                    validator.ValidateStockConclusionCompare(TargetDate);
-                    validator.ValidateIndexConclusionCompare(TargetDate);
-                    validator.ValidateMasterCompare(TargetDate);
-                    validator.ValidateCircuitBreakCompare(TargetDate);
+                    Validator.ValidateCodeList();
+                    Validator.ValidateStockConclusion(TargetDate);
+                    Validator.ValidateIndexConclusion(TargetDate);
+                    Validator.ValidateMasters(TargetDate);
+                    Validator.ValidateCircuitBreak(TargetDate);
                 });
                 task.Wait();
             }
@@ -159,7 +110,7 @@ namespace MTree.DataValidator
                     _ValidateMasterCommand = new RelayCommand(() =>
                     Task.Run(() =>
                     {
-                        validator.ValidateMasterCompare(TargetDate);
+                        Validator.ValidateMasters(TargetDate);
                     }));
 
                 return _ValidateMasterCommand;
@@ -172,10 +123,10 @@ namespace MTree.DataValidator
             get
             {
                 if (_ValidateAllStockConclusionCommand == null)
-                    _ValidateAllStockConclusionCommand = new RelayCommand(() => 
-                    Task.Run(() => 
+                    _ValidateAllStockConclusionCommand = new RelayCommand(() =>
+                    Task.Run(() =>
                     {
-                        validator.ValidateStockConclusionCompare(TargetDate);
+                        Validator.ValidateStockConclusion(TargetDate);
                     }));
 
                 return _ValidateAllStockConclusionCommand;
@@ -191,7 +142,7 @@ namespace MTree.DataValidator
                     _ValidateIndivisualStockConclusionCommand = new RelayCommand(() =>
                     Task.Run(() =>
                     {
-                        validator.ValidateStockConclusionCompare(TargetDate, Code);
+                        Validator.ValidateStockConclusion(TargetDate, Code);
                     }));
 
                 return _ValidateIndivisualStockConclusionCommand;
@@ -207,14 +158,13 @@ namespace MTree.DataValidator
                     _ValidateSourceConclusionWithDaishinCommand = new RelayCommand(() =>
                     Task.Run(() =>
                     {
-                        validator.ValidateSourceConclusionWithDaishin(CodeForDaishinValidate);
+                        Validator.ValidateSourceConclusionWithDaishin(CodeForDaishinValidate);
                     }));
 
                 return _ValidateSourceConclusionWithDaishinCommand;
             }
         }
 
-        
         private RelayCommand _ValidateDestinationConclusionWithDaishinCommand;
         public ICommand ValidateDestinationConclusionWithDaishinCommand
         {
@@ -224,7 +174,7 @@ namespace MTree.DataValidator
                     _ValidateDestinationConclusionWithDaishinCommand = new RelayCommand(() =>
                     Task.Run(() =>
                     {
-                        validator.ValidateDestinationConclusionWithDaishin(CodeForDaishinValidate);
+                        Validator.ValidateDestinationConclusionWithDaishin(CodeForDaishinValidate);
                     }));
 
                 return _ValidateDestinationConclusionWithDaishinCommand;
@@ -240,13 +190,13 @@ namespace MTree.DataValidator
                     _ValidateAllIndexConclusionCommand = new RelayCommand(() =>
                     Task.Run(() =>
                     {
-                        validator.ValidateIndexConclusionCompare(TargetDate);
+                        Validator.ValidateIndexConclusion(TargetDate);
                     }));
 
                 return _ValidateAllIndexConclusionCommand;
             }
         }
-        
+
         private RelayCommand _ValidateIndivisualIndexConclusionCommand;
         public ICommand ValidateIndivisualIndexConclusionCommand
         {
@@ -256,7 +206,7 @@ namespace MTree.DataValidator
                     _ValidateIndivisualIndexConclusionCommand = new RelayCommand(() =>
                     Task.Run(() =>
                     {
-                        validator.ValidateIndexConclusionCompare(TargetDate, Code);
+                        Validator.ValidateIndexConclusion(TargetDate, Code);
                     }));
 
                 return _ValidateIndivisualIndexConclusionCommand;
@@ -272,32 +222,11 @@ namespace MTree.DataValidator
                     _ValidateCircuitBreakCommand = new RelayCommand(() =>
                     Task.Run(() =>
                     {
-                        validator.ValidateCircuitBreakCompare(TargetDate);
+                        Validator.ValidateCircuitBreak(TargetDate);
                     }));
 
                 return _ValidateCircuitBreakCommand;
             }
-        }
-
-        public DataValidatorViewModel()
-        {
-            SourceAddress = Config.Database.ConnectionString;
-            DestinationAddress = Config.Database.RemoteConnectionString;
-
-            Task.Run(() =>
-            {
-                Thread.Sleep(1000);
-                logger.Info("Data Validator Started");
-                
-                if (Environment.GetCommandLineArgs().Count() > 1)
-                {
-                    if (Environment.GetCommandLineArgs()[1] == ProcessTypes.DataValidatorRegularCheck.ToString())
-                    {
-                        ValidateAllExecute();
-                        Environment.Exit(0);
-                    }
-                }
-            });
         }
 
         #region INotifyPropertyChanged

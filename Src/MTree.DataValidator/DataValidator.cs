@@ -35,6 +35,7 @@ namespace MTree.DataValidator
         public DataValidator()
         {
         }
+
         public DataValidator(IDataCollector src, IDataCollector dest)
         {
             source = src;
@@ -63,7 +64,7 @@ namespace MTree.DataValidator
             return result;
         }
 
-        public void ValidateMasterCompare(DateTime target)
+        public void ValidateMasters(DateTime target)
         {
             logger.Info("Stock Master Validation Start");
 
@@ -101,7 +102,7 @@ namespace MTree.DataValidator
             logger.Info($"Stock Master Validation Done. Elapsed:{sw.Elapsed}");
         }
         
-        public void ValidateStockConclusionCompare(DateTime target)
+        public void ValidateStockConclusion(DateTime target)
         {
             logger.Info("Stock Conclusion Validation Start");
             Stopwatch sw = new Stopwatch();
@@ -144,7 +145,7 @@ namespace MTree.DataValidator
             logger.Info($"Stock Conclusion Validation Done. Elapsed:{sw.Elapsed}");
         }
 
-        public void ValidateStockConclusionCompare(DateTime target, string code)
+        public void ValidateStockConclusion(DateTime target, string code)
         {
             if (code == null)
             {
@@ -185,7 +186,7 @@ namespace MTree.DataValidator
             logger.Info($"Stock Conclusion Validation for {code} Done.");
         }
 
-        public void ValidateStockConclusionCompareWithDaishin(DateTime target)
+        public void ValidateStockConclusionWithDaishin(DateTime target)
         {
             logger.Info("Stock Conclusion Validation with Daishin Start.");
             int cnt = 0;
@@ -275,7 +276,7 @@ namespace MTree.DataValidator
             logger.Info($"Stock Conclusion Validation for {code} with Daishin Done.");
         }
 
-        public void ValidateIndexConclusionCompare(DateTime target)
+        public void ValidateIndexConclusion(DateTime target)
         {
             logger.Info("Index Conclusion Validation Start.");
             Stopwatch sw = new Stopwatch();
@@ -304,7 +305,7 @@ namespace MTree.DataValidator
             logger.Info($"Index Conclusion Validation Done. Elapsed:{sw.Elapsed}");
         }
 
-        public void ValidateIndexConclusionCompare(DateTime target, string code)
+        public void ValidateIndexConclusion(DateTime target, string code)
         {
             if (code == null)
             {
@@ -333,7 +334,7 @@ namespace MTree.DataValidator
             logger.Info($"Index Conclusion Validation for {code} Done.");
         }
 
-        public void ValidateCircuitBreakCompare(DateTime target)
+        public void ValidateCircuitBreak(DateTime target)
         {
             logger.Info("Circuit Break Validation Start.");
             Stopwatch sw = new Stopwatch();
