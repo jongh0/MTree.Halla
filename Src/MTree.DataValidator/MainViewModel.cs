@@ -18,7 +18,7 @@ namespace MTree.DataValidator
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         private DataValidator validator = new DataValidator();
-
+        
         private ValidatorViewModel _ValidatorViewModel = new ValidatorViewModel();
         public ValidatorViewModel ValidatorViewModel
         {
@@ -99,7 +99,7 @@ namespace MTree.DataValidator
             
             ValidatorViewModel.Validator = validator;
             RecoveryViewModel.Validator = validator;
-
+            
             Task.Run(() =>
             {
                 Thread.Sleep(1000);

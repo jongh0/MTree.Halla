@@ -74,7 +74,7 @@ namespace MTree.DataValidator
                 return false;
             }
 
-            return DoCompareItem(src.ToString(), dest.ToString(), showWindow);
+            return DoCompareItem(src.ToString(nameof(src.Id)), dest.ToString(nameof(dest.Id)), showWindow);
         }
 
         public bool DoCompareItem(string src, string dest, bool showWindow = false)
@@ -137,7 +137,46 @@ namespace MTree.DataValidator
 
             MakeReport(srcString.ToString(), destString.ToString(), reportPath);
         }
+        public void MakeReport(Subscribable src, Subscribable dest, string reportPath)
+        {
+            StringBuilder srcString = new StringBuilder();
+            StringBuilder destString = new StringBuilder();
 
+            StringBuilder outputString = new StringBuilder();
+            
+            srcString.AppendLine(src.ToString(nameof(src.Id), nameof(src.ReceivedTime)));
+            outputString.AppendLine(src.ToString(nameof(src.ReceivedTime)));
+            
+            string path = Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, codeDifferentPath);
+            if (Directory.Exists(path) == false)
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            using (StreamWriter sw = new StreamWriter(Path.Combine(path, src.Code + "_source.txt"), false))
+            {
+                sw.WriteLine(outputString);
+                sw.Flush();
+            }
+
+            outputString.Clear();
+            destString.AppendLine(dest.ToString(nameof(dest.Id), nameof(dest.ReceivedTime)));
+            outputString.AppendLine(dest.ToString(nameof(dest.ReceivedTime)));
+            
+            path = Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, codeDifferentPath);
+            if (Directory.Exists(path) == false)
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            using (StreamWriter sw = new StreamWriter(Path.Combine(path, dest.Code + "_destination.txt"), false))
+            {
+                sw.WriteLine(outputString);
+                sw.Flush();
+            }
+
+            MakeReport(srcString.ToString(), destString.ToString(), reportPath);
+        }
         public void MakeReport(List<Subscribable> src, List<Subscribable> dest, string reportPath)
         {
             StringBuilder srcString = new StringBuilder();

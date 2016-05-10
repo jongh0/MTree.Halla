@@ -82,7 +82,7 @@
                         </StackPanel>
                         <GroupBox Header="Recovery Direction" Height="65">
                             <StackPanel Orientation="Horizontal">
-                                <RadioButton GroupName="RecoveryDirection" Content="Source -> Destination" VerticalAlignment="Center" Margin="5,0,0,0" IsChecked="True"/>
+                                <RadioButton GroupName="RecoveryDirection" Content="Source -> Destination" VerticalAlignment="Center" Margin="5,0,0,0" IsChecked="{Binding FromSourceToDestination}"/>
                                 <RadioButton GroupName="RecoveryDirection" Content="Destination -> Source" VerticalAlignment="Center" Margin="5,0,0,0"/>
                                 <CheckBox Content="Show Difference" VerticalAlignment="Center" Margin="50,0,0,0" IsChecked="{Binding ShowDifferent}"/>
                             </StackPanel>
@@ -101,6 +101,7 @@
                             <StackPanel Orientation="Horizontal"  HorizontalAlignment="Left" Margin="0,5,0,5">
                                 <Label Content="Code " Margin="5,0,5,0"/>
                                 <TextBox Margin="5,0,5,0" Width="50" Text="{Binding Code}" VerticalContentAlignment="Center" MaxLength="6" TextAlignment="Center"/>
+                                <Button Content=" Master " Command="{Binding RecoverMasterCommand}" Margin="5,0,5,0"/>
                                 <Button Content=" Stock Conclusion " Margin="5,0,5,0"/>
                                 <Button Content=" Index Conclusion " Margin="5,0,5,0"/>
                             </StackPanel>

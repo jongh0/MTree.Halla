@@ -12,6 +12,8 @@ namespace MTree.DataValidator
 {
     public class ValidatorViewModel : INotifyPropertyChanged
     {
+        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
         public DataValidator Validator { get; set; } = new DataValidator();
 
         private DateTime _TargetDate = DateTime.Now;
@@ -77,13 +79,21 @@ namespace MTree.DataValidator
             {
                 var task = Task.Run(() =>
                 {
-                    List<Task> tasks = new List<Task>();
-                    tasks.Add(Task.Run(() => Validator.ValidateCodeList()));
-                    tasks.Add(Task.Run(() => Validator.ValidateStockConclusion(TargetDate)));
-                    tasks.Add(Task.Run(() => Validator.ValidateIndexConclusion(TargetDate)));
-                    tasks.Add(Task.Run(() => Validator.ValidateMasters(TargetDate)));
-                    tasks.Add(Task.Run(() => Validator.ValidateCircuitBreak(TargetDate)));
-                    Task.WaitAll(tasks.ToArray());
+                    if (Validator != null)
+                    {
+                        List<Task> tasks = new List<Task>();
+
+                        tasks.Add(Task.Run(() => Validator.ValidateCodeList()));
+                        tasks.Add(Task.Run(() => Validator.ValidateStockConclusion(TargetDate)));
+                        tasks.Add(Task.Run(() => Validator.ValidateIndexConclusion(TargetDate)));
+                        tasks.Add(Task.Run(() => Validator.ValidateMasters(TargetDate)));
+                        tasks.Add(Task.Run(() => Validator.ValidateCircuitBreak(TargetDate)));
+                        Task.WaitAll(tasks.ToArray());
+                    }
+                    else
+                    {
+                        logger.Error("Validator is not assigned");
+                    }
                 });
                 task.Wait();
             }
@@ -91,11 +101,18 @@ namespace MTree.DataValidator
             {
                 var task = Task.Run(() =>
                 {
-                    Validator.ValidateCodeList();
-                    Validator.ValidateStockConclusion(TargetDate);
-                    Validator.ValidateIndexConclusion(TargetDate);
-                    Validator.ValidateMasters(TargetDate);
-                    Validator.ValidateCircuitBreak(TargetDate);
+                    if (Validator != null)
+                    {
+                        Validator.ValidateCodeList();
+                        Validator.ValidateStockConclusion(TargetDate);
+                        Validator.ValidateIndexConclusion(TargetDate);
+                        Validator.ValidateMasters(TargetDate);
+                        Validator.ValidateCircuitBreak(TargetDate);
+                    }
+                    else
+                    {
+                        logger.Error("Validator is not assigned");
+                    }
                 });
                 task.Wait();
             }
@@ -110,7 +127,14 @@ namespace MTree.DataValidator
                     _ValidateMasterCommand = new RelayCommand(() =>
                     Task.Run(() =>
                     {
-                        Validator.ValidateMasters(TargetDate);
+                        if (Validator != null)
+                        {
+                            Validator.ValidateMasters(TargetDate);
+                        }
+                        else
+                        {
+                            logger.Error("Validator is not assigned");
+                        }
                     }));
 
                 return _ValidateMasterCommand;
@@ -126,7 +150,14 @@ namespace MTree.DataValidator
                     _ValidateAllStockConclusionCommand = new RelayCommand(() =>
                     Task.Run(() =>
                     {
-                        Validator.ValidateStockConclusion(TargetDate);
+                        if (Validator != null)
+                        {
+                            Validator.ValidateStockConclusion(TargetDate);
+                        }
+                        else
+                        {
+                            logger.Error("Validator is not assigned");
+                        }
                     }));
 
                 return _ValidateAllStockConclusionCommand;
@@ -142,7 +173,14 @@ namespace MTree.DataValidator
                     _ValidateIndivisualStockConclusionCommand = new RelayCommand(() =>
                     Task.Run(() =>
                     {
-                        Validator.ValidateStockConclusion(TargetDate, Code);
+                        if (Validator != null)
+                        {
+                            Validator.ValidateStockConclusion(TargetDate, Code);
+                        }
+                        else
+                        {
+                            logger.Error("Validator is not assigned");
+                        }
                     }));
 
                 return _ValidateIndivisualStockConclusionCommand;
@@ -158,7 +196,14 @@ namespace MTree.DataValidator
                     _ValidateSourceConclusionWithDaishinCommand = new RelayCommand(() =>
                     Task.Run(() =>
                     {
-                        Validator.ValidateSourceConclusionWithDaishin(CodeForDaishinValidate);
+                        if (Validator != null)
+                        {
+                            Validator.ValidateSourceConclusionWithDaishin(CodeForDaishinValidate);
+                        }
+                        else
+                        {
+                            logger.Error("Validator is not assigned");
+                        }
                     }));
 
                 return _ValidateSourceConclusionWithDaishinCommand;
@@ -174,7 +219,14 @@ namespace MTree.DataValidator
                     _ValidateDestinationConclusionWithDaishinCommand = new RelayCommand(() =>
                     Task.Run(() =>
                     {
-                        Validator.ValidateDestinationConclusionWithDaishin(CodeForDaishinValidate);
+                        if (Validator != null)
+                        {
+                            Validator.ValidateDestinationConclusionWithDaishin(CodeForDaishinValidate);
+                        }
+                        else
+                        {
+                            logger.Error("Validator is not assigned");
+                        }
                     }));
 
                 return _ValidateDestinationConclusionWithDaishinCommand;
@@ -190,7 +242,14 @@ namespace MTree.DataValidator
                     _ValidateAllIndexConclusionCommand = new RelayCommand(() =>
                     Task.Run(() =>
                     {
-                        Validator.ValidateIndexConclusion(TargetDate);
+                        if (Validator != null)
+                        {
+                            Validator.ValidateIndexConclusion(TargetDate);
+                        }
+                        else
+                        {
+                            logger.Error("Validator is not assigned");
+                        }
                     }));
 
                 return _ValidateAllIndexConclusionCommand;
@@ -206,7 +265,14 @@ namespace MTree.DataValidator
                     _ValidateIndivisualIndexConclusionCommand = new RelayCommand(() =>
                     Task.Run(() =>
                     {
-                        Validator.ValidateIndexConclusion(TargetDate, Code);
+                        if (Validator != null)
+                        {
+                            Validator.ValidateIndexConclusion(TargetDate, Code);
+                        }
+                        else
+                        {
+                            logger.Error("Validator is not assigned");
+                        }
                     }));
 
                 return _ValidateIndivisualIndexConclusionCommand;
@@ -222,7 +288,14 @@ namespace MTree.DataValidator
                     _ValidateCircuitBreakCommand = new RelayCommand(() =>
                     Task.Run(() =>
                     {
-                        Validator.ValidateCircuitBreak(TargetDate);
+                        if (Validator != null)
+                        {
+                            Validator.ValidateCircuitBreak(TargetDate);
+                        }
+                        else
+                        {
+                            logger.Error("Validator is not assigned");
+                        }
                     }));
 
                 return _ValidateCircuitBreakCommand;

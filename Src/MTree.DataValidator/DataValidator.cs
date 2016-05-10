@@ -64,9 +64,39 @@ namespace MTree.DataValidator
             return result;
         }
 
-        public void ValidateMasters(DateTime target)
+        public bool ValidateMaster(DateTime target, string code, bool makeReport = true)
         {
             logger.Info("Stock Master Validation Start");
+
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
+            StockMaster srcMaster = source.GetMaster(code, target);
+            logger.Info($"Get Stock Master for {code} from source done.");
+         
+            StockMaster destMaster = destination.GetMaster(code, target);
+            logger.Info($"Get Stock Master for {code} from destination done.");
+         
+            bool result = comparator.DoCompareItem(srcMaster, destMaster, false);   
+            if (result == false && makeReport == true)
+            {
+                comparator.MakeReport(srcMaster, destMaster, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, masterCompareResultFile));
+                logger.Error($"Stock Master Validation Fail");
+            }
+            else
+            {
+                logger.Info($"Stock Master Validation Success");
+            }
+
+            sw.Stop();
+            logger.Info($"Stock Master Validation Done. Elapsed:{sw.Elapsed}");
+
+            return result;
+        }
+
+        public bool ValidateMasters(DateTime target, bool makeReport = true)
+        {
+            logger.Info("Stock Masters Validation Start");
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -79,27 +109,29 @@ namespace MTree.DataValidator
                 StockMaster srcMaster = source.GetMaster(code, target);
                 logger.Info($"Get Stock Master for {code} from source done.");
                 if (srcMaster != null)
-                    srcMasters.Add(srcMaster.ToString());
+                    srcMasters.Add(srcMaster.ToString(nameof(srcMaster.Id)));
 
                 StockMaster destMaster = destination.GetMaster(code, target);
                 logger.Info($"Get Stock Master for {code} from destination done.");
                 if (destMaster != null)
-                    destMasters.Add(destMaster.ToString());
+                    destMasters.Add(destMaster.ToString(nameof(destMaster.Id)));
             }
 
             bool result = comparator.DoCompareItem(srcMasters, destMasters, false);
-            if (result == false)
+            if (result == false && makeReport == true)
             {
                 comparator.MakeReport(srcMasters, destMasters, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, masterCompareResultFile));
-                logger.Error($"Stock Master Validation Fail");
+                logger.Error($"Stock Masters Validation Fail");
             }
             else
             {
-                logger.Info($"Stock Master Validation Success");
+                logger.Info($"Stock Masters Validation Success");
             }
 
             sw.Stop();
             logger.Info($"Stock Master Validation Done. Elapsed:{sw.Elapsed}");
+
+            return result;
         }
         
         public void ValidateStockConclusion(DateTime target)

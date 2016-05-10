@@ -69,7 +69,7 @@ namespace MTree.DbProvider
         public IMongoDatabase StockConclusionDb { get; set; }
         public IMongoDatabase IndexConclusionDb { get; set; }
         public IMongoDatabase CommonDb { get; set; }
-
+        
         private DbAgent(string connectionString = null)
         {
             InitDatabase(connectionString);
