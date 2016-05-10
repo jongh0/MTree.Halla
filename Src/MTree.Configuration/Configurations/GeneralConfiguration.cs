@@ -64,5 +64,9 @@ namespace MTree.Configuration
         public bool LaunchHistorySaver { get; set; } = true;
 
         public bool KeepAliveDashboardAfterMarketEnd { get; set; } = true;
+
+        public bool UseShutdown { get; set; } = false;
+
+        public int ShutdownHour { get; set; } = 24;
     }
 }
