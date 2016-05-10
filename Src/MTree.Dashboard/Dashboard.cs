@@ -277,7 +277,8 @@ namespace MTree.Dashboard
                 var fileName = $"MTree.{Config.General.DateNow}_Dashboard.csv";
                 var filePath = Path.Combine(Environment.CurrentDirectory, "Logs", Config.General.DateNow, fileName);
 
-                using (var sw = new StreamWriter(new FileStream(filePath, FileMode.Create), Encoding.Default))
+                using (var fs = new FileStream(filePath, FileMode.Create))
+                using (var sw = new StreamWriter(fs, Encoding.Default))
                 {
                     sw.WriteLine("Code, Name, Price, PricePercent, BasisPrice, Volume, PreviousVolume, MarketType");
 
@@ -290,6 +291,9 @@ namespace MTree.Dashboard
                     {
                         sw.WriteLine($"{item.Code}, {item.Name.Replace(',', ' ')}, {item.Price}, {item.PricePercent.ToString(Config.General.PercentFormat)}, {item.BasisPrice}, {item.Volume}, {item.PreviousVolume}, {item.MarketType.ToString()}");
                     }
+
+                    sw.Flush();
+                    fs.Flush(true);
                 }
 
                 logger.Info($"Save Dashboard done, {fileName}");

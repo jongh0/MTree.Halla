@@ -251,7 +251,8 @@ namespace MTree.DataStructure
                 var fileName = $"MTree.{Config.General.DateNow}_{Type.ToString()}.csv";
                 var filePath = Path.Combine(Environment.CurrentDirectory, "Logs", Config.General.DateNow, fileName);
 
-                using (var sw = new StreamWriter(new FileStream(filePath, FileMode.Create), Encoding.Default))
+                using (var fs = new FileStream(filePath, FileMode.Create))
+                using (var sw = new StreamWriter(fs, Encoding.Default))
                 {
                     sw.WriteLine($"Chart, {ChartCount}");
                     sw.WriteLine($"CircuitBreak, {CircuitBreakCount}");
@@ -261,6 +262,9 @@ namespace MTree.DataStructure
                     sw.WriteLine($"StockConclusion, {StockConclusionCount}");
                     sw.WriteLine($"IndexConclusion, {IndexConclusionCount}");
                     sw.WriteLine($"Total, {TotalCount}");
+
+                    sw.Flush();
+                    fs.Flush(true);
                 }
 
                 logger.Info($"Save {Type.ToString()} done, {fileName}{Environment.NewLine}{ToString()}");
