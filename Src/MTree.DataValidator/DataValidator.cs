@@ -172,6 +172,10 @@ namespace MTree.DataValidator
                         logger.Info($"Stock Conclusion Validation for {code} success. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
                     }
                 }
+                else
+                {
+                    logger.Info($"Stock Conclusion for {code} is Empty. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
+                }
             });
             sw.Stop();
             logger.Info($"Stock Conclusion Validation Done. Elapsed:{sw.Elapsed}");
@@ -214,8 +218,10 @@ namespace MTree.DataValidator
                     logger.Info($"Stock Conclusion Validation for {code} success.");
                 }
             }
-
-            logger.Info($"Stock Conclusion Validation for {code} Done.");
+            else
+            {
+                logger.Info($"Stock Conclusion for {code} is Empty.");
+            }
         }
 
         public void ValidateStockConclusionWithDaishin(DateTime target)
