@@ -13,12 +13,12 @@ namespace MTree.DataValidator
 
         List<string> GetIndexCodeList();
         
-        StockMaster GetMaster(string code, DateTime targetDate);
+        StockMaster GetMaster(DateTime targetDate, string code);
 
-        List<Subscribable> GetIndexConclusions(string code, DateTime targetDate, bool normalOnly = true);
+        List<Subscribable> GetIndexConclusions(DateTime targetDate, string code, bool normalOnly = true);
 
-        List<Subscribable> GetStockConclusions(string code, DateTime targetDate, bool normalOnly = true);
+        List<Subscribable> GetStockConclusions(DateTime targetDate, string code, bool normalOnly = true);
 
-        List<Subscribable> GetCircuitBreaks(string code, DateTime targetDatex);
+        List<Subscribable> GetCircuitBreaks(DateTime targetDatex, string code);
     }
 }

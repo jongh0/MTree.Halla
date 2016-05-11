@@ -29,14 +29,14 @@ namespace MTree.DataValidator
             return DataSource.GetCollectionList(DbTypes.IndexMaster);
         }
 
-        public StockMaster GetMaster(string code, DateTime targetDate)
+        public StockMaster GetMaster(DateTime targetDate, string code)
         {
             var builder = Builders<StockMaster>.Filter;
             var filter = builder.Gte(i => i.Time, targetDate) & builder.Lt(i => i.Time, targetDate.AddDays(1));
             return DataSource.Find(code, filter).FirstOrDefault();
         }
 
-        public List<Subscribable> GetIndexConclusions(string code, DateTime targetDate, bool normalOnly = true)
+        public List<Subscribable> GetIndexConclusions(DateTime targetDate, string code,bool normalOnly = true)
         {
             List<Subscribable> conclusions = new List<Subscribable>();
 
@@ -54,7 +54,7 @@ namespace MTree.DataValidator
             return conclusions;
         }
 
-        public List<Subscribable> GetStockConclusions(string code, DateTime targetDate, bool normalOnly = true)
+        public List<Subscribable> GetStockConclusions(DateTime targetDate, string code, bool normalOnly = true)
         {
             List<Subscribable> conclusions = new List<Subscribable>();
 
@@ -82,7 +82,7 @@ namespace MTree.DataValidator
             return conclusions;
         }
 
-        public List<Subscribable> GetCircuitBreaks(string code, DateTime targetDate)
+        public List<Subscribable> GetCircuitBreaks(DateTime targetDate, string code)
         {
             List<Subscribable> cbs = new List<Subscribable>();
 

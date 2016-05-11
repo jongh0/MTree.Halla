@@ -71,10 +71,10 @@ namespace MTree.DataValidator
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
-            StockMaster srcMaster = source.GetMaster(code, target);
+            StockMaster srcMaster = source.GetMaster(target, code);
             logger.Info($"Get Stock Master for {code} from source done.");
          
-            StockMaster destMaster = destination.GetMaster(code, target);
+            StockMaster destMaster = destination.GetMaster(target, code);
             logger.Info($"Get Stock Master for {code} from destination done.");
          
             bool result = comparator.DoCompareItem(srcMaster, destMaster, false);   
@@ -106,12 +106,12 @@ namespace MTree.DataValidator
 
             foreach (string code in source.GetStockCodeList().OrderBy(c => c))
             {
-                StockMaster srcMaster = source.GetMaster(code, target);
+                StockMaster srcMaster = source.GetMaster(target, code);
                 logger.Info($"Get Stock Master for {code} from source done.");
                 if (srcMaster != null)
                     srcMasters.Add(srcMaster.ToString(nameof(srcMaster.Id)));
 
-                StockMaster destMaster = destination.GetMaster(code, target);
+                StockMaster destMaster = destination.GetMaster(target, code);
                 logger.Info($"Get Stock Master for {code} from destination done.");
                 if (destMaster != null)
                     destMasters.Add(destMaster.ToString(nameof(destMaster.Id)));
@@ -150,8 +150,8 @@ namespace MTree.DataValidator
                 List<Subscribable> sourceList = new List<Subscribable>();
                 List<Subscribable> destinationList = new List<Subscribable>();
 
-                tasks.Add(Task.Run(() => { sourceList = source.GetStockConclusions(code, target, false); }));
-                tasks.Add(Task.Run(() => { destinationList = destination.GetStockConclusions(code, target, false); }));
+                tasks.Add(Task.Run(() => { sourceList = source.GetStockConclusions(target, code, false); }));
+                tasks.Add(Task.Run(() => { destinationList = destination.GetStockConclusions(target, code, false); }));
 
                 Task.WaitAll(tasks.ToArray());
 
@@ -196,8 +196,8 @@ namespace MTree.DataValidator
             List<Subscribable> sourceList = new List<Subscribable>();
             List<Subscribable> destinationList = new List<Subscribable>();
 
-            tasks.Add(Task.Run(() => { sourceList = source.GetStockConclusions(code, target, false); }));
-            tasks.Add(Task.Run(() => { destinationList = destination.GetStockConclusions(code, target, false); }));
+            tasks.Add(Task.Run(() => { sourceList = source.GetStockConclusions(target, code, false); }));
+            tasks.Add(Task.Run(() => { destinationList = destination.GetStockConclusions(target, code, false); }));
 
             Task.WaitAll(tasks.ToArray());
 
@@ -237,8 +237,8 @@ namespace MTree.DataValidator
                 List<Subscribable> sourceList = new List<Subscribable>();
                 List<Subscribable> destinationList = new List<Subscribable>();
 
-                tasks.Add(Task.Run(() => { sourceList = source.GetStockConclusions(code, target, true); }));
-                tasks.Add(Task.Run(() => { destinationList = daishin.GetStockConclusions(code, target, true); }));
+                tasks.Add(Task.Run(() => { sourceList = source.GetStockConclusions(target, code, true); }));
+                tasks.Add(Task.Run(() => { destinationList = daishin.GetStockConclusions(target, code, true); }));
 
                 Task.WaitAll(tasks.ToArray());
                 
@@ -288,8 +288,8 @@ namespace MTree.DataValidator
 
             DateTime target = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
 
-            tasks.Add(Task.Run(() => { sourceList = dbCollector.GetStockConclusions(code, target, true); }));
-            tasks.Add(Task.Run(() => { destinationList = daishin.GetStockConclusions(code, target, true); }));
+            tasks.Add(Task.Run(() => { sourceList = dbCollector.GetStockConclusions(target, code, true); }));
+            tasks.Add(Task.Run(() => { destinationList = daishin.GetStockConclusions(target, code, true); }));
 
             Task.WaitAll(tasks.ToArray());
 
@@ -328,8 +328,8 @@ namespace MTree.DataValidator
                 List<Subscribable> sourceList = new List<Subscribable>();
                 List<Subscribable> destinationList = new List<Subscribable>();
 
-                tasks.Add(Task.Run(() => { sourceList = source.GetIndexConclusions(code, target, false); }));
-                tasks.Add(Task.Run(() => { destinationList = destination.GetIndexConclusions(code, target, false); }));
+                tasks.Add(Task.Run(() => { sourceList = source.GetIndexConclusions(target, code, false); }));
+                tasks.Add(Task.Run(() => { destinationList = destination.GetIndexConclusions(target, code, false); }));
 
                 Task.WaitAll(tasks.ToArray());
 
@@ -358,8 +358,8 @@ namespace MTree.DataValidator
             List<Subscribable> sourceList = new List<Subscribable>();
             List<Subscribable> destinationList = new List<Subscribable>();
 
-            tasks.Add(Task.Run(() => { sourceList = source.GetIndexConclusions(code, target, false); }));
-            tasks.Add(Task.Run(() => { destinationList = destination.GetIndexConclusions(code, target, false); }));
+            tasks.Add(Task.Run(() => { sourceList = source.GetIndexConclusions(target, code, false); }));
+            tasks.Add(Task.Run(() => { destinationList = destination.GetIndexConclusions(target, code, false); }));
 
             Task.WaitAll(tasks.ToArray());
 
@@ -384,8 +384,8 @@ namespace MTree.DataValidator
 
             foreach (string code in source.GetStockCodeList())
             {
-                tasks.Add(Task.Run(() => { sourceList.AddRange(source.GetCircuitBreaks(code, target)); }));
-                tasks.Add(Task.Run(() => { destinationList.AddRange(destination.GetCircuitBreaks(code, target)); }));
+                tasks.Add(Task.Run(() => { sourceList.AddRange(source.GetCircuitBreaks(target, code)); }));
+                tasks.Add(Task.Run(() => { destinationList.AddRange(destination.GetCircuitBreaks(target, code)); }));
                 
                 Task.WaitAll(tasks.ToArray());
             }

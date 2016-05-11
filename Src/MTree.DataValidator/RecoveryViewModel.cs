@@ -71,6 +71,17 @@ namespace MTree.DataValidator
             {
                 _FromSourceToDestination = value;
                 NotifyPropertyChanged(nameof(FromSourceToDestination));
+
+                if (FromSourceToDestination == true)
+                {
+                    Recoverer.From = DbAgent.Instance;
+                    Recoverer.To = DbAgent.RemoteInstance;
+                }
+                else
+                {
+                    Recoverer.From = DbAgent.RemoteInstance;
+                    Recoverer.To = DbAgent.Instance;
+                }
             }
         }
 
@@ -83,18 +94,15 @@ namespace MTree.DataValidator
                     _RecoverMasterCommand = new RelayCommand(() =>
                     Task.Run(() =>
                     {
-                        IDataCollector from = new DbCollector(DbAgent.Instance);
-                        IDataCollector to = new DbCollector(DbAgent.RemoteInstance);
-
-                        if (FromSourceToDestination == false)
+                        if (Validator.ValidateMaster(TargetDate, Code, false) == true)
                         {
-                            from = new DbCollector(DbAgent.RemoteInstance);
-                            to = new DbCollector(DbAgent.Instance);
+                            logger.Info($"Master of {Code} is same");
+                            return;
                         }
 
                         if (Recoverer != null)
                         {
-                            Recoverer.RecoverMaster(TargetDate, Code, from, to);
+                            Recoverer.RecoverMaster(TargetDate, Code);
                         }
                         else
                         {
@@ -104,11 +112,6 @@ namespace MTree.DataValidator
 
                 return _RecoverMasterCommand;
             }
-        }
-
-        public RecoveryViewModel()
-        {
-            Recoverer.Validator = Validator;
         }
 
         #region INotifyPropertyChanged

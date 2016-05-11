@@ -1,4 +1,5 @@
-﻿using MTree.DbProvider;
+﻿using MTree.DataStructure;
+using MTree.DbProvider;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,30 +11,48 @@ namespace MTree.DataValidator
     public class DataRecoverer
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-
-        private DataValidator _Validator;
-        public DataValidator Validator
-        {
-            get
-            {
-                return _Validator;
-            }
-            set
-            {
-                _Validator = value;
-            }
-        }
         
-        public DataRecoverer()
-        {
-        }
+        public DbAgent From { get; set; }
 
-        public void RecoverMaster(DateTime target, string code, IDataCollector from, IDataCollector to)
+        public DbAgent To { get; set; }
+        
+        public void RecoverMaster(DateTime target, string code)
         {
-            if (Validator.ValidateMaster(target, code, false) == true)
+            To.Insert((new DbCollector(From)).GetMaster(target, code));
+        }
+        public void RecoverMasters(DateTime target)
+        {
+            DbCollector collector = new DbCollector(From);
+            foreach (string code in collector.GetStockCodeList())
             {
-                logger.Info($"Master of {code} is same");
-                return;
+                To.Insert(collector.GetMaster(target, code));
+            }
+        }
+        public void RecoverStockConclusion(DateTime target, string code)
+        {
+            DbCollector collector = new DbCollector(From);
+            List<Subscribable> conclusions = collector.GetStockConclusions(target, code, false);
+            foreach(Subscribable conclusion in conclusions)
+            {
+                To.Insert(conclusion);
+            }
+        }
+        public void RecoverIndexConclusion(DateTime target, string code)
+        {
+            DbCollector collector = new DbCollector(From);
+            List<Subscribable> conclusions = collector.GetIndexConclusions(target, code, false);
+            foreach (Subscribable conclusion in conclusions)
+            {
+                To.Insert(conclusion);
+            }
+        }
+        public void RecoverCircuitBreak(DateTime target, string code)
+        {
+            DbCollector collector = new DbCollector(From);
+            List<Subscribable> cbs = collector.GetCircuitBreaks(target, code);
+            foreach (Subscribable cb in cbs)
+            {
+                To.Insert(cb);
             }
         }
     }

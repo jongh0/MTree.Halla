@@ -27,17 +27,17 @@ namespace MTree.DataValidator
             throw new NotImplementedException();
         }
 
-        public StockMaster GetMaster(string code, DateTime targetDate)
+        public StockMaster GetMaster(DateTime targetDate, string code)
         {
             throw new NotImplementedException();
         }
 
-        public List<Subscribable> GetIndexConclusions(string code, DateTime targetDate, bool normalOnly = true)
+        public List<Subscribable> GetIndexConclusions(DateTime targetDate, string code, bool normalOnly = true)
         {
             throw new NotImplementedException();
         }
 
-        public List<Subscribable> GetStockConclusions(string code, DateTime targetDate, bool normalOnly = true)
+        public List<Subscribable> GetStockConclusions(DateTime targetDate, string code, bool normalOnly = true)
         {
             Stack<StockConclusion> conclusions = new Stack<StockConclusion>();
             List<Subscribable> ret = new List<Subscribable>();
@@ -89,7 +89,7 @@ namespace MTree.DataValidator
             return ret;
         }
 
-        public List<Subscribable> GetCircuitBreaks(string code, DateTime targetDatex)
+        public List<Subscribable> GetCircuitBreaks(DateTime targetDatex, string code)
         {
             throw new NotImplementedException();
         }
