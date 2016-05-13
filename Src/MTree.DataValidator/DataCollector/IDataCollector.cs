@@ -19,6 +19,6 @@ namespace MTree.DataValidator
 
         List<Subscribable> GetStockConclusions(DateTime targetDate, string code, bool normalOnly = true);
 
-        List<Subscribable> GetCircuitBreaks(DateTime targetDatex, string code);
+        List<Subscribable> GetCircuitBreaks(DateTime targetDate, string code);
     }
 }
