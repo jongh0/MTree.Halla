@@ -159,7 +159,7 @@ namespace MTree.DaishinPublisher
                 }
                 catch (ArgumentOutOfRangeException)
                 {
-                    conclusion.Time = now;
+                    conclusion.Time = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0); // ignore second
                     logger.Warn($"Index conclusion time error, time: {time}, code: {conclusion.Code}");
                 }
 
