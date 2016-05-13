@@ -148,5 +148,10 @@ namespace MTree.Utility
             var processList = Process.GetProcessesByName(processName);
             return (processList != null && processList.Length > 0);
         }
+
+        public static void Shutdown()
+        {
+            Process.Start("shutdown", "/s /t 0");
+        }
     }
 }

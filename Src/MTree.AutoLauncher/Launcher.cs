@@ -81,6 +81,19 @@ namespace MTree.AutoLauncher
                 }
 
                 var now = DateTime.Now;
+
+#if !DEBUG
+                if (Config.General.UseShutdown == true)
+                {
+                    if (now.DayOfWeek == DayOfWeek.Saturday || now.DayOfWeek == DayOfWeek.Sunday)
+                    {
+                        logger.Info("Not working day, shutdown");
+                        ProcessUtility.Shutdown();
+                        return;
+                    }
+                } 
+#endif
+
                 Time = new DateTime(now.Year, now.Month, now.Day, Time.Hour, Time.Minute, Time.Second);
 
                 while (Time <= now || Time.DayOfWeek == DayOfWeek.Saturday || Time.DayOfWeek == DayOfWeek.Sunday)
@@ -147,7 +160,7 @@ namespace MTree.AutoLauncher
         private void ShutdownTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             logger.Info($"{LaunchProcess} shutdown timer elapsed");
-            Shutdown();
+            ProcessUtility.Shutdown();
         }
 
         private void LaunchTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
@@ -165,11 +178,6 @@ namespace MTree.AutoLauncher
             {
                 Start();
             }
-        }
-
-        private void Shutdown()
-        {
-            Process.Start("shutdown", "/s /t 0");
         }
 
         #region Command
@@ -224,7 +232,7 @@ namespace MTree.AutoLauncher
         public void ExecuteShutdown()
         {
             if (MessageBox.Show("Shutdown?", "Question", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
-                Shutdown();
+                ProcessUtility.Shutdown();
         }
         #endregion
 

@@ -46,7 +46,7 @@ namespace MTree.DbProvider
                     {
                         if (_RemoteInstance == null)
                         {
-                            if (Config.Database.RemoteConnectionString != string.Empty)
+                            if (string.IsNullOrEmpty(Config.Database.RemoteConnectionString) == false)
                                 _RemoteInstance = new DbAgent(Config.Database.RemoteConnectionString);
                             else
                                 logger.Error("Connection string for remote DB is empty");

@@ -203,6 +203,15 @@ namespace MTree.RealTimeProvider
                 {
                     Task.Run(() =>
                     {
+#if !DEBUG
+                        if (Config.General.UseShutdown == true)
+                        {
+                            logger.Info("Not working day, shutdown");
+                            ProcessUtility.Shutdown();
+                            return;
+                        }
+#endif
+
                         logger.Info("RealTimeProvider will be closed after 5sec");
 
                         Thread.Sleep(1000 * 5);

@@ -140,6 +140,26 @@ namespace MTree.RealTimeProvider
 
             SaveDayChart();
 
+            // Data validator
+            if (Config.Validator.LaunchValidatorAfterMarketEnd == true)
+            {
+                if (string.IsNullOrEmpty(Config.Database.RemoteConnectionString) == false &&
+                    Config.Database.ConnectionString != Config.Database.RemoteConnectionString)
+                {
+                    logger.Info("Launch Data validator");
+
+                    if (ProcessUtility.Start(ProcessTypes.DataValidatorRegularCheck, ProcessWindowStyle.Minimized).WaitForExit((int)TimeSpan.FromMinutes(60).TotalMilliseconds) == false)
+                    {
+                        logger.Error("Data validator time out");
+                        ProcessUtility.Kill(ProcessTypes.DataValidatorRegularCheck);
+                    }
+                }
+                else
+                {
+                    logger.Error("Remote connection string not valid");
+                }
+            }
+
             ExitProgram(ExitProgramTypes.Normal);
         }
 
@@ -278,16 +298,6 @@ namespace MTree.RealTimeProvider
 
                         // Queue에 입력된 Count를 DB에 저장
                         DbAgent.Instance.Insert(Counter);
-
-                        if (Config.Database.ConnectionString != Config.Database.RemoteConnectionString)
-                        {
-                            // Data Compare 실행
-                            if (ProcessUtility.Start(ProcessTypes.DataValidatorRegularCheck, ProcessWindowStyle.Minimized).WaitForExit((int)TimeSpan.FromMinutes(30).TotalMilliseconds) == false)
-                            {
-                                logger.Error("Data validator time out");
-                                ProcessUtility.Kill(ProcessTypes.DataValidatorRegularCheck);
-                            }
-                        }
 
                         // 당일 수집된 로그를 Zip해서 Email로 전송함
                         LogUtility.SendLog();
