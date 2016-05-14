@@ -206,7 +206,9 @@ namespace MTree.RealTimeProvider
 #if !DEBUG
                         if (Config.General.UseShutdown == true)
                         {
-                            logger.Info("Not working day, shutdown");
+                            logger.Info("Not working day, shutdown after 5 mins");
+
+                            Thread.Sleep(1000 * 60 * 5);
                             ProcessUtility.Shutdown();
                             return;
                         }

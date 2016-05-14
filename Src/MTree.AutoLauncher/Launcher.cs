@@ -87,8 +87,14 @@ namespace MTree.AutoLauncher
                 {
                     if (now.DayOfWeek == DayOfWeek.Saturday || now.DayOfWeek == DayOfWeek.Sunday)
                     {
-                        logger.Info("Not working day, shutdown");
-                        ProcessUtility.Shutdown();
+                        Task.Run(() =>
+                        {
+                            logger.Info("Not working day, shutdown after 5 mins");
+
+                            Thread.Sleep(1000 * 60 * 5);
+                            ProcessUtility.Shutdown();
+                        });
+                        
                         return;
                     }
                 } 
