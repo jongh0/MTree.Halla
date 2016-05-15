@@ -8,33 +8,13 @@ using System.Threading.Tasks;
 
 namespace MTree.DataValidator
 {
-    public class DaishinCollector: IDataCollector
+    public class DaishinCollector
     {
         private StockBidClass ConclusionHistoryQueryObj;
 
         public DaishinCollector()
         {
             ConclusionHistoryQueryObj = new StockBidClass();
-        }
-
-        public List<string> GetStockCodeList()
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<string> GetIndexCodeList()
-        {
-            throw new NotImplementedException();
-        }
-
-        public StockMaster GetMaster(DateTime targetDate, string code)
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<Subscribable> GetIndexConclusions(DateTime targetDate, string code, bool normalOnly = true)
-        {
-            throw new NotImplementedException();
         }
 
         public List<Subscribable> GetStockConclusions(DateTime targetDate, string code, bool normalOnly = true)
@@ -87,11 +67,6 @@ namespace MTree.DataValidator
             }
 
             return ret;
-        }
-
-        public List<Subscribable> GetCircuitBreaks(DateTime targetDatex, string code)
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -226,7 +226,7 @@ namespace MTree.DataValidator
                 Directory.CreateDirectory(path);
             }
 
-            using (var fs = new FileStream(Path.Combine(path, dest[0].Code + "_destination.txt"), FileMode.Create))
+            using (var fs = new FileStream(Path.Combine(path, src[0].Code + "_destination.txt"), FileMode.Create))
             using (var sw = new StreamWriter(fs, Encoding.Default))
             {
                 sw.WriteLine(outputString);

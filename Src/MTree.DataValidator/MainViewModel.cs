@@ -18,7 +18,8 @@ namespace MTree.DataValidator
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         private DataValidator validator = new DataValidator();
-        
+        private DataRecoverer recoverer = new DataRecoverer();
+
         private ValidatorViewModel _ValidatorViewModel = new ValidatorViewModel();
         public ValidatorViewModel ValidatorViewModel
         {
@@ -75,6 +76,38 @@ namespace MTree.DataValidator
             }
         }
 
+        private RelayCommand _CheckServerCommand;
+        public ICommand CheckServerCommand
+        {
+            get
+            {
+                if (_CheckServerCommand == null)
+                    _CheckServerCommand = new RelayCommand(() => Task.Run(() => CheckServer()));
+
+                return _CheckServerCommand;
+            }
+        }
+        private void CheckServer()
+        {
+            if (DbAgent.Instance.ConnectionTest())
+            {
+                logger.Info($"Connection to {DbAgent.Instance.ConnectionString} success");
+            }
+            else
+            {
+                logger.Warn($"Connection to {DbAgent.Instance.ConnectionString} fail");
+            }
+
+            if (DbAgent.RemoteInstance.ConnectionTest())
+            {
+                logger.Info($"Connection to {DbAgent.RemoteInstance.ConnectionString} success");
+            }
+            else
+            {
+                logger.Warn($"Connection to {DbAgent.RemoteInstance.ConnectionString} fail");
+            }
+        }
+
         private RelayCommand _UpdateServerCommand;
         public ICommand UpdateServerCommand
         {
@@ -85,7 +118,11 @@ namespace MTree.DataValidator
                     {
                         DbAgent.Instance.ChangeServer(SourceAddress);
                         DbAgent.RemoteInstance.ChangeServer(DestinationAddress);
-                        validator = new DataValidator(new DbCollector(DbAgent.Instance), new DbCollector(DbAgent.RemoteInstance));
+
+                        validator = new DataValidator(DbAgent.Instance, DbAgent.RemoteInstance);
+                        recoverer = new DataRecoverer(DbAgent.Instance, DbAgent.RemoteInstance);
+
+                        CheckServer();
                     }));
 
                 return _UpdateServerCommand;
@@ -99,12 +136,13 @@ namespace MTree.DataValidator
             
             ValidatorViewModel.Validator = validator;
             RecoveryViewModel.Validator = validator;
-            
+            RecoveryViewModel.Recoverer = recoverer;
+
             Task.Run(() =>
             {
                 Thread.Sleep(1000);
                 logger.Info("Data Validator Started");
-                
+
                 if (Environment.GetCommandLineArgs().Count() > 1)
                 {
                     if (Environment.GetCommandLineArgs()[1] == ProcessTypes.DataValidatorRegularCheck.ToString())

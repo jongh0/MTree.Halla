@@ -84,7 +84,7 @@ namespace MTree.DataValidator
                         List<Task> tasks = new List<Task>();
 
                         tasks.Add(Task.Run(() => Validator.ValidateCodeList()));
-                        tasks.Add(Task.Run(() => Validator.ValidateStockConclusion(TargetDate)));
+                        tasks.Add(Task.Run(() => Validator.ValidateStockConclusions(TargetDate)));
                         tasks.Add(Task.Run(() => Validator.ValidateIndexConclusion(TargetDate)));
                         tasks.Add(Task.Run(() => Validator.ValidateMasters(TargetDate)));
                         tasks.Add(Task.Run(() => Validator.ValidateCircuitBreak(TargetDate)));
@@ -104,7 +104,7 @@ namespace MTree.DataValidator
                     if (Validator != null)
                     {
                         Validator.ValidateCodeList();
-                        Validator.ValidateStockConclusion(TargetDate);
+                        Validator.ValidateStockConclusions(TargetDate);
                         Validator.ValidateIndexConclusion(TargetDate);
                         Validator.ValidateMasters(TargetDate);
                         Validator.ValidateCircuitBreak(TargetDate);
@@ -152,7 +152,7 @@ namespace MTree.DataValidator
                     {
                         if (Validator != null)
                         {
-                            Validator.ValidateStockConclusion(TargetDate);
+                            Validator.ValidateStockConclusions(TargetDate);
                         }
                         else
                         {

@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DbAgent.cs" />
+    <Compile Include="FilterFactory.cs" />
     <Compile Include="MongoDbProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

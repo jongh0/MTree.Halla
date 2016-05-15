@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace MTree.DbProvider
@@ -59,6 +60,8 @@ namespace MTree.DbProvider
         }
         #endregion
 
+        public string ConnectionString { get; set; }
+
         public MongoDbProvider DbProvider { get; set; }
 
         public IMongoDatabase ChartDb { get; set; }
@@ -77,6 +80,8 @@ namespace MTree.DbProvider
 
         private void InitDatabase(string connectionString)
         {
+            ConnectionString = connectionString;
+
             DbProvider = new MongoDbProvider(connectionString);
 
             ChartDb = DbProvider.GetDatabase(DbTypes.Chart);
@@ -92,6 +97,22 @@ namespace MTree.DbProvider
         public void ChangeServer(string connectionString)
         {
             InitDatabase(connectionString);
+        }
+
+        public bool ConnectionTest()
+        {
+            try
+            {
+                if (DbProvider.GetDatabaseList() != null)
+                    return true;
+                else
+                    return false;
+            }
+            catch(TimeoutException ex)
+            {
+                logger.Error(ex);
+                return false;
+            }
         }
 
         public List<string> GetCollectionList(DbTypes type)
@@ -253,7 +274,7 @@ namespace MTree.DbProvider
             }
         }
 
-        public IFindFluent<T, T> Find<T>(string collectionName, FilterDefinition<T> filter)
+        public IFindFluent<T, T> Find<T>(string collectionName, FilterDefinition<T> filter, Expression<Func<T, object>> sortExpression = null)
         {
             if (string.IsNullOrEmpty(collectionName) == true || filter == null) return null;
 
@@ -262,9 +283,20 @@ namespace MTree.DbProvider
                 var collection = GetCollection<T>(collectionName);
 
                 if (collection != null)
-                    return GetCollection<T>(collectionName).Find(filter);
+                {
+                    if (sortExpression == null)
+                    {
+                        return GetCollection<T>(collectionName).Find(filter);
+                    }
+                    else
+                    {
+                        return GetCollection<T>(collectionName).Find(filter).SortBy(sortExpression);
+                    }
+                }
                 else
+                {
                     logger.Error($"Find error, {collectionName}");
+                }
             }
             catch (Exception ex)
             {

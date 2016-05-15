@@ -1,9 +1,11 @@
-﻿using MongoDB.Bson.Serialization;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using MTree.Configuration;
 using MTree.DataStructure;
 using MTree.Utility;
 using System;
+using System.Collections.Generic;
 
 namespace MTree.DbProvider
 {
@@ -49,15 +51,7 @@ namespace MTree.DbProvider
                     ServiceUtility.StartService("MongoDb");
 
                 Client = new MongoClient(connectionString);
-                try
-                {
-                    Client.ListDatabases();
-                    logger.Info($"MongoDb Connected to {connectionString}");
-                }
-                catch (TimeoutException)
-                {
-                    logger.Info($"MongoDb Server is not accessable");
-                } 
+                logger.Info($"MongoDb Connected to {connectionString}");
             }
             catch (Exception ex)
             {
@@ -65,6 +59,20 @@ namespace MTree.DbProvider
             }
         }
 
+        public List<BsonDocument> GetDatabaseList()
+        {
+            try
+            {
+                var list = Client.ListDatabases().ToList();
+                return list;
+            }
+            catch (TimeoutException)
+            {
+                logger.Warn($"MongoDb Server is not accessable");
+            }
+            return null;
+        }
+         
         public IMongoDatabase GetDatabase(DbTypes type)
         {
             switch (type)
