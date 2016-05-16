@@ -91,8 +91,8 @@ namespace MTree.DataValidator
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
-            RecoverIndexMasters(targetDate);
-            RecoverStockMasters(targetDate);
+            RecoverIndexMasters(targetDate, needConfirm);
+            RecoverStockMasters(targetDate, needConfirm);
 
             sw.Stop();
             logger.Info($"Stock Masters Recovery Done. Elapsed:{sw.Elapsed}");

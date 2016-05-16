@@ -229,7 +229,6 @@ namespace MTree.DataValidator
                 tasks.Add(Task.Run(() => { destinationList.AddRange(destination.Find(code, filter, o => o.Id).ToList()); }));
 
                 Task.WaitAll(tasks.ToArray());
-
                 if (sourceList.Count != 0 || destinationList.Count != 0)
                 {
                     if (sourceList.Count == 0)
@@ -474,7 +473,7 @@ namespace MTree.DataValidator
                     comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, indexConclusionCompareResultPath, code + ".html"));
                 return false;
             }
-
+            
             logger.Info($"Index Conclusion Validation for {code} Done.");
             return true;
         }

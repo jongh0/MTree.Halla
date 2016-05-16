@@ -18,17 +18,31 @@ namespace MTree.DataValidator
 
         public DataRecoverer Recoverer { get; set; } = new DataRecoverer();
 
-        private DateTime _TargetDate = DateTime.Now;
-        public DateTime TargetDate
+        private DateTime _StartingDate = DateTime.Now;
+        public DateTime StartingDate
         {
             get
             {
-                return _TargetDate;
+                return _StartingDate;
             }
             set
             {
-                _TargetDate = value;
-                NotifyPropertyChanged(nameof(TargetDate));
+                _StartingDate = value;
+                NotifyPropertyChanged(nameof(StartingDate));
+            }
+        }
+
+        private DateTime _EndingDate = DateTime.Now;
+        public DateTime EndingDate
+        {
+            get
+            {
+                return _EndingDate;
+            }
+            set
+            {
+                _EndingDate = value;
+                NotifyPropertyChanged(nameof(EndingDate));
             }
         }
 
@@ -99,6 +113,25 @@ namespace MTree.DataValidator
             }
         }
 
+        private RelayCommand _RecoverAllCommand;
+        public ICommand RecoverAllCommand
+        {
+            get
+            {
+                if (_RecoverAllCommand == null)
+                    _RecoverAllCommand = new RelayCommand(() =>
+                    Task.Run(() =>
+                    {
+                        DoRecoverMasterAll();
+                        DoRecoverStockConclusionAll();
+                        DoRecoverIndexConclusionAll();
+                        DoRecoverCircuitBreak();
+                    }));
+
+                return _RecoverAllCommand;
+            }
+        }
+
         private RelayCommand _RecoverMasterAllCommand;
         public ICommand RecoverMasterAllCommand
         {
@@ -108,25 +141,32 @@ namespace MTree.DataValidator
                     _RecoverMasterAllCommand = new RelayCommand(() =>
                     Task.Run(() =>
                     {
-                        if (ValidateBeforeRecovery == true)
-                        {
-                            if (Validator.ValidateMasters(TargetDate, false) == true)
-                            {
-                                logger.Info($"Master of {Code} is same. Do nothing");
-                                return;
-                            }
-                        }
-                        if (Recoverer != null)
-                        {
-                            Recoverer.RecoverMasters(TargetDate, AskBeforeRecovery);
-                        }
-                        else
-                        {
-                            logger.Error("Validator is not assigned");
-                        }
+                        DoRecoverMasterAll();
                     }));
 
                 return _RecoverMasterAllCommand;
+            }
+        }
+        private void DoRecoverMasterAll()
+        {
+            for (DateTime targetDate = StartingDate; targetDate <= EndingDate; targetDate = targetDate.AddDays(1))
+            {
+                if (ValidateBeforeRecovery == true)
+                {
+                    if (Validator.ValidateMasters(targetDate, false) == true)
+                    {
+                        logger.Info($"Master of {Code} is same. Do nothing");
+                        return;
+                    }
+                }
+                if (Recoverer != null)
+                {
+                    Recoverer.RecoverMasters(targetDate, AskBeforeRecovery);
+                }
+                else
+                {
+                    logger.Error("Validator is not assigned");
+                }
             }
         }
 
@@ -139,22 +179,25 @@ namespace MTree.DataValidator
                     _RecoverMasterCommand = new RelayCommand(() =>
                     Task.Run(() =>
                     {
-                        if (ValidateBeforeRecovery == true)
+                        for (DateTime targetDate = StartingDate; targetDate <= EndingDate; targetDate = targetDate.AddDays(1))
                         {
-                            if (Validator.ValidateMaster(TargetDate, Code, false) == true)
+                            if (ValidateBeforeRecovery == true)
                             {
-                                logger.Info($"Master of {Code} is same. Do nothing");
-                                return;
+                                if (Validator.ValidateMaster(targetDate, Code, false) == true)
+                                {
+                                    logger.Info($"Master of {Code} is same. Do nothing");
+                                    return;
+                                }
                             }
-                        }
 
-                        if (Recoverer != null)
-                        {
-                            Recoverer.RecoverMaster(TargetDate, Code, AskBeforeRecovery);
-                        }
-                        else
-                        {
-                            logger.Error("Validator is not assigned");
+                            if (Recoverer != null)
+                            {
+                                Recoverer.RecoverMaster(targetDate, Code, AskBeforeRecovery);
+                            }
+                            else
+                            {
+                                logger.Error("Validator is not assigned");
+                            }
                         }
                     }));
 
@@ -171,25 +214,33 @@ namespace MTree.DataValidator
                     _RecoverStockConclusionAllCommand = new RelayCommand(() =>
                     Task.Run(() =>
                     {
-                        if (ValidateBeforeRecovery == true)
-                        {
-                            if (Validator.ValidateStockConclusions(TargetDate, false) == true)
-                            {
-                                logger.Info($"Master of {Code} is same. Do nothing");
-                                return;
-                            }
-                        }
-                        if (Recoverer != null)
-                        {
-                            Recoverer.RecoverStockConclusions(TargetDate, AskBeforeRecovery);
-                        }
-                        else
-                        {
-                            logger.Error("Validator is not assigned");
-                        }
+                        DoRecoverStockConclusionAll();
                     }));
 
                 return _RecoverStockConclusionAllCommand;
+            }
+        }
+
+        private void DoRecoverStockConclusionAll()
+        {
+            for (DateTime targetDate = StartingDate; targetDate <= EndingDate; targetDate = targetDate.AddDays(1))
+            {
+                if (ValidateBeforeRecovery == true)
+                {
+                    if (Validator.ValidateStockConclusions(targetDate, false) == true)
+                    {
+                        logger.Info($"Master of {Code} is same. Do nothing");
+                        return;
+                    }
+                }
+                if (Recoverer != null)
+                {
+                    Recoverer.RecoverStockConclusions(targetDate, AskBeforeRecovery);
+                }
+                else
+                {
+                    logger.Error("Validator is not assigned");
+                }
             }
         }
 
@@ -202,22 +253,25 @@ namespace MTree.DataValidator
                     _RecoverStockConclusionCommand = new RelayCommand(() =>
                     Task.Run(() =>
                     {
-                        if (ValidateBeforeRecovery == true)
+                        for (DateTime targetDate = StartingDate; targetDate <= EndingDate; targetDate = targetDate.AddDays(1))
                         {
-                            if (Validator.ValidateStockConclusion(TargetDate, Code, false) == true)
+                            if (ValidateBeforeRecovery == true)
                             {
-                                logger.Info($"Master of {Code} is same. Do nothing");
-                                return;
+                                if (Validator.ValidateStockConclusion(targetDate, Code, false) == true)
+                                {
+                                    logger.Info($"Master of {Code} is same. Do nothing");
+                                    return;
+                                }
                             }
-                        }
 
-                        if (Recoverer != null)
-                        {
-                            Recoverer.RecoverStockConclusion(TargetDate, Code, AskBeforeRecovery);
-                        }
-                        else
-                        {
-                            logger.Error("Validator is not assigned");
+                            if (Recoverer != null)
+                            {
+                                Recoverer.RecoverStockConclusion(targetDate, Code, AskBeforeRecovery);
+                            }
+                            else
+                            {
+                                logger.Error("Validator is not assigned");
+                            }
                         }
                     }));
 
@@ -234,25 +288,32 @@ namespace MTree.DataValidator
                     _RecoverIndexConclusionAllCommand = new RelayCommand(() =>
                     Task.Run(() =>
                     {
-                        if (ValidateBeforeRecovery == true)
-                        {
-                            if (Validator.ValidateIndexConclusion(TargetDate, false) == true)
-                            {
-                                logger.Info($"Index Conclusion of {Code} is same. Do nothing");
-                                return;
-                            }
-                        }
-                        if (Recoverer != null)
-                        {
-                            Recoverer.RecoverIndexConclusions(TargetDate, AskBeforeRecovery);
-                        }
-                        else
-                        {
-                            logger.Error("Validator is not assigned");
-                        }
+                        DoRecoverIndexConclusionAll();
                     }));
 
                 return _RecoverIndexConclusionAllCommand;
+            }
+        }
+        private void DoRecoverIndexConclusionAll()
+        {
+            for (DateTime targetDate = StartingDate; targetDate <= EndingDate; targetDate = targetDate.AddDays(1))
+            {
+                if (ValidateBeforeRecovery == true)
+                {
+                    if (Validator.ValidateIndexConclusion(targetDate, false) == true)
+                    {
+                        logger.Info($"Index Conclusion of {Code} is same. Do nothing");
+                        return;
+                    }
+                }
+                if (Recoverer != null)
+                {
+                    Recoverer.RecoverIndexConclusions(targetDate, AskBeforeRecovery);
+                }
+                else
+                {
+                    logger.Error("Validator is not assigned");
+                }
             }
         }
 
@@ -265,30 +326,32 @@ namespace MTree.DataValidator
                     _RecoverIndexConclusionCommand = new RelayCommand(() =>
                     Task.Run(() =>
                     {
-                        if (ValidateBeforeRecovery == true)
+                        for (DateTime targetDate = StartingDate; targetDate <= EndingDate; targetDate = targetDate.AddDays(1))
                         {
-                            if (Validator.ValidateIndexConclusion(TargetDate, Code, false) == true)
+                            if (ValidateBeforeRecovery == true)
                             {
-                                logger.Info($"Index Conclusion of {Code} is same. Do nothing");
-                                return;
+                                if (Validator.ValidateIndexConclusion(targetDate, Code, false) == true)
+                                {
+                                    logger.Info($"Index Conclusion of {Code} is same. Do nothing");
+                                    return;
+                                }
                             }
-                        }
 
-                        if (Recoverer != null)
-                        {
-                            Recoverer.RecoverIndexConclusion(TargetDate, Code, AskBeforeRecovery);
-                        }
-                        else
-                        {
-                            logger.Error("Validator is not assigned");
+                            if (Recoverer != null)
+                            {
+                                Recoverer.RecoverIndexConclusion(targetDate, Code, AskBeforeRecovery);
+                            }
+                            else
+                            {
+                                logger.Error("Validator is not assigned");
+                            }
                         }
                     }));
 
                 return _RecoverIndexConclusionCommand;
             }
         }
-
-
+        
         private RelayCommand _RecoverCircuitBreakCommand;
         public ICommand RecoverCircuitBreakCommand
         {
@@ -298,28 +361,35 @@ namespace MTree.DataValidator
                     _RecoverCircuitBreakCommand = new RelayCommand(() =>
                     Task.Run(() =>
                     {
-                        if (ValidateBeforeRecovery == true)
-                        {
-                            if (Validator.ValidateCircuitBreak(TargetDate, false) == true)
-                            {
-                                logger.Info($"CircuitBreak is same. Do nothing");
-                                return;
-                            }
-                        }
-                        if (Recoverer != null)
-                        {
-                            Recoverer.RecoverCircuitBreaks(TargetDate, AskBeforeRecovery);
-                        }
-                        else
-                        {
-                            logger.Error("Validator is not assigned");
-                        }
+                        DoRecoverCircuitBreak();
                     }));
 
                 return _RecoverCircuitBreakCommand;
             }
         }
-
+        private void DoRecoverCircuitBreak()
+        {
+            for (DateTime targetDate = StartingDate; targetDate <= EndingDate; targetDate = targetDate.AddDays(1))
+            {
+                if (ValidateBeforeRecovery == true)
+                {
+                    if (Validator.ValidateCircuitBreak(targetDate, false) == true)
+                    {
+                        logger.Info($"CircuitBreak is same. Do nothing");
+                        return;
+                    }
+                }
+                if (Recoverer != null)
+                {
+                    Recoverer.RecoverCircuitBreaks(targetDate, AskBeforeRecovery);
+                }
+                else
+                {
+                    logger.Error("Validator is not assigned");
+                }
+            }
+        }
+        
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
 

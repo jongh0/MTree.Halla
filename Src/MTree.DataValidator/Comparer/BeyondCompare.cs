@@ -50,13 +50,11 @@ namespace MTree.DataValidator
             {
                 srcString.AppendLine(s.ToString(nameof(s.Id), nameof(s.ReceivedTime)));
             }
-
             foreach (Subscribable d in dest)
             {
 
                 destString.AppendLine(d.ToString(nameof(d.Id), nameof(d.ReceivedTime)));
             }
-
             return DoCompareItem(srcString.ToString(), destString.ToString(), showWindow);
         }
 
@@ -114,15 +112,17 @@ namespace MTree.DataValidator
                 param = "/qc=binary /silent " + param;
             }
 
-            Process compareProcess = Process.Start(beyondComparePath, param);
-            compareProcess.WaitForExit();
+            using (Process compareProcess = Process.Start(beyondComparePath, param))
+            {
+                compareProcess.WaitForExit();
 
-            if (File.Exists(sourceFile))
-                File.Delete(sourceFile);
-            if (File.Exists(destinationFile))
-                File.Delete(destinationFile);
+                if (File.Exists(sourceFile))
+                    File.Delete(sourceFile);
+                if (File.Exists(destinationFile))
+                    File.Delete(destinationFile);
 
-            return compareProcess.ExitCode == 1;
+                return compareProcess.ExitCode == 1;
+            }
         }
 
         public void MakeReport(List<string> src, List<string> dest, string reportPath)
@@ -265,9 +265,10 @@ namespace MTree.DataValidator
 
             string param = $"/qc=binary /silent @CompareScript.txt {sourceFile} {destinationFile} {reportPath}";
 
-            Process compareProcess = Process.Start(beyondComparePath, param);
-            compareProcess.WaitForExit();
-
+            using (Process compareProcess = Process.Start(beyondComparePath, param))
+            {
+                compareProcess.WaitForExit();
+            }
             if (File.Exists(sourceFile))
                 File.Delete(sourceFile);
             if (File.Exists(destinationFile))

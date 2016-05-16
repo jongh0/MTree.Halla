@@ -111,9 +111,7 @@
     </Compile>
     <Compile Include="Comparer\BeyondCompare.cs" />
     <Compile Include="Comparer\ICompare.cs" />
-    <Compile Include="DataCollector\DaishinCollector.cs" />
-    <Compile Include="DataCollector\DbCollector.cs" />
-    <Compile Include="DataCollector\IDataCollector.cs" />
+    <Compile Include="DaishinCollector.cs" />
     <Compile Include="DataRecoverer.cs" />
     <Compile Include="DataValidator.cs" />
     <Compile Include="RecoveryViewModel.cs" />

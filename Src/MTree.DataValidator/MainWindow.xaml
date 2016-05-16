@@ -86,7 +86,9 @@
                 <StackPanel DataContext="{Binding RecoveryViewModel}">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,5,0,5">
                         <Label Content="Date for Recovery" Margin="5,0,5,0" VerticalAlignment="Center"/>
-                        <DatePicker SelectedDate="{Binding Path=TargetDate, Mode=TwoWay, TargetNullValue={x:Static sys:DateTime.Now}}"/>
+                        <DatePicker SelectedDate="{Binding Path=StartingDate, Mode=TwoWay}"/>
+                        <Label Content="~" Margin="5,0,5,0" VerticalAlignment="Center"/>
+                        <DatePicker SelectedDate="{Binding Path=EndingDate, Mode=TwoWay}"/>
                     </StackPanel>
                     <GroupBox Header="Recovery Direction" Height="65">
                         <StackPanel Orientation="Vertical">
@@ -102,7 +104,7 @@
                     </GroupBox>
                     <GroupBox Header="Recovery For All Code" Margin="0,5,0,0">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,5,0,5">
-                            <Button Content=" All " Margin="5,0,5,0"/>
+                            <Button Content=" All " Command="{Binding RecoverAllCommand}" Margin="5,0,5,0"/>
                             <Button Content=" Master " Command="{Binding RecoverMasterAllCommand}" Margin="5,0,5,0"/>
                             <Button Content=" Stock Conclusion " Command="{Binding RecoverStockConclusionAllCommand}" Margin="5,0,5,0"/>
                             <Button Content=" Index Conclusion " Command="{Binding RecoverIndexConclusionAllCommand}" Margin="5,0,5,0"/>
