@@ -50,11 +50,12 @@ namespace MTree.DataValidator
             {
                 srcString.AppendLine(s.ToString(nameof(s.Id), nameof(s.ReceivedTime)));
             }
+
             foreach (Subscribable d in dest)
             {
-
                 destString.AppendLine(d.ToString(nameof(d.Id), nameof(d.ReceivedTime)));
             }
+
             return DoCompareItem(srcString.ToString(), destString.ToString(), showWindow);
         }
 

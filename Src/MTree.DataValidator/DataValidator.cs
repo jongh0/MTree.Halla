@@ -229,6 +229,7 @@ namespace MTree.DataValidator
                 tasks.Add(Task.Run(() => { destinationList.AddRange(destination.Find(code, filter, o => o.Id).ToList()); }));
 
                 Task.WaitAll(tasks.ToArray());
+
                 if (sourceList.Count != 0 || destinationList.Count != 0)
                 {
                     if (sourceList.Count == 0)
@@ -258,8 +259,16 @@ namespace MTree.DataValidator
                 {
                     logger.Info($"Stock Conclusion for {code} is Empty. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
                 }
+
+                sourceList.Clear();
+                destinationList.Clear();
+
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
             });
-            
+
+            codeList.Clear();
+
             sw.Stop();
             logger.Info($"Stock Conclusion Validation Done. Elapsed:{sw.Elapsed}");
 
@@ -311,6 +320,13 @@ namespace MTree.DataValidator
             {
                 logger.Info($"Stock Conclusion for {code} is Empty.");
             }
+
+            sourceList.Clear();
+            destinationList.Clear();
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+
             return true;
         }
 
@@ -318,8 +334,10 @@ namespace MTree.DataValidator
         {
             logger.Info("Stock Conclusion Validation with Daishin Start.");
             int cnt = 0;
+
             List<string> codeList = new List<string>();
             codeList.AddRange(source.GetCollectionList(DbTypes.StockMaster).OrderBy(o => o));
+
             DaishinCollector daishin = new DaishinCollector();
 
             foreach (string code in codeList)
@@ -355,7 +373,16 @@ namespace MTree.DataValidator
                 }
 
                 cnt++;
+
+                sourceList.Clear();
+                destinationList.Clear();
+
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
             }
+
+            codeList.Clear();
+
             logger.Info("Stock Conclusion Validation with Daishin Done.");
         }
 
@@ -406,15 +433,25 @@ namespace MTree.DataValidator
                 }
 
             }
+
             logger.Info($"Stock Conclusion Validation for {code} with Daishin Done.");
+
+            sourceList.Clear();
+            destinationList.Clear();
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
         }
 
         public bool ValidateIndexConclusion(DateTime targetDate, bool makeReport = true)
         {
             logger.Info("Index Conclusion Validation Start.");
+
             bool result = true;
+
             Stopwatch sw = new Stopwatch();
             sw.Start();
+
             List<string> codeList = new List<string>();
             codeList.AddRange(source.GetCollectionList(DbTypes.IndexMaster).OrderBy(s => s));
 
@@ -439,9 +476,19 @@ namespace MTree.DataValidator
                         comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, indexConclusionCompareResultPath, code + ".html"));
                     result = false;
                 }
+
+                sourceList.Clear();
+                destinationList.Clear();
+
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
             });
+
+            codeList.Clear();
+
             sw.Stop();
             logger.Info($"Index Conclusion Validation Done. Elapsed:{sw.Elapsed}");
+
             return result;
         }
 
@@ -460,18 +507,33 @@ namespace MTree.DataValidator
             List<Subscribable> sourceList = new List<Subscribable>();
             List<Subscribable> destinationList = new List<Subscribable>();
 
-            var filter = FilterFactory.Instance.BuildIndexConclusionFilter(targetDate);
-            tasks.Add(Task.Run(() => { sourceList.AddRange(source.Find(code, filter, o => o.Id).ToList()); }));
-            tasks.Add(Task.Run(() => { destinationList.AddRange(destination.Find(code, filter, o => o.Id).ToList()); }));
-
-            Task.WaitAll(tasks.ToArray());
-
-            if (comparator.DoCompareItem(sourceList, destinationList, false) == false)
+            try
             {
-                logger.Error($"Index Conclusion Validation for {code} Fail.");
-                if (makeReport == true)
-                    comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, indexConclusionCompareResultPath, code + ".html"));
-                return false;
+                var filter = FilterFactory.Instance.BuildIndexConclusionFilter(targetDate);
+                tasks.Add(Task.Run(() => { sourceList.AddRange(source.Find(code, filter, o => o.Id).ToList()); }));
+                tasks.Add(Task.Run(() => { destinationList.AddRange(destination.Find(code, filter, o => o.Id).ToList()); }));
+
+                Task.WaitAll(tasks.ToArray());
+
+                if (comparator.DoCompareItem(sourceList, destinationList, false) == false)
+                {
+                    logger.Error($"Index Conclusion Validation for {code} Fail.");
+                    if (makeReport == true)
+                        comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, indexConclusionCompareResultPath, code + ".html"));
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+            finally
+            {
+                sourceList.Clear();
+                destinationList.Clear();
+
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
             }
             
             logger.Info($"Index Conclusion Validation for {code} Done.");
@@ -492,25 +554,42 @@ namespace MTree.DataValidator
             List<Subscribable> sourceList = new List<Subscribable>();
             List<Subscribable> destinationList = new List<Subscribable>();
 
-            var filter = FilterFactory.Instance.BuildIndexConclusionFilter(targetDate);
+            try
+            {
+                var filter = FilterFactory.Instance.BuildIndexConclusionFilter(targetDate);
 
-            foreach (string code in codeList)
-            {
-                tasks.Add(Task.Run(() => { sourceList.AddRange(source.Find(code, filter, o => o.Id).ToList()); }));
-                tasks.Add(Task.Run(() => { destinationList.AddRange(destination.Find(code, filter, o => o.Id).ToList()); }));
-                
-                Task.WaitAll(tasks.ToArray());
+                foreach (string code in codeList)
+                {
+                    tasks.Add(Task.Run(() => { sourceList.AddRange(source.Find(code, filter, o => o.Id).ToList()); }));
+                    tasks.Add(Task.Run(() => { destinationList.AddRange(destination.Find(code, filter, o => o.Id).ToList()); }));
+
+                    Task.WaitAll(tasks.ToArray());
+                }
+
+                if (comparator.DoCompareItem(sourceList, destinationList, false) == false)
+                {
+                    logger.Error("Circuit Break Validation Fail.");
+                    if (makeReport == true)
+                        comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, circuitbreakCompareResultFile));
+                    return false;
+                }
             }
-            
-            if (comparator.DoCompareItem(sourceList, destinationList, false) == false)
+            catch (Exception ex)
             {
-                logger.Error("Circuit Break Validation Fail.");
-                if (makeReport == true)
-                    comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, circuitbreakCompareResultFile));
-                return false;
+                logger.Error(ex);
             }
+            finally
+            {
+                sourceList.Clear();
+                destinationList.Clear();
+
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+            }
+
             sw.Stop();
             logger.Info($"Circuit Break Validation Done. Elapsed:{sw.Elapsed}");
+
             return true;
         }
     }
