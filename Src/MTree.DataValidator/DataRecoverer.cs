@@ -45,7 +45,7 @@ namespace MTree.DataValidator
 
         private void RecoverIndexMaster(DateTime targetDate, string code, bool needConfirm = true)
         {
-            logger.Info($"Index Master Recovery for {code} Started");
+            //logger.Info($"Index Master Recovery for {code} Started");
             var filter = FilterFactory.Instance.BuildIndexMasterFilter(targetDate);
 
             IndexMaster master = To.Find(code, filter).FirstOrDefault();
@@ -66,7 +66,7 @@ namespace MTree.DataValidator
 
         private void RecoverStockMaster(DateTime targetDate, string code, bool needConfirm = true)
         {
-            logger.Info($"Stock Master Recovery for {code} Started");
+            //logger.Info($"Stock Master Recovery for {code} Started");
             var filter = FilterFactory.Instance.BuildStockMasterFilter(targetDate);
 
             StockMaster master = To.Find(code, filter).FirstOrDefault();

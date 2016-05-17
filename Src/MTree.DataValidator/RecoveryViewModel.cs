@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Command;
+using MTree.Configuration;
 using MTree.DbProvider;
 using System;
 using System.Collections.Generic;
@@ -149,25 +150,21 @@ namespace MTree.DataValidator
         }
         private void DoRecoverMasterAll()
         {
+            List<string> codeList = new List<string>();
+            codeList.AddRange(DbAgent.Instance.GetCollectionList(DbTypes.IndexMaster).OrderBy(s => s));
+            codeList.AddRange(DbAgent.Instance.GetCollectionList(DbTypes.StockMaster).OrderBy(s => s));
+
             for (DateTime targetDate = StartingDate; targetDate <= EndingDate; targetDate = targetDate.AddDays(1))
-            {
-                if (ValidateBeforeRecovery == true)
+            {                
+                Parallel.ForEach(codeList, new ParallelOptions { MaxDegreeOfParallelism = Config.Validator.ThreadLimit }, code =>
                 {
-                    if (Validator.ValidateMasters(targetDate, false) == true)
+                    if (Validator.ValidateMaster(targetDate, code, false) == false)
                     {
-                        logger.Info($"Master of {Code} is same. Do nothing");
-                        return;
+                        Recoverer.RecoverMaster(targetDate, code, AskBeforeRecovery);
                     }
-                }
-                if (Recoverer != null)
-                {
-                    Recoverer.RecoverMasters(targetDate, AskBeforeRecovery);
-                }
-                else
-                {
-                    logger.Error("Validator is not assigned");
-                }
+                });   
             }
+            logger.Info("Master Recovery Done.");
         }
 
         private RelayCommand _RecoverMasterCommand;

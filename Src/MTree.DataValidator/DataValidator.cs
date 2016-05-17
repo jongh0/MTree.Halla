@@ -79,7 +79,7 @@ namespace MTree.DataValidator
 
         public bool ValidateIndexMaster(DateTime targetDate, string code, bool makeReport = true)
         {
-            logger.Info("Index Master Validation Start");
+            //logger.Info("Index Master Validation Start");
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -87,32 +87,32 @@ namespace MTree.DataValidator
             var filter = FilterFactory.Instance.BuildIndexMasterFilter(targetDate);
 
             IndexMaster srcMaster = source.Find(code, filter).FirstOrDefault();
-            logger.Info($"Get Index Master for {code} from source done.");
+            //logger.Info($"Get Index Master for {code} from source done.");
 
             IndexMaster destMaster = destination.Find(code, filter).FirstOrDefault();
-            logger.Info($"Get Index Master for {code} from destination done.");
+            //logger.Info($"Get Index Master for {code} from destination done.");
 
             bool result = comparator.DoCompareItem(srcMaster, destMaster, false);
             if (result == false)
             {
-                logger.Error($"Index Master Validation Fail");
+                logger.Error($"Index Master for {code} of {targetDate.ToString("yyyy-MM-dd")} Validation Fail");
                 if (makeReport == true)
                     comparator.MakeReport(srcMaster, destMaster, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, masterCompareResultFile));
             }
             else
             {
-                logger.Info($"Index Master Validation Success");
+                logger.Info($"Index Master for {code} of {targetDate.ToString("yyyy-MM-dd")} Validation Success");
             }
 
             sw.Stop();
-            logger.Info($"Index Master Validation Done. Elapsed:{sw.Elapsed}");
+            //logger.Info($"Index Master Validation Done. Elapsed:{sw.Elapsed}");
             
             return result;
         }
 
         public bool ValidateStockMaster(DateTime targetDate, string code, bool makeReport = true)
         {
-            logger.Info("Stock Master Validation Start");
+            //logger.Info("Stock Master Validation Start");
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -120,25 +120,25 @@ namespace MTree.DataValidator
             var filter = FilterFactory.Instance.BuildStockMasterFilter(targetDate);
 
             StockMaster srcMaster = source.Find(code, filter).FirstOrDefault();
-            logger.Info($"Get Stock Master for {code} from source done.");
+            //logger.Info($"Get Stock Master for {code} from source done.");
 
             StockMaster destMaster = destination.Find(code, filter).FirstOrDefault();
-            logger.Info($"Get Stock Master for {code} from destination done.");
+            //logger.Info($"Get Stock Master for {code} from destination done.");
 
             bool result = comparator.DoCompareItem(srcMaster, destMaster, false);
             if (result == false )
             {
-                logger.Error($"Stock Master Validation Fail");
+                logger.Error($"Stock Master for {code} of {targetDate.ToString("yyyy-MM-dd")} Validation Fail");
                 if (makeReport == true)
                     comparator.MakeReport(srcMaster, destMaster, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, masterCompareResultFile));
             }
             else
             {
-                logger.Info($"Stock Master Validation Success");
+                logger.Info($"Stock Master for {code} of {targetDate.ToString("yyyy-MM-dd")} Validation Success");
             }
 
             sw.Stop();
-            logger.Info($"Stock Master Validation Done. Elapsed:{sw.Elapsed}");
+            //logger.Info($"Stock Master Validation Done. Elapsed:{sw.Elapsed}");
 
             return result;
         }
@@ -556,7 +556,7 @@ namespace MTree.DataValidator
 
             try
             {
-                var filter = FilterFactory.Instance.BuildIndexConclusionFilter(targetDate);
+	            var filter = FilterFactory.Instance.BuildCircuitBreakFilter(targetDate);
 
                 foreach (string code in codeList)
                 {
