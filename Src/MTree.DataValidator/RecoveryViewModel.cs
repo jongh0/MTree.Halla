@@ -220,25 +220,20 @@ namespace MTree.DataValidator
 
         private void DoRecoverStockConclusionAll()
         {
+            List<string> codeList = new List<string>();
+            codeList.AddRange(DbAgent.Instance.GetCollectionList(DbTypes.StockMaster).OrderBy(s => s));
+
             for (DateTime targetDate = StartingDate; targetDate <= EndingDate; targetDate = targetDate.AddDays(1))
             {
-                if (ValidateBeforeRecovery == true)
+                Parallel.ForEach(codeList, new ParallelOptions { MaxDegreeOfParallelism = Config.Validator.ThreadLimit }, code =>
                 {
-                    if (Validator.ValidateStockConclusions(targetDate, false) == true)
+                    if (Validator.ValidateStockConclusion(targetDate, code, false) == false)
                     {
-                        logger.Info($"Master of {Code} is same. Do nothing");
-                        return;
+                        Recoverer.RecoverStockConclusion(targetDate, code, AskBeforeRecovery);
                     }
-                }
-                if (Recoverer != null)
-                {
-                    Recoverer.RecoverStockConclusions(targetDate, AskBeforeRecovery);
-                }
-                else
-                {
-                    logger.Error("Validator is not assigned");
-                }
+                });
             }
+            logger.Info("Stock Conclusion Recovery Done.");
         }
 
         private RelayCommand _RecoverStockConclusionCommand;
@@ -293,25 +288,20 @@ namespace MTree.DataValidator
         }
         private void DoRecoverIndexConclusionAll()
         {
+            List<string> codeList = new List<string>();
+            codeList.AddRange(DbAgent.Instance.GetCollectionList(DbTypes.IndexMaster).OrderBy(s => s));
+
             for (DateTime targetDate = StartingDate; targetDate <= EndingDate; targetDate = targetDate.AddDays(1))
             {
-                if (ValidateBeforeRecovery == true)
+                Parallel.ForEach(codeList, new ParallelOptions { MaxDegreeOfParallelism = Config.Validator.ThreadLimit }, code =>
                 {
-                    if (Validator.ValidateIndexConclusion(targetDate, false) == true)
+                    if (Validator.ValidateIndexConclusion(targetDate, code, false) == false)
                     {
-                        logger.Info($"Index Conclusion of {Code} is same. Do nothing");
-                        return;
+                        Recoverer.RecoverIndexConclusion(targetDate, code, AskBeforeRecovery);
                     }
-                }
-                if (Recoverer != null)
-                {
-                    Recoverer.RecoverIndexConclusions(targetDate, AskBeforeRecovery);
-                }
-                else
-                {
-                    logger.Error("Validator is not assigned");
-                }
+                });
             }
+            logger.Info("Index Conclusion Recovery Done.");
         }
 
         private RelayCommand _RecoverIndexConclusionCommand;
@@ -366,25 +356,20 @@ namespace MTree.DataValidator
         }
         private void DoRecoverCircuitBreak()
         {
+            List<string> codeList = new List<string>();
+            codeList.AddRange(DbAgent.Instance.GetCollectionList(DbTypes.StockMaster).OrderBy(s => s));
+
             for (DateTime targetDate = StartingDate; targetDate <= EndingDate; targetDate = targetDate.AddDays(1))
             {
-                if (ValidateBeforeRecovery == true)
+                Parallel.ForEach(codeList, new ParallelOptions { MaxDegreeOfParallelism = Config.Validator.ThreadLimit }, code =>
                 {
-                    if (Validator.ValidateCircuitBreak(targetDate, false) == true)
+                    if (Validator.ValidateCircuitBreak(targetDate, code, false) == false)
                     {
-                        logger.Info($"CircuitBreak is same. Do nothing");
-                        return;
+                        Recoverer.RecoverCircuitBreak(targetDate, code, AskBeforeRecovery);
                     }
-                }
-                if (Recoverer != null)
-                {
-                    Recoverer.RecoverCircuitBreaks(targetDate, AskBeforeRecovery);
-                }
-                else
-                {
-                    logger.Error("Validator is not assigned");
-                }
+                });
             }
+            logger.Info("Circuit Break Recovery Done.");
         }
         
         #region INotifyPropertyChanged

@@ -85,9 +85,9 @@ namespace MTree.DataValidator
 
                         tasks.Add(Task.Run(() => Validator.ValidateCodeList()));
                         tasks.Add(Task.Run(() => Validator.ValidateStockConclusions(TargetDate)));
-                        tasks.Add(Task.Run(() => Validator.ValidateIndexConclusion(TargetDate)));
+                        tasks.Add(Task.Run(() => Validator.ValidateIndexConclusions(TargetDate)));
                         tasks.Add(Task.Run(() => Validator.ValidateMasters(TargetDate)));
-                        tasks.Add(Task.Run(() => Validator.ValidateCircuitBreak(TargetDate)));
+                        tasks.Add(Task.Run(() => Validator.ValidateCircuitBreaks(TargetDate)));
                         Task.WaitAll(tasks.ToArray());
                     }
                     else
@@ -105,9 +105,9 @@ namespace MTree.DataValidator
                     {
                         Validator.ValidateCodeList();
                         Validator.ValidateStockConclusions(TargetDate);
-                        Validator.ValidateIndexConclusion(TargetDate);
+                        Validator.ValidateIndexConclusions(TargetDate);
                         Validator.ValidateMasters(TargetDate);
-                        Validator.ValidateCircuitBreak(TargetDate);
+                        Validator.ValidateCircuitBreaks(TargetDate);
                     }
                     else
                     {
@@ -244,7 +244,7 @@ namespace MTree.DataValidator
                     {
                         if (Validator != null)
                         {
-                            Validator.ValidateIndexConclusion(TargetDate);
+                            Validator.ValidateIndexConclusions(TargetDate);
                         }
                         else
                         {
@@ -290,7 +290,7 @@ namespace MTree.DataValidator
                     {
                         if (Validator != null)
                         {
-                            Validator.ValidateCircuitBreak(TargetDate);
+                            Validator.ValidateCircuitBreaks(TargetDate);
                         }
                         else
                         {

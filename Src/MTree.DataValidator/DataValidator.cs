@@ -443,7 +443,7 @@ namespace MTree.DataValidator
             GC.WaitForPendingFinalizers();
         }
 
-        public bool ValidateIndexConclusion(DateTime targetDate, bool makeReport = true)
+        public bool ValidateIndexConclusions(DateTime targetDate, bool makeReport = true)
         {
             logger.Info("Index Conclusion Validation Start.");
 
@@ -540,7 +540,53 @@ namespace MTree.DataValidator
             return true;
         }
 
-        public bool ValidateCircuitBreak(DateTime targetDate, bool makeReport = true)
+        public bool ValidateCircuitBreak(DateTime targetDate, string code, bool makeReport = true)
+        {
+            logger.Info("Circuit Break Validation Start.");
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            
+            var tasks = new List<Task>();
+
+            List<Subscribable> sourceList = new List<Subscribable>();
+            List<Subscribable> destinationList = new List<Subscribable>();
+
+            try
+            {
+                var filter = FilterFactory.Instance.BuildCircuitBreakFilter(targetDate);
+
+                tasks.Add(Task.Run(() => { sourceList.AddRange(source.Find(code, filter, o => o.Id).ToList()); }));
+                tasks.Add(Task.Run(() => { destinationList.AddRange(destination.Find(code, filter, o => o.Id).ToList()); }));
+
+                Task.WaitAll(tasks.ToArray());
+
+                if (comparator.DoCompareItem(sourceList, destinationList, false) == false)
+                {
+                    logger.Error("Circuit Break Validation Fail.");
+                    if (makeReport == true)
+                        comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, circuitbreakCompareResultFile));
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+            finally
+            {
+                sourceList.Clear();
+                destinationList.Clear();
+
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+            }
+
+            sw.Stop();
+            logger.Info($"Circuit Break Validation Done. Elapsed:{sw.Elapsed}");
+
+            return true;
+        }
+        public bool ValidateCircuitBreaks(DateTime targetDate, bool makeReport = true)
         {
             logger.Info("Circuit Break Validation Start.");
             Stopwatch sw = new Stopwatch();

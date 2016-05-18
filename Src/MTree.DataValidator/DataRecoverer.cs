@@ -54,14 +54,14 @@ namespace MTree.DataValidator
                 MessageBoxResult answer = MessageBox.Show($"Master for {code} is already existing. Force to remove and recover?", "Question", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 if (answer != MessageBoxResult.Yes)
                 {
-                    logger.Info($"Stock Master Recovery for {code} Canceled.");
+                    logger.Info($"Stock Master Recovery for {code} of {targetDate.ToString("yyyy-MM-dd")} Canceled.");
                     return;
                 }
             }
 
             To.Delete(code, filter);
             To.Insert(From.Find(code, filter).FirstOrDefault());
-            logger.Info($"Index Master Recovery for {code} Done");
+            logger.Info($"Index Master Recovery for {code} of {targetDate.ToString("yyyy-MM-dd")} Done");
         }
 
         private void RecoverStockMaster(DateTime targetDate, string code, bool needConfirm = true)
@@ -75,14 +75,14 @@ namespace MTree.DataValidator
                 MessageBoxResult answer = MessageBox.Show($"Master for {code} is already existing. Force to remove and recover?", "Question", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 if (answer != MessageBoxResult.Yes)
                 {
-                    logger.Info($"Stock Master Recovery for {code} Canceled.");
+                    logger.Info($"Stock Master Recovery for {code} of {targetDate.ToString("yyyy-MM-dd")} Canceled.");
                     return;
                 }
             }
 
             To.Delete(code, filter);
             To.Insert(From.Find(code, filter).FirstOrDefault());
-            logger.Info($"Stock Master Recovery for {code} Done");
+            logger.Info($"Stock Master Recovery for {code} of {targetDate.ToString("yyyy-MM-dd")} Done");
         }
 
         public void RecoverMasters(DateTime targetDate, bool needConfirm = true)
@@ -114,13 +114,13 @@ namespace MTree.DataValidator
                     MessageBoxResult answer = MessageBox.Show($"Master for {code} is already existing. Force to remove and recover?", "Question", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                     if (answer != MessageBoxResult.Yes)
                     {
-                        logger.Info($"Stock Master Recovery for {code} Canceled.");
+                        logger.Info($"Stock Master Recovery for {code} of {targetDate.ToString("yyyy-MM-dd")} Canceled.");
                         return;
                     }
                 }
                 To.Delete(code, filter);
                 To.Insert(From.Find(code, filter).FirstOrDefault());
-                logger.Info($"Stock Master Recovery for {code} Done. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
+                logger.Info($"Stock Master Recovery for {code} of {targetDate.ToString("yyyy-MM-dd")} Done. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
             });
         }
 
@@ -155,7 +155,7 @@ namespace MTree.DataValidator
 
         public void RecoverStockConclusion(DateTime targetDate, string code, bool needConfirm = true)
         {
-            logger.Info($"Stock Conclusion Recovery for {code} Started");
+            //logger.Info($"Stock Conclusion Recovery for {code} Started");
             var filter = FilterFactory.Instance.BuildStockConclusionFilter(targetDate);
             List<StockConclusion> conclusions = To.Find(code, filter).ToList();
             if (conclusions.Count > 0 && needConfirm == true)
@@ -163,7 +163,7 @@ namespace MTree.DataValidator
                 MessageBoxResult answer = MessageBox.Show($"Master for {code} is already existing. Force to remove and recover?", "Question", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 if (answer != MessageBoxResult.Yes)
                 {
-                    logger.Info($"Stock Master Recovery for {code} Canceled.");
+                    logger.Info($"Stock Master Recovery for {code} of {targetDate.ToString("yyyy-MM-dd")} Canceled.");
                     return;
                 }
             }
@@ -173,7 +173,7 @@ namespace MTree.DataValidator
             {
                 To.Insert(conclusion);
             }
-            logger.Info($"Stock Conclusion Recovery for {code} Done");
+            logger.Info($"Stock Conclusion Recovery for {code} of {targetDate.ToString("yyyy-MM-dd")} Done");
         }
 
         public void RecoverStockConclusions(DateTime targetDate, bool needConfirm = true)
@@ -209,7 +209,7 @@ namespace MTree.DataValidator
 
         public void RecoverIndexConclusion(DateTime targetDate, string code, bool needConfirm = true)
         {
-            logger.Info($"Index Conclusion Recovery for {code} Started");
+            //logger.Info($"Index Conclusion Recovery for {code} Started");
             var filter = FilterFactory.Instance.BuildIndexConclusionFilter(targetDate);
             List<IndexConclusion> conclusions = To.Find(code, filter).ToList();
             if (conclusions.Count > 0 && needConfirm == true)
@@ -217,7 +217,7 @@ namespace MTree.DataValidator
                 MessageBoxResult answer = MessageBox.Show($"Index Conclusion for {code} is already existing. Force to remove and recover?", "Question", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 if (answer != MessageBoxResult.Yes)
                 {
-                    logger.Info($"Index Conclusion Recovery for {code} Canceled.");
+                    logger.Info($"Index Conclusion Recovery for {code} of {targetDate.ToString("yyyy-MM-dd")} Canceled.");
                     return;
                 }
             }
@@ -227,7 +227,7 @@ namespace MTree.DataValidator
             {
                 To.Insert(conclusion);
             }
-            logger.Info($"Index Conclusion Recovery for {code} Done");
+            logger.Info($"Index Conclusion Recovery for {code} of {targetDate.ToString("yyyy-MM-dd")} Done");
         }
 
         public void RecoverIndexConclusions(DateTime targetDate, bool needConfirm = true)
