@@ -30,6 +30,8 @@ namespace MTree.DataValidator
         public MainWindow()
         {
             InitializeComponent();
+            //RecoveryPopup popup = new RecoveryPopup();
+            //popup.ShowDialog();
         }
     }
 }

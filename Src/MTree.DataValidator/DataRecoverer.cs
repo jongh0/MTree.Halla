@@ -153,25 +153,19 @@ namespace MTree.DataValidator
             });
         }
 
-        public void RecoverStockConclusion(DateTime targetDate, string code, bool needConfirm = true)
+        public void RecoverStockConclusion(DateTime targetDate, string code)
         {
             //logger.Info($"Stock Conclusion Recovery for {code} Started");
             var filter = FilterFactory.Instance.BuildStockConclusionFilter(targetDate);
             List<StockConclusion> conclusions = To.Find(code, filter).ToList();
-            if (conclusions.Count > 0 && needConfirm == true)
+            if (conclusions.Count > 0)
             {
-                MessageBoxResult answer = MessageBox.Show($"Master for {code} is already existing. Force to remove and recover?", "Question", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                if (answer != MessageBoxResult.Yes)
+                To.Delete(code, filter);
+                conclusions = From.Find(code, filter).ToList();
+                foreach (StockConclusion conclusion in conclusions)
                 {
-                    logger.Info($"Stock Master Recovery for {code} of {targetDate.ToString("yyyy-MM-dd")} Canceled.");
-                    return;
+                    To.Insert(conclusion);
                 }
-            }
-            To.Delete(code, filter);
-            conclusions = From.Find(code, filter).ToList();
-            foreach (StockConclusion conclusion in conclusions)
-            {
-                To.Insert(conclusion);
             }
             logger.Info($"Stock Conclusion Recovery for {code} of {targetDate.ToString("yyyy-MM-dd")} Done");
         }

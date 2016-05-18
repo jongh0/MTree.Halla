@@ -4,16 +4,62 @@ using MTree.DbProvider;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Windows.Input;
 
 namespace MTree.DataValidator
 {
+
+    public interface IWindowFactory
+    {
+        DialogResult CreateNewWindow(string uri);
+    }
+
+    public class RecoveryPopupWindowFactory : IWindowFactory
+    {
+        private RecoveryPopup PopupWindow = new RecoveryPopup();
+        public RecoveryPopupWindowFactory(object dataContext)
+        {
+            PopupWindow = new RecoveryPopup
+            {
+                DataContext = dataContext
+            };
+        }
+
+        public DialogResult CreateNewWindow(string uri)
+        {
+            System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                PopupWindow.SetUri(uri);
+                PopupWindow.ShowDialog();
+            }));
+            return PopupWindow.Result;
+        }
+    }
     public class RecoveryViewModel: INotifyPropertyChanged
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        
+        private const string logBasePath = "Logs";
+        private const string compareResultPath = "CompareResult";
+        private const string codeCompareResultFile = "CodeCompare.html";
+        private const string masterCompareResultFile = "MasterCompare.html";
+        private const string stockConclusionCompareResultPath = "StockConclusion";
+        private const string indexConclusionCompareResultPath = "IndexConclusion";
+        private const string circuitbreakCompareResultFile = "CircuitBreak.html";
+
+        private ManualResetEvent popupWindowWaitEvent = new ManualResetEvent(false);
+
+        private IWindowFactory RecoveryPopupFactory { get; }
+
+        public RecoveryViewModel()
+        {
+            RecoveryPopupFactory = new RecoveryPopupWindowFactory(this);
+        }
 
         public DataValidator Validator { get; set; } = new DataValidator();
 
@@ -227,9 +273,16 @@ namespace MTree.DataValidator
             {
                 Parallel.ForEach(codeList, new ParallelOptions { MaxDegreeOfParallelism = Config.Validator.ThreadLimit }, code =>
                 {
-                    if (Validator.ValidateStockConclusion(targetDate, code, false) == false)
+                    if (Validator.ValidateStockConclusion(targetDate, code, true) == false)
                     {
-                        Recoverer.RecoverStockConclusion(targetDate, code, AskBeforeRecovery);
+                        popupWindowWaitEvent.WaitOne();
+                        popupWindowWaitEvent.Reset();
+                        DialogResult needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, stockConclusionCompareResultPath, code + ".html"));
+                        if (needRecovery == DialogResult.OK)
+                        {
+                            popupWindowWaitEvent.Set();
+                            Recoverer.RecoverStockConclusion(targetDate, code);
+                        }
                     }
                 });
             }
@@ -247,22 +300,17 @@ namespace MTree.DataValidator
                     {
                         for (DateTime targetDate = StartingDate; targetDate <= EndingDate; targetDate = targetDate.AddDays(1))
                         {
-                            if (ValidateBeforeRecovery == true)
+                            if (Validator.ValidateStockConclusion(targetDate, Code, true) == false)
                             {
-                                if (Validator.ValidateStockConclusion(targetDate, Code, false) == true)
+                                popupWindowWaitEvent.WaitOne();
+                                popupWindowWaitEvent.Reset();
+                                DialogResult needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, stockConclusionCompareResultPath, Code + ".html"));
+                                if (needRecovery == DialogResult.OK)
                                 {
-                                    logger.Info($"Master of {Code} is same. Do nothing");
-                                    return;
+                                    popupWindowWaitEvent.Set();
+                                    Recoverer.RecoverStockConclusion(targetDate, Code);
                                 }
-                            }
-
-                            if (Recoverer != null)
-                            {
-                                Recoverer.RecoverStockConclusion(targetDate, Code, AskBeforeRecovery);
-                            }
-                            else
-                            {
-                                logger.Error("Validator is not assigned");
+                                
                             }
                         }
                     }));

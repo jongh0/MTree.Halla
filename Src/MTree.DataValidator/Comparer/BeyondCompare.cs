@@ -113,16 +113,24 @@ namespace MTree.DataValidator
                 param = "/qc=binary /silent " + param;
             }
 
-            using (Process compareProcess = Process.Start(beyondComparePath, param))
+            try
             {
-                compareProcess.WaitForExit();
+                using (Process compareProcess = Process.Start(beyondComparePath, param))
+                {
+                    compareProcess.WaitForExit();
 
-                if (File.Exists(sourceFile))
-                    File.Delete(sourceFile);
-                if (File.Exists(destinationFile))
-                    File.Delete(destinationFile);
+                    if (File.Exists(sourceFile))
+                        File.Delete(sourceFile);
+                    if (File.Exists(destinationFile))
+                        File.Delete(destinationFile);
 
-                return compareProcess.ExitCode == 1;
+                    return compareProcess.ExitCode == 1;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                throw new Exception();
             }
         }
 
@@ -262,6 +270,11 @@ namespace MTree.DataValidator
                 destinationSw.WriteLine(dest);
                 destinationSw.Flush();
                 fs.Flush(true);
+            }
+
+            if (File.Exists(reportPath) == true)
+            {
+                File.Delete(reportPath);
             }
 
             string param = $"/qc=binary /silent @CompareScript.txt {sourceFile} {destinationFile} {reportPath}";
