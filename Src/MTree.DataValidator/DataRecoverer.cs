@@ -158,19 +158,17 @@ namespace MTree.DataValidator
             //logger.Info($"Stock Conclusion Recovery for {code} Started");
             var filter = FilterFactory.Instance.BuildStockConclusionFilter(targetDate);
             List<StockConclusion> conclusions = To.Find(code, filter).ToList();
-            if (conclusions.Count > 0)
+            To.Delete(code, filter);
+            conclusions = From.Find(code, filter).ToList();
+            foreach (StockConclusion conclusion in conclusions)
             {
-                To.Delete(code, filter);
-                conclusions = From.Find(code, filter).ToList();
-                foreach (StockConclusion conclusion in conclusions)
-                {
-                    To.Insert(conclusion);
-                }
+                To.Insert(conclusion);
             }
+            
             logger.Info($"Stock Conclusion Recovery for {code} of {targetDate.ToString("yyyy-MM-dd")} Done");
         }
 
-        public void RecoverStockConclusions(DateTime targetDate, bool needConfirm = true)
+        public void RecoverStockConclusions(DateTime targetDate)
         {
             logger.Info($"Stock Conclusion Recovery Started");
             int cnt = 0;
@@ -180,15 +178,6 @@ namespace MTree.DataValidator
             Parallel.ForEach(codeList, new ParallelOptions { MaxDegreeOfParallelism = Config.Validator.ThreadLimit }, code =>
             {
                 List<StockConclusion> conclusions = To.Find(code, filter).ToList();
-                if (conclusions.Count > 0 && needConfirm == true)
-                {
-                    MessageBoxResult answer = MessageBox.Show($"Stock Conclusion for {code} is already existing. Force to remove and recover?", "Question", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                    if (answer != MessageBoxResult.Yes)
-                    {
-                        logger.Info($"Stock Conclusion Recovery for {code} Canceled.");
-                        return;
-                    }
-                }
                 To.Delete(code, filter);
                 conclusions = From.Find(code, filter).ToList();
                 foreach (StockConclusion conclusion in conclusions)

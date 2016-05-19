@@ -52,7 +52,7 @@ namespace MTree.DataValidator
         private const string indexConclusionCompareResultPath = "IndexConclusion";
         private const string circuitbreakCompareResultFile = "CircuitBreak.html";
 
-        private ManualResetEvent popupWindowWaitEvent = new ManualResetEvent(false);
+        private object popupWindowLockObject = new object();
 
         private IWindowFactory RecoveryPopupFactory { get; }
 
@@ -132,6 +132,20 @@ namespace MTree.DataValidator
             {
                 _AskBeforeRecovery = value;
                 NotifyPropertyChanged(nameof(AskBeforeRecovery));
+            }
+        }
+        
+        private bool _ApplyForAll = false;
+        public bool ApplyForAll
+        {
+            get
+            {
+                return _ApplyForAll;
+            }
+            set
+            {
+                _ApplyForAll = value;
+                NotifyPropertyChanged(nameof(ApplyForAll));
             }
         }
 
@@ -275,12 +289,16 @@ namespace MTree.DataValidator
                 {
                     if (Validator.ValidateStockConclusion(targetDate, code, true) == false)
                     {
-                        popupWindowWaitEvent.WaitOne();
-                        popupWindowWaitEvent.Reset();
-                        DialogResult needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, stockConclusionCompareResultPath, code + ".html"));
+                        DialogResult needRecovery = DialogResult.None;
+                        lock (popupWindowLockObject)
+                        {
+                            if (ApplyForAll == false)
+                                needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, stockConclusionCompareResultPath, code + ".html"));
+                            else
+                                needRecovery = DialogResult.OK;
+                        }
                         if (needRecovery == DialogResult.OK)
                         {
-                            popupWindowWaitEvent.Set();
                             Recoverer.RecoverStockConclusion(targetDate, code);
                         }
                     }
@@ -302,12 +320,13 @@ namespace MTree.DataValidator
                         {
                             if (Validator.ValidateStockConclusion(targetDate, Code, true) == false)
                             {
-                                popupWindowWaitEvent.WaitOne();
-                                popupWindowWaitEvent.Reset();
-                                DialogResult needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, stockConclusionCompareResultPath, Code + ".html"));
+                                DialogResult needRecovery = DialogResult.None;
+                                lock (popupWindowLockObject)
+                                {
+                                    needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, stockConclusionCompareResultPath, Code + ".html"));
+                                }
                                 if (needRecovery == DialogResult.OK)
                                 {
-                                    popupWindowWaitEvent.Set();
                                     Recoverer.RecoverStockConclusion(targetDate, Code);
                                 }
                                 

@@ -197,6 +197,7 @@ namespace MTree.DataValidator
         }
         public void MakeReport(List<Subscribable> src, List<Subscribable> dest, string reportPath)
         {
+            string code = src.Count > 0 ? src[0].Code : dest[0].Code;
             StringBuilder srcString = new StringBuilder();
             StringBuilder destString = new StringBuilder();
 
@@ -214,7 +215,7 @@ namespace MTree.DataValidator
                 Directory.CreateDirectory(path);
             }
 
-            using (var fs = new FileStream(Path.Combine(path, src[0].Code + "_source.txt"), FileMode.Create))
+            using (var fs = new FileStream(Path.Combine(path, code + "_source.txt"), FileMode.Create))
             using (var sw = new StreamWriter(fs, Encoding.Default))
             {
                 sw.WriteLine(outputString);
@@ -235,7 +236,7 @@ namespace MTree.DataValidator
                 Directory.CreateDirectory(path);
             }
 
-            using (var fs = new FileStream(Path.Combine(path, src[0].Code + "_destination.txt"), FileMode.Create))
+            using (var fs = new FileStream(Path.Combine(path, code + "_destination.txt"), FileMode.Create))
             using (var sw = new StreamWriter(fs, Encoding.Default))
             {
                 sw.WriteLine(outputString);

@@ -90,18 +90,6 @@
                         <Label Content="~" Margin="5,0,5,0" VerticalAlignment="Center"/>
                         <DatePicker SelectedDate="{Binding Path=EndingDate, Mode=TwoWay}"/>
                     </StackPanel>
-                    <GroupBox Header="Recovery Direction" Height="65">
-                        <StackPanel Orientation="Vertical">
-                            <StackPanel Orientation="Horizontal">
-                                <RadioButton GroupName="RecoveryDirection" Content="Source -> Destination" VerticalAlignment="Center" Margin="5,0,0,0" IsChecked="{Binding FromSourceToDestination}"/>
-                                <RadioButton GroupName="RecoveryDirection" Content="Destination -> Source" VerticalAlignment="Center" Margin="5,0,0,0"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <CheckBox Content="Validate Before Recovery" VerticalAlignment="Center" Margin="5,0,0,0" IsChecked="{Binding ValidateBeforeRecovery}"/>
-                                <CheckBox Content="Ask Before Recovery" VerticalAlignment="Center" Margin="5,0,0,0" IsChecked="{Binding AskBeforeRecovery}"/>
-                            </StackPanel>
-                        </StackPanel>
-                    </GroupBox>
                     <GroupBox Header="Recovery For All Code" Margin="0,5,0,0">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,5,0,5">
                             <Button Content=" All " Command="{Binding RecoverAllCommand}" Margin="5,0,5,0"/>
