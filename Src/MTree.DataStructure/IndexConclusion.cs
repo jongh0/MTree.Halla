@@ -20,8 +20,9 @@ namespace MTree.DataStructure
             {
                 foreach (var property in typeof(IndexConclusion).GetProperties())
                 {
-                    if (excludeProperties.Contains(property.Name) == false)
-                        sb.Append($"{property.Name}: {property.GetValue(this)}, ");
+                    if (property.Name != "Time")
+                        if (excludeProperties.Contains(property.Name) == false)
+                            sb.Append($"{property.Name}: {property.GetValue(this)}, ");
                 }
             }
             catch { }

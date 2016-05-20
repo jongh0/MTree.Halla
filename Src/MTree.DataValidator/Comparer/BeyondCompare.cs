@@ -117,13 +117,17 @@ namespace MTree.DataValidator
             {
                 using (Process compareProcess = Process.Start(beyondComparePath, param))
                 {
-                    compareProcess.WaitForExit();
-
-                    if (File.Exists(sourceFile))
-                        File.Delete(sourceFile);
-                    if (File.Exists(destinationFile))
-                        File.Delete(destinationFile);
-
+                    int retCnt = 0;
+                    while (compareProcess.WaitForExit(10 * 1000) == false)
+                    {
+                        compareProcess.Kill();
+                        logger.Error($"Beyond Compare TImeout. Retry Count:{retCnt++}");
+                        if (retCnt > 3)
+                        {
+                            logger.Error($"Beyond Compare Fail");
+                            return false;
+                        }
+                    }
                     return compareProcess.ExitCode == 1;
                 }
             }
@@ -131,6 +135,13 @@ namespace MTree.DataValidator
             {
                 logger.Error(ex);
                 throw new Exception();
+            }
+            finally
+            {
+                if (File.Exists(sourceFile))
+                    File.Delete(sourceFile);
+                if (File.Exists(destinationFile))
+                    File.Delete(destinationFile);
             }
         }
 
@@ -280,16 +291,35 @@ namespace MTree.DataValidator
 
             string param = $"/qc=binary /silent @CompareScript.txt {sourceFile} {destinationFile} {reportPath}";
 
-            using (Process compareProcess = Process.Start(beyondComparePath, param))
+            try
             {
-                compareProcess.WaitForExit();
+                using (Process compareProcess = Process.Start(beyondComparePath, param))
+                {
+                    int retCnt = 0;
+                    while (compareProcess.WaitForExit(10 * 1000) == false)
+                    {
+                        compareProcess.Kill();
+                        logger.Error($"Beyond Compare TImeout. Retry Count:{retCnt++}");
+                        if (retCnt > 3)
+                        {
+                            logger.Error($"Beyond Compare Fail");
+                            return;
+                        }
+                    }
+                }
+                logger.Info($"Compare result report created at {reportPath}");
             }
-            if (File.Exists(sourceFile))
-                File.Delete(sourceFile);
-            if (File.Exists(destinationFile))
-                File.Delete(destinationFile);
-
-            logger.Info($"Compare result report created at {reportPath}");
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+            finally
+            {
+                if (File.Exists(sourceFile))
+                    File.Delete(sourceFile);
+                if (File.Exists(destinationFile))
+                    File.Delete(destinationFile);
+            }
         }
     }
 }

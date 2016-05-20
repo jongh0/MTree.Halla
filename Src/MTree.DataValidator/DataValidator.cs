@@ -163,12 +163,12 @@ namespace MTree.DataValidator
             foreach (string code in indexCodes)
             {
                 IndexMaster srcMaster = source.Find(code, indexFilter).FirstOrDefault();
-                logger.Info($"Get Stock Master for {code} from source done.");
+                logger.Info($"Get Stock Master for {code} of {targetDate.ToString("yyyy-MM-dd")} from source done.");
                 if (srcMaster != null)
                     srcMasters.Add(srcMaster.ToString(nameof(srcMaster.Id)));
 
                 IndexMaster destMaster = destination.Find(code, indexFilter).FirstOrDefault();
-                logger.Info($"Get Stock Master for {code} from destination done.");
+                logger.Info($"Get Stock Master for {code} of {targetDate.ToString("yyyy-MM-dd")} from destination done.");
                 if (destMaster != null)
                     destMasters.Add(destMaster.ToString(nameof(destMaster.Id)));
             }
@@ -177,12 +177,12 @@ namespace MTree.DataValidator
             foreach (string code in stockCodes)
             {
                 StockMaster srcMaster = source.Find(code, stockFilter).FirstOrDefault();
-                logger.Info($"Get Stock Master for {code} from source done.");
+                logger.Info($"Get Stock Master for {code} of {targetDate.ToString("yyyy-MM-dd")} from source done.");
                 if (srcMaster != null)
                     srcMasters.Add(srcMaster.ToString(nameof(srcMaster.Id)));
 
                 StockMaster destMaster = destination.Find(code, stockFilter).FirstOrDefault();
-                logger.Info($"Get Stock Master for {code} from destination done.");
+                logger.Info($"Get Stock Master for {code} of {targetDate.ToString("yyyy-MM-dd")} from destination done.");
                 if (destMaster != null)
                     destMasters.Add(destMaster.ToString(nameof(destMaster.Id)));
             }
@@ -245,19 +245,19 @@ namespace MTree.DataValidator
                     
                     if (comparator.DoCompareItem(sourceList, destinationList, false) == false)
                     {
-                        logger.Error($"Stock Conclusion Validation for {code} Fail. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
+                        logger.Error($"Stock Conclusion Validation for {code} of {targetDate.ToString("yyyy-MM-dd")} Fail. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
                         if (makeReport == true)
                             comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, stockConclusionCompareResultPath, code + ".html"));
                         result = false;
                     }
                     else
                     {
-                        logger.Info($"Stock Conclusion Validation for {code} success. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
+                        logger.Info($"Stock Conclusion Validation for {code} of {targetDate.ToString("yyyy-MM-dd")} success. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
                     }
                 }
                 else
                 {
-                    logger.Info($"Stock Conclusion for {code} is Empty. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
+                    logger.Info($"Stock Conclusion for {code} of {targetDate.ToString("yyyy-MM-dd")} is Empty. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
                 }
 
                 sourceList.Clear();
@@ -517,7 +517,7 @@ namespace MTree.DataValidator
 
                 if (comparator.DoCompareItem(sourceList, destinationList, false) == false)
                 {
-                    logger.Error($"Index Conclusion Validation for {code} Fail.");
+                    logger.Error($"Index Conclusion Validation for {code} of {targetDate.ToString("yyyy-MM-dd")} Fail.");
                     if (makeReport == true)
                         comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, indexConclusionCompareResultPath, code + ".html"));
                     return false;
@@ -536,7 +536,7 @@ namespace MTree.DataValidator
                 GC.WaitForPendingFinalizers();
             }
             
-            logger.Info($"Index Conclusion Validation for {code} Done.");
+            logger.Info($"Index Conclusion Validation for {code} of {targetDate.ToString("yyyy-MM-dd")} Done.");
             return true;
         }
 
