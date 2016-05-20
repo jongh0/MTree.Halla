@@ -61,6 +61,9 @@ namespace MTree.AutoLauncher
                     ShutdownTimer.AutoReset = false;
                     ShutdownTimer.Interval = (shutdownTime - now).TotalMilliseconds;
                     ShutdownTimer.Elapsed += ShutdownTimer_Elapsed;
+                    ShutdownTimer.Start();
+
+                    logger.Info($"Will be shutdown at {shutdownTime}");
                 } 
 #endif
             }
