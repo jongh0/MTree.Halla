@@ -21,19 +21,22 @@ namespace MTree.DataValidator
 
     public class RecoveryPopupWindowFactory : IWindowFactory
     {
+        private object _DataContext;
         private RecoveryPopup PopupWindow = new RecoveryPopup();
         public RecoveryPopupWindowFactory(object dataContext)
         {
-            PopupWindow = new RecoveryPopup
-            {
-                DataContext = dataContext
-            };
+            _DataContext = dataContext;
         }
 
         public DialogResult CreateNewWindow(string uri)
         {
             System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
             {
+                PopupWindow = new RecoveryPopup
+                {
+                    DataContext = _DataContext
+                };
+
                 PopupWindow.SetUri(uri);
                 PopupWindow.ShowDialog();
             }));
@@ -61,6 +64,10 @@ namespace MTree.DataValidator
             RecoveryPopupFactory = new RecoveryPopupWindowFactory(this);
         }
 
+        public string FromAddress { get; set; }
+
+        public string ToAddress { get; set; }
+
         public DataValidator Validator { get; set; } = new DataValidator();
 
         public DataRecoverer Recoverer { get; set; } = new DataRecoverer();
@@ -75,6 +82,11 @@ namespace MTree.DataValidator
             set
             {
                 _StartingDate = value;
+                if (EndingDate < _StartingDate)
+                {
+                    EndingDate = _StartingDate;
+                }
+                
                 NotifyPropertyChanged(nameof(StartingDate));
             }
         }
@@ -89,6 +101,10 @@ namespace MTree.DataValidator
             set
             {
                 _EndingDate = value;
+                if (_EndingDate < StartingDate)
+                {
+                    StartingDate = _EndingDate;
+                }
                 NotifyPropertyChanged(nameof(EndingDate));
             }
         }
@@ -102,39 +118,25 @@ namespace MTree.DataValidator
             }
             set
             {
-                _Code = value;
+                _Code = value.Trim();
                 NotifyPropertyChanged(nameof(Code));
             }
         }
 
-        private bool _ValidateBeforeRecovery = true;
-        public bool ValidateBeforeRecovery
+        public bool _ValidateOnly = true;
+        public bool ValidateOnly
         {
             get
             {
-                return _ValidateBeforeRecovery;
+                return _ValidateOnly;
             }
             set
             {
-                _ValidateBeforeRecovery = value;
-                NotifyPropertyChanged(nameof(ValidateBeforeRecovery));
+                _ValidateOnly = value;
+                NotifyPropertyChanged(nameof(ValidateOnly));
             }
         }
 
-        private bool _AskBeforeRecovery = true;
-        public bool AskBeforeRecovery
-        {
-            get
-            {
-                return _AskBeforeRecovery;
-            }
-            set
-            {
-                _AskBeforeRecovery = value;
-                NotifyPropertyChanged(nameof(AskBeforeRecovery));
-            }
-        }
-        
         private bool _ApplyForAll = false;
         public bool ApplyForAll
         {
@@ -218,9 +220,23 @@ namespace MTree.DataValidator
             {                
                 Parallel.ForEach(codeList, new ParallelOptions { MaxDegreeOfParallelism = Config.Validator.ThreadLimit }, code =>
                 {
-                    if (Validator.ValidateMaster(targetDate, code, false) == false)
+                    if (Validator.ValidateMaster(targetDate, code, true) == false)
                     {
-                        Recoverer.RecoverMaster(targetDate, code, AskBeforeRecovery);
+                        if (ValidateOnly == false)
+                        {
+                            DialogResult needRecovery = DialogResult.None;
+                            lock (popupWindowLockObject)
+                            {
+                                if (ApplyForAll == false)
+                                    needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, stockConclusionCompareResultPath, Code + ".html"));
+                                else
+                                    needRecovery = DialogResult.OK;
+                            }
+                            if (needRecovery == DialogResult.OK)
+                            {
+                                Recoverer.RecoverMaster(targetDate, code);
+                            }
+                        }
                     }
                 });   
             }
@@ -238,22 +254,23 @@ namespace MTree.DataValidator
                     {
                         for (DateTime targetDate = StartingDate; targetDate <= EndingDate; targetDate = targetDate.AddDays(1))
                         {
-                            if (ValidateBeforeRecovery == true)
+                            if (Validator.ValidateMaster(targetDate, Code, true) == false)
                             {
-                                if (Validator.ValidateMaster(targetDate, Code, false) == true)
+                                if (ValidateOnly == false)
                                 {
-                                    logger.Info($"Master of {Code} is same. Do nothing");
-                                    return;
+                                    DialogResult needRecovery = DialogResult.None;
+                                    lock (popupWindowLockObject)
+                                    {
+                                        if (ApplyForAll == false)
+                                            needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, stockConclusionCompareResultPath, Code + ".html"));
+                                        else
+                                            needRecovery = DialogResult.OK;
+                                    }
+                                    if (needRecovery == DialogResult.OK)
+                                    {
+                                        Recoverer.RecoverMaster(targetDate, Code);
+                                    }
                                 }
-                            }
-
-                            if (Recoverer != null)
-                            {
-                                Recoverer.RecoverMaster(targetDate, Code, AskBeforeRecovery);
-                            }
-                            else
-                            {
-                                logger.Error("Validator is not assigned");
                             }
                         }
                     }));
@@ -289,20 +306,24 @@ namespace MTree.DataValidator
                 {
                     if (Validator.ValidateStockConclusion(targetDate, code, true) == false)
                     {
-                        DialogResult needRecovery = DialogResult.None;
-                        lock (popupWindowLockObject)
+                        if (ValidateOnly == false)
                         {
-                            if (ApplyForAll == false)
-                                needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, stockConclusionCompareResultPath, code + ".html"));
-                            else
-                                needRecovery = DialogResult.OK;
-                        }
-                        if (needRecovery == DialogResult.OK)
-                        {
-                            Recoverer.RecoverStockConclusion(targetDate, code);
+                            DialogResult needRecovery = DialogResult.None;
+                            lock (popupWindowLockObject)
+                            {
+                                if (ApplyForAll == false)
+                                    needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, stockConclusionCompareResultPath, code + ".html"));
+                                else
+                                    needRecovery = DialogResult.OK;
+                            }
+                            if (needRecovery == DialogResult.OK)
+                            {
+                                Recoverer.RecoverStockConclusion(targetDate, code);
+                            }
                         }
                     }
                 });
+                ApplyForAll = false;
             }
             logger.Info("Stock Conclusion Recovery Done.");
         }
@@ -320,18 +341,21 @@ namespace MTree.DataValidator
                         {
                             if (Validator.ValidateStockConclusion(targetDate, Code, true) == false)
                             {
-                                DialogResult needRecovery = DialogResult.None;
-                                lock (popupWindowLockObject)
+                                if (ValidateOnly == false)
                                 {
-                                    needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, stockConclusionCompareResultPath, Code + ".html"));
+                                    DialogResult needRecovery = DialogResult.None;
+                                    lock (popupWindowLockObject)
+                                    {
+                                        needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, stockConclusionCompareResultPath, Code + ".html"));
+                                    }
+                                    if (needRecovery == DialogResult.OK)
+                                    {
+                                        Recoverer.RecoverStockConclusion(targetDate, Code);
+                                    }
                                 }
-                                if (needRecovery == DialogResult.OK)
-                                {
-                                    Recoverer.RecoverStockConclusion(targetDate, Code);
-                                }
-                                
                             }
                         }
+                        ApplyForAll = false;
                     }));
 
                 return _RecoverStockConclusionCommand;
@@ -362,11 +386,29 @@ namespace MTree.DataValidator
             {
                 Parallel.ForEach(codeList, new ParallelOptions { MaxDegreeOfParallelism = Config.Validator.ThreadLimit }, code =>
                 {
-                    if (Validator.ValidateIndexConclusion(targetDate, code, false) == false)
+                    if (Validator.ValidateIndexConclusion(targetDate, code, true) == false)
                     {
-                        Recoverer.RecoverIndexConclusion(targetDate, code, AskBeforeRecovery);
+                        if (ValidateOnly == false)
+                        {
+                            DialogResult needRecovery = DialogResult.None;
+                            lock (popupWindowLockObject)
+                            {
+                                if (File.Exists(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, indexConclusionCompareResultPath, code + ".html")) == false)
+                                    logger.Error($"{Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, indexConclusionCompareResultPath, code + ".html")} is not exist.");
+
+                                if (ApplyForAll == false)
+                                    needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, indexConclusionCompareResultPath, code + ".html"));
+                                else
+                                    needRecovery = DialogResult.OK;
+                            }
+                            if (needRecovery == DialogResult.OK)
+                            {
+                                Recoverer.RecoverIndexConclusion(targetDate, code);
+                            }
+                        }
                     }
                 });
+                ApplyForAll = false;
             }
             logger.Info("Index Conclusion Recovery Done.");
         }
@@ -382,25 +424,24 @@ namespace MTree.DataValidator
                     {
                         for (DateTime targetDate = StartingDate; targetDate <= EndingDate; targetDate = targetDate.AddDays(1))
                         {
-                            if (ValidateBeforeRecovery == true)
+                            if (Validator.ValidateIndexConclusion(targetDate, Code, true) == false)
                             {
-                                if (Validator.ValidateIndexConclusion(targetDate, Code, false) == true)
+                                if (ValidateOnly == false)
                                 {
-                                    logger.Info($"Index Conclusion of {Code} is same. Do nothing");
-                                    return;
+                                    DialogResult needRecovery = DialogResult.None;
+                                    lock (popupWindowLockObject)
+                                    {
+                                        needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, indexConclusionCompareResultPath, Code + ".html"));
+                                    }
+                                    if (needRecovery == DialogResult.OK)
+                                    {
+                                        Recoverer.RecoverIndexConclusion(targetDate, Code);
+                                    }
                                 }
-                            }
-
-                            if (Recoverer != null)
-                            {
-                                Recoverer.RecoverIndexConclusion(targetDate, Code, AskBeforeRecovery);
-                            }
-                            else
-                            {
-                                logger.Error("Validator is not assigned");
                             }
                         }
                     }));
+
 
                 return _RecoverIndexConclusionCommand;
             }
@@ -430,9 +471,20 @@ namespace MTree.DataValidator
             {
                 Parallel.ForEach(codeList, new ParallelOptions { MaxDegreeOfParallelism = Config.Validator.ThreadLimit }, code =>
                 {
-                    if (Validator.ValidateCircuitBreak(targetDate, code, false) == false)
+                    if (Validator.ValidateCircuitBreak(targetDate, code, true) == false)
                     {
-                        Recoverer.RecoverCircuitBreak(targetDate, code, AskBeforeRecovery);
+                        if (ValidateOnly == false)
+                        {
+                            DialogResult needRecovery = DialogResult.None;
+                            lock (popupWindowLockObject)
+                            {
+                                needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, circuitbreakCompareResultFile, Code + ".html"));
+                            }
+                            if (needRecovery == DialogResult.OK)
+                            {
+                                Recoverer.RecoverCircuitBreak(targetDate, code);
+                            }
+                        }
                     }
                 });
             }

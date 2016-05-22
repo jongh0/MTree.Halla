@@ -11,7 +11,7 @@
     <Window.DataContext>
         <local:MainViewModel/>
     </Window.DataContext>
-    <Grid>
+    <Grid >
         <Grid.Resources>
             <Style TargetType="{x:Type Button}">
                 <Setter Property="Height" Value="25"/>
@@ -34,19 +34,19 @@
         <StackPanel>
             <GroupBox Header="Server Config" BorderBrush="Black" BorderThickness="2">
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="0,5,0,5">
-                <StackPanel Orientation="Horizontal">
-                    <Label Content="Source Address      " Margin="5,0,5,0" VerticalAlignment="Center"/>
-                    <TextBox Text="{Binding SourceAddress}" VerticalAlignment="Center" Width="170"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="Source Address      " Margin="5,0,5,0" VerticalAlignment="Center"/>
+                        <TextBox Text="{Binding SourceAddress}" VerticalAlignment="Center" Width="170"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="Destination Address" Margin="5,0,5,0" VerticalAlignment="Center" />
+                        <TextBox Text="{Binding DestinationAddress}" VerticalAlignment="Center" Width="170"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content=" Change Server " Margin="5,0,0,0" Command="{Binding UpdateServerCommand}"/>
+                        <Button Content=" Connection Test " Margin="25,0,0,0" Command="{Binding CheckServerCommand}"/>
+                    </StackPanel>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Label Content="Destination Address" Margin="5,0,5,0" VerticalAlignment="Center" />
-                    <TextBox Text="{Binding DestinationAddress}" VerticalAlignment="Center" Width="170"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Button Content=" Change Server " Margin="5,0,0,0" Command="{Binding UpdateServerCommand}"/>
-                    <Button Content=" Connection Test " Margin="25,0,0,0" Command="{Binding CheckServerCommand}"/>
-                </StackPanel>
-            </StackPanel>
             </GroupBox>
             <GroupBox Header="Validation" BorderBrush="Black" BorderThickness="2">
                 <StackPanel DataContext="{Binding ValidatorViewModel}">
@@ -91,6 +91,7 @@
                         <DatePicker SelectedDate="{Binding Path=StartingDate, Mode=TwoWay}"/>
                         <Label Content="~" Margin="5,0,5,0" VerticalAlignment="Center"/>
                         <DatePicker SelectedDate="{Binding Path=EndingDate, Mode=TwoWay}"/>
+                        <CheckBox Content="Validate Only" IsChecked="{Binding ValidateOnly}" VerticalAlignment="Center"/>
                     </StackPanel>
                     <GroupBox Header="Recovery For All Code" Margin="0,5,0,0">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,5,0,5">

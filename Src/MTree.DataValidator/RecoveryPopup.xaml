@@ -10,18 +10,23 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" Orientation="Vertical">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <RadioButton GroupName="RecoveryDirection" Content="Source -> Destination" VerticalAlignment="Center" Margin="5,0,0,0" IsChecked="{Binding FromSourceToDestination}"/>
-                <RadioButton GroupName="RecoveryDirection" Content="Destination -> Source" VerticalAlignment="Center" Margin="5,0,0,0"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,5" >
-                <CheckBox Content="Apply for all" IsChecked="{Binding ApplyForAll}" VerticalAlignment="Center"/>
-                <Button Content=" Recovery " Margin="5,0,0,0" Click="Recovery_Click" VerticalAlignment="Center"></Button>
-                <Button Content="  Cancel  " Margin="5,0,0,0" Click="Cancel_Click" VerticalAlignment="Center"></Button>
-            </StackPanel>
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center">
+            <RadioButton GroupName="RecoveryDirection" VerticalAlignment="Center" IsChecked="{Binding FromSourceToDestination}"/>
+            <Label Content="{Binding FromAddress, Mode=OneWay}"/>
+            <Label Content=" -> "/>
+            <Label Content="{Binding ToAddress, Mode=OneWay}"  Margin="5,0,100,0" />
+            <RadioButton GroupName="RecoveryDirection" VerticalAlignment="Center" Margin="100,0,0,0"/>
+            <Label Content="{Binding FromAddress, Mode=OneWay}"/>
+            <Label Content=" &lt;- "/>
+            <Label Content="{Binding ToAddress, Mode=OneWay}"/>
         </StackPanel>
-        <WebBrowser Grid.Row="1" Name="CompareViewer"/>
+        <WebBrowser Grid.Row="1" Name="CompareViewer" Height="Auto"/>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,5" >
+            <CheckBox Content="Apply for all" IsChecked="{Binding ApplyForAll}" VerticalAlignment="Center"/>
+            <Button Content=" Recovery " Margin="5,0,0,0" Click="Recovery_Click" VerticalAlignment="Center"></Button>
+            <Button Content="  Cancel  " Margin="5,0,0,0" Click="Cancel_Click" VerticalAlignment="Center"></Button>
+        </StackPanel>
     </Grid>
 </Window>

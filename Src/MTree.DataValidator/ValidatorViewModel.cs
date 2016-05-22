@@ -25,6 +25,10 @@ namespace MTree.DataValidator
             set
             {
                 _StartingDate = value;
+                if (EndingDate < _StartingDate)
+                {
+                    EndingDate = _StartingDate;
+                }
                 NotifyPropertyChanged(nameof(StartingDate));
             }
         }
@@ -39,6 +43,10 @@ namespace MTree.DataValidator
             set
             {
                 _EndingDate = value;
+                if (_EndingDate < StartingDate)
+                {
+                    StartingDate = _EndingDate;
+                }
                 NotifyPropertyChanged(nameof(EndingDate));
             }
         }

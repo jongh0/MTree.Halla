@@ -58,6 +58,7 @@ namespace MTree.DataValidator
             set
             {
                 _SourceAddress = value;
+                RecoveryViewModel.FromAddress = value;
                 NotifyPropertyChanged(nameof(SourceAddress));
             }
         }
@@ -72,6 +73,7 @@ namespace MTree.DataValidator
             set
             {
                 _DestinationAddress = value;
+                RecoveryViewModel.ToAddress = value;
                 NotifyPropertyChanged(nameof(_DestinationAddress));
             }
         }

@@ -124,7 +124,7 @@ namespace MTree.DataValidator
                         logger.Error($"Beyond Compare TImeout. Retry Count:{retCnt++}");
                         if (retCnt > 3)
                         {
-                            logger.Error($"Beyond Compare Fail");
+                            logger.Error($"Beyond Compare Fail. ExitCode:{compareProcess.ExitCode}");
                             return false;
                         }
                     }

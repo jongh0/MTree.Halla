@@ -31,32 +31,28 @@ namespace MTree.DataValidator
             To = to;
         }
 
-        public void RecoverMaster(DateTime targetDate, string code, bool needConfirm = true)
+        public void RecoverMaster(DateTime targetDate, string code)
         {
             if (code.Length == 3)
             {
-                RecoverIndexMaster(targetDate, code, needConfirm);
+                RecoverIndexMaster(targetDate, code);
             }
             else
             {
-                RecoverStockMaster(targetDate, code, needConfirm);
+                RecoverStockMaster(targetDate, code);
             }
         }
 
-        private void RecoverIndexMaster(DateTime targetDate, string code, bool needConfirm = true)
+        private void RecoverIndexMaster(DateTime targetDate, string code)
         {
             //logger.Info($"Index Master Recovery for {code} Started");
             var filter = FilterFactory.Instance.BuildIndexMasterFilter(targetDate);
 
             IndexMaster master = To.Find(code, filter).FirstOrDefault();
-            if (master != null && needConfirm == true)
+            if (master == null)
             {
-                MessageBoxResult answer = MessageBox.Show($"Master for {code} is already existing. Force to remove and recover?", "Question", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                if (answer != MessageBoxResult.Yes)
-                {
-                    logger.Info($"Stock Master Recovery for {code} of {targetDate.ToString("yyyy-MM-dd")} Canceled.");
-                    return;
-                }
+                logger.Info($"Stock Master for {code} of {targetDate.ToString("yyyy-MM-dd")} is null.");
+                return;
             }
 
             To.Delete(code, filter);
@@ -64,41 +60,37 @@ namespace MTree.DataValidator
             logger.Info($"Index Master Recovery for {code} of {targetDate.ToString("yyyy-MM-dd")} Done");
         }
 
-        private void RecoverStockMaster(DateTime targetDate, string code, bool needConfirm = true)
+        private void RecoverStockMaster(DateTime targetDate, string code)
         {
             //logger.Info($"Stock Master Recovery for {code} Started");
             var filter = FilterFactory.Instance.BuildStockMasterFilter(targetDate);
 
             StockMaster master = To.Find(code, filter).FirstOrDefault();
-            if (master != null && needConfirm == true)
+            if (master == null)
             {
-                MessageBoxResult answer = MessageBox.Show($"Master for {code} is already existing. Force to remove and recover?", "Question", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                if (answer != MessageBoxResult.Yes)
-                {
-                    logger.Info($"Stock Master Recovery for {code} of {targetDate.ToString("yyyy-MM-dd")} Canceled.");
-                    return;
-                }
-            }
-
+                logger.Info($"Stock Master for {code} of {targetDate.ToString("yyyy-MM-dd")} is null.");
+                return;
+            }    
+            
             To.Delete(code, filter);
             To.Insert(From.Find(code, filter).FirstOrDefault());
             logger.Info($"Stock Master Recovery for {code} of {targetDate.ToString("yyyy-MM-dd")} Done");
         }
 
-        public void RecoverMasters(DateTime targetDate, bool needConfirm = true)
+        public void RecoverMasters(DateTime targetDate)
         {
             logger.Info($"Index Masters Recovery Started");
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
-            RecoverIndexMasters(targetDate, needConfirm);
-            RecoverStockMasters(targetDate, needConfirm);
+            RecoverIndexMasters(targetDate);
+            RecoverStockMasters(targetDate);
 
             sw.Stop();
             logger.Info($"Stock Masters Recovery Done. Elapsed:{sw.Elapsed}");
         }
 
-        private void RecoverIndexMasters(DateTime targetDate, bool needConfirm = true)
+        private void RecoverIndexMasters(DateTime targetDate)
         {
             int cnt = 0;
 
@@ -109,14 +101,10 @@ namespace MTree.DataValidator
             Parallel.ForEach(codeList, new ParallelOptions { MaxDegreeOfParallelism = Config.Validator.ThreadLimit }, code =>
             {
                 IndexMaster master = To.Find(code, filter).FirstOrDefault();
-                if (master != null && needConfirm == true)
+                if (master == null)
                 {
-                    MessageBoxResult answer = MessageBox.Show($"Master for {code} is already existing. Force to remove and recover?", "Question", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                    if (answer != MessageBoxResult.Yes)
-                    {
-                        logger.Info($"Stock Master Recovery for {code} of {targetDate.ToString("yyyy-MM-dd")} Canceled.");
-                        return;
-                    }
+                    logger.Info($"Stock Master for {code} of {targetDate.ToString("yyyy-MM-dd")} is null.");
+                    return;
                 }
                 To.Delete(code, filter);
                 To.Insert(From.Find(code, filter).FirstOrDefault());
@@ -124,7 +112,7 @@ namespace MTree.DataValidator
             });
         }
 
-        private void RecoverStockMasters(DateTime targetDate, bool needConfirm = true)
+        private void RecoverStockMasters(DateTime targetDate)
         {
             int cnt = 0;
 
@@ -134,19 +122,6 @@ namespace MTree.DataValidator
             
             Parallel.ForEach(codeList, new ParallelOptions { MaxDegreeOfParallelism = Config.Validator.ThreadLimit }, code =>
             {
-                if (needConfirm == true)
-                {
-                    StockMaster master = To.Find(code, filter).FirstOrDefault();
-                    if (master != null)
-                    {
-                        MessageBoxResult answer = MessageBox.Show($"Master for {code} is already existing. Force to remove and recover?", "Question", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                        if (answer != MessageBoxResult.Yes)
-                        {
-                            logger.Info($"Stock Master Recovery for {code} Canceled.");
-                            return;
-                        }
-                    }
-                }
                 To.Delete(code, filter);
                 To.Insert(From.Find(code, filter).FirstOrDefault());
                 logger.Info($"Stock Master Recovery for {code} Done. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
@@ -190,19 +165,15 @@ namespace MTree.DataValidator
         }
 
 
-        public void RecoverIndexConclusion(DateTime targetDate, string code, bool needConfirm = true)
+        public void RecoverIndexConclusion(DateTime targetDate, string code)
         {
             //logger.Info($"Index Conclusion Recovery for {code} Started");
             var filter = FilterFactory.Instance.BuildIndexConclusionFilter(targetDate);
             List<IndexConclusion> conclusions = To.Find(code, filter).ToList();
-            if (conclusions.Count > 0 && needConfirm == true)
+            if (conclusions.Count == 0)
             {
-                MessageBoxResult answer = MessageBox.Show($"Index Conclusion for {code} is already existing. Force to remove and recover?", "Question", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                if (answer != MessageBoxResult.Yes)
-                {
-                    logger.Info($"Index Conclusion Recovery for {code} of {targetDate.ToString("yyyy-MM-dd")} Canceled.");
-                    return;
-                }
+                logger.Info($"Index Conclusion for {code} of {targetDate.ToString("yyyy-MM-dd")} is null.");
+                return;
             }
             To.Delete(code, filter);
             conclusions = From.Find(code, filter).ToList();
@@ -213,7 +184,7 @@ namespace MTree.DataValidator
             logger.Info($"Index Conclusion Recovery for {code} of {targetDate.ToString("yyyy-MM-dd")} Done");
         }
 
-        public void RecoverIndexConclusions(DateTime targetDate, bool needConfirm = true)
+        public void RecoverIndexConclusions(DateTime targetDate)
         {
             logger.Info($"Index Conclusion Recovery Started");
             int cnt = 0;
@@ -223,15 +194,6 @@ namespace MTree.DataValidator
             Parallel.ForEach(codeList, new ParallelOptions { MaxDegreeOfParallelism = Config.Validator.ThreadLimit }, code =>
             {
                 List<IndexConclusion> conclusions = To.Find(code, filter).ToList();
-                if (conclusions.Count > 0 && needConfirm == true)
-                {
-                    MessageBoxResult answer = MessageBox.Show($"Index Conclusion for {code} is already existing. Force to remove and recover?", "Question", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                    if (answer != MessageBoxResult.Yes)
-                    {
-                        logger.Info($"Index Conclusion Recovery for {code} Canceled.");
-                        return;
-                    }
-                }
                 To.Delete(code, filter);
                 conclusions = From.Find(code, filter).ToList();
                 foreach (IndexConclusion conclusion in conclusions)
@@ -243,20 +205,11 @@ namespace MTree.DataValidator
             logger.Info($"Index Conclusion Recovery Done");
         }
         
-        public void RecoverCircuitBreak(DateTime targetDate, string code, bool needConfirm = true)
+        public void RecoverCircuitBreak(DateTime targetDate, string code)
         {
             logger.Info($"Circuit Break Recovery for {code} Started");
             var filter = FilterFactory.Instance.BuildCircuitBreakFilter(targetDate);
             List<CircuitBreak> cbs = To.Find(code, filter).ToList();
-            if (cbs.Count > 0 && needConfirm == true)
-            {
-                MessageBoxResult answer = MessageBox.Show($"Circuit Break for {code} is already existing. Force to remove and recover?", "Question", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                if (answer != MessageBoxResult.Yes)
-                {
-                    logger.Info($"Circuit Break Recovery for {code} Canceled.");
-                    return;
-                }
-            }
             To.Delete(code, filter);
             cbs = From.Find(code, filter).ToList();
             foreach (CircuitBreak cb in cbs)
@@ -266,7 +219,7 @@ namespace MTree.DataValidator
             logger.Info($"Circuit Break Recovery for {code} Done");
         }
 
-        public void RecoverCircuitBreaks(DateTime targetDate, bool needConfirm = true)
+        public void RecoverCircuitBreaks(DateTime targetDate)
         {
             logger.Info($"Circuit Break Recovery Started");
             int cnt = 0;
@@ -276,15 +229,6 @@ namespace MTree.DataValidator
             Parallel.ForEach(codeList, new ParallelOptions { MaxDegreeOfParallelism = Config.Validator.ThreadLimit }, code =>
             {
                 List<CircuitBreak> cbs = To.Find(code, filter).ToList();
-                if (cbs.Count > 0 && needConfirm == true)
-                {
-                    MessageBoxResult answer = MessageBox.Show($"Circuit Break for {code} is already existing. Force to remove and recover?", "Question", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                    if (answer != MessageBoxResult.Yes)
-                    {
-                        logger.Info($"Circuit Break Recovery for {code} Canceled.");
-                        return;
-                    }
-                }
                 To.Delete(code, filter);
                 cbs = From.Find(code, filter).ToList();
                 foreach (CircuitBreak cb in cbs)
