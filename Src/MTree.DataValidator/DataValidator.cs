@@ -31,7 +31,7 @@ namespace MTree.DataValidator
         private const string masterCompareResultFile = "MasterCompare.html";
         private const string stockConclusionCompareResultPath = "StockConclusion";
         private const string indexConclusionCompareResultPath = "IndexConclusion";
-        private const string circuitbreakCompareResultFile = "CircuitBreak.html";
+        private const string circuitbreakCompareResultPath = "CircuitBreak";
 
         public DataValidator()
         {
@@ -564,7 +564,7 @@ namespace MTree.DataValidator
                 {
                     logger.Error("Circuit Break Validation Fail.");
                     if (makeReport == true)
-                        comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, circuitbreakCompareResultFile));
+                        comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, circuitbreakCompareResultPath, code + ".html"));
                     return false;
                 }
             }
@@ -616,7 +616,7 @@ namespace MTree.DataValidator
                 {
                     logger.Error("Circuit Break Validation Fail.");
                     if (makeReport == true)
-                        comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, circuitbreakCompareResultFile));
+                        comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, circuitbreakCompareResultPath));
                     return false;
                 }
             }

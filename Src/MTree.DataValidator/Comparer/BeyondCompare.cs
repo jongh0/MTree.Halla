@@ -296,7 +296,7 @@ namespace MTree.DataValidator
                 using (Process compareProcess = Process.Start(beyondComparePath, param))
                 {
                     int retCnt = 0;
-                    while (compareProcess.WaitForExit(10 * 1000) == false)
+                    while (compareProcess.WaitForExit(300 * 1000) == false)
                     {
                         compareProcess.Kill();
                         logger.Error($"Beyond Compare TImeout. Retry Count:{retCnt++}");
@@ -315,6 +315,7 @@ namespace MTree.DataValidator
             }
             finally
             {
+                
                 if (File.Exists(sourceFile))
                     File.Delete(sourceFile);
                 if (File.Exists(destinationFile))

@@ -53,7 +53,7 @@ namespace MTree.DataValidator
         private const string masterCompareResultFile = "MasterCompare.html";
         private const string stockConclusionCompareResultPath = "StockConclusion";
         private const string indexConclusionCompareResultPath = "IndexConclusion";
-        private const string circuitbreakCompareResultFile = "CircuitBreak.html";
+        private const string circuitbreakCompareResultPath = "CircuitBreak";
 
         private object popupWindowLockObject = new object();
 
@@ -123,7 +123,7 @@ namespace MTree.DataValidator
             }
         }
 
-        public bool _ValidateOnly = true;
+        private bool _ValidateOnly = true;
         public bool ValidateOnly
         {
             get
@@ -163,7 +163,7 @@ namespace MTree.DataValidator
                 _FromSourceToDestination = value;
                 NotifyPropertyChanged(nameof(FromSourceToDestination));
 
-                if (FromSourceToDestination == true)
+                if (_FromSourceToDestination == true)
                 {
                     Recoverer.From = DbAgent.Instance;
                     Recoverer.To = DbAgent.RemoteInstance;
@@ -478,7 +478,7 @@ namespace MTree.DataValidator
                             DialogResult needRecovery = DialogResult.None;
                             lock (popupWindowLockObject)
                             {
-                                needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, circuitbreakCompareResultFile, Code + ".html"));
+                                needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, circuitbreakCompareResultPath, code + ".html"));
                             }
                             if (needRecovery == DialogResult.OK)
                             {
