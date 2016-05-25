@@ -27,7 +27,6 @@ namespace MTree.ResourceMonitor
                     monitor.StopMonitor();
                     monitor.DeleteMonitor();
                 }
-                Console.ReadLine();
             }
             else
             {

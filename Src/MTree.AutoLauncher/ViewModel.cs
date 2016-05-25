@@ -80,6 +80,11 @@ namespace MTree.AutoLauncher
                     Launchers.Add(CreatePerfMonStarter());
                     Launchers.Add(CreatePerfMonStopper());
                 }
+
+                foreach (Launcher launcher in Launchers)
+                {
+                    launcher.Start();
+                }
             }
             catch (Exception ex)
             {
