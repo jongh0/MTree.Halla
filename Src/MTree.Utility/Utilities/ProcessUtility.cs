@@ -31,6 +31,7 @@ namespace MTree.Utility
         DaishinSessionManager,
         DataValidator,
         DataValidatorRegularCheck,
+        ResourceMonitor,
         PopupStopper,
         SendLog,
         TestConsole,
@@ -65,6 +66,7 @@ namespace MTree.Utility
             ProcessList.Add(ProcessTypes.DataValidator, "MTree.DataValidator");
             ProcessList.Add(ProcessTypes.DataValidatorRegularCheck, "MTree.DataValidator");
             ProcessList.Add(ProcessTypes.PopupStopper, "MTree.PopupStopper");
+            ProcessList.Add(ProcessTypes.ResourceMonitor, "MTree.ResourceMonitor");
             ProcessList.Add(ProcessTypes.SendLog, "MTree.SendLog");
             ProcessList.Add(ProcessTypes.TestConsole, "TestConsole");
         }
@@ -90,6 +92,7 @@ namespace MTree.Utility
             try
             {
                 var process = new Process();
+                process.StartInfo.Verb = "runas";
                 process.StartInfo.FileName = filePath;
                 process.StartInfo.Arguments = arguments;
                 process.StartInfo.WindowStyle = windowStyle;

@@ -562,7 +562,7 @@ namespace MTree.DataValidator
 
                 if (comparator.DoCompareItem(sourceList, destinationList, false) == false)
                 {
-                    logger.Error("Circuit Break Validation Fail.");
+                    logger.Error($"Circuit Break Validation for {code} of {targetDate.ToString("yyyy-MM-dd")} Fail.");
                     if (makeReport == true)
                         comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, circuitbreakCompareResultPath, code + ".html"));
                     return false;

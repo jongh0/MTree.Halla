@@ -73,6 +73,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.KiwoomTrader", "MTree
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NlogViewer", "NlogViewer\NlogViewer.csproj", "{F0A0B5CC-E5B4-4769-AB47-67A1D5B482B4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.ResourceMonitor", "MTree.ResourceMonitor\MTree.ResourceMonitor.csproj", "{BE13E412-D35A-4C3F-A7D0-2C8FE5905642}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -199,6 +201,10 @@ Global
 		{F0A0B5CC-E5B4-4769-AB47-67A1D5B482B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F0A0B5CC-E5B4-4769-AB47-67A1D5B482B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F0A0B5CC-E5B4-4769-AB47-67A1D5B482B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE13E412-D35A-4C3F-A7D0-2C8FE5905642}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE13E412-D35A-4C3F-A7D0-2C8FE5905642}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE13E412-D35A-4C3F-A7D0-2C8FE5905642}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE13E412-D35A-4C3F-A7D0-2C8FE5905642}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -230,5 +236,6 @@ Global
 		{27B8B35B-D0AA-4E73-BF8B-7C1F7F48348B} = {C10ED646-15B3-409D-93DB-2F958CB8182A}
 		{A659FD04-AAC4-4428-89F6-EC2F73FC728F} = {690A9CDC-0205-453F-ABC2-8E4D40845541}
 		{F0A0B5CC-E5B4-4769-AB47-67A1D5B482B4} = {C22A1011-FE40-49F1-AB42-3CBF4921ACBD}
+		{BE13E412-D35A-4C3F-A7D0-2C8FE5905642} = {C22A1011-FE40-49F1-AB42-3CBF4921ACBD}
 	EndGlobalSection
 EndGlobal

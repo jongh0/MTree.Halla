@@ -1,0 +1,11 @@
+\Processor(_Total)\% Processor Time
+\Processor(_Total)\%Privileged Time
+\System\Context Switches/sec
+\System\System Calls/sec
+\System\Processor Queue Length
+\PhysicalDisk(*)\% Disk Time
+\PhysicalDisk(*)\Disk Read Bytes/sec
+\PhysicalDisk(*)\Disk Write Bytes/sec
+\Memory\% Committed Bytes In Use
+\Network Interface(Realtek PCIe GBE Family Controller)\Bytes Sent/sec
+\Network Interface(Realtek PCIe GBE Family Controller)\Bytes Received/sec

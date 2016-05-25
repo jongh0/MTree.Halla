@@ -17,14 +17,7 @@ namespace MTree.AutoLauncher
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         public bool KillIfExists { get; set; } = false;
-
-        public string LauncherInfo
-        {
-            get { return $"{LaunchProcess} | {Time.ToString()}"; }
-        }
-
-        private System.Timers.Timer ShutdownTimer { get; set; }
-
+        
         #region Launch Time
         private TimeSpan LaunchInterval { get; } = TimeSpan.FromDays(1); // 1 Day interval
 
@@ -34,38 +27,22 @@ namespace MTree.AutoLauncher
         #endregion
 
         #region Process
-        public ProcessTypes LaunchProcess = ProcessTypes.Unknown;
+        public ProcessTypes LaunchProcess { get; } = ProcessTypes.Unknown;
+        public string LaunchArguments { get; set; }
 
         public List<ProcessTypes> KillProcesses { get; set; } = new List<ProcessTypes>(); 
         #endregion
 
-        public Launcher(ProcessTypes type)
+        public Launcher(ProcessTypes type, string arguments = null)
         {
             try
             {
                 LaunchProcess = type;
+                LaunchArguments = arguments;
 
                 LaunchTimer = new System.Timers.Timer();
                 LaunchTimer.AutoReset = false;
                 LaunchTimer.Elapsed += LaunchTimer_Elapsed;
-
-#if !DEBUG
-                if (Config.General.UseShutdown == true)
-                {
-                    var now = DateTime.Now;
-                    var shutdownTime = new DateTime(now.Year, now.Month, now.Day, Config.General.ShutdownHour % 24, 0, 0);
-                    if (shutdownTime < now)
-                        shutdownTime = shutdownTime.AddDays(1);
-
-                    ShutdownTimer = new System.Timers.Timer();
-                    ShutdownTimer.AutoReset = false;
-                    ShutdownTimer.Interval = (shutdownTime - now).TotalMilliseconds;
-                    ShutdownTimer.Elapsed += ShutdownTimer_Elapsed;
-                    ShutdownTimer.Start();
-
-                    logger.Info($"Will be shutdown at {shutdownTime}");
-                } 
-#endif
             }
             catch (Exception ex)
             {
@@ -85,24 +62,6 @@ namespace MTree.AutoLauncher
 
                 var now = DateTime.Now;
 
-#if !DEBUG
-                if (Config.General.UseShutdown == true)
-                {
-                    if (now.DayOfWeek == DayOfWeek.Saturday || now.DayOfWeek == DayOfWeek.Sunday)
-                    {
-                        Task.Run(() =>
-                        {
-                            logger.Info("Not working day, shutdown after 5 mins");
-
-                            Thread.Sleep(1000 * 60 * 5);
-                            ProcessUtility.Shutdown();
-                        });
-                        
-                        return;
-                    }
-                } 
-#endif
-
                 Time = new DateTime(now.Year, now.Month, now.Day, Time.Hour, Time.Minute, Time.Second);
 
                 while (Time <= now || Time.DayOfWeek == DayOfWeek.Saturday || Time.DayOfWeek == DayOfWeek.Sunday)
@@ -112,7 +71,6 @@ namespace MTree.AutoLauncher
                 LaunchTimer.Interval = (Time - now).TotalMilliseconds;
                 LaunchTimer.Start();
 
-                NotifyPropertyChanged(nameof(LauncherInfo));
             }
             catch (Exception ex)
             {
@@ -133,6 +91,8 @@ namespace MTree.AutoLauncher
         {
             try
             {
+                ProcessUtility.Start("MTree.ResourceMonitor.exe", LaunchArguments);
+                
                 if (ProcessUtility.Exists(LaunchProcess) == true)
                 {
                     if (KillIfExists == true)
@@ -165,13 +125,7 @@ namespace MTree.AutoLauncher
                 logger.Error(ex);
             }
         }
-
-        private void ShutdownTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            logger.Info($"{LaunchProcess} shutdown timer elapsed");
-            ProcessUtility.Shutdown();
-        }
-
+        
         private void LaunchTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             try
@@ -206,42 +160,6 @@ namespace MTree.AutoLauncher
         {
             logger.Info("Execute launch now");
             Launch();
-        }
-
-        RelayCommand _KillAllCommand;
-        public ICommand KillAllCommand
-        {
-            get
-            {
-                if (_KillAllCommand == null)
-                    _KillAllCommand = new RelayCommand(() => ExecuteKillAll());
-
-                return _KillAllCommand;
-            }
-        }
-
-        public void ExecuteKillAll()
-        {
-            logger.Info("Execute kill all");
-            ProcessUtility.Start(ProcessTypes.KillAll);
-        }
-
-        RelayCommand _ShutdownCommand;
-        public ICommand ShutdownCommand
-        {
-            get
-            {
-                if (_ShutdownCommand == null)
-                    _ShutdownCommand = new RelayCommand(() => ExecuteShutdown());
-
-                return _ShutdownCommand;
-            }
-        }
-
-        public void ExecuteShutdown()
-        {
-            if (MessageBox.Show("Shutdown?", "Question", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
-                ProcessUtility.Shutdown();
         }
         #endregion
 

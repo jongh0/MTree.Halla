@@ -17,6 +17,7 @@ namespace MTree.Configuration
         public KiwoomConfiguration kiwoom { get; set; } = new KiwoomConfiguration();
         public EmailConfiguration email { get; set; } = new EmailConfiguration();
         public ValidatorConfiguration validator { get; set; } = new ValidatorConfiguration();
+        public ResourceMonitorConfiguration resourceMonitor { get; set; } = new ResourceMonitorConfiguration();
 
         public static GeneralConfiguration General { get { return Instance.general; } }
         public static PushConfiguration Push { get { return Instance.push; } }
@@ -26,6 +27,7 @@ namespace MTree.Configuration
         public static KiwoomConfiguration Kiwoom { get { return Instance.kiwoom; } }
         public static EmailConfiguration Email { get { return Instance.email; } }
         public static ValidatorConfiguration Validator { get { return Instance.validator; } }
+        public static ResourceMonitorConfiguration ResourceMonitor { get { return Instance.resourceMonitor; } }
 
         #region Instance
         private static object lockObject = new object();

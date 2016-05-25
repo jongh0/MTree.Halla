@@ -128,6 +128,9 @@ namespace MTree.DataValidator
                             return false;
                         }
                     }
+                    if(compareProcess.ExitCode != 1)
+                        logger.Error($"ExitCode:{compareProcess.ExitCode}");
+
                     return compareProcess.ExitCode == 1;
                 }
             }
@@ -306,6 +309,8 @@ namespace MTree.DataValidator
                             return;
                         }
                     }
+                    if (compareProcess.ExitCode != 1)
+                        logger.Error($"ExitCode:{compareProcess.ExitCode}");
                 }
                 logger.Info($"Compare result report created at {reportPath}");
             }
@@ -315,7 +320,6 @@ namespace MTree.DataValidator
             }
             finally
             {
-                
                 if (File.Exists(sourceFile))
                     File.Delete(sourceFile);
                 if (File.Exists(destinationFile))
