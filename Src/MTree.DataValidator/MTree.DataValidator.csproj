@@ -119,7 +119,6 @@
       <DependentUpon>RecoveryPopup.xaml</DependentUpon>
     </Compile>
     <Compile Include="RecoveryViewModel.cs" />
-    <Compile Include="ValidatorViewModel.cs" />
     <Compile Include="MainViewModel.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

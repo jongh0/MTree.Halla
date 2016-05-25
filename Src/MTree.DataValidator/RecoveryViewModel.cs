@@ -43,10 +43,9 @@ namespace MTree.DataValidator
             return PopupWindow.Result;
         }
     }
-    public class RecoveryViewModel: INotifyPropertyChanged
-    {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-        
+
+    public partial class MainViewModel
+    {        
         private const string logBasePath = "Logs";
         private const string compareResultPath = "CompareResult";
         private const string codeCompareResultFile = "CodeCompare.html";
@@ -58,20 +57,7 @@ namespace MTree.DataValidator
         private object popupWindowLockObject = new object();
 
         private IWindowFactory RecoveryPopupFactory { get; }
-
-        public RecoveryViewModel()
-        {
-            RecoveryPopupFactory = new RecoveryPopupWindowFactory(this);
-        }
-
-        public string FromAddress { get; set; }
-
-        public string ToAddress { get; set; }
-
-        public DataValidator Validator { get; set; } = new DataValidator();
-
-        public DataRecoverer Recoverer { get; set; } = new DataRecoverer();
-
+       
         private DateTime _StartingDate = DateTime.Now;
         public DateTime StartingDate
         {
@@ -185,14 +171,18 @@ namespace MTree.DataValidator
                     _RecoverAllCommand = new RelayCommand(() =>
                     Task.Run(() =>
                     {
-                        DoRecoverMasterAll();
-                        DoRecoverStockConclusionAll();
-                        DoRecoverIndexConclusionAll();
-                        DoRecoverCircuitBreak();
+                        DoRecoverAll();
                     }));
 
                 return _RecoverAllCommand;
             }
+        }
+        private void DoRecoverAll()
+        {
+            DoRecoverMasterAll();
+            DoRecoverStockConclusionAll();
+            DoRecoverIndexConclusionAll();
+            DoRecoverCircuitBreak();
         }
 
         private RelayCommand _RecoverMasterAllCommand;
@@ -491,13 +481,5 @@ namespace MTree.DataValidator
             logger.Info("Circuit Break Recovery Done.");
         }
         
-        #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void NotifyPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-        #endregion
     }
 }

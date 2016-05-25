@@ -9,44 +9,19 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Windows.Input;
 
 namespace MTree.DataValidator
 {
-    public class MainViewModel : INotifyPropertyChanged
+    public partial class MainViewModel : INotifyPropertyChanged
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private DataValidator validator = new DataValidator();
-        private DataRecoverer recoverer = new DataRecoverer();
-
-        private ValidatorViewModel _ValidatorViewModel = new ValidatorViewModel();
-        public ValidatorViewModel ValidatorViewModel
-        {
-            get
-            {
-                return _ValidatorViewModel;
-            }
-            set
-            {
-                _ValidatorViewModel = value;
-                NotifyPropertyChanged(nameof(ValidatorViewModel));
-            }
-        }
-
-        private RecoveryViewModel _RecoveryViewModel = new RecoveryViewModel();
-        public RecoveryViewModel RecoveryViewModel
-        {
-            get
-            {
-                return _RecoveryViewModel;
-            }
-            set
-            {
-                _RecoveryViewModel = value;
-                NotifyPropertyChanged(nameof(RecoveryViewModel));
-            }
-        }
+        private DataValidator Validator = new DataValidator();
+        private DataRecoverer Recoverer = new DataRecoverer();
+        
+        #region Server Config
 
         private string _SourceAddress;
         public string SourceAddress
@@ -58,7 +33,6 @@ namespace MTree.DataValidator
             set
             {
                 _SourceAddress = value;
-                RecoveryViewModel.FromAddress = value;
                 NotifyPropertyChanged(nameof(SourceAddress));
             }
         }
@@ -73,7 +47,6 @@ namespace MTree.DataValidator
             set
             {
                 _DestinationAddress = value;
-                RecoveryViewModel.ToAddress = value;
                 NotifyPropertyChanged(nameof(_DestinationAddress));
             }
         }
@@ -116,30 +89,77 @@ namespace MTree.DataValidator
             get
             {
                 if (_UpdateServerCommand == null)
-                    _UpdateServerCommand = new RelayCommand(() => Task.Run(() =>
+                    _UpdateServerCommand = new RelayCommand((Action)(() => Task.Run((Action)(() =>
                     {
                         DbAgent.Instance.ChangeServer(SourceAddress);
                         DbAgent.RemoteInstance.ChangeServer(DestinationAddress);
 
-                        validator = new DataValidator(DbAgent.Instance, DbAgent.RemoteInstance);
-                        recoverer = new DataRecoverer(DbAgent.Instance, DbAgent.RemoteInstance);
+                        Validator = new DataValidator(DbAgent.Instance, DbAgent.RemoteInstance);
+                        this.Recoverer = new DataRecoverer(DbAgent.Instance, DbAgent.RemoteInstance);
 
                         CheckServer();
-                    }));
+                    }))));
 
                 return _UpdateServerCommand;
             }
         }
+        #endregion
 
+        #region Validate with Daishin
+        private string _CodeForDaishinValidate;
+        public string CodeForDaishinValidate
+        {
+            get
+            {
+                return _CodeForDaishinValidate;
+            }
+            set
+            {
+                _CodeForDaishinValidate = value;
+                NotifyPropertyChanged(nameof(CodeForDaishinValidate));
+            }
+        }
+
+        private RelayCommand _ValidateSourceConclusionWithDaishinCommand;
+        public ICommand ValidateSourceConclusionWithDaishinCommand
+        {
+            get
+            {
+                if (_ValidateSourceConclusionWithDaishinCommand == null)
+                    _ValidateSourceConclusionWithDaishinCommand = new RelayCommand(() =>
+                    Task.Run(() =>
+                    {
+                        Validator.ValidateSourceConclusionWithDaishin(CodeForDaishinValidate);
+                    }));
+
+                return _ValidateSourceConclusionWithDaishinCommand;
+            }
+        }
+
+        private RelayCommand _ValidateDestinationConclusionWithDaishinCommand;
+        public ICommand ValidateDestinationConclusionWithDaishinCommand
+        {
+            get
+            {
+                if (_ValidateDestinationConclusionWithDaishinCommand == null)
+                    _ValidateDestinationConclusionWithDaishinCommand = new RelayCommand(() =>
+                    Task.Run(() =>
+                    {
+                        Validator.ValidateDestinationConclusionWithDaishin(CodeForDaishinValidate);
+                    }));
+
+                return _ValidateDestinationConclusionWithDaishinCommand;
+            }
+        } 
+        #endregion
+        
         public MainViewModel()
         {
+            RecoveryPopupFactory = new RecoveryPopupWindowFactory(this);
+
             SourceAddress = Config.Database.ConnectionString;
             DestinationAddress = Config.Database.RemoteConnectionString;
             
-            ValidatorViewModel.Validator = validator;
-            RecoveryViewModel.Validator = validator;
-            RecoveryViewModel.Recoverer = recoverer;
-
             Task.Run(() =>
             {
                 Thread.Sleep(1000);
@@ -149,7 +169,7 @@ namespace MTree.DataValidator
                 {
                     if (Environment.GetCommandLineArgs()[1] == ProcessTypes.DataValidatorRegularCheck.ToString())
                     {
-                        ValidatorViewModel.ValidateAllExecute();
+                        DoRecoverAll();
                         Environment.Exit(0);
                     }
                 }

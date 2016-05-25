@@ -117,18 +117,21 @@ namespace MTree.DataValidator
             {
                 using (Process compareProcess = Process.Start(beyondComparePath, param))
                 {
-                    int retCnt = 0;
-                    while (compareProcess.WaitForExit(10 * 1000) == false)
+                    do
                     {
-                        compareProcess.Kill();
-                        logger.Error($"Beyond Compare TImeout. Retry Count:{retCnt++}");
-                        if (retCnt > 3)
+                        int retCnt = 0;
+                        while (compareProcess.WaitForExit(10 * 1000) == false || compareProcess.ExitCode == -1)
                         {
-                            logger.Error($"Beyond Compare Fail. ExitCode:{compareProcess.ExitCode}");
-                            return false;
+                            compareProcess.Kill();
+                            logger.Error($"Beyond Compare Timeout. Retry Count:{retCnt++}");
+                            if (retCnt > 3)
+                            {
+                                logger.Error($"Beyond Compare Fail. ExitCode:{compareProcess.ExitCode}");
+                                return false;
+                            }
                         }
-                    }
-                    if(compareProcess.ExitCode != 1)
+                    } while (compareProcess.ExitCode != 0 || compareProcess.ExitCode != 1 || compareProcess.ExitCode != 2);
+                    if (compareProcess.ExitCode != 0 || compareProcess.ExitCode != 1 || compareProcess.ExitCode != 2)
                         logger.Error($"ExitCode:{compareProcess.ExitCode}");
 
                     return compareProcess.ExitCode == 1;
@@ -298,18 +301,22 @@ namespace MTree.DataValidator
             {
                 using (Process compareProcess = Process.Start(beyondComparePath, param))
                 {
-                    int retCnt = 0;
-                    while (compareProcess.WaitForExit(300 * 1000) == false)
+                    do
                     {
-                        compareProcess.Kill();
-                        logger.Error($"Beyond Compare TImeout. Retry Count:{retCnt++}");
-                        if (retCnt > 3)
+                        int retCnt = 0;
+                        while (compareProcess.WaitForExit(300 * 1000) == false)
                         {
-                            logger.Error($"Beyond Compare Fail");
-                            return;
+                            compareProcess.Kill();
+                            logger.Error($"Beyond Compare TImeout. Retry Count:{retCnt++}");
+                            if (retCnt > 3)
+                            {
+                                logger.Error($"Beyond Compare Fail");
+                                return;
+                            }
                         }
-                    }
-                    if (compareProcess.ExitCode != 1)
+                    } while (compareProcess.ExitCode != 0 || compareProcess.ExitCode != 1 || compareProcess.ExitCode != 2);
+
+                    if (compareProcess.ExitCode != 0 || compareProcess.ExitCode != 1 || compareProcess.ExitCode != 2)
                         logger.Error($"ExitCode:{compareProcess.ExitCode}");
                 }
                 logger.Info($"Compare result report created at {reportPath}");

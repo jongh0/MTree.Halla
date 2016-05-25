@@ -48,42 +48,16 @@
                     </StackPanel>
                 </StackPanel>
             </GroupBox>
-            <GroupBox Header="Validation" BorderBrush="Black" BorderThickness="2">
-                <StackPanel DataContext="{Binding ValidatorViewModel}">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,5,0,5">
-                        <Label Content="Date for Validation" Margin="5,0,5,0" VerticalAlignment="Center" />
-                        <DatePicker SelectedDate="{Binding Path=StartingDate, Mode=TwoWay, TargetNullValue={x:Static sys:DateTime.Now}}"/>
-                        <Label Content="~" Margin="5,0,5,0" VerticalAlignment="Center"/>
-                        <DatePicker SelectedDate="{Binding Path=EndingDate, Mode=TwoWay}"/>
+            <StackPanel>
+                <GroupBox Header="Validate Conclusion with Daishin" Margin="0,5,0,0" BorderBrush="Black" BorderThickness="2">
+                    <StackPanel Orientation="Horizontal"  HorizontalAlignment="Left" Margin="0,5,0,5">
+                        <Label Content="Code " Margin="5,0,5,0" />
+                        <TextBox Margin="5,0,5,0" Width="50" Text="{Binding CodeForDaishinValidate}" VerticalContentAlignment="Center" MaxLength="6" TextAlignment="Center"/>
+                        <Button Content="Source Validate" Command="{Binding ValidateSourceConclusionWithDaishinCommand}" Margin="5,0,5,0"/>
+                        <Button Content="Destination Validate" Command="{Binding ValidateDestinationConclusionWithDaishinCommand}" Margin="5,0,5,0"/>
                     </StackPanel>
-                    <GroupBox Header="Validate For All Code" Margin="0,5,0,0">
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,5,0,5">
-                            <Button Content=" All " Command="{Binding ValidateAllCommand}" Margin="5,0,5,0"/>
-                            <Button Content=" Master " Command="{Binding ValidateMasterCommand}" Margin="5,0,5,0"/>
-                            <Button Content=" Stock Conclusion " Command="{Binding ValidateAllStockConclusionCommand}" Margin="5,0,5,0"/>
-                            <Button Content=" Index Conclusion " Command="{Binding ValidateAllIndexConclusionCommand}" Margin="5,0,5,0"/>
-                            <Button Content=" Circuit Break " Command="{Binding ValidateCircuitBreakCommand}" Margin="5,0,5,0"/>
-                            <Button Content=" Chart " Command="{Binding ValidateCircuitBreakCommand}" Margin="5,0,5,0"/>
-                        </StackPanel>
-                    </GroupBox>
-                    <GroupBox Header="Validate For Indivisual Codes" Margin="0,5,0,0">
-                        <StackPanel Orientation="Horizontal"  HorizontalAlignment="Left" Margin="0,5,0,5">
-                            <Label Content="Code " Margin="5,0,5,0" />
-                            <TextBox Margin="5,0,5,0" Width="50" Text="{Binding Code}" VerticalContentAlignment="Center" MaxLength="6" TextAlignment="Center"/>
-                            <Button Content=" Stock Conclusion " Command="{Binding ValidateIndivisualStockConclusionCommand}" Margin="5,0,5,0"/>
-                            <Button Content=" Index Conclusion " Command="{Binding ValidateIndivisualIndexConclusionCommand}" Margin="5,0,5,0"/>
-                        </StackPanel>
-                    </GroupBox>
-                    <GroupBox Header="Validate Conclusion with Daishin" Margin="0,5,0,0">
-                        <StackPanel Orientation="Horizontal"  HorizontalAlignment="Left" Margin="0,5,0,5">
-                            <Label Content="Code " Margin="5,0,5,0" />
-                            <TextBox Margin="5,0,5,0" Width="50" Text="{Binding CodeForDaishinValidate}" VerticalContentAlignment="Center" MaxLength="6" TextAlignment="Center"/>
-                            <Button Content="Source Validate" Command="{Binding ValidateSourceConclusionWithDaishinCommand}" Margin="5,0,5,0"/>
-                            <Button Content="Destination Validate" Command="{Binding ValidateDestinationConclusionWithDaishinCommand}" Margin="5,0,5,0"/>
-                        </StackPanel>
-                    </GroupBox>
-                </StackPanel>
-            </GroupBox>
+                </GroupBox>
+            </StackPanel>
             <GroupBox Header="Recovery" BorderBrush="Black" BorderThickness="2">
                 <StackPanel DataContext="{Binding RecoveryViewModel}">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,5,0,5">

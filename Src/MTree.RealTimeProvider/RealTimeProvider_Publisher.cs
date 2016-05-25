@@ -277,7 +277,11 @@ namespace MTree.RealTimeProvider
                     }
                 }
 
-                codeMapHeader.Add("DaishinTheme", contract.Callback.GetThemeList());
+                Dictionary<string, object> theme = new Dictionary<string, object>();
+                theme.Add("DaishinTheme", contract.Callback.GetThemeList());
+
+                codeMapHeader.Add("Theme", theme);
+
 
                 using (StreamWriter stream = File.CreateText("CodeMap.json"))
                 {
@@ -295,6 +299,8 @@ namespace MTree.RealTimeProvider
                         args.ErrorContext.Handled = true;
                     }
                 });
+
+                List<string> keyList = new List<string>(deserialized.Keys);
 #endif
                 #endregion
             }
