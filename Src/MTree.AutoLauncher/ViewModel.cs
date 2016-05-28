@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -17,6 +18,8 @@ namespace MTree.AutoLauncher
     public class ViewModel : INotifyPropertyChanged
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
+        public Shutdowner Shutdowner { get; set; } = new Shutdowner();
 
         private List<Launcher> _Launchers;
         public List<Launcher> Launchers
@@ -45,10 +48,13 @@ namespace MTree.AutoLauncher
                 return _KillAllCommand;
             }
         }
+
         public void ExecuteKillAll()
         {
             logger.Info("Execute kill all");
-            ProcessUtility.Start(ProcessTypes.KillAll);
+
+            if (MessageBox.Show("Kill all process?", "", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+                ProcessUtility.Start(ProcessTypes.KillAll);
         }
 
         RelayCommand _ShutdownCommand;
@@ -65,7 +71,9 @@ namespace MTree.AutoLauncher
 
         public void ExecuteShutdown()
         {
-            if (MessageBox.Show("Shutdown?", "Question", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+            logger.Info("Execute shutdown");
+
+            if (MessageBox.Show("Shutdown?", "", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
                 ProcessUtility.Shutdown();
         }
 
@@ -73,8 +81,31 @@ namespace MTree.AutoLauncher
         {
             try
             {
+#if !DEBUG
+                if (Config.General.UseShutdown == true)
+                {
+                    if (Shutdowner.IsWorkingDay() == false)
+                    {
+                        Task.Run(() =>
+                        {
+                            logger.Info("Not working day, shutdown after 5 mins");
+
+                            Thread.Sleep(1000 * 60 * 5);
+                            ProcessUtility.Shutdown();
+                        });
+
+                        return;
+                    }
+                    else
+                    {
+                        Shutdowner.Start();
+                    }
+                } 
+#endif
+
                 Launchers = new List<Launcher>();
                 Launchers.Add(CreateRealTimeProviderLauncher());
+
                 if (Config.ResourceMonitor.UseResourceMonitor == true)
                 {
                     Launchers.Add(CreatePerfMonStarter());
