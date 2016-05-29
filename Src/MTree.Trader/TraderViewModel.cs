@@ -160,22 +160,15 @@ namespace MTree.Trader
         {
             Order newOrder = new Order();
             newOrder.AccountNumber = SelectedAccount;
+
             if (Config.General.TraderType == TraderTypes.Ebest)
-            {
                 newOrder.AccountPassword = Config.Ebest.AccountPw;
-            }
             else if (Config.General.TraderType == TraderTypes.EbestSimul)
-            {
                 newOrder.AccountPassword = "0000";
-            }
-            else if (Config.General.TraderType == TraderTypes.Kiwoom)
-            {
+            else if (Config.General.TraderType == TraderTypes.Kiwoom ||
+                     Config.General.TraderType == TraderTypes.KiwoomSimul)
                 newOrder.AccountPassword = Config.Kiwoom.AccountPw;
-            }
-            else if (Config.General.TraderType == TraderTypes.KiwoomSimul)
-            {
-                newOrder.AccountPassword = Config.Kiwoom.AccountPw;
-            }
+
             newOrder.Code = TargetCode;
             newOrder.OrderType = OrderType;
             newOrder.Quantity = Quantity;
