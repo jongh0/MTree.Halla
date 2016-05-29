@@ -17,8 +17,8 @@ namespace MTree.Utility
         {
             try
             {
-                if (Config.General.OfflineMode == true)
-                    return;
+                if (Config.General.OfflineMode == true) return;
+                if (Config.Push.UsePushNotification == false) return;
 
                 var connectionString = Config.Push.ConnectionString;
                 var hubPath = Config.Push.NotificationHubPath;
