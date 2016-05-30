@@ -292,10 +292,13 @@ namespace MTree.DataValidator
 
             for (DateTime targetDate = StartingDate; targetDate <= EndingDate; targetDate = targetDate.AddDays(1))
             {
+                int cnt = 0;
                 Parallel.ForEach(codeList, new ParallelOptions { MaxDegreeOfParallelism = Config.Validator.ThreadLimit }, code =>
                 {
                     if (Validator.ValidateStockConclusion(targetDate, code, true) == false)
                     {
+                        
+                        logger.Error($"Stock Conclusion Validation for {code} of {targetDate.ToString("yyyy-MM-dd")} Fail. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
                         if (ValidateOnly == false)
                         {
                             DialogResult needRecovery = DialogResult.None;
@@ -311,6 +314,10 @@ namespace MTree.DataValidator
                                 Recoverer.RecoverStockConclusion(targetDate, code);
                             }
                         }
+                    }
+                    else
+                    {
+                        logger.Info($"Stock Conclusion Validation for {code} of {targetDate.ToString("yyyy-MM-dd")} success. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
                     }
                 });
                 ApplyForAll = false;
@@ -468,7 +475,10 @@ namespace MTree.DataValidator
                             DialogResult needRecovery = DialogResult.None;
                             lock (popupWindowLockObject)
                             {
-                                needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, circuitbreakCompareResultPath, code + ".html"));
+                                if (ApplyForAll == false)
+                                    needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, circuitbreakCompareResultPath, code + ".html"));
+                                else
+                                    needRecovery = DialogResult.OK;
                             }
                             if (needRecovery == DialogResult.OK)
                             {

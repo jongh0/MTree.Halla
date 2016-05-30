@@ -117,8 +117,8 @@ namespace MTree.DataValidator
             {
                 using (Process compareProcess = Process.Start(beyondComparePath, param))
                 {
-                    do
-                    {
+                    //do
+                    //{
                         int retCnt = 0;
                         while (compareProcess.WaitForExit(10 * 1000) == false)
                         {
@@ -130,7 +130,7 @@ namespace MTree.DataValidator
                                 return false;
                             }
                         }
-                    } while (compareProcess.ExitCode != 0 && compareProcess.ExitCode != 1 && compareProcess.ExitCode != 2);
+                    //} while (compareProcess.ExitCode != 0 && compareProcess.ExitCode != 1 && compareProcess.ExitCode != 2);
                     if (compareProcess.ExitCode != 0 && compareProcess.ExitCode != 1 && compareProcess.ExitCode != 2)
                         logger.Error($"ExitCode:{compareProcess.ExitCode}");
 
@@ -301,7 +301,7 @@ namespace MTree.DataValidator
             {
                 using (Process compareProcess = Process.Start(beyondComparePath, param))
                 {
-                    do
+                    //do
                     {
                         int retCnt = 0;
                         while (compareProcess.WaitForExit(300 * 1000) == false)
@@ -314,7 +314,7 @@ namespace MTree.DataValidator
                                 return;
                             }
                         }
-                    } while (compareProcess.ExitCode != 0 && compareProcess.ExitCode != 1 && compareProcess.ExitCode != 2);
+                    }// while (compareProcess.ExitCode != 0 && compareProcess.ExitCode != 1 && compareProcess.ExitCode != 2);
 
                     if (compareProcess.ExitCode != 0 && compareProcess.ExitCode != 1 && compareProcess.ExitCode != 2)
                         logger.Error($"ExitCode:{compareProcess.ExitCode}");
