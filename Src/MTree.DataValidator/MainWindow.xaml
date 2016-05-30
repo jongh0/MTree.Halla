@@ -59,7 +59,7 @@
                 </GroupBox>
             </StackPanel>
             <GroupBox Header="Recovery" BorderBrush="Black" BorderThickness="2">
-                <StackPanel DataContext="{Binding RecoveryViewModel}">
+                <StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,5,0,5">
                         <Label Content="Date for Recovery" Margin="5,0,5,0" VerticalAlignment="Center"/>
                         <DatePicker SelectedDate="{Binding Path=StartingDate, Mode=TwoWay}"/>

@@ -257,50 +257,7 @@ namespace MTree.RealTimeProvider
 
                 #region Codemap Test
 #if false
-                Dictionary<string, object> codeMapHeader = new Dictionary<string, object>();
-
-                Dictionary<string, object> marketCodeMapHeader = new Dictionary<string, object>();
-                codeMapHeader.Add("MaketType", marketCodeMapHeader);
-
-                foreach (KeyValuePair<string, CodeEntity> codeEntity in codeList)
-                {
-                    if (codeEntity.Value.MarketType != MarketTypes.INDEX &&
-                        codeEntity.Value.MarketType != MarketTypes.ELW)
-                    {
-                        if (!marketCodeMapHeader.ContainsKey(codeEntity.Value.MarketType.ToString()))
-                        {
-                            marketCodeMapHeader.Add(codeEntity.Value.MarketType.ToString(), new List<string>());
-                        }
-
-                        List<string> marketHeader = (List<string>)marketCodeMapHeader[codeEntity.Value.MarketType.ToString()];
-                        marketHeader.Add(codeEntity.Value.Code);
-                    }
-                }
-
-                Dictionary<string, object> theme = new Dictionary<string, object>();
-                theme.Add("DaishinTheme", contract.Callback.GetThemeList());
-
-                codeMapHeader.Add("Theme", theme);
-
-
-                using (StreamWriter stream = File.CreateText("CodeMap.json"))
-                {
-                    JsonSerializer serializer = new JsonSerializer();
-                    serializer.NullValueHandling = NullValueHandling.Ignore;
-                    serializer.Formatting = Formatting.Indented;
-                    serializer.Serialize(stream, codeMapHeader);
-                }
-
-                Dictionary<string, object>  deserialized = JsonConvert.DeserializeObject<Dictionary<string, object>>(File.ReadAllText("CodeMap.json"), new JsonSerializerSettings
-                {
-                    Error = (sender, args) =>
-                    {
-                        logger.Error($"Configuration deserialize error, {args.ErrorContext.Error.Message}");
-                        args.ErrorContext.Handled = true;
-                    }
-                });
-
-                List<string> keyList = new List<string>(deserialized.Keys);
+                CodeMapBuilder codeMapBuilder = new CodeMapBuilder(contract);
 #endif
                 #endregion
             }

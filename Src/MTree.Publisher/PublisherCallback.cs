@@ -20,7 +20,7 @@ namespace MTree.Publisher
             return null;
         }
 
-        public virtual Dictionary<string, List<string>> GetThemeList()
+        public virtual Dictionary<string, object> GetThemeList()
         {
             return null;
         }

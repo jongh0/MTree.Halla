@@ -120,7 +120,7 @@ namespace MTree.DataValidator
                     do
                     {
                         int retCnt = 0;
-                        while (compareProcess.WaitForExit(10 * 1000) == false || compareProcess.ExitCode == -1)
+                        while (compareProcess.WaitForExit(10 * 1000) == false)
                         {
                             compareProcess.Kill();
                             logger.Error($"Beyond Compare Timeout. Retry Count:{retCnt++}");
@@ -130,8 +130,8 @@ namespace MTree.DataValidator
                                 return false;
                             }
                         }
-                    } while (compareProcess.ExitCode != 0 || compareProcess.ExitCode != 1 || compareProcess.ExitCode != 2);
-                    if (compareProcess.ExitCode != 0 || compareProcess.ExitCode != 1 || compareProcess.ExitCode != 2)
+                    } while (compareProcess.ExitCode != 0 && compareProcess.ExitCode != 1 && compareProcess.ExitCode != 2);
+                    if (compareProcess.ExitCode != 0 && compareProcess.ExitCode != 1 && compareProcess.ExitCode != 2)
                         logger.Error($"ExitCode:{compareProcess.ExitCode}");
 
                     return compareProcess.ExitCode == 1;
@@ -314,9 +314,9 @@ namespace MTree.DataValidator
                                 return;
                             }
                         }
-                    } while (compareProcess.ExitCode != 0 || compareProcess.ExitCode != 1 || compareProcess.ExitCode != 2);
+                    } while (compareProcess.ExitCode != 0 && compareProcess.ExitCode != 1 && compareProcess.ExitCode != 2);
 
-                    if (compareProcess.ExitCode != 0 || compareProcess.ExitCode != 1 || compareProcess.ExitCode != 2)
+                    if (compareProcess.ExitCode != 0 && compareProcess.ExitCode != 1 && compareProcess.ExitCode != 2)
                         logger.Error($"ExitCode:{compareProcess.ExitCode}");
                 }
                 logger.Info($"Compare result report created at {reportPath}");

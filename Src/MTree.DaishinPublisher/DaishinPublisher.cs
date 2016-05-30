@@ -268,9 +268,9 @@ namespace MTree.DaishinPublisher
             return codeList;
         }
 
-        public override Dictionary<string, List<string>> GetThemeList()
+        public override Dictionary<string, object> GetThemeList()
         {
-            var themeList = new Dictionary<string, List<string>>();
+            var themeList = new Dictionary<string, object>();
 
             try
             {
@@ -284,7 +284,7 @@ namespace MTree.DaishinPublisher
                     {
                         short themeCode = (short)themeListObj.GetDataValue(0, i);
                         string themeName = (string)themeListObj.GetDataValue(2, i);
-                        themeList.Add(themeName, new List<string>());
+                        themeList.Add(themeName, new Dictionary<string, object>());
 
                         WaitQuoteInterval();
                         themeTypeObj.SetInputValue(0, themeCode);
@@ -295,7 +295,8 @@ namespace MTree.DaishinPublisher
                             for (int j = 0; j < itemCount; j++)
                             {
                                 string fullcode = (string)themeTypeObj.GetDataValue(0, j);
-                                themeList[themeName].Add(CodeEntity.RemovePrefix(fullcode));
+                                string name = (string)themeTypeObj.GetDataValue(1, j);
+                                ((Dictionary < string, object> )themeList[themeName]).Add(CodeEntity.RemovePrefix(fullcode), name);
                             }
                         }
                     }
