@@ -23,6 +23,16 @@ namespace MTree.RealTimeProvider
         public int PublisherContractCount { get { return PublisherContracts.Count; } }
         private ConcurrentDictionary<Guid, PublisherContract> PublisherContracts { get; set; } = new ConcurrentDictionary<Guid, PublisherContract>();
 
+        private CodeMapBuilder codeMapBuilder;
+        private bool isMarketTypeHandling;
+        private bool isMarketTypeHandled;
+        private bool isDaishinThemeHandling;
+        private bool isDaishinThemeHandled;
+        private bool isEbestThemeHandling;
+        private bool isEbestThemeHandled;
+        private bool isKiwoomThemeHandling;
+        private bool isKiwoomThemeHandled;
+
         #region Contract Property
         #region Daishin
         private List<PublisherContract> DaishinContracts
@@ -141,9 +151,51 @@ namespace MTree.RealTimeProvider
 
                         PublisherContracts.TryAdd(clientId, contract);
                         logger.Info($"{contract.ToString()} contract registered / {clientId}");
-
+                        
                         if (isMasterContract == true)
                             ProcessMasterContract(contract);
+
+                        #region CodeMap
+#if false
+                        if (codeMapBuilder == null)
+                            codeMapBuilder = new CodeMapBuilder();
+
+                        if (isMarketTypeHandling == false && isMasterContract == true)
+                        {
+                            isMarketTypeHandling = true;
+                            logger.Info($"Build MarketType Map from {clientId}");
+                            codeMapBuilder.AddMarketTypeMap(contract);
+                            isMarketTypeHandled = true;
+                        }
+                        if (isDaishinThemeHandling == false && contract.Type == ProcessTypes.DaishinPublisher)
+                        {
+                            isDaishinThemeHandling = true;
+                            logger.Info($"Build Daishin Theme Map from {clientId}");
+                            codeMapBuilder.AddThemeMap(contract);
+                            isDaishinThemeHandled = true;
+                        }
+                        if (isEbestThemeHandling == false && contract.Type == ProcessTypes.EbestPublisher)
+                        {
+                            isEbestThemeHandling = true;
+                            logger.Info($"Build Ebest Theme Map from {clientId}");
+                            codeMapBuilder.AddThemeMap(contract);
+                            isEbestThemeHandled = true;
+                        }
+                        if (isKiwoomThemeHandling == false && contract.Type == ProcessTypes.KiwoomPublisher)
+                        {
+                            isKiwoomThemeHandling = true;
+                            logger.Info($"Build Kiwoom Theme Map from {clientId}");
+                            codeMapBuilder.AddThemeMap(contract);
+                            isKiwoomThemeHandled = true;
+                        }
+
+                        if (isMarketTypeHandled = true && isDaishinThemeHandled == true && isEbestThemeHandled == true && isKiwoomThemeHandled == true)
+                        {
+                            var jsonString = codeMapBuilder.GetCodeMapAsJsonString();
+                            Dictionary<string, object> rebuilt = CodeMapBuilderUtil.RebuildNode(jsonString);
+                        }
+#endif
+                        #endregion
                     }
                 }
             }
@@ -254,12 +306,6 @@ namespace MTree.RealTimeProvider
                 }
 
                 logger.Info($"Stock code: {StockCodeList.Count}, Index code: {IndexCodeList.Count}");
-
-                #region Codemap Test
-#if false
-                CodeMapBuilder codeMapBuilder = new CodeMapBuilder(contract);
-#endif
-                #endregion
             }
             catch (Exception ex)
             {
