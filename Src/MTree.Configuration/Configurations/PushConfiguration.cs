@@ -8,6 +8,8 @@ namespace MTree.Configuration
 {
     public class PushConfiguration
     {
+        public bool UsePushNotification { get; set; } = false;
+
         public string ConnectionString { get; set; } = "Endpoint=sb://mtreenotificationspace.servicebus.windows.net/;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=RQDGxAhXvvS/Mgg5AYwx5FfecJifbIEadaWu/44LzOo=";
 
         public string NotificationHubPath { get; set; } = "MTreeNotificationHub";

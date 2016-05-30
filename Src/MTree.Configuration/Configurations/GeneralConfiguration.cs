@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 
 namespace MTree.Configuration
@@ -47,7 +48,8 @@ namespace MTree.Configuration
         [JsonIgnore]
         public bool ExcludeKiwoom { get; } = false;
 
-        public TraderTypes TraderType { get; set; } = TraderTypes.Kiwoom;
+        [JsonConverter(typeof(StringEnumConverter))]
+        public TraderTypes TraderType { get; set; } = TraderTypes.Ebest;
 
         public bool OfflineMode { get; set; } = false;
 
