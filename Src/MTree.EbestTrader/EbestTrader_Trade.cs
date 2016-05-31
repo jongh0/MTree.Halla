@@ -243,11 +243,11 @@ namespace MTree.EbestTrader
                     return false;
                 }
 
-                if (WaitOrderEvent.WaitOne(OrderLockTimeout) == false)
-                {
-                    logger.Error("Order timeout");
-                    return false;
-                }
+                //if (WaitOrderEvent.WaitOne(OrderLockTimeout) == false)
+                //{
+                //    logger.Error("Order timeout");
+                //    return false;
+                //}
 
                 logger.Info($"New order success, {order.ToString()}");
                 return true;
