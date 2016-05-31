@@ -1,7 +1,10 @@
-﻿using MTree.Trader;
+﻿using MTree.RealTimeProvider;
+using MTree.Trader;
 using MTree.Utility;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.ServiceModel;
 using System.Text;
@@ -11,9 +14,11 @@ using System.Threading.Tasks;
 namespace MTree.KiwoomTrader
 {
 	[ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Single, ValidateMustUnderstand = false)]
-    public partial class KiwoomTrader : ITrader
+    public partial class KiwoomTrader : ITrader, INotifyPropertyChanged
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
+        private ConcurrentDictionary<Guid, TraderContract> TraderContracts { get; set; } = new ConcurrentDictionary<Guid, TraderContract>();
 
         private AxKHOpenAPILib.AxKHOpenAPI kiwoomObj;
 
@@ -152,5 +157,26 @@ namespace MTree.KiwoomTrader
                     break;
             }
         }
+
+        public void NotifyMessage(MessageTypes type, string message)
+        {
+        }
+
+        public void RegisterContract(Guid clientId, TraderContract contract)
+        {
+        }
+
+        public void UnregisterContract(Guid clientId)
+        {
+        }
+
+        #region INotifyPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged(string name)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+        #endregion
     }
 }

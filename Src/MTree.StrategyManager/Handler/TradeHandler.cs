@@ -36,6 +36,20 @@ namespace MTree.StrategyManager
             }
         }
 
+        protected override void ServiceClient_Opened(object sender, EventArgs e)
+        {
+            base.ServiceClient_Opened(sender, e);
+
+            try
+            {
+                ServiceClient.RegisterContract(ClientId, new TraderContract());
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
 

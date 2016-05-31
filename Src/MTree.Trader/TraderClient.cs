@@ -5,12 +5,28 @@ using System.Linq;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
+using MTree.RealTimeProvider;
 
 namespace MTree.Trader
 {
     public partial class TraderClient : DuplexClientBase<ITrader>, ITrader
     {
         public TraderClient(InstanceContext callbackInstance, string endpointConfigurationName) : base(callbackInstance, endpointConfigurationName) { }
+
+        public void NotifyMessage(MessageTypes type, string message)
+        {
+            base.Channel.NotifyMessage(type, message);
+        }
+
+        public void RegisterContract(Guid clientId, TraderContract contract)
+        {
+            base.Channel.RegisterContract(clientId, contract);
+        }
+
+        public void UnregisterContract(Guid clientId)
+        {
+            base.Channel.UnregisterContract(clientId);
+        }
 
         public List<string> GetAccountList()
         {
@@ -27,7 +43,7 @@ namespace MTree.Trader
             return base.Channel.GetHoldingList(accNum);
         }
 
-        public OrderResult MakeOrder(Order order)
+        public bool MakeOrder(Order order)
         {
             return base.Channel.MakeOrder(order);
         }

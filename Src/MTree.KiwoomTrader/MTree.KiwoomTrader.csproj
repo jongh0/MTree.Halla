@@ -129,6 +129,10 @@
       <Project>{9c52064a-188b-449a-89a1-de3a9dd3f766}</Project>
       <Name>MTree.Configuration</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MTree.RealTimeProvider\MTree.RealTimeProvider.csproj">
+      <Project>{c9620f6e-d254-45f4-81c1-f33b0855fadc}</Project>
+      <Name>MTree.RealTimeProvider</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MTree.Trader\MTree.Trader.csproj">
       <Project>{147b0e77-7a22-4ea5-83ea-a0909b456408}</Project>
       <Name>MTree.Trader</Name>

@@ -1,4 +1,5 @@
-﻿using MTree.Trader;
+﻿using MTree.RealTimeProvider;
+using MTree.Trader;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,17 @@ namespace MTree.VirtualTrader
     public partial class VirtualTrader : ITrader
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
+        public void NotifyMessage(MessageTypes type, string message)
+        {
+        }
+
+        public void RegisterContract(Guid clientId, TraderContract contract)
+        {
+        }
+
+        public void UnregisterContract(Guid clientId)
+        {
+        }
     }
 }

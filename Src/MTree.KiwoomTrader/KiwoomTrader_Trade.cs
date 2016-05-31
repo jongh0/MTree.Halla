@@ -56,37 +56,15 @@ namespace MTree.KiwoomTrader
 
             return 0;
         }
-
-        private OrderResult GetFailedOrder(Order order)
-        {
-            OrderResult failedOrder = new OrderResult();
-
-            try
-            {
-                failedOrder.OrderNumber = string.Empty;
-                failedOrder.Code = order.Code;
-                failedOrder.OrderedQuantity = order.Quantity;
-                failedOrder.OrderType = order.OrderType;
-                failedOrder.OrderedPrice = order.Price;
-                failedOrder.ConcludedPrice = 0;
-                failedOrder.ConcludedQuantity = 0;
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-            }
-
-            return failedOrder;
-        }
-
-        public OrderResult MakeOrder(Order order)
+        
+        public bool MakeOrder(Order order)
         {
             try
             {
                 if (kiwoomObj.GetConnectState() == 0)
                 {
                     logger.Error("Make order, session not connected");
-                    return GetFailedOrder(order);
+                    return false;
                 }
 
                 var hoga = (order.PriceType == PriceTypes.LimitPrice) ? "00" : "03";
@@ -105,7 +83,7 @@ namespace MTree.KiwoomTrader
                 if (ret == 0)
                 {
                     logger.Info($"Order success, {order.ToString()}");
-                    return CurrOrderResult;
+                    return true;
                 }
             }
             catch (Exception ex)
@@ -114,7 +92,7 @@ namespace MTree.KiwoomTrader
             }
 
             logger.Error($"Order fail, {order.ToString()}");
-            return GetFailedOrder(order);
+            return false;
         }
 
         public List<HoldingStock> GetHoldingList(string accNum)

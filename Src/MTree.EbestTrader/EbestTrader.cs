@@ -1,7 +1,9 @@
 ﻿using MTree.Configuration;
+using MTree.RealTimeProvider;
 using MTree.Trader;
 using MTree.Utility;
 using System;
+using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.ServiceModel;
 using System.Threading;
@@ -15,6 +17,8 @@ namespace MTree.EbestTrader
     public partial class EbestTrader : ITrader, INotifyPropertyChanged
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
+        private ConcurrentDictionary<Guid, TraderContract> TraderContracts { get; set; } = new ConcurrentDictionary<Guid, TraderContract>();
 
         private readonly string resFilePath = "\\Res";
 
@@ -312,6 +316,60 @@ namespace MTree.EbestTrader
         {
             LastCommTick = Environment.TickCount;
             logger.Trace($"szTrCode: {szTrCode}");
+        }
+
+        public void NotifyMessage(MessageTypes type, string message)
+        {
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
+        public void RegisterContract(Guid clientId, TraderContract contract)
+        {
+            try
+            {
+                if (TraderContracts.ContainsKey(clientId) == true)
+                {
+                    logger.Error($"Contract exist {clientId}");
+                }
+                else
+                {
+                    contract.Callback = OperationContext.Current.GetCallbackChannel<ITraderCallback>();
+                    TraderContracts.TryAdd(clientId, contract);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
+        public void UnregisterContract(Guid clientId)
+        {
+            try
+            {
+                if (TraderContracts.ContainsKey(clientId) == true)
+                {
+                    TraderContract temp;
+                    TraderContracts.TryRemove(clientId, out temp);
+
+                    logger.Info($"{clientId} contract unregistered");
+                }
+                else
+                {
+                    logger.Warn($"{clientId} contract not exist");
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
         }
 
         #region INotifyPropertyChanged

@@ -37,10 +37,9 @@ namespace MTree.VirtualTrader
             return null;
         }
 
-        public OrderResult MakeOrder(Order order)
+        public bool MakeOrder(Order order)
         {
-            //return AccountManager.MakeOrder(order);
-            return CurrOrderResult;
+            return AccountManager.MakeOrder(order);
         }
     }
 }
