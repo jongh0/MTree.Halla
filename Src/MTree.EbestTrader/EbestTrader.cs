@@ -67,49 +67,49 @@ namespace MTree.EbestTrader
                 stockQuotingObj = new XAQueryClass();
                 stockQuotingObj.ResFileName = resFilePath + "\\t1102.res";
                 stockQuotingObj.ReceiveData += StockQuotingObj_ReceiveData;
+                stockQuotingObj.ReceiveMessage += queryObj_ReceiveMessage;
 
                 newOrderObj = new XAQueryClass();
                 newOrderObj.ResFileName = resFilePath + "\\CSPAT00600.res";
                 newOrderObj.ReceiveData += NewOrderObj_ReceiveData;
+                newOrderObj.ReceiveMessage += queryObj_ReceiveMessage;
 
                 modifyOrderObj = new XAQueryClass();
                 modifyOrderObj.ResFileName = resFilePath + "\\CSPAT00700.res";
                 modifyOrderObj.ReceiveData += ModifyOrderObj_ReceiveData;
+                modifyOrderObj.ReceiveMessage += queryObj_ReceiveMessage;
 
                 cancelOrderObj = new XAQueryClass();
                 cancelOrderObj.ResFileName = resFilePath + "\\CSPAT00800.res";
                 cancelOrderObj.ReceiveData += CancelOrderObj_ReceiveData;
+                cancelOrderObj.ReceiveMessage += queryObj_ReceiveMessage;
 
                 accDepositObj = new XAQueryClass();
                 accDepositObj.ResFileName = resFilePath + "\\t0424.res";
                 accDepositObj.ReceiveData += AccDepositObj_ReceiveData;
+                accDepositObj.ReceiveMessage += queryObj_ReceiveMessage;
                 #endregion
 
                 #region XAReal
                 orderSubmittedObj = new XARealClass();
                 orderSubmittedObj.ResFileName = resFilePath + "\\SC0.res";
                 orderSubmittedObj.ReceiveRealData += OrderSubmittedObj_ReceiveRealData;
-                orderSubmittedObj.AdviseRealData();
 
                 orderConcludedObj = new XARealClass();
                 orderConcludedObj.ResFileName = resFilePath + "\\SC1.res";
                 orderConcludedObj.ReceiveRealData += OrderConcludedObj_ReceiveRealData;
-                orderConcludedObj.AdviseRealData();
 
                 orderModifiedObj = new XARealClass();
                 orderModifiedObj.ResFileName = resFilePath + "\\SC2.res";
                 orderModifiedObj.ReceiveRealData += OrderModifiedObj_ReceiveRealData;
-                orderModifiedObj.AdviseRealData();
 
                 orderCanceledObj = new XARealClass();
                 orderCanceledObj.ResFileName = resFilePath + "\\SC3.res";
                 orderCanceledObj.ReceiveRealData += OrderCanceledObj_ReceiveRealData;
-                orderCanceledObj.AdviseRealData();
 
                 orderRejectedObj = new XARealClass();
-                orderRejectedObj.ResFileName = resFilePath + "\\SC3.res";
+                orderRejectedObj.ResFileName = resFilePath + "\\SC4.res";
                 orderRejectedObj.ReceiveRealData += OrderRejectedObj_ReceiveRealData;
-                orderRejectedObj.AdviseRealData();
                 #endregion
 
                 #region Login
@@ -148,6 +148,30 @@ namespace MTree.EbestTrader
             }
         }
 
+        private void AdviseRealData()
+        {
+            try
+            {
+                orderSubmittedObj.AdviseRealData();
+                orderConcludedObj.AdviseRealData();
+                orderModifiedObj.AdviseRealData();
+                orderCanceledObj.AdviseRealData();
+                orderRejectedObj.AdviseRealData();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
+        private void queryObj_ReceiveMessage(bool bIsSystemError, string nMessageCode, string szMessage)
+        {
+            if (bIsSystemError == true)
+                logger.Error($"{nameof(nMessageCode)}: {nMessageCode}, {nameof(szMessage)}: {szMessage}");
+            else
+                logger.Info($"{nameof(nMessageCode)}: {nMessageCode}, {nameof(szMessage)}: {szMessage}");
+        }
+
         #region XASession
         private void SessionObj_Event_Logout()
         {
@@ -163,6 +187,8 @@ namespace MTree.EbestTrader
                 LoginInstance.State = LoginStates.LoggedIn;
                 logger.Info($"Login success, {LoginInstance.ToString()}");
                 SetLogin();
+
+                AdviseRealData();
             }
             else
             {

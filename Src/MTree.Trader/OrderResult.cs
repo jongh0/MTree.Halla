@@ -23,6 +23,20 @@ namespace MTree.Trader
 
         public int OrderedPrice { get; set; }
 
+        public override string ToString()
+        {
+            List<string> strList = new List<string>();
 
+            try
+            {
+                foreach (var property in typeof(OrderResult).GetProperties())
+                    strList.Add($"{property.Name}: {property.GetValue(this)}");
+            }
+            catch
+            {
+            }
+
+            return string.Join(", ", strList.ToArray());
+        }
     }
 }

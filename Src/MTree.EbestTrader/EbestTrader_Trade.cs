@@ -230,11 +230,11 @@ namespace MTree.EbestTrader
                     newOrderObj.SetFieldData(blockName, "OrdprcPtnCode", 0, "03");
                 }
                 // 신용거래코드
-                //normalOrderObj.SetFieldData(blockName, "MgntrnCode", 0, "");
+                newOrderObj.SetFieldData(blockName, "MgntrnCode", 0, "000");
                 // 대출일
-                //normalOrderObj.SetFieldData(blockName, "LoanDt", 0, "");
+                newOrderObj.SetFieldData(blockName, "LoanDt", 0, "");
                 // 주문조건구분
-                //normalOrderObj.SetFieldData(blockName, "OrdCndiTpCode", 0, "");
+                newOrderObj.SetFieldData(blockName, "OrdCndiTpCode", 0, "0");
 
                 var ret = newOrderObj.Request(false);
                 if (ret < 0)
@@ -243,11 +243,11 @@ namespace MTree.EbestTrader
                     return false;
                 }
 
-                if (WaitOrderEvent.WaitOne(OrderLockTimeout) == false)
-                {
-                    logger.Error("Order timeout");
-                    return false;
-                }
+                //if (WaitOrderEvent.WaitOne(OrderLockTimeout) == false)
+                //{
+                //    logger.Error("Order timeout");
+                //    return false;
+                //}
 
                 logger.Info($"New order success, {order.ToString()}");
                 return true;
@@ -282,7 +282,7 @@ namespace MTree.EbestTrader
                 else
                     modifyOrderObj.SetFieldData(blockName, "OrdprcPtnCode", 0, "03");
                 // 주문조건구분
-                //modifyOrderObj.SetFieldData(blockName, "OrdCndiTpCode", 0, "");
+                modifyOrderObj.SetFieldData(blockName, "OrdCndiTpCode", 0, "0");
                 // 주문가
                 modifyOrderObj.SetFieldData(blockName, "OrdPrc", 0, order.Price.ToString());
 
@@ -430,37 +430,33 @@ namespace MTree.EbestTrader
             }
         }
 
-        private void OrderRejectedObj_ReceiveRealData(string szTrCode)
+        private void OrderConcludedObj_ReceiveRealData(string szTrCode)
         {
-            if (szTrCode != "SC4")
+            if (szTrCode != "SC1")
             {
-                logger.Error($"Wrong tr code. Received: {szTrCode}. Expected: SC4");
+                logger.Error($"Wrong tr code. Received: {szTrCode}. Expected: SC1");
                 WaitOrderEvent.Set();
                 return;
             }
 
             try
             {
-                logger.Error($"Order rejected. {orderRejectedObj.GetFieldData("OutBlock", "msgcode")}:{orderRejectedObj.GetFieldData("OutBlock", "outgu")}");
+                logger.Error($"Order concluded. {orderConcludedObj.GetFieldData("OutBlock", "msgcode")}:{orderConcludedObj.GetFieldData("OutBlock", "outgu")}");
 
                 OrderResult orderResult = new OrderResult();
-                orderResult.OrderNumber = orderRejectedObj.GetFieldData("OutBlock", "ordno");
-                orderResult.Code = orderRejectedObj.GetFieldData("OutBlock", "Isuno");
-                orderResult.OrderedQuantity = Convert.ToInt32(orderRejectedObj.GetFieldData("OutBlock", "ordqty"));
-                orderResult.OrderedPrice = Convert.ToInt32(orderRejectedObj.GetFieldData("OutBlock", "ordprc"));
-                orderResult.ConcludedQuantity = 0;
-                orderResult.ConcludedPrice = 0;
-
-                CurrOrderResult = orderResult;
+                orderResult.OrderNumber = orderConcludedObj.GetFieldData("OutBlock", "ordno");
+                orderResult.Code = orderConcludedObj.GetFieldData("OutBlock", "Isuno");
+                orderResult.OrderedQuantity = Convert.ToInt32(orderConcludedObj.GetFieldData("OutBlock", "ordqty"));
+                orderResult.OrderedPrice = Convert.ToInt32(orderConcludedObj.GetFieldData("OutBlock", "ordprc"));
+                orderResult.ConcludedQuantity = Convert.ToInt32(orderConcludedObj.GetFieldData("OutBlock", "execqty"));
+                orderResult.ConcludedPrice = Convert.ToInt32(orderConcludedObj.GetFieldData("OutBlock", "execprc"));
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
             }
-            finally
-            {
-                WaitOrderEvent.Set();
-            }
+
+            // TODO: Call conclusion callback method
         }
 
         private void OrderModifiedObj_ReceiveRealData(string szTrCode)
@@ -528,33 +524,37 @@ namespace MTree.EbestTrader
             }
         }
 
-        private void OrderConcludedObj_ReceiveRealData(string szTrCode)
+        private void OrderRejectedObj_ReceiveRealData(string szTrCode)
         {
-            if (szTrCode != "SC1")
+            if (szTrCode != "SC4")
             {
-                logger.Error($"Wrong tr code. Received: {szTrCode}. Expected: SC1");
+                logger.Error($"Wrong tr code. Received: {szTrCode}. Expected: SC4");
                 WaitOrderEvent.Set();
                 return;
             }
 
             try
             {
-                logger.Error($"Order concluded. {orderConcludedObj.GetFieldData("OutBlock", "msgcode")}:{orderConcludedObj.GetFieldData("OutBlock", "outgu")}");
+                logger.Error($"Order rejected. {orderRejectedObj.GetFieldData("OutBlock", "msgcode")}:{orderRejectedObj.GetFieldData("OutBlock", "outgu")}");
 
                 OrderResult orderResult = new OrderResult();
-                orderResult.OrderNumber = orderConcludedObj.GetFieldData("OutBlock", "ordno");
-                orderResult.Code = orderConcludedObj.GetFieldData("OutBlock", "Isuno");
-                orderResult.OrderedQuantity = Convert.ToInt32(orderConcludedObj.GetFieldData("OutBlock", "ordqty"));
-                orderResult.OrderedPrice = Convert.ToInt32(orderConcludedObj.GetFieldData("OutBlock", "ordprc"));
-                orderResult.ConcludedQuantity = Convert.ToInt32(orderConcludedObj.GetFieldData("OutBlock", "execqty"));
-                orderResult.ConcludedPrice = Convert.ToInt32(orderConcludedObj.GetFieldData("OutBlock", "execprc"));
+                orderResult.OrderNumber = orderRejectedObj.GetFieldData("OutBlock", "ordno");
+                orderResult.Code = orderRejectedObj.GetFieldData("OutBlock", "Isuno");
+                orderResult.OrderedQuantity = Convert.ToInt32(orderRejectedObj.GetFieldData("OutBlock", "ordqty"));
+                orderResult.OrderedPrice = Convert.ToInt32(orderRejectedObj.GetFieldData("OutBlock", "ordprc"));
+                orderResult.ConcludedQuantity = 0;
+                orderResult.ConcludedPrice = 0;
+
+                CurrOrderResult = orderResult;
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
             }
-
-            // TODO: Call conclusion callback method
+            finally
+            {
+                WaitOrderEvent.Set();
+            }
         }
     }
 }

@@ -22,6 +22,7 @@ namespace TestConsole
         {
             Config.Initialize();
 
+            //TestToString();
             //TestObjectId();
             //TestDataCounter();
             //TestLogging();
@@ -35,6 +36,27 @@ namespace TestConsole
 
             Console.WriteLine("Press any key..");
             Console.ReadLine();
+        }
+
+        private static void TestToString()
+        {
+            var c = new StockConclusion();
+            c.Id = ObjectIdUtility.GenerateNewId();
+            c.Code = "000020";
+            c.Amount = 200;
+            c.ConclusionType = ConclusionTypes.Buy;
+            c.Time = DateTime.Now;
+            c.ReceivedTime = DateTime.Now;
+
+            Console.WriteLine(c);
+
+            var s = new Subscribable();
+            s.Id = ObjectIdUtility.GenerateNewId();
+            s.Code = "111122";
+            s.Time = DateTime.Now;
+            s.ReceivedTime = DateTime.Now;
+
+            Console.WriteLine(s);
         }
 
         private static void TestObjectId()
