@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MTree.AutoLauncher"
         mc:Ignorable="d"
-        Title="AutoLauncher" Height="220" Width="450" ResizeMode="NoResize">
+        Title="AutoLauncher" ResizeMode="NoResize" SizeToContent="WidthAndHeight">
     <Window.DataContext>
         <local:ViewModel/>
     </Window.DataContext>
@@ -16,7 +16,7 @@
             </Style>
         </Grid.Resources>
         <StackPanel Orientation="Vertical" Margin="10,10,10,10">
-            <ListView ItemsSource="{Binding Launchers}" Height="Auto">
+            <ListView ItemsSource="{Binding Launchers}" >
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="Process">
