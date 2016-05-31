@@ -91,8 +91,6 @@ namespace MTree.AutoLauncher
         {
             try
             {
-                ProcessUtility.Start("MTree.ResourceMonitor.exe", LaunchArguments);
-                
                 if (ProcessUtility.Exists(LaunchProcess) == true)
                 {
                     if (KillIfExists == true)
