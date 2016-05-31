@@ -16,7 +16,7 @@
             </Style>
         </Grid.Resources>
         <StackPanel Orientation="Vertical" Margin="10,10,10,10">
-            <ListView ItemsSource="{Binding Launchers}" Height="120">
+            <ListView ItemsSource="{Binding Launchers}" Height="Auto">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="Process">
