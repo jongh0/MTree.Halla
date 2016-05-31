@@ -67,22 +67,27 @@ namespace MTree.EbestTrader
                 stockQuotingObj = new XAQueryClass();
                 stockQuotingObj.ResFileName = resFilePath + "\\t1102.res";
                 stockQuotingObj.ReceiveData += StockQuotingObj_ReceiveData;
+                stockQuotingObj.ReceiveMessage += queryObj_ReceiveMessage;
 
                 newOrderObj = new XAQueryClass();
                 newOrderObj.ResFileName = resFilePath + "\\CSPAT00600.res";
                 newOrderObj.ReceiveData += NewOrderObj_ReceiveData;
+                newOrderObj.ReceiveMessage += queryObj_ReceiveMessage;
 
                 modifyOrderObj = new XAQueryClass();
                 modifyOrderObj.ResFileName = resFilePath + "\\CSPAT00700.res";
                 modifyOrderObj.ReceiveData += ModifyOrderObj_ReceiveData;
+                modifyOrderObj.ReceiveMessage += queryObj_ReceiveMessage;
 
                 cancelOrderObj = new XAQueryClass();
                 cancelOrderObj.ResFileName = resFilePath + "\\CSPAT00800.res";
                 cancelOrderObj.ReceiveData += CancelOrderObj_ReceiveData;
+                cancelOrderObj.ReceiveMessage += queryObj_ReceiveMessage;
 
                 accDepositObj = new XAQueryClass();
                 accDepositObj.ResFileName = resFilePath + "\\t0424.res";
                 accDepositObj.ReceiveData += AccDepositObj_ReceiveData;
+                accDepositObj.ReceiveMessage += queryObj_ReceiveMessage;
                 #endregion
 
                 #region XAReal
@@ -146,6 +151,14 @@ namespace MTree.EbestTrader
             {
                 logger.Error(ex);
             }
+        }
+
+        private void queryObj_ReceiveMessage(bool bIsSystemError, string nMessageCode, string szMessage)
+        {
+            if (bIsSystemError == true)
+                logger.Error($"{nameof(nMessageCode)}: {nMessageCode}, {nameof(szMessage)}: {szMessage}");
+            else
+                logger.Info($"{nameof(nMessageCode)}: {nMessageCode}, {nameof(szMessage)}: {szMessage}");
         }
 
         #region XASession
