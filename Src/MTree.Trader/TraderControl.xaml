@@ -48,19 +48,19 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
                 <TextBlock Text="Original Order : "/>
-                <TextBox Text="{Binding OriginalOrderNumber}" MaxLength="20"/>
+                <TextBox Text="{Binding OriginalOrderNumber, UpdateSourceTrigger=PropertyChanged}" MaxLength="20"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
                 <TextBlock Text="Code : "/>
-                <TextBox Text="{Binding TargetCode}" MaxLength="6"/>
+                <TextBox Text="{Binding TargetCode, UpdateSourceTrigger=PropertyChanged}" MaxLength="6"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
                 <TextBlock Text="Price : "/>
-                <TextBox Text="{Binding Price}" MaxLength="8"/>
+                <TextBox Text="{Binding Price, UpdateSourceTrigger=PropertyChanged}" MaxLength="8"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
                 <TextBlock Text="Quantity : "/>
-                <TextBox Text="{Binding Quantity}" MaxLength="5"/>
+                <TextBox Text="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}" MaxLength="5"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
                 <TextBlock Text="Order Type : "/>

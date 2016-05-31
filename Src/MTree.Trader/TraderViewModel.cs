@@ -20,10 +20,7 @@ namespace MTree.Trader
         private ObservableCollectionEx<string> accountNumbers;
         public ObservableCollectionEx<string> AccountNumbers
         {
-            get
-            {
-                return accountNumbers;
-            }
+            get { return accountNumbers; }
             set
             {
                 accountNumbers = value;
@@ -34,10 +31,7 @@ namespace MTree.Trader
         private string selectedAccount;
         public string SelectedAccount
         {
-            get
-            {
-                return selectedAccount;
-            }
+            get { return selectedAccount; }
             set
             {
                 selectedAccount = value;
@@ -48,10 +42,7 @@ namespace MTree.Trader
         private string originalOrderNumber;
         public string OriginalOrderNumber
         {
-            get
-            {
-                return originalOrderNumber;
-            }
+            get { return originalOrderNumber; }
             set
             { 
                 originalOrderNumber = value;
@@ -62,10 +53,7 @@ namespace MTree.Trader
         private string targetCode;
         public string TargetCode
         {
-            get
-            {
-                return targetCode;
-            }
+            get { return targetCode; }
             set
             {
                 targetCode = value;
@@ -78,10 +66,7 @@ namespace MTree.Trader
         private int price;
         public int Price
         {
-            get
-            {
-                return price;
-            }
+            get { return price; }
             set
             {
                 price = value;
@@ -93,10 +78,7 @@ namespace MTree.Trader
         private int quantity;
         public int Quantity
         {
-            get
-            {
-                return quantity;
-            }
+            get { return quantity; }
             set
             {
                 quantity = value;
@@ -109,10 +91,7 @@ namespace MTree.Trader
         private OrderTypes orderType = OrderTypes.BuyNew;
         public OrderTypes OrderType
         {
-            get
-            {
-                return orderType;
-            }
+            get { return orderType; }
             set
             {
                 orderType = value;
@@ -138,18 +117,17 @@ namespace MTree.Trader
             get
             {
                 bool canOrder = true;
-                if (TargetCode == null || Quantity == 0)
-                {
-                    canOrder = false;
-                }
 
-                if (OrderType == OrderTypes.BuyModify || OrderType == OrderTypes.BuyCancel ||
-                    OrderType == OrderTypes.SellModify || OrderType == OrderTypes.SellCancel)
+                if (string.IsNullOrEmpty(TargetCode) == true || Quantity == 0)
+                    canOrder = false;
+
+                if (OrderType == OrderTypes.BuyModify || 
+                    OrderType == OrderTypes.BuyCancel ||
+                    OrderType == OrderTypes.SellModify || 
+                    OrderType == OrderTypes.SellCancel)
                 {
-                    if (OriginalOrderNumber == null)
-                    {
+                    if (string.IsNullOrEmpty(OriginalOrderNumber) == true)
                         canOrder = false;
-                    }
                 }
 
                 return canOrder;
@@ -191,6 +169,7 @@ namespace MTree.Trader
                 {
                     AccountNumbers.Add(account);
                 }
+
                 SelectedAccount = AccountNumbers[0];
             });
         }
