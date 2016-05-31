@@ -4,6 +4,7 @@ using MTree.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -60,10 +61,16 @@ namespace MTree.DataStructure
 
         public virtual string ToString(params string[] excludeProperties)
         {
-            StringBuilder sb = new StringBuilder();
+            return ToString(typeof(Subscribable), excludeProperties);
+        }
+
+        public string ToString(Type type, params string[] excludeProperties)
+        {
+            List<string> strList = new List<string>();
+
             try
             {
-                foreach (var property in typeof(Subscribable).GetProperties())
+                foreach (var property in type.GetProperties())
                 {
                     if (excludeProperties.Contains(property.Name) == false)
                     {
@@ -72,18 +79,26 @@ namespace MTree.DataStructure
                         if (value is DateTime)
                         {
                             DateTime dateTime = (DateTime)value;
-                            sb.Append($"{property.Name}: {dateTime.ToString(Config.General.DateTimeFormat)}, ");
+                            strList.Add($"{property.Name}: {dateTime.ToString(Config.General.DateTimeFormat)}");
                         }
                         else
                         {
-                            sb.Append($"{property.Name}: {value}, ");
+                            strList.Add($"{property.Name}: {value}");
                         }
                     }
                 }
-            }
-            catch { }
 
-            return sb.ToString();
+                return string.Join(", ", strList.ToArray());
+            }
+            catch
+            {
+            }
+            finally
+            {
+                strList.Clear();
+            }
+
+            return string.Empty;
         }
     }
 }

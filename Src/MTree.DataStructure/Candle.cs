@@ -52,18 +52,7 @@ namespace MTree.DataStructure
 
         public override string ToString(params string[] excludeProperties)
         {
-            StringBuilder sb = new StringBuilder();
-            try
-            {
-                foreach (var property in typeof(Candle).GetProperties())
-                {
-                    if (excludeProperties.Contains(property.Name) == false)
-                        sb.Append($"{property.Name}: {property.GetValue(this)}, ");
-                }
-            }
-            catch { }
-
-            return sb.ToString();
+            return ToString(typeof(Candle), excludeProperties);
         }
 
         public static char ConvertToCharType(CandleTypes type)
