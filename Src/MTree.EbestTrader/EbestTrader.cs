@@ -94,27 +94,22 @@ namespace MTree.EbestTrader
                 orderSubmittedObj = new XARealClass();
                 orderSubmittedObj.ResFileName = resFilePath + "\\SC0.res";
                 orderSubmittedObj.ReceiveRealData += OrderSubmittedObj_ReceiveRealData;
-                orderSubmittedObj.AdviseRealData();
 
                 orderConcludedObj = new XARealClass();
                 orderConcludedObj.ResFileName = resFilePath + "\\SC1.res";
                 orderConcludedObj.ReceiveRealData += OrderConcludedObj_ReceiveRealData;
-                orderConcludedObj.AdviseRealData();
 
                 orderModifiedObj = new XARealClass();
                 orderModifiedObj.ResFileName = resFilePath + "\\SC2.res";
                 orderModifiedObj.ReceiveRealData += OrderModifiedObj_ReceiveRealData;
-                orderModifiedObj.AdviseRealData();
 
                 orderCanceledObj = new XARealClass();
                 orderCanceledObj.ResFileName = resFilePath + "\\SC3.res";
                 orderCanceledObj.ReceiveRealData += OrderCanceledObj_ReceiveRealData;
-                orderCanceledObj.AdviseRealData();
 
                 orderRejectedObj = new XARealClass();
-                orderRejectedObj.ResFileName = resFilePath + "\\SC3.res";
+                orderRejectedObj.ResFileName = resFilePath + "\\SC4.res";
                 orderRejectedObj.ReceiveRealData += OrderRejectedObj_ReceiveRealData;
-                orderRejectedObj.AdviseRealData();
                 #endregion
 
                 #region Login
@@ -153,6 +148,22 @@ namespace MTree.EbestTrader
             }
         }
 
+        private void AdviseRealData()
+        {
+            try
+            {
+                orderSubmittedObj.AdviseRealData();
+                orderConcludedObj.AdviseRealData();
+                orderModifiedObj.AdviseRealData();
+                orderCanceledObj.AdviseRealData();
+                orderRejectedObj.AdviseRealData();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
         private void queryObj_ReceiveMessage(bool bIsSystemError, string nMessageCode, string szMessage)
         {
             if (bIsSystemError == true)
@@ -176,6 +187,8 @@ namespace MTree.EbestTrader
                 LoginInstance.State = LoginStates.LoggedIn;
                 logger.Info($"Login success, {LoginInstance.ToString()}");
                 SetLogin();
+
+                AdviseRealData();
             }
             else
             {
