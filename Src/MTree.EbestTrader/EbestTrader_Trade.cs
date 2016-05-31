@@ -230,11 +230,11 @@ namespace MTree.EbestTrader
                     newOrderObj.SetFieldData(blockName, "OrdprcPtnCode", 0, "03");
                 }
                 // 신용거래코드
-                //normalOrderObj.SetFieldData(blockName, "MgntrnCode", 0, "");
+                newOrderObj.SetFieldData(blockName, "MgntrnCode", 0, "000");
                 // 대출일
-                //normalOrderObj.SetFieldData(blockName, "LoanDt", 0, "");
+                newOrderObj.SetFieldData(blockName, "LoanDt", 0, "");
                 // 주문조건구분
-                //normalOrderObj.SetFieldData(blockName, "OrdCndiTpCode", 0, "");
+                newOrderObj.SetFieldData(blockName, "OrdCndiTpCode", 0, "0");
 
                 var ret = newOrderObj.Request(false);
                 if (ret < 0)
@@ -282,7 +282,7 @@ namespace MTree.EbestTrader
                 else
                     modifyOrderObj.SetFieldData(blockName, "OrdprcPtnCode", 0, "03");
                 // 주문조건구분
-                //modifyOrderObj.SetFieldData(blockName, "OrdCndiTpCode", 0, "");
+                modifyOrderObj.SetFieldData(blockName, "OrdCndiTpCode", 0, "0");
                 // 주문가
                 modifyOrderObj.SetFieldData(blockName, "OrdPrc", 0, order.Price.ToString());
 
