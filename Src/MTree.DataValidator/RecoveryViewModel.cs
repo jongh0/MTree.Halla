@@ -49,7 +49,7 @@ namespace MTree.DataValidator
         private const string logBasePath = "Logs";
         private const string compareResultPath = "CompareResult";
         private const string codeCompareResultFile = "CodeCompare.html";
-        private const string masterCompareResultFile = "MasterCompare.html";
+        private const string masterCompareResultPath = "Master";
         private const string stockConclusionCompareResultPath = "StockConclusion";
         private const string indexConclusionCompareResultPath = "IndexConclusion";
         private const string circuitbreakCompareResultPath = "CircuitBreak";
@@ -182,7 +182,7 @@ namespace MTree.DataValidator
             DoRecoverMasterAll();
             DoRecoverStockConclusionAll();
             DoRecoverIndexConclusionAll();
-            DoRecoverCircuitBreak();
+            DoRecoverCircuitBreakAll();
         }
 
         private RelayCommand _RecoverMasterAllCommand;
@@ -218,7 +218,7 @@ namespace MTree.DataValidator
                             lock (popupWindowLockObject)
                             {
                                 if (ApplyForAll == false)
-                                    needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, stockConclusionCompareResultPath, Code + ".html"));
+                                    needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, masterCompareResultPath, code + ".html"));
                                 else
                                     needRecovery = DialogResult.OK;
                             }
@@ -252,7 +252,7 @@ namespace MTree.DataValidator
                                     lock (popupWindowLockObject)
                                     {
                                         if (ApplyForAll == false)
-                                            needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, stockConclusionCompareResultPath, Code + ".html"));
+                                            needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, masterCompareResultPath, Code + ".html"));
                                         else
                                             needRecovery = DialogResult.OK;
                                     }
@@ -444,22 +444,22 @@ namespace MTree.DataValidator
             }
         }
         
-        private RelayCommand _RecoverCircuitBreakCommand;
-        public ICommand RecoverCircuitBreakCommand
+        private RelayCommand _RecoverCircuitBreakAllCommand;
+        public ICommand RecoverCircuitBreakAllCommand
         {
             get
             {
-                if (_RecoverCircuitBreakCommand == null)
-                    _RecoverCircuitBreakCommand = new RelayCommand(() =>
+                if (_RecoverCircuitBreakAllCommand == null)
+                    _RecoverCircuitBreakAllCommand = new RelayCommand(() =>
                     Task.Run(() =>
                     {
-                        DoRecoverCircuitBreak();
+                        DoRecoverCircuitBreakAll();
                     }));
 
-                return _RecoverCircuitBreakCommand;
+                return _RecoverCircuitBreakAllCommand;
             }
         }
-        private void DoRecoverCircuitBreak()
+        private void DoRecoverCircuitBreakAll()
         {
             List<string> codeList = new List<string>();
             codeList.AddRange(DbAgent.Instance.GetCollectionList(DbTypes.StockMaster).OrderBy(s => s));
@@ -490,6 +490,39 @@ namespace MTree.DataValidator
             }
             logger.Info("Circuit Break Recovery Done.");
         }
-        
+
+
+        private RelayCommand _RecoverCircuitBreakCommand;
+        public ICommand RecoverCircuitBreakCommand
+        {
+            get
+            {
+                if (_RecoverCircuitBreakCommand == null)
+                    _RecoverCircuitBreakCommand = new RelayCommand(() =>
+                    Task.Run(() =>
+                    {
+                        for (DateTime targetDate = StartingDate; targetDate <= EndingDate; targetDate = targetDate.AddDays(1))
+                        {
+                            if (Validator.ValidateCircuitBreak(targetDate, Code, true) == false)
+                            {
+                                if (ValidateOnly == false)
+                                {
+                                    DialogResult needRecovery = DialogResult.None;
+                                    lock (popupWindowLockObject)
+                                    {
+                                        needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, circuitbreakCompareResultPath, Code + ".html"));
+                                    }
+                                    if (needRecovery == DialogResult.OK)
+                                    {
+                                        Recoverer.RecoverCircuitBreak(targetDate, Code);
+                                    }
+                                }
+                            }
+                        }
+                    }));
+                return _RecoverCircuitBreakCommand;
+            }
+
+        }
     }
 }

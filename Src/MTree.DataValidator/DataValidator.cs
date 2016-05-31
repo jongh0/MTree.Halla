@@ -28,7 +28,7 @@ namespace MTree.DataValidator
         private const string logBasePath = "Logs";
         private const string compareResultPath = "CompareResult";
         private const string codeCompareResultFile = "CodeCompare.html";
-        private const string masterCompareResultFile = "MasterCompare.html";
+        private const string masterCompareResultPath = "Master";
         private const string stockConclusionCompareResultPath = "StockConclusion";
         private const string indexConclusionCompareResultPath = "IndexConclusion";
         private const string circuitbreakCompareResultPath = "CircuitBreak";
@@ -97,7 +97,7 @@ namespace MTree.DataValidator
             {
                 logger.Error($"Index Master for {code} of {targetDate.ToString("yyyy-MM-dd")} Validation Fail");
                 if (makeReport == true)
-                    comparator.MakeReport(srcMaster, destMaster, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, masterCompareResultFile));
+                    comparator.MakeReport(srcMaster, destMaster, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, masterCompareResultPath, code + ".html"));
             }
             else
             {
@@ -130,7 +130,7 @@ namespace MTree.DataValidator
             {
                 logger.Error($"Stock Master for {code} of {targetDate.ToString("yyyy-MM-dd")} Validation Fail");
                 if (makeReport == true)
-                    comparator.MakeReport(srcMaster, destMaster, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, masterCompareResultFile));
+                    comparator.MakeReport(srcMaster, destMaster, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, masterCompareResultPath, code + ".html"));
             }
             else
             {
@@ -192,7 +192,7 @@ namespace MTree.DataValidator
             {
                 logger.Error($"Stock Masters Validation Fail");
                 if (makeReport == true)
-                    comparator.MakeReport(srcMasters, destMasters, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, masterCompareResultFile));
+                    comparator.MakeReport(srcMasters, destMasters, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, masterCompareResultPath));
             }
             else
             {

@@ -73,7 +73,7 @@
                             <Button Content=" Master " Command="{Binding RecoverMasterAllCommand}" Margin="5,0,5,0"/>
                             <Button Content=" Stock Conclusion " Command="{Binding RecoverStockConclusionAllCommand}" Margin="5,0,5,0"/>
                             <Button Content=" Index Conclusion " Command="{Binding RecoverIndexConclusionAllCommand}" Margin="5,0,5,0"/>
-                            <Button Content=" Circuit Break " Command="{Binding RecoverCircuitBreakCommand}" Margin="5,0,5,0"/>
+                            <Button Content=" Circuit Break " Command="{Binding RecoverCircuitBreakAllCommand}" Margin="5,0,5,0"/>
                             <Button Content=" Chart " Margin="5,0,5,0"/>
                         </StackPanel>
                     </GroupBox>
@@ -84,6 +84,7 @@
                             <Button Content=" Master " Command="{Binding RecoverMasterCommand}" Margin="5,0,5,0"/>
                             <Button Content=" Stock Conclusion " Command="{Binding RecoverStockConclusionCommand}" Margin="5,0,5,0"/>
                             <Button Content=" Index Conclusion "  Command="{Binding RecoverIndexConclusionCommand}" Margin="5,0,5,0"/>
+                            <Button Content=" Circuit Break "  Command="{Binding RecoverCircuitBreakCommand}" Margin="5,0,5,0"/>
                         </StackPanel>
                     </GroupBox>
                 </StackPanel>

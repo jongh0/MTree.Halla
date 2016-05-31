@@ -56,7 +56,7 @@ namespace MTree.DataValidator
             }
 
             To.Delete(code, filter);
-            To.Insert(From.Find(code, filter).FirstOrDefault());
+            To.Insert(From.Find(code, filter)?.FirstOrDefault());
             logger.Info($"Index Master Recovery for {code} of {targetDate.ToString("yyyy-MM-dd")} Done");
         }
 
@@ -66,14 +66,8 @@ namespace MTree.DataValidator
             var filter = FilterFactory.Instance.BuildStockMasterFilter(targetDate);
 
             StockMaster master = To.Find(code, filter).FirstOrDefault();
-            if (master == null)
-            {
-                logger.Info($"Stock Master for {code} of {targetDate.ToString("yyyy-MM-dd")} is null.");
-                return;
-            }    
-            
             To.Delete(code, filter);
-            To.Insert(From.Find(code, filter).FirstOrDefault());
+            To.Insert(From.Find(code, filter)?.FirstOrDefault());
             logger.Info($"Stock Master Recovery for {code} of {targetDate.ToString("yyyy-MM-dd")} Done");
         }
 
@@ -101,11 +95,6 @@ namespace MTree.DataValidator
             Parallel.ForEach(codeList, new ParallelOptions { MaxDegreeOfParallelism = Config.Validator.ThreadLimit }, code =>
             {
                 IndexMaster master = To.Find(code, filter).FirstOrDefault();
-                if (master == null)
-                {
-                    logger.Info($"Stock Master for {code} of {targetDate.ToString("yyyy-MM-dd")} is null.");
-                    return;
-                }
                 To.Delete(code, filter);
                 To.Insert(From.Find(code, filter).FirstOrDefault());
                 logger.Info($"Stock Master Recovery for {code} of {targetDate.ToString("yyyy-MM-dd")} Done. {Interlocked.Increment(ref cnt)}/{codeList.Count}");

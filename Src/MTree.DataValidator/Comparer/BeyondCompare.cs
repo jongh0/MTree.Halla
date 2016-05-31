@@ -117,8 +117,8 @@ namespace MTree.DataValidator
             {
                 using (Process compareProcess = Process.Start(beyondComparePath, param))
                 {
-                    //do
-                    //{
+                    do
+                    {
                         int retCnt = 0;
                         while (compareProcess.WaitForExit(10 * 1000) == false)
                         {
@@ -130,7 +130,7 @@ namespace MTree.DataValidator
                                 return false;
                             }
                         }
-                    //} while (compareProcess.ExitCode != 0 && compareProcess.ExitCode != 1 && compareProcess.ExitCode != 2);
+                    } while (compareProcess.ExitCode == 100);
                     if (compareProcess.ExitCode != 0 && compareProcess.ExitCode != 1 && compareProcess.ExitCode != 2)
                         logger.Error($"ExitCode:{compareProcess.ExitCode}");
 
@@ -170,21 +170,25 @@ namespace MTree.DataValidator
         }
         public void MakeReport(Subscribable src, Subscribable dest, string reportPath)
         {
+            string code = src != null ? src.Code : dest.Code;
             StringBuilder srcString = new StringBuilder();
             StringBuilder destString = new StringBuilder();
 
             StringBuilder outputString = new StringBuilder();
-            
-            srcString.AppendLine(src.ToString(nameof(src.Id), nameof(src.ReceivedTime)));
-            outputString.AppendLine(src.ToString(nameof(src.ReceivedTime)));
-            
+
+            if (src != null)
+            {
+                srcString.AppendLine(src.ToString(nameof(src.Id), nameof(src.ReceivedTime)));
+                outputString.AppendLine(src.ToString(nameof(src.ReceivedTime)));
+            }
+
             string path = Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, codeDifferentPath);
             if (Directory.Exists(path) == false)
             {
                 Directory.CreateDirectory(path);
             }
 
-            using (var fs = new FileStream(Path.Combine(path, src.Code + "_source.txt"), FileMode.Create))
+            using (var fs = new FileStream(Path.Combine(path, code + "_source.txt"), FileMode.Create))
             using (var sw = new StreamWriter(fs, Encoding.Default))
             {
                 sw.WriteLine(outputString);
@@ -193,16 +197,19 @@ namespace MTree.DataValidator
             }
 
             outputString.Clear();
-            destString.AppendLine(dest.ToString(nameof(dest.Id), nameof(dest.ReceivedTime)));
-            outputString.AppendLine(dest.ToString(nameof(dest.ReceivedTime)));
-            
+            if (dest != null)
+            {
+                destString.AppendLine(dest.ToString(nameof(dest.Id), nameof(dest.ReceivedTime)));
+                outputString.AppendLine(dest.ToString(nameof(dest.ReceivedTime)));
+            }
+
             path = Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, codeDifferentPath);
             if (Directory.Exists(path) == false)
             {
                 Directory.CreateDirectory(path);
             }
 
-            using (var fs = new FileStream(Path.Combine(path, dest.Code + "_destination.txt"), FileMode.Create))
+            using (var fs = new FileStream(Path.Combine(path, code + "_destination.txt"), FileMode.Create))
             using (var sw = new StreamWriter(fs, Encoding.Default))
             {
                 sw.WriteLine(outputString);
@@ -301,7 +308,7 @@ namespace MTree.DataValidator
             {
                 using (Process compareProcess = Process.Start(beyondComparePath, param))
                 {
-                    //do
+                    do
                     {
                         int retCnt = 0;
                         while (compareProcess.WaitForExit(300 * 1000) == false)
@@ -314,7 +321,7 @@ namespace MTree.DataValidator
                                 return;
                             }
                         }
-                    }// while (compareProcess.ExitCode != 0 && compareProcess.ExitCode != 1 && compareProcess.ExitCode != 2);
+                    } while (compareProcess.ExitCode == 100);
 
                     if (compareProcess.ExitCode != 0 && compareProcess.ExitCode != 1 && compareProcess.ExitCode != 2)
                         logger.Error($"ExitCode:{compareProcess.ExitCode}");
