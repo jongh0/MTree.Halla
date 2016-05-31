@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:MTree.VirtualTrader"
         xmlns:t="clr-namespace:MTree.Trader;assembly=MTree.Trader"
         mc:Ignorable="d"
-        Title="VirtualTrader" Height="276" Width="279">
+        Title="VirtualTrader" Height="276" Width="279" ResizeMode="CanMinimize">
     <Grid>
         <t:TraderControl/>
     </Grid>
