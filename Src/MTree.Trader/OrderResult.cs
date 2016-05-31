@@ -6,6 +6,16 @@ using System.Threading.Tasks;
 
 namespace MTree.Trader
 {
+    public enum OrderResultTypes
+    {
+        Unknown,
+        Submitted,
+        Concluded,
+        Modified,
+        Canceled,
+        Rejected,
+    }
+
     [Serializable]
     public class OrderResult
     {
@@ -13,7 +23,7 @@ namespace MTree.Trader
         
         public string Code { get; set; }
 
-        public OrderTypes OrderType { get; set; }
+        public OrderResultTypes ResultType { get; set; }
 
         public int ConcludedQuantity { get; set; }
 
@@ -22,6 +32,8 @@ namespace MTree.Trader
         public int OrderedQuantity { get; set; }
 
         public int OrderedPrice { get; set; }
+
+        public string AccountNumber { get; set; }
 
         public override string ToString()
         {

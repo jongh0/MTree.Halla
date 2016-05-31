@@ -79,6 +79,7 @@
     <Compile Include="Converters\NumberToCurrencyConverter.cs" />
     <Compile Include="Converters\NumberToPercentConverter.cs" />
     <Compile Include="Converters\EnumToStringConverter.cs" />
+    <Compile Include="Converters\ConvertUtility.cs" />
     <Compile Include="Firm\KiwoomScreen.cs" />
     <Compile Include="Firm\KiwoomError.cs" />
     <Compile Include="Firm\LoginInfo.cs" />
