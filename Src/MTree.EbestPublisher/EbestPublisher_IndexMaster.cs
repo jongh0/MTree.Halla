@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using MTree.DataStructure;
+using MTree.Utility;
 
 namespace MTree.EbestPublisher
 {
@@ -64,17 +65,8 @@ namespace MTree.EbestPublisher
                     return;
 
                 // 현재가
-                string basisPriceStr = indexQuotingObj.GetFieldData("t1511OutBlock", "jniljisu", 0);
-                float basisPrice = 0;
-                if (float.TryParse(basisPriceStr, out basisPrice) == true)
-                {
-                    QuotingIndexMaster.BasisPrice = basisPrice;
-                }
-                else
-                {
-                    logger.Error($"Basis price error: {basisPriceStr}");
-                    QuotingIndexMaster.BasisPrice = 0;
-                }
+                var jniljisu = indexQuotingObj.GetFieldData("t1511OutBlock", "jniljisu", 0);
+                QuotingIndexMaster.BasisPrice = ConvertUtility.ToSingle(jniljisu);
             }
             catch (Exception ex)
             {
