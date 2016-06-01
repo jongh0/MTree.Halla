@@ -64,11 +64,16 @@ namespace MTree.EbestPublisher
 
         private XAQueryClass warningObj1;
         private XAQueryClass warningObj2;
+
+        private XAQueryClass themeCodeObj;
+        private XAQueryClass themeListObj;
         #endregion
 
         #region Code list
         private Dictionary<string, string> IndexCodeList { get; set; } = new Dictionary<string, string>();
-        private Dictionary<string, string> StockCodeList { get; set; } = new Dictionary<string, string>(); 
+        private Dictionary<string, string> StockCodeList { get; set; } = new Dictionary<string, string>();
+        private Dictionary<string, string> ThemeCodeList { get; set; } = new Dictionary<string, string>();
+        private Dictionary<string, object> ThemeList { get; set; } = new Dictionary<string, object>();
         #endregion
 
         #region Warning
@@ -137,6 +142,19 @@ namespace MTree.EbestPublisher
                 warningObj2.ReceiveChartRealData += QueryObj_ReceiveChartRealData;
                 warningObj2.ReceiveData += WarningObj2_ReceiveData;
                 warningObj2.ReceiveMessage += QueryObj_ReceiveMessage;
+
+                themeCodeObj = new XAQueryClass();
+                themeCodeObj.ResFileName = resFilePath + "\\t8425.res";
+                themeCodeObj.ReceiveChartRealData += QueryObj_ReceiveChartRealData;
+                themeCodeObj.ReceiveData += ThemeCode_ReceiveData;
+                themeCodeObj.ReceiveMessage += QueryObj_ReceiveMessage;
+
+                themeListObj = new XAQueryClass();
+                themeListObj.ResFileName = resFilePath + "\\t1537.res";
+                themeListObj.ReceiveChartRealData += QueryObj_ReceiveChartRealData;
+                themeListObj.ReceiveData += ThemeList_ReceiveData;
+                themeListObj.ReceiveMessage += QueryObj_ReceiveMessage;
+
                 #endregion
 
                 #region Login
@@ -380,6 +398,49 @@ namespace MTree.EbestPublisher
             return codeList;
         }
 
+        public override Dictionary<string, object> GetThemeList()
+        {
+            var themeList = new Dictionary<string, object>();
+            try
+            {
+                QuoteInterval = 1000 / stockQuotingObj.GetTRCountPerSec("t8425");
+                WaitQuoteInterval();
+                themeCodeObj.SetFieldData("t8425InBlock", "dummy", 0, "");
+                var ret = themeCodeObj.Request(false);
+                if (ret < 0)
+                {
+                    logger.Error($"Theme code request error, {GetLastErrorMessage(ret)}");
+                    return null;
+                }
+
+                if (WaitQuoting() == false)
+                    return null;
+
+                QuoteInterval = 1000 / stockQuotingObj.GetTRCountPerSec("t1537");
+                foreach (KeyValuePair<string, string> theme in ThemeCodeList)
+                {
+                    WaitQuoteInterval();
+                    themeListObj.SetFieldData("t1537InBlock", "tmcode", 0, theme.Key);
+                    ret = themeListObj.Request(false);
+                    if (ret < 0)
+                    {
+                        logger.Error($"Theme list request error, {GetLastErrorMessage(ret)}");
+                        return null;
+                    }
+                    if (WaitQuoting() == false)
+                        return null;
+
+                    themeList.Add(theme.Value, ThemeList);
+                }
+                logger.Info("Quoting theme list success");
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+            return themeList;
+        }
+
         private void IndexListObj_ReceiveData(string szTrCode)
         {
             try
@@ -570,6 +631,48 @@ namespace MTree.EbestPublisher
                 {
                     SetQuoting();
                 }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
+        private void ThemeCode_ReceiveData(string szTrCode)
+        {
+            try
+            {
+                LastCommTick = Environment.TickCount;
+                logger.Trace($"szTrCode: {szTrCode}");
+
+                int cnt = themeCodeObj.GetBlockCount("t8425OutBlock");
+                for (int i = 0; i < cnt; i++)
+                {
+                    ThemeCodeList.Add(themeCodeObj.GetFieldData("t8425OutBlock", "tmcode", i), themeCodeObj.GetFieldData("t8425OutBlock", "tmname", i));
+                }
+
+                SetQuoting();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+        private void ThemeList_ReceiveData(string szTrCode)
+        {
+            try
+            {
+                LastCommTick = Environment.TickCount;
+                logger.Trace($"szTrCode: {szTrCode}");
+
+                int cnt = Convert.ToInt32(themeListObj.GetFieldData("t1537OutBlock", "tmcnt", 0));
+                ThemeList = new Dictionary<string, object>();
+                for (int i = 0; i < cnt; i++)
+                {
+                    ThemeList.Add(themeListObj.GetFieldData("t1537OutBlock1", "shcode", i), themeListObj.GetFieldData("t1537OutBlock1", "hname", i));
+                }
+
+                SetQuoting();
             }
             catch (Exception ex)
             {

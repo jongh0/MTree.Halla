@@ -296,7 +296,7 @@ namespace MTree.DaishinPublisher
                             {
                                 string fullcode = (string)themeTypeObj.GetDataValue(0, j);
                                 string name = (string)themeTypeObj.GetDataValue(1, j);
-                                ((Dictionary < string, object> )themeList[themeName]).Add(CodeEntity.RemovePrefix(fullcode), name);
+                                ((Dictionary<string, object>)themeList[themeName]).Add(CodeEntity.RemovePrefix(fullcode), name);
                             }
                         }
                     }
