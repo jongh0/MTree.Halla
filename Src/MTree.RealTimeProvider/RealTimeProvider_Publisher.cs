@@ -1,5 +1,4 @@
 ﻿#define EVENLY_DISTRIBUTION
-//#define USE_CODE_MAP
 
 using MongoDB.Bson;
 using MTree.Configuration;
@@ -24,17 +23,6 @@ namespace MTree.RealTimeProvider
         public int PublisherContractCount { get { return PublisherContracts.Count; } }
         private ConcurrentDictionary<Guid, PublisherContract> PublisherContracts { get; set; } = new ConcurrentDictionary<Guid, PublisherContract>();
 
-#if USE_CODE_MAP
-        private CodeMapBuilder codeMapBuilder;
-        private bool isMarketTypeHandling;
-        private bool isMarketTypeHandled;
-        private bool isDaishinThemeHandling;
-        private bool isDaishinThemeHandled;
-        private bool isEbestThemeHandling;
-        private bool isEbestThemeHandled;
-        private bool isKiwoomThemeHandling;
-        private bool isKiwoomThemeHandled; 
-#endif
 
         #region Contract Property
         #region Daishin
@@ -158,47 +146,8 @@ namespace MTree.RealTimeProvider
                         if (isMasterContract == true)
                             ProcessMasterContract(contract);
 
-#if USE_CODE_MAP
-                        #region CodeMap
-                        if (codeMapBuilder == null)
-                            codeMapBuilder = new CodeMapBuilder();
-
-                        if (isMarketTypeHandling == false && isMasterContract == true)
-                        {
-                            isMarketTypeHandling = true;
-                            logger.Info($"Build MarketType Map from {clientId}");
-                            codeMapBuilder.AddMarketTypeMap(contract);
-                            isMarketTypeHandled = true;
-                        }
-                        if (isDaishinThemeHandling == false && contract.Type == ProcessTypes.DaishinPublisher)
-                        {
-                            isDaishinThemeHandling = true;
-                            logger.Info($"Build Daishin Theme Map from {clientId}");
-                            codeMapBuilder.AddThemeMap(contract);
-                            isDaishinThemeHandled = true;
-                        }
-                        if (isEbestThemeHandling == false && contract.Type == ProcessTypes.EbestPublisher)
-                        {
-                            isEbestThemeHandling = true;
-                            logger.Info($"Build Ebest Theme Map from {clientId}");
-                            codeMapBuilder.AddThemeMap(contract);
-                            isEbestThemeHandled = true;
-                        }
-                        if (isKiwoomThemeHandling == false && contract.Type == ProcessTypes.KiwoomPublisher)
-                        {
-                            isKiwoomThemeHandling = true;
-                            logger.Info($"Build Kiwoom Theme Map from {clientId}");
-                            codeMapBuilder.AddThemeMap(contract);
-                            isKiwoomThemeHandled = true;
-                        }
-
-                        if (isMarketTypeHandled = true && isDaishinThemeHandled == true && isEbestThemeHandled == true && isKiwoomThemeHandled == true)
-                        {
-                            var jsonString = codeMapBuilder.GetCodeMapAsJsonString();
-                            Dictionary<string, object> rebuilt = CodeMapBuilderUtil.RebuildNode(jsonString);
-                        }
-                        #endregion  
-#endif
+                        if (Config.General.SkipCodeBuilding == false)
+                            ProcessCodeMapBuilding(clientId, contract);
                     }
                 }
             }

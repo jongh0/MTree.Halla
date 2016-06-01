@@ -55,6 +55,8 @@ namespace MTree.Configuration
 
         public bool SkipMastering { get; set; } = false;
 
+        public bool SkipCodeBuilding { get; set; } = true;
+
         public bool SkipBiddingPrice { get; set; } = false;
 
         public bool VerifyOrdering { get; set; } = false;
