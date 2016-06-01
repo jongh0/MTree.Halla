@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson;
+using MTree.Configuration;
 using MTree.DataStructure;
 using MTree.Utility;
 using System;
@@ -106,6 +107,8 @@ namespace MTree.DaishinPublisher
 
         private void stockJpbidObj_Received()
         {
+            var startTick = Environment.TickCount;
+
             try
             {
                 var now = DateTime.Now;
@@ -141,6 +144,15 @@ namespace MTree.DaishinPublisher
             catch (Exception ex)
             {
                 logger.Error(ex.Message);
+            }
+            finally
+            {
+                if (Config.General.VerifyEnqueueLatency == true)
+                {
+                    var latency = Environment.TickCount - startTick;
+                    if (latency > 10)
+                        logger.Error($"Bidding latency error, {latency}");
+                }
             }
         }
     }

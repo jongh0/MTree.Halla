@@ -108,6 +108,8 @@ namespace MTree.DaishinPublisher
 
         private void indexCurObj_Received()
         {
+            var startTick = Environment.TickCount;
+
             try
             {
                 var now = DateTime.Now;
@@ -198,6 +200,15 @@ namespace MTree.DaishinPublisher
             catch (Exception ex)
             {
                 logger.Error(ex);
+            }
+            finally
+            {
+                if (Config.General.VerifyEnqueueLatency == true)
+                {
+                    var latency = Environment.TickCount - startTick;
+                    if (latency > 10)
+                        logger.Error($"Index conclusion latency error, {latency}");
+                }
             }
         }
     }

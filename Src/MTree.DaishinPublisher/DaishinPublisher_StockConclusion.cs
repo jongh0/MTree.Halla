@@ -128,6 +128,8 @@ namespace MTree.DaishinPublisher
 
         private void stockOutCurObj_Received()
         {
+            var startTick = Environment.TickCount;
+
             try
             {
                 var now = DateTime.Now;
@@ -179,10 +181,21 @@ namespace MTree.DaishinPublisher
             {
                 logger.Error(ex);
             }
+            finally
+            {
+                if (Config.General.VerifyEnqueueLatency == true)
+                {
+                    var latency = Environment.TickCount - startTick;
+                    if (latency > 10)
+                        logger.Error($"Stock conclusion latency error, {latency}");
+                }
+            }
         }
 
         private void stockCurObj_Received()
         {
+            var startTick = Environment.TickCount;
+
             try
             {
                 var now = DateTime.Now;
@@ -271,6 +284,15 @@ namespace MTree.DaishinPublisher
             catch (Exception ex)
             {
                 logger.Error(ex);
+            }
+            finally
+            {
+                if (Config.General.VerifyEnqueueLatency == true)
+                {
+                    var latency = Environment.TickCount - startTick;
+                    if (latency > 10)
+                        logger.Error($"Stock conclusion latency error, {latency}");
+                }
             }
         }
     }

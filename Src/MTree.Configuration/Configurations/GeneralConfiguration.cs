@@ -61,6 +61,8 @@ namespace MTree.Configuration
 
         public bool VerifyLatency { get; set; } = false;
 
+        public bool VerifyEnqueueLatency { get; set; } = false;
+
         public bool LaunchDashboard { get; set; } = true;
 
         public bool LaunchHistorySaver { get; set; } = true;
