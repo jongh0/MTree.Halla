@@ -13,7 +13,6 @@ using System.Windows.Input;
 
 namespace MTree.DataValidator
 {
-
     public interface IWindowFactory
     {
         DialogResult CreateNewWindow(string uri);
@@ -23,6 +22,7 @@ namespace MTree.DataValidator
     {
         private object _DataContext;
         private RecoveryPopup PopupWindow = new RecoveryPopup();
+
         public RecoveryPopupWindowFactory(object dataContext)
         {
             _DataContext = dataContext;
@@ -40,6 +40,7 @@ namespace MTree.DataValidator
                 PopupWindow.SetUri(uri);
                 PopupWindow.ShowDialog();
             }));
+
             return PopupWindow.Result;
         }
     }
@@ -57,22 +58,18 @@ namespace MTree.DataValidator
         private object popupWindowLockObject = new object();
 
         private IWindowFactory RecoveryPopupFactory { get; }
-       
+
         private DateTime _StartingDate = DateTime.Now;
         public DateTime StartingDate
         {
-            get
-            {
-                return _StartingDate;
-            }
+            get { return _StartingDate; }
             set
             {
                 _StartingDate = value;
+
                 if (EndingDate < _StartingDate)
-                {
                     EndingDate = _StartingDate;
-                }
-                
+
                 NotifyPropertyChanged(nameof(StartingDate));
             }
         }
@@ -80,17 +77,14 @@ namespace MTree.DataValidator
         private DateTime _EndingDate = DateTime.Now;
         public DateTime EndingDate
         {
-            get
-            {
-                return _EndingDate;
-            }
+            get { return _EndingDate; }
             set
             {
                 _EndingDate = value;
+
                 if (_EndingDate < StartingDate)
-                {
                     StartingDate = _EndingDate;
-                }
+
                 NotifyPropertyChanged(nameof(EndingDate));
             }
         }
@@ -98,10 +92,7 @@ namespace MTree.DataValidator
         private string _Code;
         public string Code
         {
-            get
-            {
-                return _Code;
-            }
+            get { return _Code; }
             set
             {
                 _Code = value.Trim();
@@ -112,10 +103,7 @@ namespace MTree.DataValidator
         private bool _ValidateOnly = true;
         public bool ValidateOnly
         {
-            get
-            {
-                return _ValidateOnly;
-            }
+            get { return _ValidateOnly; }
             set
             {
                 _ValidateOnly = value;
@@ -126,10 +114,7 @@ namespace MTree.DataValidator
         private bool _ApplyForAll = false;
         public bool ApplyForAll
         {
-            get
-            {
-                return _ApplyForAll;
-            }
+            get { return _ApplyForAll; }
             set
             {
                 _ApplyForAll = value;
@@ -140,10 +125,7 @@ namespace MTree.DataValidator
         private bool _FromSourceToDestination = true;
         public bool FromSourceToDestination
         {
-            get
-            {
-                return _FromSourceToDestination;
-            }
+            get { return _FromSourceToDestination; }
             set
             {
                 _FromSourceToDestination = value;
@@ -177,6 +159,7 @@ namespace MTree.DataValidator
                 return _RecoverAllCommand;
             }
         }
+
         private void DoRecoverAll()
         {
             DoRecoverMasterAll();
@@ -191,11 +174,7 @@ namespace MTree.DataValidator
             get
             {
                 if (_RecoverMasterAllCommand == null)
-                    _RecoverMasterAllCommand = new RelayCommand(() =>
-                    Task.Run(() =>
-                    {
-                        DoRecoverMasterAll();
-                    }));
+                    _RecoverMasterAllCommand = new RelayCommand(() => Task.Run(() => DoRecoverMasterAll()));
 
                 return _RecoverMasterAllCommand;
             }
@@ -215,6 +194,7 @@ namespace MTree.DataValidator
                         if (ValidateOnly == false)
                         {
                             DialogResult needRecovery = DialogResult.None;
+
                             lock (popupWindowLockObject)
                             {
                                 if (ApplyForAll == false)
@@ -222,14 +202,14 @@ namespace MTree.DataValidator
                                 else
                                     needRecovery = DialogResult.OK;
                             }
+
                             if (needRecovery == DialogResult.OK)
-                            {
                                 Recoverer.RecoverMaster(targetDate, code);
-                            }
                         }
                     }
                 });   
             }
+
             logger.Info("Master Recovery Done.");
         }
 
@@ -275,11 +255,7 @@ namespace MTree.DataValidator
             get
             {
                 if (_RecoverStockConclusionAllCommand == null)
-                    _RecoverStockConclusionAllCommand = new RelayCommand(() =>
-                    Task.Run(() =>
-                    {
-                        DoRecoverStockConclusionAll();
-                    }));
+                    _RecoverStockConclusionAllCommand = new RelayCommand(() => Task.Run(() => DoRecoverStockConclusionAll()));
 
                 return _RecoverStockConclusionAllCommand;
             }
@@ -297,8 +273,8 @@ namespace MTree.DataValidator
                 {
                     if (Validator.ValidateStockConclusion(targetDate, code, true) == false)
                     {
-                        
                         logger.Error($"Stock Conclusion Validation for {code} of {targetDate.ToString("yyyy-MM-dd")} Fail. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
+
                         if (ValidateOnly == false)
                         {
                             DialogResult needRecovery = DialogResult.None;
@@ -309,10 +285,9 @@ namespace MTree.DataValidator
                                 else
                                     needRecovery = DialogResult.OK;
                             }
+
                             if (needRecovery == DialogResult.OK)
-                            {
                                 Recoverer.RecoverStockConclusion(targetDate, code);
-                            }
                         }
                     }
                     else
@@ -320,8 +295,10 @@ namespace MTree.DataValidator
                         logger.Info($"Stock Conclusion Validation for {code} of {targetDate.ToString("yyyy-MM-dd")} success. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
                     }
                 });
+
                 ApplyForAll = false;
             }
+
             logger.Info("Stock Conclusion Recovery Done.");
         }
 
@@ -341,17 +318,18 @@ namespace MTree.DataValidator
                                 if (ValidateOnly == false)
                                 {
                                     DialogResult needRecovery = DialogResult.None;
+
                                     lock (popupWindowLockObject)
                                     {
                                         needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, stockConclusionCompareResultPath, Code + ".html"));
                                     }
+
                                     if (needRecovery == DialogResult.OK)
-                                    {
                                         Recoverer.RecoverStockConclusion(targetDate, Code);
-                                    }
                                 }
                             }
                         }
+
                         ApplyForAll = false;
                     }));
 
@@ -365,15 +343,12 @@ namespace MTree.DataValidator
             get
             {
                 if (_RecoverIndexConclusionAllCommand == null)
-                    _RecoverIndexConclusionAllCommand = new RelayCommand(() =>
-                    Task.Run(() =>
-                    {
-                        DoRecoverIndexConclusionAll();
-                    }));
+                    _RecoverIndexConclusionAllCommand = new RelayCommand(() => Task.Run(() => DoRecoverIndexConclusionAll()));
 
                 return _RecoverIndexConclusionAllCommand;
             }
         }
+
         private void DoRecoverIndexConclusionAll()
         {
             List<string> codeList = new List<string>();
@@ -388,6 +363,7 @@ namespace MTree.DataValidator
                         if (ValidateOnly == false)
                         {
                             DialogResult needRecovery = DialogResult.None;
+
                             lock (popupWindowLockObject)
                             {
                                 if (File.Exists(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, indexConclusionCompareResultPath, code + ".html")) == false)
@@ -398,15 +374,16 @@ namespace MTree.DataValidator
                                 else
                                     needRecovery = DialogResult.OK;
                             }
+
                             if (needRecovery == DialogResult.OK)
-                            {
                                 Recoverer.RecoverIndexConclusion(targetDate, code);
-                            }
                         }
                     }
                 });
+
                 ApplyForAll = false;
             }
+
             logger.Info("Index Conclusion Recovery Done.");
         }
 
@@ -426,19 +403,18 @@ namespace MTree.DataValidator
                                 if (ValidateOnly == false)
                                 {
                                     DialogResult needRecovery = DialogResult.None;
+
                                     lock (popupWindowLockObject)
                                     {
                                         needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, indexConclusionCompareResultPath, Code + ".html"));
                                     }
+
                                     if (needRecovery == DialogResult.OK)
-                                    {
                                         Recoverer.RecoverIndexConclusion(targetDate, Code);
-                                    }
                                 }
                             }
                         }
                     }));
-
 
                 return _RecoverIndexConclusionCommand;
             }
@@ -450,11 +426,7 @@ namespace MTree.DataValidator
             get
             {
                 if (_RecoverCircuitBreakAllCommand == null)
-                    _RecoverCircuitBreakAllCommand = new RelayCommand(() =>
-                    Task.Run(() =>
-                    {
-                        DoRecoverCircuitBreakAll();
-                    }));
+                    _RecoverCircuitBreakAllCommand = new RelayCommand(() => Task.Run(() => DoRecoverCircuitBreakAll()));
 
                 return _RecoverCircuitBreakAllCommand;
             }
@@ -473,6 +445,7 @@ namespace MTree.DataValidator
                         if (ValidateOnly == false)
                         {
                             DialogResult needRecovery = DialogResult.None;
+
                             lock (popupWindowLockObject)
                             {
                                 if (ApplyForAll == false)
@@ -480,14 +453,14 @@ namespace MTree.DataValidator
                                 else
                                     needRecovery = DialogResult.OK;
                             }
+
                             if (needRecovery == DialogResult.OK)
-                            {
                                 Recoverer.RecoverCircuitBreak(targetDate, code);
-                            }
                         }
                     }
                 });
             }
+
             logger.Info("Circuit Break Recovery Done.");
         }
 
@@ -508,21 +481,21 @@ namespace MTree.DataValidator
                                 if (ValidateOnly == false)
                                 {
                                     DialogResult needRecovery = DialogResult.None;
+
                                     lock (popupWindowLockObject)
                                     {
                                         needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, circuitbreakCompareResultPath, Code + ".html"));
                                     }
+
                                     if (needRecovery == DialogResult.OK)
-                                    {
                                         Recoverer.RecoverCircuitBreak(targetDate, Code);
-                                    }
                                 }
                             }
                         }
                     }));
+
                 return _RecoverCircuitBreakCommand;
             }
-
         }
     }
 }
