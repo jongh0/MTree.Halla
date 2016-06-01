@@ -115,27 +115,31 @@ namespace MTree.DataValidator
 
             try
             {
-                using (Process compareProcess = Process.Start(beyondComparePath, param))
+                int retCnt = 0;
+                int exitCode = -1;
+                do
                 {
-                    do
+                    using (Process compareProcess = Process.Start(beyondComparePath, param))
                     {
-                        int retCnt = 0;
-                        while (compareProcess.WaitForExit(10 * 1000) == false)
+                        if (compareProcess.WaitForExit(10 * 1000) == false)
                         {
                             compareProcess.Kill();
-                            logger.Error($"Beyond Compare Timeout. Retry Count:{retCnt++}");
-                            if (retCnt > 3)
-                            {
-                                logger.Error($"Beyond Compare Fail. ExitCode:{compareProcess.ExitCode}");
-                                return false;
-                            }
+                            logger.Error($"Beyond Compare Timeout. Retry Count:{retCnt} ExitCode:{exitCode}");
                         }
-                    } while (compareProcess.ExitCode == 100);
-                    if (compareProcess.ExitCode != 0 && compareProcess.ExitCode != 1 && compareProcess.ExitCode != 2)
-                        logger.Error($"ExitCode:{compareProcess.ExitCode}");
+                        exitCode = compareProcess.ExitCode;
+                    }
 
-                    return compareProcess.ExitCode == 1;
-                }
+                    if (retCnt > 3)
+                    {
+                        logger.Error($"Beyond Compare Fail");
+                        return false;
+                    }
+                    retCnt++;
+                } while (exitCode == 100 || exitCode < 0);
+
+                if (exitCode != 0 && exitCode != 1 && exitCode != 2)
+                    logger.Error($"ExitCode:{exitCode}");
+                return exitCode == 1;
             }
             catch (Exception ex)
             {
@@ -306,27 +310,34 @@ namespace MTree.DataValidator
 
             try
             {
-                using (Process compareProcess = Process.Start(beyondComparePath, param))
+                int retCnt = 0;
+                int exitCode = -1;
+                do
                 {
-                    do
+                    using (Process compareProcess = Process.Start(beyondComparePath, param))
                     {
-                        int retCnt = 0;
-                        while (compareProcess.WaitForExit(300 * 1000) == false)
+                        if (compareProcess.WaitForExit(10 * 1000) == false)
                         {
                             compareProcess.Kill();
-                            logger.Error($"Beyond Compare TImeout. Retry Count:{retCnt++}");
-                            if (retCnt > 3)
-                            {
-                                logger.Error($"Beyond Compare Fail");
-                                return;
-                            }
+                            logger.Error($"Beyond Compare Timeout. Retry Count:{retCnt} ExitCode:{exitCode}");
                         }
-                    } while (compareProcess.ExitCode == 100);
+                        exitCode = compareProcess.ExitCode;
+                    }
 
-                    if (compareProcess.ExitCode != 0 && compareProcess.ExitCode != 1 && compareProcess.ExitCode != 2)
-                        logger.Error($"ExitCode:{compareProcess.ExitCode}");
-                }
+                    if (retCnt > 3)
+                    {
+                        logger.Error($"Beyond Compare Fail");
+                        return;
+                    }
+                    retCnt++;
+                } while (exitCode == 100 || exitCode < 0);
+
+                if (exitCode != 0 && exitCode != 1 && exitCode != 2)
+                    logger.Error($"ExitCode:{exitCode}");
+
                 logger.Info($"Compare result report created at {reportPath}");
+
+                return;
             }
             catch (Exception ex)
             {

@@ -95,13 +95,13 @@ namespace MTree.DataValidator
             bool result = comparator.DoCompareItem(srcMaster, destMaster, false);
             if (result == false)
             {
-                logger.Error($"Index Master for {code} of {targetDate.ToString("yyyy-MM-dd")} Validation Fail");
+                //logger.Error($"Index Master for {code} of {targetDate.ToString("yyyy-MM-dd")} Validation Fail");
                 if (makeReport == true)
                     comparator.MakeReport(srcMaster, destMaster, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, masterCompareResultPath, code + ".html"));
             }
             else
             {
-                logger.Info($"Index Master for {code} of {targetDate.ToString("yyyy-MM-dd")} Validation Success");
+                //logger.Info($"Index Master for {code} of {targetDate.ToString("yyyy-MM-dd")} Validation Success");
             }
 
             sw.Stop();
@@ -128,13 +128,13 @@ namespace MTree.DataValidator
             bool result = comparator.DoCompareItem(srcMaster, destMaster, false);
             if (result == false )
             {
-                logger.Error($"Stock Master for {code} of {targetDate.ToString("yyyy-MM-dd")} Validation Fail");
+                //logger.Error($"Stock Master for {code} of {targetDate.ToString("yyyy-MM-dd")} Validation Fail");
                 if (makeReport == true)
                     comparator.MakeReport(srcMaster, destMaster, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, masterCompareResultPath, code + ".html"));
             }
             else
             {
-                logger.Info($"Stock Master for {code} of {targetDate.ToString("yyyy-MM-dd")} Validation Success");
+                //logger.Info($"Stock Master for {code} of {targetDate.ToString("yyyy-MM-dd")} Validation Success");
             }
 
             sw.Stop();

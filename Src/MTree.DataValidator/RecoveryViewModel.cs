@@ -186,11 +186,13 @@ namespace MTree.DataValidator
             codeList.AddRange(DbAgent.Instance.GetCollectionList(DbTypes.StockMaster).OrderBy(s => s));
 
             for (DateTime targetDate = StartingDate; targetDate <= EndingDate; targetDate = targetDate.AddDays(1))
-            {                
+            {
+                int cnt = 0;
                 Parallel.ForEach(codeList, new ParallelOptions { MaxDegreeOfParallelism = Config.Validator.ThreadLimit }, code =>
                 {
                     if (Validator.ValidateMaster(targetDate, code, true) == false)
                     {
+                        logger.Error($"Master Validation for {code} of {targetDate.ToString("yyyy-MM-dd")} Fail. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
                         if (ValidateOnly == false)
                         {
                             DialogResult needRecovery = DialogResult.None;
@@ -206,6 +208,10 @@ namespace MTree.DataValidator
                             if (needRecovery == DialogResult.OK)
                                 Recoverer.RecoverMaster(targetDate, code);
                         }
+                    }
+                    else
+                    {
+                        logger.Info($"Master Validation for {code} of {targetDate.ToString("yyyy-MM-dd")} success. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
                     }
                 });   
             }
@@ -226,6 +232,7 @@ namespace MTree.DataValidator
                         {
                             if (Validator.ValidateMaster(targetDate, Code, true) == false)
                             {
+                                logger.Error($"Master Validation for {Code} of {targetDate.ToString("yyyy-MM-dd")} Fail.");
                                 if (ValidateOnly == false)
                                 {
                                     DialogResult needRecovery = DialogResult.None;
@@ -241,6 +248,10 @@ namespace MTree.DataValidator
                                         Recoverer.RecoverMaster(targetDate, Code);
                                     }
                                 }
+                            }
+                            else
+                            {
+                                logger.Error($"Master Validation for {Code} of {targetDate.ToString("yyyy-MM-dd")} success.");
                             }
                         }
                     }));
