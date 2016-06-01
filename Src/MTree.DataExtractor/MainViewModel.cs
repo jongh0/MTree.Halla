@@ -11,7 +11,46 @@ namespace MTree.DataExtractor
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
+        private string _Code;
+        public string Code
+        {
+            get { return _Code; }
+            set
+            {
+                _Code = value.Trim();
+                NotifyPropertyChanged(nameof(Code));
+            }
+        }
 
+        private DateTime _StartingDate = DateTime.Now;
+        public DateTime StartingDate
+        {
+            get { return _StartingDate; }
+            set
+            {
+                _StartingDate = value;
+
+                if (EndingDate < _StartingDate)
+                    EndingDate = _StartingDate;
+
+                NotifyPropertyChanged(nameof(StartingDate));
+            }
+        }
+
+        private DateTime _EndingDate = DateTime.Now;
+        public DateTime EndingDate
+        {
+            get { return _EndingDate; }
+            set
+            {
+                _EndingDate = value;
+
+                if (_EndingDate < StartingDate)
+                    StartingDate = _EndingDate;
+
+                NotifyPropertyChanged(nameof(EndingDate));
+            }
+        }
 
 
 
