@@ -6,6 +6,9 @@
         xmlns:local="clr-namespace:MTree.DataExtractor"
         mc:Ignorable="d"
         Title="DataExtractor" Height="350" Width="525">
+    <Window.DataContext>
+        <local:MainViewModel/>
+    </Window.DataContext>
     <Grid>
         
     </Grid>

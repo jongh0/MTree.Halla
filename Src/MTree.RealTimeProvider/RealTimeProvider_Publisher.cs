@@ -1,4 +1,5 @@
 ﻿#define EVENLY_DISTRIBUTION
+//#define USE_CODE_MAP
 
 using MongoDB.Bson;
 using MTree.Configuration;
@@ -23,6 +24,7 @@ namespace MTree.RealTimeProvider
         public int PublisherContractCount { get { return PublisherContracts.Count; } }
         private ConcurrentDictionary<Guid, PublisherContract> PublisherContracts { get; set; } = new ConcurrentDictionary<Guid, PublisherContract>();
 
+#if USE_CODE_MAP
         private CodeMapBuilder codeMapBuilder;
         private bool isMarketTypeHandling;
         private bool isMarketTypeHandled;
@@ -31,7 +33,8 @@ namespace MTree.RealTimeProvider
         private bool isEbestThemeHandling;
         private bool isEbestThemeHandled;
         private bool isKiwoomThemeHandling;
-        private bool isKiwoomThemeHandled;
+        private bool isKiwoomThemeHandled; 
+#endif
 
         #region Contract Property
         #region Daishin
@@ -155,8 +158,8 @@ namespace MTree.RealTimeProvider
                         if (isMasterContract == true)
                             ProcessMasterContract(contract);
 
+#if USE_CODE_MAP
                         #region CodeMap
-#if false
                         if (codeMapBuilder == null)
                             codeMapBuilder = new CodeMapBuilder();
 
@@ -194,8 +197,8 @@ namespace MTree.RealTimeProvider
                             var jsonString = codeMapBuilder.GetCodeMapAsJsonString();
                             Dictionary<string, object> rebuilt = CodeMapBuilderUtil.RebuildNode(jsonString);
                         }
+                        #endregion  
 #endif
-                        #endregion
                     }
                 }
             }
