@@ -31,8 +31,8 @@
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <StackPanel>
-            <GroupBox Header="Server Config" BorderBrush="Black" BorderThickness="2">
+        <StackPanel Margin="5,0,5,0">
+            <GroupBox Header="Server Config" BorderBrush="DarkCyan" BorderThickness="1">
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="0,5,0,5">
                     <StackPanel Orientation="Horizontal">
                         <Label Content="Source Address      " Margin="5,0,5,0" VerticalAlignment="Center"/>
@@ -42,32 +42,30 @@
                         <Label Content="Destination Address" Margin="5,0,5,0" VerticalAlignment="Center" />
                         <TextBox Text="{Binding DestinationAddress}" VerticalAlignment="Center" Width="170"/>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Button Content=" Change Server " Margin="5,0,0,0" Command="{Binding UpdateServerCommand}"/>
-                        <Button Content=" Connection Test " Margin="25,0,0,0" Command="{Binding CheckServerCommand}"/>
+                    <StackPanel Orientation="Horizontal" Margin="5,10,0,0">
+                        <Button Content=" Change Server " Margin="5,0,5,0" Command="{Binding UpdateServerCommand}"/>
+                        <Button Content=" Connection Test " Margin="5,0,5,0" Command="{Binding CheckServerCommand}"/>
                     </StackPanel>
                 </StackPanel>
             </GroupBox>
-            <StackPanel>
-                <GroupBox Header="Validate Conclusion with Daishin" Margin="0,5,0,0" BorderBrush="Black" BorderThickness="2">
-                    <StackPanel Orientation="Horizontal"  HorizontalAlignment="Left" Margin="0,5,0,5">
-                        <Label Content="Code " Margin="5,0,5,0" />
-                        <TextBox Margin="5,0,5,0" Width="50" Text="{Binding CodeForDaishinValidate}" VerticalContentAlignment="Center" MaxLength="6" TextAlignment="Center"/>
-                        <Button Content="Source Validate" Command="{Binding ValidateSourceConclusionWithDaishinCommand}" Margin="5,0,5,0"/>
-                        <Button Content="Destination Validate" Command="{Binding ValidateDestinationConclusionWithDaishinCommand}" Margin="5,0,5,0"/>
-                    </StackPanel>
-                </GroupBox>
-            </StackPanel>
-            <GroupBox Header="Recovery" BorderBrush="Black" BorderThickness="2">
+            <GroupBox Header="Validate Conclusion with Daishin" Margin="0,20,0,0" BorderBrush="DarkCyan" BorderThickness="1">
+                <StackPanel Orientation="Horizontal"  HorizontalAlignment="Left" Margin="0,5,0,5">
+                    <Label Content="Code" Margin="5,0,0,0" />
+                    <TextBox Margin="5,0,5,0" Width="50" Text="{Binding CodeForDaishinValidate}" VerticalContentAlignment="Center" MaxLength="6" TextAlignment="Center"/>
+                    <Button Content=" Source Validate " Command="{Binding ValidateSourceConclusionWithDaishinCommand}" Margin="5,0,5,0"/>
+                    <Button Content=" Destination Validate " Command="{Binding ValidateDestinationConclusionWithDaishinCommand}" Margin="5,0,5,0"/>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="Recovery" BorderBrush="DarkCyan" BorderThickness="1" Margin="0,20,0,0">
                 <StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,5,0,5">
                         <Label Content="Date for Recovery" Margin="5,0,5,0" VerticalAlignment="Center"/>
                         <DatePicker SelectedDate="{Binding Path=StartingDate, Mode=TwoWay}"/>
                         <Label Content="~" Margin="5,0,5,0" VerticalAlignment="Center"/>
                         <DatePicker SelectedDate="{Binding Path=EndingDate, Mode=TwoWay}"/>
-                        <CheckBox Content="Validate Only" IsChecked="{Binding ValidateOnly}" VerticalAlignment="Center"/>
+                        <CheckBox Content="Validate Only" IsChecked="{Binding ValidateOnly}" VerticalAlignment="Center" Margin="10,0,0,0"/>
                     </StackPanel>
-                    <GroupBox Header="Recovery For All Code" Margin="0,5,0,0">
+                    <GroupBox Header="Recovery For All Code" Margin="0,15,0,0">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,5,0,5">
                             <Button Content=" All " Command="{Binding RecoverAllCommand}" Margin="5,0,5,0"/>
                             <Button Content=" Master " Command="{Binding RecoverMasterAllCommand}" Margin="5,0,5,0"/>
@@ -77,9 +75,9 @@
                             <Button Content=" Chart " Margin="5,0,5,0"/>
                         </StackPanel>
                     </GroupBox>
-                    <GroupBox Header="Recovery For Indivisual Codes" Margin="0,5,0,0">
+                    <GroupBox Header="Recovery For Indivisual Code" Margin="0,15,0,5">
                         <StackPanel Orientation="Horizontal"  HorizontalAlignment="Left" Margin="0,5,0,5">
-                            <Label Content="Code " Margin="5,0,5,0"/>
+                            <Label Content="Code" Margin="5,0,0,0"/>
                             <TextBox Margin="5,0,5,0" Width="50" Text="{Binding Code}" VerticalContentAlignment="Center" MaxLength="6" TextAlignment="Center"/>
                             <Button Content=" Master " Command="{Binding RecoverMasterCommand}" Margin="5,0,5,0"/>
                             <Button Content=" Stock Conclusion " Command="{Binding RecoverStockConclusionCommand}" Margin="5,0,5,0"/>
@@ -90,7 +88,7 @@
                 </StackPanel>
             </GroupBox>
         </StackPanel>
-        <nlog:NlogViewer Grid.Column="1" x:Name="logCtrl" TimeWidth="AUTO" LoggerNameWidth="0" LevelWidth="auto" ExceptionWidth="auto" MessageWidth="450" Margin="0,5,0,0"/>
+        <nlog:NlogViewer Grid.Column="1" x:Name="logCtrl" TimeWidth="AUTO" LoggerNameWidth="0" LevelWidth="auto" ExceptionWidth="auto" MessageWidth="450" Margin="0,5,5,5"/>
     </Grid>
     
 </Window>
