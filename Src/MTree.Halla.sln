@@ -75,6 +75,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NlogViewer", "NlogViewer\Nl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.ResourceMonitor", "MTree.ResourceMonitor\MTree.ResourceMonitor.csproj", "{BE13E412-D35A-4C3F-A7D0-2C8FE5905642}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.DataExtractor", "MTree.DataExtractor\MTree.DataExtractor.csproj", "{15082D3E-625D-411E-BCF6-7AE6A3C61B8E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -205,6 +207,10 @@ Global
 		{BE13E412-D35A-4C3F-A7D0-2C8FE5905642}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE13E412-D35A-4C3F-A7D0-2C8FE5905642}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE13E412-D35A-4C3F-A7D0-2C8FE5905642}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15082D3E-625D-411E-BCF6-7AE6A3C61B8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15082D3E-625D-411E-BCF6-7AE6A3C61B8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15082D3E-625D-411E-BCF6-7AE6A3C61B8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15082D3E-625D-411E-BCF6-7AE6A3C61B8E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -237,5 +243,6 @@ Global
 		{A659FD04-AAC4-4428-89F6-EC2F73FC728F} = {690A9CDC-0205-453F-ABC2-8E4D40845541}
 		{F0A0B5CC-E5B4-4769-AB47-67A1D5B482B4} = {C22A1011-FE40-49F1-AB42-3CBF4921ACBD}
 		{BE13E412-D35A-4C3F-A7D0-2C8FE5905642} = {C22A1011-FE40-49F1-AB42-3CBF4921ACBD}
+		{15082D3E-625D-411E-BCF6-7AE6A3C61B8E} = {C22A1011-FE40-49F1-AB42-3CBF4921ACBD}
 	EndGlobalSection
 EndGlobal
