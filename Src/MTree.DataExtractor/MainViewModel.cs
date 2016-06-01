@@ -1,15 +1,32 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight.Command;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace MTree.DataExtractor
 {
     public class MainViewModel : INotifyPropertyChanged
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
+        private DataLoader Loader = new DataLoader();
+        private DataExtractor Extractor = new DataExtractor();
+
+        #region Property
+        private ExtractTypes _ExtractType = ExtractTypes.Stock;
+        public ExtractTypes ExtractType
+        {
+            get { return _ExtractType; }
+            set
+            {
+                _ExtractType = value;
+                NotifyPropertyChanged(nameof(ExtractType));
+            }
+        }
 
         private string _Code;
         public string Code
@@ -51,8 +68,25 @@ namespace MTree.DataExtractor
                 NotifyPropertyChanged(nameof(EndingDate));
             }
         }
+        #endregion
 
+        #region Command
+        RelayCommand _ExtractCommand;
+        public ICommand ExtractCommand
+        {
+            get
+            {
+                if (_ExtractCommand == null)
+                    _ExtractCommand = new RelayCommand(() => ExecuteExtract());
 
+                return _ExtractCommand;
+            }
+        }
+
+        public void ExecuteExtract()
+        {
+        }
+        #endregion
 
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
