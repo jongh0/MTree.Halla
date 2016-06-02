@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Command;
+using MTree.DataStructure;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -36,36 +37,37 @@ namespace MTree.DataExtractor
             {
                 _Code = value.Trim();
                 NotifyPropertyChanged(nameof(Code));
+                NotifyPropertyChanged(nameof(CanExecuteExtract));
             }
         }
 
-        private DateTime _StartingDate = DateTime.Now;
-        public DateTime StartingDate
+        private DateTime _StartDate = DateTime.Now;
+        public DateTime StartDate
         {
-            get { return _StartingDate; }
+            get { return _StartDate; }
             set
             {
-                _StartingDate = value;
+                _StartDate = value;
 
-                if (EndingDate < _StartingDate)
-                    EndingDate = _StartingDate;
+                if (EndDate < _StartDate)
+                    EndDate = _StartDate;
 
-                NotifyPropertyChanged(nameof(StartingDate));
+                NotifyPropertyChanged(nameof(StartDate));
             }
         }
 
-        private DateTime _EndingDate = DateTime.Now;
-        public DateTime EndingDate
+        private DateTime _EndDate = DateTime.Now;
+        public DateTime EndDate
         {
-            get { return _EndingDate; }
+            get { return _EndDate; }
             set
             {
-                _EndingDate = value;
+                _EndDate = value;
 
-                if (_EndingDate < StartingDate)
-                    StartingDate = _EndingDate;
+                if (_EndDate < StartDate)
+                    StartDate = _EndDate;
 
-                NotifyPropertyChanged(nameof(EndingDate));
+                NotifyPropertyChanged(nameof(EndDate));
             }
         }
         #endregion
@@ -77,14 +79,48 @@ namespace MTree.DataExtractor
             get
             {
                 if (_ExtractCommand == null)
-                    _ExtractCommand = new RelayCommand(() => ExecuteExtract());
+                    _ExtractCommand = new RelayCommand(() => Task.Run(() => ExecuteExtract()), () => CanExecuteExtract);
 
                 return _ExtractCommand;
             }
         }
 
+        private bool _CanExecuteExtract = true;
+        public bool CanExecuteExtract
+        {
+            get { return _CanExecuteExtract & Code.Length == 6; }
+            set
+            {
+                _CanExecuteExtract = value;
+                NotifyPropertyChanged(nameof(CanExecuteExtract));
+            }
+        }
+
         public void ExecuteExtract()
         {
+            CanExecuteExtract = false;
+
+            try
+            {
+                if (ExtractType == ExtractTypes.Stock)
+                {
+                    var conclusionList = Loader.LoadRange<StockConclusion>(Code, StartDate, EndDate);
+                    var masterList = Loader.LoadRange<StockMaster>(Code, StartDate, EndDate);
+                }
+                else
+                {
+                    var conclusionList = Loader.LoadRange<IndexConclusion>(Code, StartDate, EndDate);
+                    var masterList = Loader.LoadRange<IndexMaster>(Code, StartDate, EndDate);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+            finally
+            {
+                CanExecuteExtract = true;
+            }
         }
         #endregion
 

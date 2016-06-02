@@ -138,6 +138,24 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MTree.Configuration\MTree.Configuration.csproj">
+      <Project>{9c52064a-188b-449a-89a1-de3a9dd3f766}</Project>
+      <Name>MTree.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MTree.DataStructure\MTree.DataStructure.csproj">
+      <Project>{da1959a9-15fa-47aa-98ac-3844a723fea1}</Project>
+      <Name>MTree.DataStructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MTree.DbProvider\MTree.DbProvider.csproj">
+      <Project>{57195e80-20a3-4fd0-83c8-92af91784dda}</Project>
+      <Name>MTree.DbProvider</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MTree.Utility\MTree.Utility.csproj">
+      <Project>{d8291168-4d81-4acd-81c4-da122a249102}</Project>
+      <Name>MTree.Utility</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
