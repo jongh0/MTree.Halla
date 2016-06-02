@@ -39,7 +39,7 @@ namespace MTree.EbestPublisher
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
     public partial class EbestPublisher : BrokerageFirmBase, INotifyPropertyChanged
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         private readonly string resFilePath = "\\Res";
 
@@ -303,6 +303,57 @@ namespace MTree.EbestPublisher
             }
         }
 
+        public void UpdateThemeList()
+        {
+            var themeList = new Dictionary<string, object>();
+            try
+            {
+                logger.Info($"Theme code list query start");
+
+                QuoteInterval = 1000 / stockQuotingObj.GetTRCountPerSec("t8425");
+                WaitQuoteInterval();
+                themeCodeObj.SetFieldData("t8425InBlock", "dummy", 0, "");
+                var ret = themeCodeObj.Request(false);
+                if (ret < 0)
+                {
+                    logger.Error($"Theme code request error, {GetLastErrorMessage(ret)}");
+                    return;
+                }
+
+                if (WaitQuoting() == false)
+                    return;
+                logger.Info($"Theme code list query done");
+
+                QuoteInterval = 1000 / stockQuotingObj.GetTRCountPerSec("t1537") + 100;
+                foreach (KeyValuePair<string, string> theme in ThemeCodeList)
+                {
+                    WaitQuoteInterval();
+                    //logger.Info($"Theme codes for {theme.Value} query start");
+                    themeListObj.SetFieldData("t1537InBlock", "tmcode", 0, theme.Key);
+                    ret = themeListObj.Request(false);
+                    if (ret < 0)
+                    {
+                        logger.Error($"Theme list request error, {GetLastErrorMessage(ret)}");
+                        return;
+                    }
+                    if (WaitQuoting() == false)
+                    {
+                        logger.Error($"Theme code request error, Quoting timeout");
+                        return;
+                    }
+                    //logger.Info($"Theme codes for {theme.Value} query done");
+                    themeList.Add(theme.Value, ThemeList);
+                }
+                ThemeList = themeList;
+                logger.Info("Quoting theme list success");
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+            return;
+        }
+
         public Dictionary<string, string> GetIndexCodeList()
         {
             try
@@ -400,47 +451,10 @@ namespace MTree.EbestPublisher
 
         public override Dictionary<string, object> GetThemeList()
         {
-            var themeList = new Dictionary<string, object>();
-            try
-            {
-                QuoteInterval = 1000 / stockQuotingObj.GetTRCountPerSec("t8425");
-                WaitQuoteInterval();
-                themeCodeObj.SetFieldData("t8425InBlock", "dummy", 0, "");
-                var ret = themeCodeObj.Request(false);
-                if (ret < 0)
-                {
-                    logger.Error($"Theme code request error, {GetLastErrorMessage(ret)}");
-                    return null;
-                }
-
-                if (WaitQuoting() == false)
-                    return null;
-
-                QuoteInterval = 1000 / stockQuotingObj.GetTRCountPerSec("t1537");
-                foreach (KeyValuePair<string, string> theme in ThemeCodeList)
-                {
-                    WaitQuoteInterval();
-                    themeListObj.SetFieldData("t1537InBlock", "tmcode", 0, theme.Key);
-                    ret = themeListObj.Request(false);
-                    if (ret < 0)
-                    {
-                        logger.Error($"Theme list request error, {GetLastErrorMessage(ret)}");
-                        return null;
-                    }
-                    if (WaitQuoting() == false)
-                        return null;
-
-                    themeList.Add(theme.Value, ThemeList);
-                }
-                logger.Info("Quoting theme list success");
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-            }
-            return themeList;
+            UpdateThemeList();
+            return ThemeList;
         }
-
+        
         private void IndexListObj_ReceiveData(string szTrCode)
         {
             try
@@ -700,7 +714,7 @@ namespace MTree.EbestPublisher
 
                 // Warning List Update
                 UpdateWarningList();
-
+                
                 // Contract 등록
                 RegisterPublishContract();
             });

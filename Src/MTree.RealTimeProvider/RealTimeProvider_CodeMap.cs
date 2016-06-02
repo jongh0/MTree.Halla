@@ -1,4 +1,5 @@
-﻿using MTree.DataStructure;
+﻿using MTree.Configuration;
+using MTree.DataStructure;
 using MTree.Utility;
 using System;
 using System.Collections.Generic;
@@ -10,55 +11,62 @@ namespace MTree.RealTimeProvider
 {
     public partial class RealTimeProvider
     {
-        private CodeMapBuilder codeMapBuilder;
-        private bool isMarketTypeHandling = false;
-        private bool isMarketTypeHandled = false;
-        private bool isDaishinThemeHandling = false;
-        private bool isDaishinThemeHandled = false;
-        private bool isEbestThemeHandling = false;
-        private bool isEbestThemeHandled = false;
-        private bool isKiwoomThemeHandling = false;
-        private bool isKiwoomThemeHandled = false;
-
-        private void ProcessCodeMapBuilding(Guid clientId, PublisherContract contract)
+        private void StartCodeMapBuilding(PublisherContract contract)
         {
-            if (codeMapBuilder == null)
-                codeMapBuilder = new CodeMapBuilder();
+            Task.Run(() =>
+            {
+                try
+                {
+                    CodeMapBuilder codeMapBuilder = new CodeMapBuilder();
 
-            if (isMarketTypeHandling == false && contract.Type == ProcessTypes.DaishinPublisher)
-            {
-                isMarketTypeHandling = true;
-                logger.Info($"Build MarketType Map from {clientId}");
-                codeMapBuilder.AddMarketTypeMap(contract);
-                isMarketTypeHandled = true;
-            }
-            if (isDaishinThemeHandling == false && contract.Type == ProcessTypes.DaishinPublisher)
-            {
-                isDaishinThemeHandling = true;
-                logger.Info($"Build Daishin Theme Map from {clientId}");
-                codeMapBuilder.AddThemeMap(contract);
-                isDaishinThemeHandled = true;
-            }
-            if (isEbestThemeHandling == false && contract.Type == ProcessTypes.EbestPublisher)
-            {
-                isEbestThemeHandling = true;
-                logger.Info($"Build Ebest Theme Map from {clientId}");
-                codeMapBuilder.AddThemeMap(contract);
-                isEbestThemeHandled = true;
-            }
-            if (isKiwoomThemeHandling == false && contract.Type == ProcessTypes.KiwoomPublisher)
-            {
-                isKiwoomThemeHandling = true;
-                logger.Info($"Build Kiwoom Theme Map from {clientId}");
-                codeMapBuilder.AddThemeMap(contract);
-                isKiwoomThemeHandled = true;
-            }
+                    var codemapBuildingTask = new List<Task>();
 
-            if (isMarketTypeHandled = true && isDaishinThemeHandled == true && isEbestThemeHandled == true && isKiwoomThemeHandled == true)
-            {
-                var jsonString = codeMapBuilder.GetCodeMapAsJsonString();
-                Dictionary<string, object> rebuilt = CodeMapBuilderUtil.RebuildNode(jsonString);
-            }
+                    codemapBuildingTask.Add(Task.Run(() =>
+                    {
+                        logger.Info(RealTimeState = "Build MarketType Map");
+                        if (DaishinContracts[0] != null)
+                            codeMapBuilder.AddMarketTypeMap(DaishinContracts[0]);
+                        logger.Info(RealTimeState = "Build MarketType Map Done");
+                    }));
+
+                    codemapBuildingTask.Add(Task.Run(() =>
+                    {
+                        logger.Info(RealTimeState = "Build Daishin Theme Map");
+                        if (DaishinContracts[1] != null)
+                            codeMapBuilder.AddThemeMap(DaishinContracts[1], "DaishinTheme");
+                        logger.Info(RealTimeState = "Build Daishin Theme Map Done");
+                    }));
+
+                    if (Config.General.ExcludeEbest == false)
+                    {
+                        codemapBuildingTask.Add(Task.Run(() =>
+                        {
+                            logger.Info(RealTimeState = $"Build Ebest Theme Map");
+                            if (EbestContracts[0] != null)
+                                codeMapBuilder.AddThemeMap(EbestContracts[0], "EbestTheme");
+                            logger.Info(RealTimeState = $"Build Ebest Theme Map Done");
+                        }));
+                    }
+                    if (Config.General.ExcludeKiwoom == false)
+                    {
+                        codemapBuildingTask.Add(Task.Run(() =>
+                        {
+                            logger.Info(RealTimeState = $"Build Kiwoom Theme Map");
+                            if (KiwoomContracts[0] != null)
+                                codeMapBuilder.AddThemeMap(KiwoomContracts[0], "KiwoomTheme");
+                            logger.Info(RealTimeState = $"Build Kiwoom Theme Map Done");
+                        }));
+                    }
+
+                    bool masteringRet = Task.WaitAll(codemapBuildingTask.ToArray(), TimeSpan.FromMinutes(30));
+                    var jsonString = codeMapBuilder.GetCodeMapAsJsonString();
+                    Dictionary<string, object> rebuilt = CodeMapBuilderUtil.RebuildNode(jsonString);
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex);
+                }
+            }).Wait();
         }
     }
 }

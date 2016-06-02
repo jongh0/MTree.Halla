@@ -106,7 +106,7 @@ namespace MTree.RealTimeProvider
                 // Ebest
                 if (Config.General.ExcludeEbest == false)
                 {
-                    int ebestProcessCount = 3;
+                    int ebestProcessCount = 2;
                     for (int i = 0; i < ebestProcessCount; i++)
                         ProcessUtility.Start(ProcessTypes.EbestPublisher, ProcessWindowStyle.Minimized);
                 }
@@ -142,12 +142,24 @@ namespace MTree.RealTimeProvider
 
                         PublisherContracts.TryAdd(clientId, contract);
                         logger.Info($"{contract.ToString()} contract registered / {clientId}");
-                        
-                        if (isMasterContract == true)
-                            ProcessMasterContract(contract);
 
-                        if (Config.General.SkipCodeBuilding == false)
-                            ProcessCodeMapBuilding(clientId, contract);
+                        if (isMasterContract == true)
+                        {
+                            if (CheckMarketWorkDate(contract) == false)
+                            {
+                                // 휴장. Closing Process
+                                var task = Task.Run(() =>
+                                {
+                                    logger.Info("RealTimeProvider will be closed after 5sec");
+
+                                    Thread.Sleep(1000 * 5);
+                                    ExitProgram(ExitProgramTypes.Force);
+                                });
+                                task.Wait();
+                            }
+
+                            ProcessMasterContract(contract);
+                        }
                     }
                 }
             }
@@ -172,58 +184,34 @@ namespace MTree.RealTimeProvider
             {
                 RealTimeState = "Process master contract";
                 logger.Info(RealTimeState);
+                
+                CheckMarketTime(contract);
+                CheckCodeList(contract);
 
-                if (CheckMarketWorkDate(contract) == true)
+                LaunchClientProcess();
+
+                Task.Run(() =>
                 {
-                    CheckMarketTime(contract);
-                    CheckCodeList(contract);
+                    RealTimeState = "Wait 20sec for client process launch";
+                    logger.Info(RealTimeState);
 
-                    LaunchClientProcess();
+                    Thread.Sleep(1000 * 20);
 
-                    Task.Run(() =>
+                    StartCodeDistributing();
+                    
+                    if (Config.General.SkipCodeBuilding == false)
+                        StartCodeMapBuilding(contract);
+
+                    if (SkipMastering == false)
                     {
-                        RealTimeState = "Wait 20sec for client process launch";
-                        logger.Info(RealTimeState);
+                        StartStockMastering();
+                        StartIndexMastering();
+                    }
+                    
+                    NotifyMessageToConsumer(MessageTypes.MasteringDone);
 
-                        Thread.Sleep(1000 * 20);
-
-                        if (SkipMastering == true)
-                        {
-                            StartCodeDistributing();
-                        }
-                        else
-                        {
-                            StartCodeDistributing();
-                            StartStockMastering();
-                            StartIndexMastering();
-                        }
-
-                        NotifyMessageToConsumer(MessageTypes.MasteringDone);
-
-                        ProcessUtility.Kill(ProcessTypes.PopupStopper);
-                    });
-                }
-                else
-                {
-                    Task.Run(() =>
-                    {
-#if !DEBUG
-                        if (Config.General.UseShutdown == true)
-                        {
-                            logger.Info("Not working day, shutdown after 5 mins");
-
-                            Thread.Sleep(1000 * 60 * 5);
-                            ProcessUtility.Shutdown();
-                            return;
-                        }
-#endif
-
-                        logger.Info("RealTimeProvider will be closed after 5sec");
-
-                        Thread.Sleep(1000 * 5);
-                        ExitProgram(ExitProgramTypes.Force);
-                    });
-                }
+                    ProcessUtility.Kill(ProcessTypes.PopupStopper);
+                });
             }
             catch (Exception ex)
             {

@@ -44,12 +44,12 @@ namespace MTree.RealTimeProvider
             }
         }
 
-        public void AddThemeMap(PublisherContract contract)
+        public void AddThemeMap(PublisherContract contract, string name)
         {
             try
             {
                 var theme = CodeMapBuilderUtil.BuildNode(codeMapHeader, "Theme");
-                CodeMapBuilderUtil.BuildNode(theme, "DaishinTheme", contract.Callback.GetThemeList());
+                CodeMapBuilderUtil.BuildNode(theme, name, contract.Callback.GetThemeList());
             }
             catch (Exception ex)
             {

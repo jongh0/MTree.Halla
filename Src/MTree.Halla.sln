@@ -77,6 +77,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.ResourceMonitor", "MT
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.DataExtractor", "MTree.DataExtractor\MTree.DataExtractor.csproj", "{15082D3E-625D-411E-BCF6-7AE6A3C61B8E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.DataStructureTests", "MTree.DataStructureTests\MTree.DataStructureTests.csproj", "{3D38F421-DC43-4BEA-A88C-3062522F034F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -211,6 +213,10 @@ Global
 		{15082D3E-625D-411E-BCF6-7AE6A3C61B8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{15082D3E-625D-411E-BCF6-7AE6A3C61B8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{15082D3E-625D-411E-BCF6-7AE6A3C61B8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D38F421-DC43-4BEA-A88C-3062522F034F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D38F421-DC43-4BEA-A88C-3062522F034F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D38F421-DC43-4BEA-A88C-3062522F034F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D38F421-DC43-4BEA-A88C-3062522F034F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

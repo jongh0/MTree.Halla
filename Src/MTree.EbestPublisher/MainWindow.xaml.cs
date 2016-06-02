@@ -59,6 +59,7 @@ namespace MTree.EbestPublisher
 #if false
             Task.Run(() => {
                 Thread.Sleep(1000);
+                Publisher.UpdateThemeList();
                 Dictionary<string, object> list = Publisher.GetThemeList();
                 
             });
