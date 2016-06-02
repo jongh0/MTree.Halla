@@ -12,10 +12,17 @@ namespace MTree.DataExtractor
         Index,
     }
 
-    public enum StockFieldTypes
+    public enum StockConclusionField
     {
         Time,
-        // Master
+        Amount,
+        MarketTimeType,
+        Price,
+        ConclusionType,
+    }
+
+    public enum StockMasterField
+    {
         MarketType,
         SettlementMonth,
         FaceValue,
@@ -57,26 +64,19 @@ namespace MTree.DataExtractor
         ROE,
         EV,
         ValueAlteredType,
-        // Conclusion
-        Amount,
-        MarketTimeType,
-        Price,
-        ConclusionType,
     }
 
-    public enum IndexFieldTypes
+    public enum IndexConclusionField
     {
         Time,
-        // Master
-        BasisPrice,
-        // Conclusion
         Amount,
         MarketTimeType,
         Price,
         MarketCapitalization,
     }
 
-    class ExtractField
+    public enum IndexMasterField
     {
+        BasisPrice,
     }
 }

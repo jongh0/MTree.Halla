@@ -70,6 +70,17 @@ namespace MTree.DataExtractor
                 NotifyPropertyChanged(nameof(EndDate));
             }
         }
+
+        private string _ExtractPath;
+        public string ExtractPath
+        {
+            get { return _ExtractPath; }
+            set
+            {
+                _ExtractPath = value.Trim();
+                NotifyPropertyChanged(nameof(ExtractPath));
+            }
+        }
         #endregion
 
         #region Command
@@ -79,7 +90,7 @@ namespace MTree.DataExtractor
             get
             {
                 if (_ExtractCommand == null)
-                    _ExtractCommand = new RelayCommand(() => Task.Run(() => ExecuteExtract()), () => CanExecuteExtract);
+                    _ExtractCommand = new RelayCommand(() => Task.Run(() => ExecuteExtract()));
 
                 return _ExtractCommand;
             }
@@ -88,7 +99,7 @@ namespace MTree.DataExtractor
         private bool _CanExecuteExtract = true;
         public bool CanExecuteExtract
         {
-            get { return _CanExecuteExtract & Code.Length == 6; }
+            get { return _CanExecuteExtract && Code.Length == 6; }
             set
             {
                 _CanExecuteExtract = value;
@@ -104,13 +115,17 @@ namespace MTree.DataExtractor
             {
                 if (ExtractType == ExtractTypes.Stock)
                 {
-                    var conclusionList = Loader.LoadRange<StockConclusion>(Code, StartDate, EndDate);
-                    var masterList = Loader.LoadRange<StockMaster>(Code, StartDate, EndDate);
+                    var conclusionList = Loader.Load<StockConclusion>(Code, StartDate, EndDate);
+                    var masterList = Loader.Load<StockMaster>(Code, StartDate, EndDate);
+
+                    Extractor.Extract(conclusionList, masterList, ExtractPath);
                 }
                 else
                 {
-                    var conclusionList = Loader.LoadRange<IndexConclusion>(Code, StartDate, EndDate);
-                    var masterList = Loader.LoadRange<IndexMaster>(Code, StartDate, EndDate);
+                    var conclusionList = Loader.Load<IndexConclusion>(Code, StartDate, EndDate);
+                    var masterList = Loader.Load<IndexMaster>(Code, StartDate, EndDate);
+
+                    Extractor.Extract(conclusionList, masterList, ExtractPath);
                 }
             }
             catch (Exception ex)

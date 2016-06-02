@@ -13,7 +13,7 @@ namespace MTree.DataExtractor
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public List<T> LoadRange<T>(string code, DateTime startDate, DateTime endDate)
+        public List<T> Load<T>(string code, DateTime startDate, DateTime endDate)
         {
             int startTick = Environment.TickCount;
 
