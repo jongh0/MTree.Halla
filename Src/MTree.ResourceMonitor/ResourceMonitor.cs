@@ -11,7 +11,7 @@ namespace MTree.ResourceMonitor
 {
     public class ResourceMonitor
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         private const string logBasePath = "Logs";
         private string counterListFile = "CounterList.txt";

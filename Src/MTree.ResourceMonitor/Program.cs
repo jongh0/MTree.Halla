@@ -8,6 +8,7 @@ namespace MTree.ResourceMonitor
 {
     class Program
     {
+        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         static int Main(string[] args)
         {
             int exitCode = 0;
@@ -26,6 +27,10 @@ namespace MTree.ResourceMonitor
                 {
                     monitor.StopMonitor();
                     monitor.DeleteMonitor();
+                }
+                else
+                {
+                    logger.Error("Invalid Arguments");
                 }
             }
             else

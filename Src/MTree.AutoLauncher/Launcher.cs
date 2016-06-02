@@ -112,7 +112,14 @@ namespace MTree.AutoLauncher
                     ProcessUtility.Kill(processType);
                 }
 
-                ProcessUtility.Start(LaunchProcess);
+                if (string.IsNullOrEmpty(LaunchArguments) == true)
+                {
+                    ProcessUtility.Start(LaunchProcess);
+                }
+                else
+                {
+                    ProcessUtility.Start(LaunchProcess, LaunchArguments);
+                }
 
                 var msg = $"{LaunchProcess} launched";
                 logger.Info(msg);
