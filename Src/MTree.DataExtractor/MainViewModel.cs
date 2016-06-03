@@ -16,14 +16,27 @@ namespace MTree.DataExtractor
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private DataLoader Loader = new DataLoader();
-        private DataExtractor Extractor = new DataExtractor();
+        private DataLoader dataLoader = new DataLoader();
+        private DataExtractor dataExtractor = new DataExtractor();
+
+        private static readonly string defaultTitle = "DataExtractor";
 
         private readonly string defaultDir = Path.Combine(Environment.CurrentDirectory, "Extract");
         private string fileName;
         private string filePath;
 
         #region Property
+        private string _TitleStr = defaultTitle;
+        public string TitleStr
+        {
+            get { return _TitleStr; }
+            set
+            {
+                _TitleStr = value;
+                NotifyPropertyChanged(nameof(TitleStr));
+            }
+        }
+
         private ExtractTypes _ExtractType = ExtractTypes.Stock;
         public ExtractTypes ExtractType
         {
@@ -123,17 +136,21 @@ namespace MTree.DataExtractor
 
                 if (ExtractType == ExtractTypes.Stock)
                 {
-                    var conclusionList = Loader.Load<StockConclusion>(Code, StartDate, EndDate);
-                    var masterList = Loader.Load<StockMaster>(Code, StartDate, EndDate);
+                    TitleStr = $"{defaultTitle} - Loading";
+                    var conclusionList = dataLoader.Load<StockConclusion>(Code, StartDate, EndDate);
+                    var masterList = dataLoader.Load<StockMaster>(Code, StartDate, EndDate);
 
-                    Extractor.Extract(conclusionList, masterList, filePath);
+                    TitleStr = $"{defaultTitle} - Extracting";
+                    dataExtractor.Extract(conclusionList, masterList, filePath);
                 }
                 else
                 {
-                    var conclusionList = Loader.Load<IndexConclusion>(Code, StartDate, EndDate);
-                    var masterList = Loader.Load<IndexMaster>(Code, StartDate, EndDate);
+                    TitleStr = $"{defaultTitle} - Loading";
+                    var conclusionList = dataLoader.Load<IndexConclusion>(Code, StartDate, EndDate);
+                    var masterList = dataLoader.Load<IndexMaster>(Code, StartDate, EndDate);
 
-                    Extractor.Extract(conclusionList, masterList, filePath);
+                    TitleStr = $"{defaultTitle} - Extracting";
+                    dataExtractor.Extract(conclusionList, masterList, filePath);
                 }
             }
             catch (Exception ex)
@@ -142,6 +159,7 @@ namespace MTree.DataExtractor
             }
             finally
             {
+                TitleStr = defaultTitle;
                 CanExecuteExtract = true;
             }
         }

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:MTree.DataExtractor"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="DataExtractor" Height="200" Width="310">
+        Title="{Binding Path=TitleStr}" Height="200" Width="390">
     <Window.DataContext>
         <local:MainViewModel/>
     </Window.DataContext>
