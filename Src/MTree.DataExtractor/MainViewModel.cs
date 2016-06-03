@@ -1,8 +1,10 @@
 ﻿using GalaSoft.MvvmLight.Command;
+using MTree.Configuration;
 using MTree.DataStructure;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,6 +19,10 @@ namespace MTree.DataExtractor
         private DataLoader Loader = new DataLoader();
         private DataExtractor Extractor = new DataExtractor();
 
+        private readonly string defaultDir = Path.Combine(Environment.CurrentDirectory, "Extract");
+        private string fileName;
+        private string filePath;
+
         #region Property
         private ExtractTypes _ExtractType = ExtractTypes.Stock;
         public ExtractTypes ExtractType
@@ -26,10 +32,11 @@ namespace MTree.DataExtractor
             {
                 _ExtractType = value;
                 NotifyPropertyChanged(nameof(ExtractType));
+                NotifyPropertyChanged(nameof(CanExecuteExtract));
             }
         }
 
-        private string _Code;
+        private string _Code = string.Empty;
         public string Code
         {
             get { return _Code; }
@@ -70,17 +77,6 @@ namespace MTree.DataExtractor
                 NotifyPropertyChanged(nameof(EndDate));
             }
         }
-
-        private string _ExtractPath;
-        public string ExtractPath
-        {
-            get { return _ExtractPath; }
-            set
-            {
-                _ExtractPath = value.Trim();
-                NotifyPropertyChanged(nameof(ExtractPath));
-            }
-        }
         #endregion
 
         #region Command
@@ -99,7 +95,13 @@ namespace MTree.DataExtractor
         private bool _CanExecuteExtract = true;
         public bool CanExecuteExtract
         {
-            get { return _CanExecuteExtract && Code.Length == 6; }
+            get
+            {
+                if (ExtractType == ExtractTypes.Stock)
+                    return _CanExecuteExtract && Code?.Length >= 6;
+                else
+                    return _CanExecuteExtract && Code?.Length >= 3;
+            }
             set
             {
                 _CanExecuteExtract = value;
@@ -113,19 +115,25 @@ namespace MTree.DataExtractor
 
             try
             {
+                fileName = $"{ExtractType.ToString()}_{Code}_{StartDate.ToString(Config.General.DateFormat)}~{EndDate.ToString(Config.General.DateFormat)}.csv";
+                filePath = Path.Combine(defaultDir, fileName);
+
+                if (Directory.Exists(defaultDir) == false)
+                    Directory.CreateDirectory(defaultDir);
+
                 if (ExtractType == ExtractTypes.Stock)
                 {
                     var conclusionList = Loader.Load<StockConclusion>(Code, StartDate, EndDate);
                     var masterList = Loader.Load<StockMaster>(Code, StartDate, EndDate);
 
-                    Extractor.Extract(conclusionList, masterList, ExtractPath);
+                    Extractor.Extract(conclusionList, masterList, filePath);
                 }
                 else
                 {
                     var conclusionList = Loader.Load<IndexConclusion>(Code, StartDate, EndDate);
                     var masterList = Loader.Load<IndexMaster>(Code, StartDate, EndDate);
 
-                    Extractor.Extract(conclusionList, masterList, ExtractPath);
+                    Extractor.Extract(conclusionList, masterList, filePath);
                 }
             }
             catch (Exception ex)
