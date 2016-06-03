@@ -115,6 +115,11 @@ namespace MTree.DataExtractor
                     {
                         columns.Add(field.ToString());
                     }
+
+                    foreach (var field in Enum.GetValues(typeof(StockTAField)))
+                    {
+                        columns.Add(field.ToString());
+                    }
                 }
                 else
                 {
@@ -124,6 +129,11 @@ namespace MTree.DataExtractor
                     }
 
                     foreach (var field in Enum.GetValues(typeof(IndexMasterField)))
+                    {
+                        columns.Add(field.ToString());
+                    }
+
+                    foreach (var field in Enum.GetValues(typeof(IndexTAField)))
                     {
                         columns.Add(field.ToString());
                     }
@@ -165,6 +175,10 @@ namespace MTree.DataExtractor
                     columns.Add(GetNormalizedValue(property, value));
                 }
 
+                foreach (var field in Enum.GetValues(typeof(StockTAField)))
+                {
+                }
+
                 Content.AppendLine(string.Join(delimeter, columns));
             }
             catch (Exception ex)
@@ -180,6 +194,41 @@ namespace MTree.DataExtractor
         private void WriteContent(IndexConclusion conclusion, IndexMaster master)
         {
             if (conclusion == null || master == null) return;
+
+            List<string> columns = new List<string>();
+
+            try
+            {
+                foreach (var field in Enum.GetValues(typeof(IndexConclusionField)))
+                {
+                    var property = conclusion.GetType().GetProperty(field.ToString());
+                    object value = property.GetValue(conclusion);
+
+                    columns.Add(GetNormalizedValue(property, value));
+                }
+
+                foreach (var field in Enum.GetValues(typeof(IndexMaster)))
+                {
+                    var property = master.GetType().GetProperty(field.ToString());
+                    object value = property.GetValue(master);
+
+                    columns.Add(GetNormalizedValue(property, value));
+                }
+
+                foreach (var field in Enum.GetValues(typeof(IndexTAField)))
+                {
+                }
+
+                Content.AppendLine(string.Join(delimeter, columns));
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+            finally
+            {
+                columns.Clear();
+            }
         }
 
         private string GetNormalizedValue(PropertyInfo property, object value)

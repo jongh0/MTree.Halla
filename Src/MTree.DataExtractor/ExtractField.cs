@@ -66,6 +66,10 @@ namespace MTree.DataExtractor
         ValueAlteredType,
     }
 
+    public enum StockTAField
+    {
+    }
+
     public enum IndexConclusionField
     {
         Time,
@@ -78,5 +82,9 @@ namespace MTree.DataExtractor
     public enum IndexMasterField
     {
         BasisPrice,
+    }
+
+    public enum IndexTAField
+    {
     }
 }
