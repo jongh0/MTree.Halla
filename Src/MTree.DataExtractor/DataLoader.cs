@@ -1,6 +1,7 @@
 ﻿using MongoDB.Driver;
 using MTree.DataStructure;
 using MTree.DbProvider;
+using MTree.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,9 @@ namespace MTree.DataExtractor
 
             try
             {
+                startDate = DateTimeUtility.StartDateTime(startDate);
+                endDate = DateTimeUtility.EndDateTime(endDate);
+
                 var builder = Builders<T>.Filter;
                 var filter = builder.Gte(i => (i as Subscribable).Time, startDate) & builder.Lte(i => (i as Subscribable).Time, endDate);
 
@@ -31,7 +35,7 @@ namespace MTree.DataExtractor
             finally
             {
                 var duration = Environment.TickCount - startTick;
-                logger.Info($"Load range, {nameof(code)}: {code}, {nameof(startDate)}: {startDate}, {nameof(endDate)}: {endDate}, {nameof(duration)}: {duration}");
+                logger.Info($"Load, {nameof(code)}: {code}, {nameof(startDate)}: {startDate}, {nameof(endDate)}: {endDate}, {nameof(duration)}: {duration}");
             }
 
             return new List<T>();

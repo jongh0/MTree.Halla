@@ -21,5 +21,12 @@ namespace MTree.Utility
 
             return new DateTime(dateTime.Year, dateTime.Month, dateTime.Day).AddDays(1).AddMilliseconds(-1);
         }
+
+        public static DateTime DateOnly(DateTime dateTime)
+        {
+            if (dateTime == null) dateTime = DateTime.Now;
+
+            return new DateTime(dateTime.Year, dateTime.Month, dateTime.Day);
+        }
     }
 }
