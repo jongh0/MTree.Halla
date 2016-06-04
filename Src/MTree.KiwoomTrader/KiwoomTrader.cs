@@ -1,10 +1,12 @@
-﻿using MTree.RealTimeProvider;
+﻿using MTree.Configuration;
+using MTree.RealTimeProvider;
 using MTree.Trader;
 using MTree.Utility;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.ServiceModel;
 using System.Text;
@@ -49,6 +51,16 @@ namespace MTree.KiwoomTrader
                 if (kiwoomObj.CommConnect() == 0)
                 {
                     logger.Info("Login window open success");
+
+                    if (Config.Kiwoom.UseSessionManager == true)
+                    {
+                        Task.Run(() =>
+                        {
+                            Thread.Sleep(3000);
+                            ProcessUtility.Start(ProcessTypes.KiwoomSessionManager, Process.GetCurrentProcess().Id.ToString());
+                        });
+                    }
+
                     return true;
                 }
 

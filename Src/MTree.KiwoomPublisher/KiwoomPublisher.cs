@@ -46,7 +46,7 @@ namespace MTree.KiwoomPublisher
                 {
                     logger.Info("Login window open success");
 
-                    if (Configuration.Config.Kiwoom.UseSessionManager == true)
+                    if (Config.Kiwoom.UseSessionManager == true)
                     {
                         Task.Run(() =>
                         {
