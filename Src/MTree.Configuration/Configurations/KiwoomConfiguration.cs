@@ -16,6 +16,6 @@ namespace MTree.Configuration
 
         public string AccountPw { get; set; } = string.Empty;
 
-        public bool UseSessionManager { get; set; } = true;
+        public bool UseSessionManager { get; set; } = false;
     }
 }
