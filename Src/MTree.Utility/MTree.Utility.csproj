@@ -85,7 +85,6 @@
     <Compile Include="Firm\LoginInfo.cs" />
     <Compile Include="Utilities\ObjectIdUtility.cs" />
     <Compile Include="Utilities\ServiceUtility.cs" />
-    <Compile Include="Utilities\KiwoomSessionUtility.cs" />
     <Compile Include="Sort\GridViewSort.cs" />
     <Compile Include="Collections\ObservableConcurrentDictionary.cs" />
     <Compile Include="Utilities\EmailUtility.cs" />
