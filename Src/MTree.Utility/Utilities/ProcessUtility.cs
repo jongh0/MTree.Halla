@@ -22,6 +22,7 @@ namespace MTree.Utility
         DaishinPublisherMaster,
         EbestPublisher,
         KiwoomPublisher,
+        KiwoomSessionManager,
         TestPublisher,
         EbestTrader,
         KiwoomTrader,
@@ -56,6 +57,7 @@ namespace MTree.Utility
             ProcessList.Add(ProcessTypes.DaishinPublisherMaster, "MTree.DaishinPublisher");
             ProcessList.Add(ProcessTypes.EbestPublisher, "MTree.EbestPublisher");
             ProcessList.Add(ProcessTypes.KiwoomPublisher, "MTree.KiwoomPublisher");
+            ProcessList.Add(ProcessTypes.KiwoomSessionManager, "MTree.KiwoomSessionManager");
             ProcessList.Add(ProcessTypes.TestPublisher, "TestPublisher");
             ProcessList.Add(ProcessTypes.EbestTrader, "MTree.EbestTrader");
             ProcessList.Add(ProcessTypes.KiwoomTrader, "MTree.KiwoomTrader");
@@ -136,6 +138,31 @@ namespace MTree.Utility
                     logger.Error(ex);
                 }
             }
+        }
+        public static void Kill(int excludeId)
+        {
+            var process = Process.GetProcessById(excludeId);
+            if (process == null)
+            {
+                logger.Info($"Process({process.Id}) is not found");
+                return;
+            }
+
+            process.Kill();
+            logger.Info($"{process.ProcessName}, {process.Id} process killed");
+        }
+
+        public static void Close(int excludeId)
+        {
+            var process = Process.GetProcessById(excludeId);
+            if (process == null)
+            {
+                logger.Info($"Process({process.Id}) is not found");
+                return;
+            }
+
+            process.Close();
+            logger.Info($"{process.ProcessName}, {process.Id} process closed");
         }
 
         public static bool Exists(ProcessTypes type)

@@ -137,6 +137,7 @@ namespace MTree.AutoLauncher
             launcher.KillProcesses.Add(ProcessTypes.DaishinPublisher);
             launcher.KillProcesses.Add(ProcessTypes.EbestPublisher);
             launcher.KillProcesses.Add(ProcessTypes.KiwoomPublisher);
+            launcher.KillProcesses.Add(ProcessTypes.KiwoomSessionManager);
             launcher.KillProcesses.Add(ProcessTypes.EbestTrader);
             launcher.KillProcesses.Add(ProcessTypes.KiwoomTrader);
             launcher.KillProcesses.Add(ProcessTypes.VirtualTrader);

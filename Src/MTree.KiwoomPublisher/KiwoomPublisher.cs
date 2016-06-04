@@ -52,6 +52,16 @@ namespace MTree.KiwoomPublisher
                 if (kiwoomObj.CommConnect() == 0)
                 {
                     logger.Info("Login window open success");
+
+                    if (Configuration.Config.Kiwoom.UseSessionManager == true)
+                    {
+                        Task.Run(() =>
+                        {
+                            Thread.Sleep(3000);
+                            ProcessUtility.Start(ProcessTypes.KiwoomSessionManager, Process.GetCurrentProcess().Id.ToString());
+                        });
+                    }
+
                     return true;
                 }
 
@@ -291,10 +301,11 @@ namespace MTree.KiwoomPublisher
             Task.Run(() =>
             {
                 // Login이 완료된 후에 Publisher contract 등록
-                WaitLogin();
-
-                // Contract 등록
-                RegisterPublishContract();
+                if (WaitLogin() == true)
+                    // Contract 등록
+                    RegisterPublishContract();
+                else
+                    logger.Error("Login Fail");
             });
         }
 

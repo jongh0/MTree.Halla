@@ -22,10 +22,17 @@ namespace MTree.Utility
         public static extern IntPtr GetWindow(IntPtr hWnd, int uCmd);
 
         [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool IsWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
         public static extern bool SetForegroundWindow(IntPtr hWnd);
 
         [DllImport("user32.dll")]
         private static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr PostMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
 
         public static int GW_HWNDFIRST = 0;
         public static int GW_HWNDLAST = 1;
@@ -75,6 +82,12 @@ namespace MTree.Utility
         {
             logger.Trace($"SendMessage, {hWnd.ToString("X")}/{Msg}/{wParam}/{lParam}");
             return SendMessage(hWnd, Msg, wParam, lParam);
+        }
+
+        public static IntPtr PostMessage2(IntPtr hWnd, uint Msg, int wParam, int lParam)
+        {
+            logger.Trace($"PostMessage, {hWnd.ToString("X")}/{Msg}/{wParam}/{lParam}");
+            return PostMessage(hWnd, Msg, wParam, lParam);
         }
 
         public static IntPtr FindWindow2(string windowName, int retryCount = 0, int interval = 100, bool setForeground = true)
@@ -132,6 +145,11 @@ namespace MTree.Utility
             }
 
             return IntPtr.Zero;
+        }
+
+        public static bool IsWindowExist(IntPtr window)
+        {
+            return IsWindow(window);
         }
     }
 }

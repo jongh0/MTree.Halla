@@ -1,8 +1,11 @@
 ﻿using AxKHOpenAPILib;
+using MTree.Utility;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -21,6 +24,8 @@ namespace MTree.KiwoomPublisher
     /// </summary>
     public partial class MainWindow : Window
     {
+        private NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
         KiwoomPublisher Publisher { get; set; }
 
         public MainWindow()
@@ -30,11 +35,18 @@ namespace MTree.KiwoomPublisher
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            AxKHOpenAPI axKHOpenAPI = new AxKHOpenAPI();
-            formsHost.Child = axKHOpenAPI;
+            try
+            {
+                AxKHOpenAPI axKHOpenAPI = new AxKHOpenAPI();
+                formsHost.Child = axKHOpenAPI;
 
-            Publisher = new KiwoomPublisher(axKHOpenAPI);
-            this.DataContext = Publisher;
+                Publisher = new KiwoomPublisher(axKHOpenAPI);
+                this.DataContext = Publisher;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
         }
     }
 }

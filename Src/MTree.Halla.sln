@@ -79,6 +79,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.DataExtractor", "MTre
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.DataStructureTests", "MTree.DataStructureTests\MTree.DataStructureTests.csproj", "{3D38F421-DC43-4BEA-A88C-3062522F034F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.KiwoomSessionManager", "MTree.KiwoomSessionManager\MTree.KiwoomSessionManager.csproj", "{B6C51F64-D22D-4993-8995-59FD093E5475}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -217,6 +219,10 @@ Global
 		{3D38F421-DC43-4BEA-A88C-3062522F034F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D38F421-DC43-4BEA-A88C-3062522F034F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D38F421-DC43-4BEA-A88C-3062522F034F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6C51F64-D22D-4993-8995-59FD093E5475}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6C51F64-D22D-4993-8995-59FD093E5475}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6C51F64-D22D-4993-8995-59FD093E5475}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6C51F64-D22D-4993-8995-59FD093E5475}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -250,5 +256,6 @@ Global
 		{F0A0B5CC-E5B4-4769-AB47-67A1D5B482B4} = {C22A1011-FE40-49F1-AB42-3CBF4921ACBD}
 		{BE13E412-D35A-4C3F-A7D0-2C8FE5905642} = {C22A1011-FE40-49F1-AB42-3CBF4921ACBD}
 		{15082D3E-625D-411E-BCF6-7AE6A3C61B8E} = {C22A1011-FE40-49F1-AB42-3CBF4921ACBD}
+		{B6C51F64-D22D-4993-8995-59FD093E5475} = {C22A1011-FE40-49F1-AB42-3CBF4921ACBD}
 	EndGlobalSection
 EndGlobal

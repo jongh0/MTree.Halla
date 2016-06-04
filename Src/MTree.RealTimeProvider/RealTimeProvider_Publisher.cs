@@ -106,7 +106,7 @@ namespace MTree.RealTimeProvider
                 // Ebest
                 if (Config.General.ExcludeEbest == false)
                 {
-                    int ebestProcessCount = 3;
+                    int ebestProcessCount = 2;
                     for (int i = 0; i < ebestProcessCount; i++)
                         ProcessUtility.Start(ProcessTypes.EbestPublisher, ProcessWindowStyle.Minimized);
                 }
