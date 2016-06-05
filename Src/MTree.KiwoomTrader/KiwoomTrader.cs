@@ -119,17 +119,17 @@ namespace MTree.KiwoomTrader
         {
             try
             {
-                IntPtr windowH = WindowUtility.FindWindow2("khopenapi");
+                IntPtr windowH = WindowsAPI.findWindow("khopenapi");
 
                 if (windowH != IntPtr.Zero)
                 {
                     logger.Info($"khopenapi popup found");
 
-                    IntPtr buttonH = WindowUtility.FindWindowEx2(windowH, "Button", "확인");
+                    IntPtr buttonH = WindowsAPI.findWindowEx(windowH, "Button", "확인");
                     if (buttonH != IntPtr.Zero)
                     {
                         logger.Info($"확인 button clicked");
-                        WindowUtility.SendMessage2(buttonH, WindowUtility.BM_CLICK, 0, 0);
+                        WindowsAPI.sendMessage(buttonH, WindowsAPI.BM_CLICK, 0, 0);
                         return true;
                     }
                 }

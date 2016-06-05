@@ -63,17 +63,17 @@ namespace MTree.PopupStopper
         {
             try
             {
-                IntPtr windowH = WindowUtility.FindWindow2("nProtect Netizen v5.5", interval: 10, setForeground: false);
+                IntPtr windowH = WindowsAPI.findWindow("nProtect Netizen v5.5", interval: 10, setForeground: false);
 
                 if (windowH != IntPtr.Zero)
                 {
                     logger.Trace($"nProtect popup found");
 
-                    IntPtr buttonH = WindowUtility.FindWindowEx2(windowH, "Button", "확인");
+                    IntPtr buttonH = WindowsAPI.findWindowEx(windowH, "Button", "확인");
                     if (buttonH != IntPtr.Zero)
                     {
                         logger.Trace($"Confirm button clicked");
-                        WindowUtility.SendMessage2(buttonH, WindowUtility.BM_CLICK, 0, 0);
+                        WindowsAPI.sendMessage(buttonH, WindowsAPI.BM_CLICK, 0, 0);
 
                         return true;
                     }
@@ -91,17 +91,17 @@ namespace MTree.PopupStopper
         {
             try
             {
-                IntPtr windowH = WindowUtility.FindWindow2("Microsoft Visual C++ Runtime Library", interval: 10, setForeground: false);
+                IntPtr windowH = WindowsAPI.findWindow("Microsoft Visual C++ Runtime Library", interval: 10, setForeground: false);
 
                 if (windowH != IntPtr.Zero)
                 {
                     logger.Trace($"Runtime error popup found");
 
-                    IntPtr buttonH = WindowUtility.FindWindowEx2(windowH, "Button", "확인");
+                    IntPtr buttonH = WindowsAPI.findWindowEx(windowH, "Button", "확인");
                     if (buttonH != IntPtr.Zero)
                     {
                         logger.Trace($"Confirm button clicked");
-                        WindowUtility.SendMessage2(buttonH, WindowUtility.BM_CLICK, 0, 0);
+                        WindowsAPI.sendMessage(buttonH, WindowsAPI.BM_CLICK, 0, 0);
 
                         return true;
                     }
@@ -119,19 +119,19 @@ namespace MTree.PopupStopper
         {
             try
             {
-                IntPtr windowH = WindowUtility.FindWindow2("CPDIB", interval:10, setForeground : false);
+                IntPtr windowH = WindowsAPI.findWindow("CPDIB", interval:10, setForeground : false);
                 if (windowH == IntPtr.Zero)
-                    windowH = WindowUtility.FindWindow2("CPSYSDIB");
+                    windowH = WindowsAPI.findWindow("CPSYSDIB");
 
                 if (windowH != IntPtr.Zero)
                 {
                     logger.Trace($"CPDIB/CPSYSDIB popup found");
 
-                    IntPtr buttonH = WindowUtility.FindWindowEx2(windowH, "Button", "확인");
+                    IntPtr buttonH = WindowsAPI.findWindowEx(windowH, "Button", "확인");
                     if (buttonH != IntPtr.Zero)
                     {
                         logger.Trace($"Confirm button clicked");
-                        WindowUtility.SendMessage2(buttonH, WindowUtility.BM_CLICK, 0, 0);
+                        WindowsAPI.sendMessage(buttonH, WindowsAPI.BM_CLICK, 0, 0);
 
                         return true;
                     }
@@ -149,24 +149,24 @@ namespace MTree.PopupStopper
         {
             try
             {
-                IntPtr windowH = WindowUtility.FindWindow2("투자자정보");
+                IntPtr windowH = WindowsAPI.findWindow("투자자정보");
 
                 if (windowH != IntPtr.Zero)
                 {
                     logger.Trace($"투자자정보 popup found");
 
-                    IntPtr buttonH = WindowUtility.FindWindowEx2(windowH, "Button", "오늘은 더 묻지 않음");
+                    IntPtr buttonH = WindowsAPI.findWindowEx(windowH, "Button", "오늘은 더 묻지 않음");
                     if (buttonH != IntPtr.Zero)
                     {
                         logger.Trace($"Checkbox clicked");
-                        WindowUtility.SendMessage2(buttonH, WindowUtility.BM_CLICK, 0, 0);
+                        WindowsAPI.sendMessage(buttonH, WindowsAPI.BM_CLICK, 0, 0);
                     }
 
-                    buttonH = WindowUtility.FindWindowEx2(windowH, "Button", "아니오(&N)");
+                    buttonH = WindowsAPI.findWindowEx(windowH, "Button", "아니오(&N)");
                     if (buttonH != IntPtr.Zero)
                     {
                         logger.Trace($"No button clicked");
-                        WindowUtility.SendMessage2(buttonH, WindowUtility.BM_CLICK, 0, 0);
+                        WindowsAPI.sendMessage(buttonH, WindowsAPI.BM_CLICK, 0, 0);
 
                         return true;
                     }
@@ -184,17 +184,17 @@ namespace MTree.PopupStopper
         {
             try
             {
-                IntPtr windowH = WindowUtility.FindWindow2("정기 점검", interval: 10, setForeground: false);
+                IntPtr windowH = WindowsAPI.findWindow("정기 점검", interval: 10, setForeground: false);
 
                 if (windowH != IntPtr.Zero)
                 {
                     logger.Trace($"Regular check-up popup found");
 
-                    IntPtr buttonH = WindowUtility.FindWindowEx2(windowH, "Button", "확인");
+                    IntPtr buttonH = WindowsAPI.findWindowEx(windowH, "Button", "확인");
                     if (buttonH != IntPtr.Zero)
                     {
                         logger.Trace($"Confirm button clicked");
-                        WindowUtility.SendMessage2(buttonH, WindowUtility.BM_CLICK, 0, 0);
+                        WindowsAPI.sendMessage(buttonH, WindowsAPI.BM_CLICK, 0, 0);
 
                         return true;
                     }

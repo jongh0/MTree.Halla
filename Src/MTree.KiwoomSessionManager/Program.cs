@@ -29,7 +29,7 @@ namespace MTree.KiwoomSessionManager
                 }
 
                 // Find Kiwoom Starter
-                var khministarterHandle = WindowUtility.FindWindow2("번개 Login", retryCount: 10);
+                var khministarterHandle = WindowsAPI.findWindow("번개 Login", retryCount: 10);
                 if (khministarterHandle == IntPtr.Zero)
                 {
                     logger.Error("Kiwoom Starter not found");
@@ -37,23 +37,23 @@ namespace MTree.KiwoomSessionManager
                 }
 
                 // UserPw, CertPw 핸들 찾기
-                IntPtr idH = WindowUtility.GetWindow2(khministarterHandle, WindowUtility.GW_CHILD);
-                IntPtr pwH = WindowUtility.GetWindow2(idH, WindowUtility.GW_HWNDNEXT);
-                IntPtr certPwH = WindowUtility.GetWindow2(pwH, WindowUtility.GW_HWNDNEXT);
-                IntPtr loginBtnH = WindowUtility.GetWindow2(certPwH, WindowUtility.GW_HWNDNEXT);
+                IntPtr idH = WindowsAPI.getWindow(khministarterHandle, WindowsAPI.GW_CHILD);
+                IntPtr pwH = WindowsAPI.getWindow(idH, WindowsAPI.GW_HWNDNEXT);
+                IntPtr certPwH = WindowsAPI.getWindow(pwH, WindowsAPI.GW_HWNDNEXT);
+                IntPtr loginBtnH = WindowsAPI.getWindow(certPwH, WindowsAPI.GW_HWNDNEXT);
 
                 EnterUserPw(pwH);
                 EnterCertPw(certPwH);
 
 #if true // 공인인증서 입력 오류 발생 방지
-                WindowUtility.PostMessage2(khministarterHandle, WindowUtility.WM_KEYDOWN, WindowUtility.VK_ENTER, 0);
-                WindowUtility.PostMessage2(khministarterHandle, WindowUtility.WM_KEYDOWN, WindowUtility.VK_ENTER, 0);
+                WindowsAPI.postMessage(khministarterHandle, WindowsAPI.WM_KEYDOWN, WindowsAPI.VK_ENTER, 0);
+                WindowsAPI.postMessage(khministarterHandle, WindowsAPI.WM_KEYDOWN, WindowsAPI.VK_ENTER, 0);
 #else
                 ClickButton(loginBtnH); 
 #endif
 
                 // Popup Handling
-                while (WindowUtility.IsWindowExist(khministarterHandle) == true)
+                while (WindowsAPI.isWindow(khministarterHandle) == true)
                 {
                     HandleVersionUpdate();
                     HandleAdditionalPopupFail();
@@ -78,7 +78,7 @@ namespace MTree.KiwoomSessionManager
                 {
                     foreach (var c in userPw.ToCharArray())
                     {
-                        WindowUtility.SendMessage2(pwH, WindowUtility.WM_CHAR, c, 0);
+                        WindowsAPI.sendMessage(pwH, WindowsAPI.WM_CHAR, c, 0);
                     }
                 }
                 else
@@ -101,7 +101,7 @@ namespace MTree.KiwoomSessionManager
                 {
                     foreach (var c in certPw.ToCharArray())
                     {
-                        WindowUtility.SendMessage2(certPwH, WindowUtility.WM_CHAR, c, 0);
+                        WindowsAPI.sendMessage(certPwH, WindowsAPI.WM_CHAR, c, 0);
                     }
                 }
                 else
@@ -121,7 +121,7 @@ namespace MTree.KiwoomSessionManager
             {
                 if (loginBtnH != IntPtr.Zero)
                 {
-                    WindowUtility.PostMessage2(loginBtnH, WindowUtility.BM_CLICK, 0, 0);
+                    WindowsAPI.postMessage(loginBtnH, WindowsAPI.BM_CLICK, 0, 0);
                     logger.Info("Button clicked");
                 }
             }
@@ -134,7 +134,7 @@ namespace MTree.KiwoomSessionManager
         private static void HandleVersionUpdate()
         {
             // Version Update
-            var verUpdateHandle = WindowUtility.FindWindow2("khministarter", retryCount: 10);
+            var verUpdateHandle = WindowsAPI.findWindow("khministarter", retryCount: 10);
             if (verUpdateHandle != IntPtr.Zero)
             {
                 logger.Info("Version update popup window found");
@@ -142,7 +142,7 @@ namespace MTree.KiwoomSessionManager
                 if (Process.GetProcessById(lauchingProcessId) != null)
                     ProcessUtility.Kill(lauchingProcessId);
 
-                IntPtr okBtnHandle = WindowUtility.GetWindow2(verUpdateHandle, WindowUtility.GW_CHILD);
+                IntPtr okBtnHandle = WindowsAPI.getWindow(verUpdateHandle, WindowsAPI.GW_CHILD);
                 ClickButton(okBtnHandle);
 
                 // Wait for popup closed
@@ -150,11 +150,11 @@ namespace MTree.KiwoomSessionManager
 
                 while (true)
                 {
-                    var updateCompleteHandle = WindowUtility.FindWindow2("khministarter", retryCount: 10);
+                    var updateCompleteHandle = WindowsAPI.findWindow("khministarter", retryCount: 10);
                     if (updateCompleteHandle != IntPtr.Zero)
                     {
                         logger.Info("Update complete.");
-                        okBtnHandle = WindowUtility.GetWindow2(updateCompleteHandle, WindowUtility.GW_CHILD);
+                        okBtnHandle = WindowsAPI.getWindow(updateCompleteHandle, WindowsAPI.GW_CHILD);
                         ClickButton(okBtnHandle);
                         ProcessUtility.Start(ProcessTypes.KiwoomPublisher);
                         break;
@@ -166,27 +166,29 @@ namespace MTree.KiwoomSessionManager
         private static void HandleAdditionalPopupFail()
         {
             // Server Connection Fail
-            var popupHandle = WindowUtility.FindWindow2("번개", retryCount: 10);
+            var popupHandle = WindowsAPI.findWindow("번개", retryCount: 10);
             if (popupHandle != IntPtr.Zero)
             {
-                IntPtr okBtnHandle = WindowUtility.GetWindow2(popupHandle, WindowUtility.GW_CHILD);
-                string buttonCaption = WindowUtility.GetWindowCaption(okBtnHandle);
+                IntPtr okBtnHandle = WindowsAPI.getWindow(popupHandle, WindowsAPI.GW_CHILD);
+                string buttonCaption = WindowsAPI.getWindowCaption(okBtnHandle);
                 logger.Info($"{buttonCaption} popup window found");
 
                 ClickButton(okBtnHandle);
                 
                 // Wait for popup closed
                 Thread.Sleep(2000);
+
                 if (buttonCaption.Contains("확인"))
                 {
                     logger.Info("Server connection fail popup window found");
 
-                    var failWindowHandle = WindowUtility.FindWindow2("khministarter", retryCount: 10);
-                    var confirmButtonHandle = WindowUtility.GetWindow2(failWindowHandle, WindowUtility.GW_CHILD);
+                    var failWindowHandle = WindowsAPI.findWindow("khministarter", retryCount: 10);
+                    var confirmButtonHandle = WindowsAPI.getWindow(failWindowHandle, WindowsAPI.GW_CHILD);
                     if (confirmButtonHandle != IntPtr.Zero)
                     {
                         ClickButton(confirmButtonHandle);
                     }
+
                     Thread.Sleep(2000);
                 }
             }

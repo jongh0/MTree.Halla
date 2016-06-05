@@ -49,7 +49,7 @@ namespace MTree.AutoLauncher
         private void ShutdownTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             logger.Info($"Shutdown timer elapsed");
-            ProcessUtility.Shutdown();
+            WindowsCommand.Shutdown();
         }
     }
 }

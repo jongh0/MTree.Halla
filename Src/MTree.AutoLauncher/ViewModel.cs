@@ -74,7 +74,7 @@ namespace MTree.AutoLauncher
             logger.Info("Execute shutdown");
 
             if (MessageBox.Show("Shutdown?", "", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
-                ProcessUtility.Shutdown();
+                WindowsCommand.Shutdown();
         }
 
         public ViewModel()

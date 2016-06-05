@@ -42,7 +42,7 @@ namespace MTree.DaishinSessionManager
                 ClosePopup("대신증권 CYBOS FAMILY", "예(&Y)"); //=> 키보드 보안 및 메모리 보안 프로그램 사용 미체크 시 Popup뜸
 
                 // Find CYBOS Starter
-                var cybosStarterH = WindowUtility.FindWindow2("CYBOS Starter", retryCount: 100);
+                var cybosStarterH = WindowsAPI.findWindow("CYBOS Starter", retryCount: 100);
                 if (cybosStarterH == IntPtr.Zero)
                 {
                     logger.Error("CYBOS Starter not found");
@@ -53,9 +53,9 @@ namespace MTree.DaishinSessionManager
                 ClickCybosPlusButton(cybosStarterH);
 
                 // UserPw, CertPw 핸들 찾기
-                IntPtr idH = WindowUtility.GetWindow2(cybosStarterH, WindowUtility.GW_CHILD);
-                IntPtr pwH = WindowUtility.GetWindow2(idH, WindowUtility.GW_HWNDNEXT);
-                IntPtr certPwH = WindowUtility.GetWindow2(pwH, WindowUtility.GW_HWNDNEXT);
+                IntPtr idH = WindowsAPI.getWindow(cybosStarterH, WindowsAPI.GW_CHILD);
+                IntPtr pwH = WindowsAPI.getWindow(idH, WindowsAPI.GW_HWNDNEXT);
+                IntPtr certPwH = WindowsAPI.getWindow(pwH, WindowsAPI.GW_HWNDNEXT);
 
 #if false
                 // UserPw, CertPw 삭제
@@ -88,10 +88,10 @@ namespace MTree.DaishinSessionManager
         {
             try
             {
-                var plusButtonH = WindowUtility.FindWindowEx2(cybosStarterH, "Button", "PLUS", retryCount: 10);
+                var plusButtonH = WindowsAPI.findWindowEx(cybosStarterH, "Button", "PLUS", retryCount: 10);
                 if (plusButtonH != IntPtr.Zero)
                 {
-                    WindowUtility.SendMessage2(plusButtonH, WindowUtility.BM_CLICK, 0, 0);
+                    WindowsAPI.sendMessage(plusButtonH, WindowsAPI.BM_CLICK, 0, 0);
                     logger.Info("CYBOS plus button clicked");
                 }
             }
@@ -110,7 +110,7 @@ namespace MTree.DaishinSessionManager
                 {
                     foreach (var c in userPw.ToCharArray())
                     {
-                        WindowUtility.SendMessage2(pwH, WindowUtility.WM_CHAR, c, 0);
+                        WindowsAPI.sendMessage(pwH, WindowsAPI.WM_CHAR, c, 0);
                     }
                 }
                 else
@@ -133,7 +133,7 @@ namespace MTree.DaishinSessionManager
                 {
                     foreach (var c in certPw.ToCharArray())
                     {
-                        WindowUtility.SendMessage2(certPwH, WindowUtility.WM_CHAR, c, 0);
+                        WindowsAPI.sendMessage(certPwH, WindowsAPI.WM_CHAR, c, 0);
                     }
                 }
                 else
@@ -151,10 +151,10 @@ namespace MTree.DaishinSessionManager
         {
             try
             {
-                var loginButtonH = WindowUtility.FindWindowEx2(cybosStarterH, "Button", "연결");
+                var loginButtonH = WindowsAPI.findWindowEx(cybosStarterH, "Button", "연결");
                 if (loginButtonH != IntPtr.Zero)
                 {
-                    WindowUtility.SendMessage2(loginButtonH, WindowUtility.BM_CLICK, 0, 0);
+                    WindowsAPI.sendMessage(loginButtonH, WindowsAPI.BM_CLICK, 0, 0);
                     logger.Info("Login button clicked");
                 }
             }
@@ -168,13 +168,13 @@ namespace MTree.DaishinSessionManager
         {
             try
             {
-                var ncStarterH = WindowUtility.FindWindow2("ncStarter", 10);
+                var ncStarterH = WindowsAPI.findWindow("ncStarter", 10);
                 if (ncStarterH != IntPtr.Zero)
                 {
-                    var cancelButtonH = WindowUtility.FindWindowEx2(ncStarterH, "Button", "아니요(&N)", retryCount: 10);
+                    var cancelButtonH = WindowsAPI.findWindowEx(ncStarterH, "Button", "아니요(&N)", retryCount: 10);
                     if (cancelButtonH != IntPtr.Zero)
                     {
-                        WindowUtility.SendMessage2(cancelButtonH, WindowUtility.BM_CLICK, 0, 0);
+                        WindowsAPI.sendMessage(cancelButtonH, WindowsAPI.BM_CLICK, 0, 0);
                         logger.Info("Duplicated launcher popup closed");
                     }
                 }
@@ -189,14 +189,14 @@ namespace MTree.DaishinSessionManager
         {
             try
             {
-                var certWindowH = WindowUtility.FindWindow2(title, retryCount: 100);
+                var certWindowH = WindowsAPI.findWindow(title, retryCount: 100);
                 if (certWindowH != IntPtr.Zero)
                 {
                     logger.Info($"{title} popup handle found");
-                    var applyButtonH = WindowUtility.FindWindowEx2(certWindowH, "Button", buttonName, retryCount: 100);
+                    var applyButtonH = WindowsAPI.findWindowEx(certWindowH, "Button", buttonName, retryCount: 100);
                     if (applyButtonH != IntPtr.Zero)
                     {
-                        WindowUtility.SendMessage2(applyButtonH, WindowUtility.BM_CLICK, 0, 0);
+                        WindowsAPI.sendMessage(applyButtonH, WindowsAPI.BM_CLICK, 0, 0);
                         logger.Info($"{buttonName} info popup closed");
                     }
                 }

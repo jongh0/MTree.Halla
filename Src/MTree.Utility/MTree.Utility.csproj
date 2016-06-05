@@ -95,7 +95,8 @@
     <Compile Include="Utilities\ProcessUtility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\TrafficMonitor.cs" />
-    <Compile Include="Utilities\WindowUtility.cs" />
+    <Compile Include="Windows\WindowsCommand.cs" />
+    <Compile Include="Windows\WindowsAPI.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
