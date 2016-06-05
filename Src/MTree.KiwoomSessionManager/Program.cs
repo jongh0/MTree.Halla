@@ -29,7 +29,7 @@ namespace MTree.KiwoomSessionManager
                 }
 
                 // Find Kiwoom Starter
-                var khministarterHandle = WindowUtility.FindWindow2("번개 Login", retryCount: 100);
+                var khministarterHandle = WindowUtility.FindWindow2("번개 Login", retryCount: 10);
                 if (khministarterHandle == IntPtr.Zero)
                 {
                     logger.Error("Kiwoom Starter not found");
@@ -50,7 +50,7 @@ namespace MTree.KiwoomSessionManager
                 while (WindowUtility.IsWindowExist(khministarterHandle) == true)
                 {
                     HandleVersionUpdate();
-                    HandleServerConnectionFail();
+                    HandleAdditionalPopupFail();
                 }
             }
             catch (Exception ex)
@@ -128,7 +128,7 @@ namespace MTree.KiwoomSessionManager
         private static void HandleVersionUpdate()
         {
             // Version Update
-            var verUpdateHandle = WindowUtility.FindWindow2("khministarter", retryCount: 50);
+            var verUpdateHandle = WindowUtility.FindWindow2("khministarter", retryCount: 10);
             if (verUpdateHandle != IntPtr.Zero)
             {
                 logger.Info("Version update popup window found");
@@ -144,7 +144,7 @@ namespace MTree.KiwoomSessionManager
 
                 while (true)
                 {
-                    var updateCompleteHandle = WindowUtility.FindWindow2("khministarter", retryCount: 50);
+                    var updateCompleteHandle = WindowUtility.FindWindow2("khministarter", retryCount: 10);
                     if (updateCompleteHandle != IntPtr.Zero)
                     {
                         logger.Info("Update complete.");
@@ -157,25 +157,32 @@ namespace MTree.KiwoomSessionManager
             }
         }
 
-        private static void HandleServerConnectionFail()
+        private static void HandleAdditionalPopupFail()
         {
             // Server Connection Fail
-            var serverFailHandle = WindowUtility.FindWindow2("번개", retryCount: 50);
-            if (serverFailHandle != IntPtr.Zero)
+            var popupHandle = WindowUtility.FindWindow2("번개", retryCount: 10);
+            if (popupHandle != IntPtr.Zero)
             {
-                logger.Info("Server connection fail popup window found");
-                IntPtr okBtnHandle = WindowUtility.GetWindow2(serverFailHandle, WindowUtility.GW_CHILD);
+                IntPtr okBtnHandle = WindowUtility.GetWindow2(popupHandle, WindowUtility.GW_CHILD);
+                string buttonCaption = WindowUtility.GetWindowCaption(okBtnHandle);
+                logger.Info($"{buttonCaption} popup window found");
+
                 ClickButton(okBtnHandle);
+                
                 // Wait for popup closed
                 Thread.Sleep(2000);
-                
-                var failWindowHandle = WindowUtility.FindWindow2("khministarter", retryCount: 50);
-                var confirmButtonHandle = WindowUtility.GetWindow2(failWindowHandle, WindowUtility.GW_CHILD);
-                if (confirmButtonHandle != IntPtr.Zero)
+                if (buttonCaption.Contains("확인"))
                 {
-                    ClickButton(confirmButtonHandle);
+                    logger.Info("Server connection fail popup window found");
+
+                    var failWindowHandle = WindowUtility.FindWindow2("khministarter", retryCount: 10);
+                    var confirmButtonHandle = WindowUtility.GetWindow2(failWindowHandle, WindowUtility.GW_CHILD);
+                    if (confirmButtonHandle != IntPtr.Zero)
+                    {
+                        ClickButton(confirmButtonHandle);
+                    }
+                    Thread.Sleep(2000);
                 }
-                Thread.Sleep(2000);
             }
         }
     }

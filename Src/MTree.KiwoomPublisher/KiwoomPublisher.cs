@@ -50,7 +50,7 @@ namespace MTree.KiwoomPublisher
                     {
                         Task.Run(() =>
                         {
-                            Thread.Sleep(3000);
+                            Thread.Sleep(3000); // Wait for server connection
                             ProcessUtility.Start(ProcessTypes.KiwoomSessionManager, Process.GetCurrentProcess().Id.ToString());
                         });
                     }

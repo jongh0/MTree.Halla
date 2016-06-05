@@ -25,6 +25,9 @@ namespace MTree.Utility
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool IsWindow(IntPtr hWnd);
 
+        [DllImport("user32.dll", EntryPoint = "GetWindowText", CharSet = CharSet.Auto)]
+        static extern IntPtr GetWindowCaption(IntPtr hwnd, StringBuilder lpString, int maxCount);
+
         [DllImport("user32.dll")]
         public static extern bool SetForegroundWindow(IntPtr hWnd);
 
@@ -150,6 +153,13 @@ namespace MTree.Utility
         public static bool IsWindowExist(IntPtr window)
         {
             return IsWindow(window);
+        }
+
+        public static string GetWindowCaption(IntPtr hwnd)
+        {
+            StringBuilder sb = new StringBuilder(256);
+            GetWindowCaption(hwnd, sb, 256);
+            return sb.ToString();
         }
     }
 }
