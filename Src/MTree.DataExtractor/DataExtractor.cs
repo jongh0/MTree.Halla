@@ -18,8 +18,6 @@ namespace MTree.DataExtractor
 
         private object masterBak;
 
-        private StringBuilder Content { get; set; } = new StringBuilder();
-
         public void Extract(List<StockConclusion> conclusionList, List<StockMaster> masterList, string path)
         {
             if (conclusionList == null || masterList == null) return;
@@ -28,53 +26,50 @@ namespace MTree.DataExtractor
             try
             {
                 masterBak = null;
-                Content.Clear();
 
-                WriteHeader(ExtractTypes.Stock);
-
-                foreach (var conclusion in conclusionList)
+                using (var fs = File.Open(path, FileMode.Create))
+                using (var sw = new StreamWriter(fs))
                 {
-                    WriteContent(conclusion, GetMaster(masterList, conclusion.Time));
-                }
+                    WriteHeader(sw, ExtractTypes.Stock);
 
-                File.WriteAllText(path, Content.ToString());
+                    foreach (var conclusion in conclusionList)
+                    {
+                        WriteContent(sw, conclusion, GetMaster(masterList, conclusion.Time));
+                    }
+                }
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
             }
-            finally
-            {
-                Content.Clear();
-            }
         }
 
-        public void Extract(List<IndexConclusion> conclusionList, List<IndexMaster> masterList, string filePath)
+        public void Extract(List<IndexConclusion> conclusionList, List<IndexMaster> masterList, string path)
         {
             if (conclusionList == null || masterList == null) return;
-            if (string.IsNullOrEmpty(filePath) == true) return;
+            if (string.IsNullOrEmpty(path) == true) return;
 
             try
             {
                 masterBak = null;
-                Content.Clear();
 
-                WriteHeader(ExtractTypes.Index);
-
-                foreach (var conclusion in conclusionList)
+                using (var fs = File.Open(path, FileMode.Create))
+                using (var sw = new StreamWriter(fs))
                 {
-                    WriteContent(conclusion, GetMaster(masterList, conclusion.Time));
-                }
+                    WriteHeader(sw, ExtractTypes.Index);
 
-                File.WriteAllText(filePath, Content.ToString());
+                    foreach (var conclusion in conclusionList)
+                    {
+                        WriteContent(sw, conclusion, GetMaster(masterList, conclusion.Time));
+                    }
+
+                    sw.Flush();
+                    fs.Flush(true);
+                }
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
-            }
-            finally
-            {
-                Content.Clear();
             }
         }
 
@@ -98,7 +93,7 @@ namespace MTree.DataExtractor
             return default(T);
         }
 
-        private void WriteHeader(ExtractTypes extractType)
+        private void WriteHeader(StreamWriter sw, ExtractTypes extractType)
         {
             List<string> columns = new List<string>();
 
@@ -139,7 +134,7 @@ namespace MTree.DataExtractor
                     }
                 }
 
-                Content.AppendLine(string.Join(delimeter, columns));
+                sw.WriteLine(string.Join(delimeter, columns));
             }
             catch (Exception ex)
             {
@@ -151,7 +146,7 @@ namespace MTree.DataExtractor
             }
         }
 
-        private void WriteContent(StockConclusion conclusion, StockMaster master)
+        private void WriteContent(StreamWriter sw, StockConclusion conclusion, StockMaster master)
         {
             if (conclusion == null || master == null) return;
 
@@ -179,7 +174,7 @@ namespace MTree.DataExtractor
                 {
                 }
 
-                Content.AppendLine(string.Join(delimeter, columns));
+                sw.WriteLine(string.Join(delimeter, columns));
             }
             catch (Exception ex)
             {
@@ -191,7 +186,7 @@ namespace MTree.DataExtractor
             }
         }
 
-        private void WriteContent(IndexConclusion conclusion, IndexMaster master)
+        private void WriteContent(StreamWriter sw, IndexConclusion conclusion, IndexMaster master)
         {
             if (conclusion == null || master == null) return;
 
@@ -219,7 +214,7 @@ namespace MTree.DataExtractor
                 {
                 }
 
-                Content.AppendLine(string.Join(delimeter, columns));
+                sw.WriteLine(string.Join(delimeter, columns));
             }
             catch (Exception ex)
             {
