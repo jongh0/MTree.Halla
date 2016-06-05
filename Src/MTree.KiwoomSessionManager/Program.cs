@@ -44,7 +44,13 @@ namespace MTree.KiwoomSessionManager
 
                 EnterUserPw(pwH);
                 EnterCertPw(certPwH);
-                ClickButton(loginBtnH);
+
+#if true // 공인인증서 입력 오류 발생 방지
+                WindowUtility.PostMessage2(khministarterHandle, WindowUtility.WM_KEYDOWN, WindowUtility.VK_ENTER, 0);
+                WindowUtility.PostMessage2(khministarterHandle, WindowUtility.WM_KEYDOWN, WindowUtility.VK_ENTER, 0);
+#else
+                ClickButton(loginBtnH); 
+#endif
 
                 // Popup Handling
                 while (WindowUtility.IsWindowExist(khministarterHandle) == true)
