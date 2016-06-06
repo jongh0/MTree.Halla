@@ -91,7 +91,7 @@ namespace MTree.AutoLauncher
                             logger.Info("Not working day, shutdown after 5 mins");
 
                             Thread.Sleep(1000 * 60 * 5);
-                            ProcessUtility.Shutdown();
+                            WindowsCommand.Shutdown();
                         });
 
                         return;
