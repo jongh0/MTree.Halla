@@ -35,6 +35,7 @@ namespace MTree.KiwoomSessionManager
                     logger.Error("Kiwoom Starter not found");
                     return;
                 }
+                logger.Info("Kiwoom Starter found");
 
                 // UserPw, CertPw 핸들 찾기
                 IntPtr idH = WindowsAPI.getWindow(khministarterHandle, WindowsAPI.GW_CHILD);
@@ -48,6 +49,8 @@ namespace MTree.KiwoomSessionManager
                 WindowsAPI.setForegroundWindow(khministarterHandle);
                 WindowsAPI.postMessage(khministarterHandle, WindowsAPI.WM_KEYDOWN, WindowsAPI.VK_ENTER, 0);
                 WindowsAPI.postMessage(khministarterHandle, WindowsAPI.WM_KEYDOWN, WindowsAPI.VK_ENTER, 0);
+                ClickButton(loginBtnH);
+                logger.Info("Login button clicked");
 
                 // Popup Handling
                 while (WindowsAPI.isWindow(khministarterHandle) == true)
@@ -55,6 +58,7 @@ namespace MTree.KiwoomSessionManager
                     HandleVersionUpdate();
                     HandleAdditionalPopupFail();
                 }
+                logger.Info("Kiwoom Starter Closed");
             }
             catch (Exception ex)
             {
@@ -77,6 +81,7 @@ namespace MTree.KiwoomSessionManager
                     {
                         WindowsAPI.sendMessage(pwH, WindowsAPI.WM_CHAR, c, 0);
                     }
+                    logger.Info("User Password Entered");
                 }
                 else
                 {
@@ -100,6 +105,7 @@ namespace MTree.KiwoomSessionManager
                     {
                         WindowsAPI.sendMessage(certPwH, WindowsAPI.WM_CHAR, c, 0);
                     }
+                    logger.Info("Certi Password Entered");
                 }
                 else
                 {
