@@ -45,12 +45,10 @@ namespace MTree.KiwoomSessionManager
                 EnterUserPw(pwH);
                 EnterCertPw(certPwH);
 
-#if true // 공인인증서 입력 오류 발생 방지
+                // 공인인증서 입력 오류 발생 방지
                 WindowsAPI.postMessage(khministarterHandle, WindowsAPI.WM_KEYDOWN, WindowsAPI.VK_ENTER, 0);
                 WindowsAPI.postMessage(khministarterHandle, WindowsAPI.WM_KEYDOWN, WindowsAPI.VK_ENTER, 0);
-#else
                 ClickButton(loginBtnH); 
-#endif
 
                 // Popup Handling
                 while (WindowsAPI.isWindow(khministarterHandle) == true)
