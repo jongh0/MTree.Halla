@@ -76,11 +76,11 @@ namespace MTree.RealTimeProvider
 
                 // HistorySaver
                 if (Config.General.LaunchHistorySaver == true)
-                    ProcessUtility.Start(ProcessTypes.HistorySaver);
+                    ProcessUtility.Start(ProcessTypes.HistorySaver, ProcessWindowStyle.Minimized);
 
                 // Dashboard
                 if (Config.General.LaunchDashboard == true)
-                    ProcessUtility.Start(ProcessTypes.Dashboard);
+                    ProcessUtility.Start(ProcessTypes.Dashboard, ProcessWindowStyle.Minimized);
 
                 // Kiwoom
                 if (SkipMastering == false && Config.General.ExcludeKiwoom == false)
