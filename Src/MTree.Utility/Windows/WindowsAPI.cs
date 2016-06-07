@@ -107,7 +107,7 @@ namespace MTree.Utility
                         if (setForeground)
                         {
                             SetForegroundWindow(handle);
-                            Thread.Sleep(1000);
+                            Thread.Sleep(100);
                         }
 
                         return handle;
@@ -160,6 +160,11 @@ namespace MTree.Utility
             StringBuilder sb = new StringBuilder(256);
             GetWindowCaption(hwnd, sb, 256);
             return sb.ToString();
+        }
+
+        public static bool setForegroundWindow(IntPtr handle)
+        {
+            return SetForegroundWindow(handle);
         }
     }
 }
