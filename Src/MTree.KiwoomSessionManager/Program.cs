@@ -46,7 +46,6 @@ namespace MTree.KiwoomSessionManager
                 EnterCertPw(certPwH);
 
                 WindowsAPI.setForegroundWindow(khministarterHandle);
-
                 WindowsAPI.postMessage(khministarterHandle, WindowsAPI.WM_KEYDOWN, WindowsAPI.VK_ENTER, 0);
                 WindowsAPI.postMessage(khministarterHandle, WindowsAPI.WM_KEYDOWN, WindowsAPI.VK_ENTER, 0);
 
