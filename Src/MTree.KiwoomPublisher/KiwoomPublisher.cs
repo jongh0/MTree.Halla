@@ -93,6 +93,7 @@ namespace MTree.KiwoomPublisher
                 {
                     logger.Info("Login sucess");
                     LoginInstance.State = LoginStates.LoggedIn;
+                    GetThemeList();
                     SetLogin();
                 }
                 else
@@ -146,6 +147,48 @@ namespace MTree.KiwoomPublisher
                     StockMasterReceived(e);
                     break;
             }
+        }
+
+        public override Dictionary<string, object> GetThemeList()
+        {
+            var codeDictionary = new Dictionary<string, object>();
+            try
+            {
+                logger.Info($"Theme list query start");
+
+                var themeList = kiwoomObj.GetThemeGroupList(0).Split(';');
+                foreach (var theme in themeList)
+                {
+                    var themeGroup = new Dictionary<string, object>();
+                    var themeCode = theme.Split('|')[0];
+                    var themeName = theme.Split('|')[1];
+                    var codes = kiwoomObj.GetThemeGroupCode(themeCode).Split(';');
+                    foreach (var code in codes)
+                    {
+                        var shortCode = code.Substring(1);
+                        if (themeGroup.ContainsKey(shortCode) == true)
+                        {
+                            logger.Error($"{shortCode} is already exist in {themeCode}.");
+                            continue;
+                        }
+                        themeGroup.Add(shortCode, kiwoomObj.GetMasterCodeName(shortCode));
+                    }
+
+                    if (codeDictionary.ContainsKey(themeName) == true)
+                    {
+                        logger.Error($"{themeName} is already exist.");
+                        continue;
+                    }
+                    codeDictionary.Add(themeName, themeGroup);
+                }
+                logger.Info($"Theme list query done");
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+
+            return codeDictionary;
         }
 
         public override Dictionary<string, CodeEntity> GetCodeList()
