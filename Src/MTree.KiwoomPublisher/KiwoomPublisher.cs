@@ -93,7 +93,7 @@ namespace MTree.KiwoomPublisher
                 {
                     logger.Info("Login sucess");
                     LoginInstance.State = LoginStates.LoggedIn;
-                    GetThemeList();
+                    GetCodeMap(CodeMapTypes.Theme);
                     SetLogin();
                 }
                 else
@@ -149,7 +149,15 @@ namespace MTree.KiwoomPublisher
             }
         }
 
-        public override Dictionary<string, object> GetThemeList()
+        public override Dictionary<string, object> GetCodeMap(CodeMapTypes codemapType)
+        {
+            if (codemapType == CodeMapTypes.Theme)
+                return GetThemeCodeMap();
+            else
+                return null;
+        }
+
+        private Dictionary<string, object> GetThemeCodeMap()
         {
             var codeDictionary = new Dictionary<string, object>();
             try

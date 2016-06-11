@@ -39,7 +39,7 @@ namespace MTree.RealTimeProvider
         Dictionary<string, CodeEntity> GetCodeList();
 
         [OperationContract]
-        Dictionary<string, object> GetThemeList();
+        Dictionary<string, object> GetCodeMap(CodeMapTypes codemapType);
 
         [OperationContract]
         StockMaster GetStockMaster(string code);

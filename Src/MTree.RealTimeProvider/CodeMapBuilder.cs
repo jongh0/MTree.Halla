@@ -18,7 +18,6 @@ namespace MTree.RealTimeProvider
         public CodeMapBuilder()
         {
             codeMapHeader = new Dictionary<string, object>();
-            //Dictionary<string, object> rebuilt = CodeMapBuilderUtil.RebuildNode(CodeMapBuilderUtil.ConvertToJsonString(codeMapHeader));
         }
 
         public Dictionary<string, object> GetCodeMap()
@@ -44,12 +43,24 @@ namespace MTree.RealTimeProvider
             }
         }
 
-        public void AddThemeMap(PublisherContract contract, string name)
+        public void AddBizTypeMap(PublisherContract contract)
+        {
+            try
+            {
+                CodeMapBuilderUtil.BuildNode(codeMapHeader, "BizType", contract.Callback.GetCodeMap(CodeMapTypes.BizType));
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+        
+        public void AddThemeMap(PublisherContract contract, string publisherName)
         {
             try
             {
                 var theme = CodeMapBuilderUtil.BuildNode(codeMapHeader, "Theme");
-                CodeMapBuilderUtil.BuildNode(theme, name, contract.Callback.GetThemeList());
+                CodeMapBuilderUtil.BuildNode(theme, publisherName, contract.Callback.GetCodeMap(CodeMapTypes.Theme));
             }
             catch (Exception ex)
             {

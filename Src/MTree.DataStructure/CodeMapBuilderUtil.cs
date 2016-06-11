@@ -27,9 +27,7 @@ namespace MTree.DataStructure
                         parent.Add(name, child);
                     else
                     {
-                        Dictionary<string, object> originDic = (Dictionary<string, object>)parent[name];
-                        parent.Remove(name);
-                        parent.Add(name, originDic.Concat((Dictionary<string, object>)child).ToDictionary(x => x.Key, x => x.Value));
+                        parent[name] = ConcatNode((Dictionary<string, object>)parent[name], (Dictionary<string, object>)child);
                     }
                 }
             }
@@ -38,6 +36,39 @@ namespace MTree.DataStructure
                 Console.WriteLine(ex);
             }
             return (Dictionary<string, object>)parent[name];
+        }
+
+        private static Dictionary<string, object> ConcatNode(Dictionary<string, object> a, Dictionary<string, object> b)
+        {
+            Dictionary<string, object> returnDic = new Dictionary<string, object>();
+
+            returnDic = a;
+            foreach (KeyValuePair<string, object> node in b)
+            {
+                if (returnDic.ContainsKey(node.Key))
+                {
+                    returnDic[node.Key] = ConcatNode((Dictionary<string, object>)(a[node.Key]), (Dictionary<string, object>)(b[node.Key]));
+                }
+                else
+                {
+                    returnDic.Add(node.Key, node.Value);
+                }
+            }
+            return returnDic;
+        }
+
+        public static string ConvertToJsonString(Dictionary<string, object> codeMapHeader)
+        {
+            StringBuilder sb = new StringBuilder();
+            using (StringWriter sw = new StringWriter(sb))
+            using (JsonWriter writer = new JsonTextWriter(sw))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                serializer.NullValueHandling = NullValueHandling.Ignore;
+                serializer.Formatting = Formatting.Indented;
+                serializer.Serialize(writer, codeMapHeader);
+            }
+            return sb.ToString();
         }
 
         public static Dictionary<string, object> RebuildNode(string jsonString)
@@ -54,7 +85,7 @@ namespace MTree.DataStructure
             return RebuildNode(deserialized);
         }
 
-        public static Dictionary<string, object> RebuildNode(Dictionary<string, object> deserialized)
+        private static Dictionary<string, object> RebuildNode(Dictionary<string, object> deserialized)
         {
             Dictionary<string, object> ret = new Dictionary<string, object>();
             List<string> keyList = new List<string>(deserialized.Keys);
@@ -92,18 +123,5 @@ namespace MTree.DataStructure
             return ret;
         }
 
-        public static string ConvertToJsonString(Dictionary<string, object> codeMapHeader)
-        {
-            StringBuilder sb = new StringBuilder();
-            using (StringWriter sw = new StringWriter(sb))
-            using (JsonWriter writer = new JsonTextWriter(sw))
-            {
-                JsonSerializer serializer = new JsonSerializer();
-                serializer.NullValueHandling = NullValueHandling.Ignore;
-                serializer.Formatting = Formatting.Indented;
-                serializer.Serialize(writer, codeMapHeader);
-            }
-            return sb.ToString();
-        }
     }
 }

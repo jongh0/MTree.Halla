@@ -2,12 +2,14 @@
 using MTree.DataStructure;
 using MTree.Utility;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace MTree.DaishinPublisher
 {
     public partial class DaishinPublisher
     {
+        
         public override StockMaster GetStockMaster(string code)
         {
             var stockMaster = new StockMaster();
@@ -90,10 +92,15 @@ namespace MTree.DaishinPublisher
                 QuotingStockMaster.Name = stockMstObj.GetHeaderValue(1).ToString();
 
                 // 2 - (string) 대신 업종코드
-                var daishingCode = stockMstObj.GetHeaderValue(2).ToString();
+                var daishinBizTypeCode = stockMstObj.GetHeaderValue(2).ToString();
+                var daishinBizTypeName = codeMgrObj.CodeToName(daishinBizTypeCode);
+                if (bizTypeCodeMap.ContainsKey(daishinBizTypeName) == false)
+                    bizTypeCodeMap.Add(daishinBizTypeName, new Dictionary<string, object>());
+                ((Dictionary<string, object>)bizTypeCodeMap[daishinBizTypeName]).Add(code, QuotingStockMaster.Name);
 
                 // 3 - (string) 그룹코드
                 var groupCode = stockMstObj.GetHeaderValue(3).ToString();
+                var groupName = codeMgrObj.CodeToName(groupCode);
 
                 // 5 - (string) 소속구분
                 var classification = stockMstObj.GetHeaderValue(5).ToString();

@@ -449,10 +449,17 @@ namespace MTree.EbestPublisher
             return codeList;
         }
 
-        public override Dictionary<string, object> GetThemeList()
+        public override Dictionary<string, object> GetCodeMap(CodeMapTypes codemapType)
         {
-            UpdateThemeList();
-            return ThemeList;
+            if (codemapType == CodeMapTypes.Theme)
+            {
+                UpdateThemeList();
+                return ThemeList;
+            }
+            else
+            {
+                return null;
+            }
         }
         
         private void IndexListObj_ReceiveData(string szTrCode)

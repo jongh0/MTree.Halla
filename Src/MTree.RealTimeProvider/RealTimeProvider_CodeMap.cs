@@ -31,6 +31,16 @@ namespace MTree.RealTimeProvider
 
                     codemapBuildingTask.Add(Task.Run(() =>
                     {
+                        logger.Info(RealTimeState = "Build BizType Map");
+                        foreach (PublisherContract daishinContract in DaishinContracts)
+                        {
+                            codeMapBuilder.AddBizTypeMap(daishinContract);
+                        }
+                        logger.Info(RealTimeState = "Build BizType Map Done");
+                    }));
+                    
+                    codemapBuildingTask.Add(Task.Run(() =>
+                    {
                         logger.Info(RealTimeState = "Build Daishin Theme Map");
                         if (DaishinContracts[1] != null)
                             codeMapBuilder.AddThemeMap(DaishinContracts[1], "DaishinTheme");

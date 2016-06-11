@@ -24,6 +24,12 @@ namespace MTree.RealTimeProvider
         EndTime,
     }
 
+    public enum CodeMapTypes
+    {
+        Theme,
+        BizType,
+    }
+
     public class RealTimeBase
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();

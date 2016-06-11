@@ -20,7 +20,7 @@ namespace MTree.Publisher
             return null;
         }
 
-        public virtual Dictionary<string, object> GetThemeList()
+        public virtual Dictionary<string, object> GetCodeMap(CodeMapTypes codemapType)
         {
             return null;
         }

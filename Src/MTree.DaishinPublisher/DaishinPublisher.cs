@@ -23,6 +23,8 @@ namespace MTree.DaishinPublisher
 
         private bool IsMasterProcess { get; set; } = false;
 
+        private Dictionary<string, object> bizTypeCodeMap = new Dictionary<string, object>();
+
         #region Daishin Specific
         private CpCybosClass sessionObj;
         private CpCodeMgrClass codeMgrObj;
@@ -268,7 +270,17 @@ namespace MTree.DaishinPublisher
             return codeList;
         }
 
-        public override Dictionary<string, object> GetThemeList()
+        public override Dictionary<string, object> GetCodeMap(CodeMapTypes codemapType)
+        {
+            if (codemapType == CodeMapTypes.Theme)
+                return GetThemeCodeMap();
+            if (codemapType == CodeMapTypes.BizType)
+                return bizTypeCodeMap;
+            else
+                return null;
+        }
+
+        private Dictionary<string, object> GetThemeCodeMap()
         {
             var themeList = new Dictionary<string, object>();
 
@@ -313,6 +325,16 @@ namespace MTree.DaishinPublisher
             }
             
             return themeList;
+        }
+
+        public void GetIndustryList()
+        {
+            List<string> list = new List<string>();
+            object[] industryCodeList = (object[])codeMgrObj.GetIndustryList();
+            foreach (var industryCode in industryCodeList)
+            {
+                list.Add(codeMgrObj.CodeToName(industryCode.ToString()));
+            }
         }
 
         private void sessionObj_OnDisconnect()

@@ -191,16 +191,16 @@ namespace MTree.RealTimeProvider
                     Thread.Sleep(1000 * 20);
 
                     StartCodeDistributing();
-                    
-                    if (Config.General.SkipCodeBuilding == false)
-                        StartCodeMapBuilding(contract);
 
                     if (SkipMastering == false)
                     {
                         StartStockMastering();
                         StartIndexMastering();
                     }
-                    
+
+                    if (Config.General.SkipCodeBuilding == false)
+                        StartCodeMapBuilding(contract); // Should be after master finished
+
                     NotifyMessageToConsumer(MessageTypes.MasteringDone);
 
                     ProcessUtility.Kill(ProcessTypes.PopupStopper);

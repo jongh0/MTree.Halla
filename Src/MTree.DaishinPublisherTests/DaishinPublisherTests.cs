@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MTree.DaishinPublisher;
 using MTree.DataStructure;
+using MTree.RealTimeProvider;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,7 +17,7 @@ namespace MTree.DaishinPublisher.Tests
         [TestMethod()]
         public void GetQuoteTest()
         {
-            string code = "000040";
+            string code = "000020";
             StockMaster master = new StockMaster();
             DaishinPublisher publisher = new DaishinPublisher();
             int startTick = Environment.TickCount;
@@ -76,7 +77,15 @@ namespace MTree.DaishinPublisher.Tests
         public void GetThemeListTest()
         {
             DaishinPublisher publisher = new DaishinPublisher();
-            publisher.GetThemeList();
+            publisher.GetCodeMap(CodeMapTypes.Theme);
+            while (true) ;
+        }
+
+        [TestMethod()]
+        public void GetIndustryListTest()
+        {
+            DaishinPublisher publisher = new DaishinPublisher();
+            publisher.GetIndustryList();
             while (true) ;
         }
     }
