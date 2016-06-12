@@ -98,15 +98,21 @@ namespace MTree.DaishinPublisher
                     bizTypeCodeMap.Add(daishinBizTypeName, new Dictionary<string, object>());
                 ((Dictionary<string, object>)bizTypeCodeMap[daishinBizTypeName]).Add(code, QuotingStockMaster.Name);
 
-                // 3 - (string) 그룹코드
-                var groupCode = stockMstObj.GetHeaderValue(3).ToString();
-                var groupName = codeMgrObj.CodeToName(groupCode);
+                // 3 - (string) 그룹코드 => Not working
+                //var groupCode = stockMstObj.GetHeaderValue(3).ToString();
+                //var groupName = codeMgrObj.CodeToName(groupCode);
 
                 // 5 - (string) 소속구분
-                var classification = stockMstObj.GetHeaderValue(5).ToString();
+                //var classification = stockMstObj.GetHeaderValue(5).ToString();
 
                 // 6 - (string) 대형,중형,소형
                 var size = stockMstObj.GetHeaderValue(6).ToString();
+                if (string.IsNullOrEmpty(size) == false)
+                {
+                    if (capitalScaleCodeMap.ContainsKey(size) == false)
+                        capitalScaleCodeMap.Add(size, new Dictionary<string, object>());
+                    ((Dictionary<string, object>)capitalScaleCodeMap[size]).Add(code, QuotingStockMaster.Name);
+                }
 
                 // 8 - (long) 상한가
                 QuotingStockMaster.UpperLimit = (int)stockMstObj.GetHeaderValue(8);

@@ -38,7 +38,17 @@ namespace MTree.RealTimeProvider
                         }
                         logger.Info(RealTimeState = "Build BizType Map Done");
                     }));
-                    
+
+                    codemapBuildingTask.Add(Task.Run(() =>
+                    {
+                        logger.Info(RealTimeState = "Build CapitalScale Map");
+                        foreach (PublisherContract daishinContract in DaishinContracts)
+                        {
+                            codeMapBuilder.AddCapitalScaleMap(daishinContract);
+                        }
+                        logger.Info(RealTimeState = "Build CapitalScale Map Done");
+                    }));
+
                     codemapBuildingTask.Add(Task.Run(() =>
                     {
                         logger.Info(RealTimeState = "Build Daishin Theme Map");

@@ -25,6 +25,8 @@ namespace MTree.DaishinPublisher
 
         private Dictionary<string, object> bizTypeCodeMap = new Dictionary<string, object>();
 
+        private Dictionary<string, object> capitalScaleCodeMap = new Dictionary<string, object>();
+
         #region Daishin Specific
         private CpCybosClass sessionObj;
         private CpCodeMgrClass codeMgrObj;
@@ -276,6 +278,8 @@ namespace MTree.DaishinPublisher
                 return GetThemeCodeMap();
             if (codemapType == CodeMapTypes.BizType)
                 return bizTypeCodeMap;
+            if (codemapType == CodeMapTypes.CapitalScale)
+                return capitalScaleCodeMap;
             else
                 return null;
         }
