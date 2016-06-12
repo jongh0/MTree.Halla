@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using TicTacTec.TA.Library;
 
 namespace MTree.DataExtractor
 {
@@ -146,6 +147,8 @@ namespace MTree.DataExtractor
             }
         }
 
+        Queue<float> priceQueue = new Queue<float>();
+        int term = 5;
         private void WriteContent(StreamWriter sw, StockConclusion conclusion, StockMaster master)
         {
             if (conclusion == null || master == null) return;
@@ -158,8 +161,23 @@ namespace MTree.DataExtractor
                 {
                     var property = conclusion.GetType().GetProperty(field.ToString());
                     object value = property.GetValue(conclusion);
-
+                    
                     columns.Add(GetNormalizedValue(property, value));
+
+                    if (field.ToString() == "Price")
+                    {
+                        int outBegIdx;
+                        int outNBElement;
+                        double[] outReal = new double[1];
+
+                        priceQueue.Enqueue((float)value);
+                        if (priceQueue.Count > term)
+                        {
+                            priceQueue.Dequeue();
+                        }
+                        Core.MovingAverage(0, priceQueue.Count - 1, priceQueue.ToArray(), term, Core.MAType.Sma, out outBegIdx, out outNBElement, outReal);
+                        columns.Add(outReal[0].ToString());
+                    }
                 }
 
                 foreach (var field in Enum.GetValues(typeof(StockMasterField)))

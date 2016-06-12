@@ -84,6 +84,10 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="TA-Lib-Core, Version=1.0.4998.21369, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\TA-Lib.0.5.0.3\lib\TA-Lib-Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
