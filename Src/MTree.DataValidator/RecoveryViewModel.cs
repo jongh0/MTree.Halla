@@ -213,7 +213,8 @@ namespace MTree.DataValidator
                     {
                         logger.Info($"Master Validation for {code} of {targetDate.ToString("yyyy-MM-dd")} success. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
                     }
-                });   
+                });
+                ApplyForAll = false;
             }
 
             logger.Info("Master Recovery Done.");
@@ -470,6 +471,7 @@ namespace MTree.DataValidator
                         }
                     }
                 });
+                ApplyForAll = false;
             }
 
             logger.Info("Circuit Break Recovery Done.");
