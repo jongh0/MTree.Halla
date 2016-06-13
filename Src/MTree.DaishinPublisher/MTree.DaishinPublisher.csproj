@@ -102,6 +102,7 @@
     </Compile>
     <Compile Include="DaishinPublisher.cs" />
     <Compile Include="DaishinPublisher_BiddingPrice.cs" />
+    <Compile Include="DaishinPublisher_CodeList.cs" />
     <Compile Include="DaishinPublisher_IndexConclusion.cs" />
     <Compile Include="DaishinPublisher_IndexMaster.cs" />
     <Compile Include="DaishinPublisher_Chart.cs" />
