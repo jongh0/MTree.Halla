@@ -30,17 +30,12 @@ namespace MTree.HistorySaver
             try
             {
                 TaskUtility.Run("HistorySaver.CircuitBreakQueue", QueueTaskCancelToken, ProcessCircuitBreakQueue);
-
-                for (int i = 0; i < 5; i++)
-                    TaskUtility.Run($"HistorySaver.StockConclusionQueue_{i + 1}", QueueTaskCancelToken, ProcessStockConclusionQueue);
-
-                for (int i = 0; i < 2; i++)
-                    TaskUtility.Run($"HistorySaver.IndexConclusionQueue_{i + 1}", QueueTaskCancelToken, ProcessIndexConclusionQueue);
+                TaskUtility.Run($"HistorySaver.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
+                TaskUtility.Run($"HistorySaver.IndexConclusionQueue", QueueTaskCancelToken, ProcessIndexConclusionQueue);
 
                 if (Config.General.SkipBiddingPrice == false)
                 {
-                    for (int i = 0; i < 10; i++)
-                        TaskUtility.Run($"HistorySaver.BiddingPriceQueue_{i + 1}", QueueTaskCancelToken, ProcessBiddingPriceQueue);
+                    TaskUtility.Run($"HistorySaver.BiddingPriceQueue", QueueTaskCancelToken, ProcessBiddingPriceQueue);
                 }
 
                 StartRefreshTimer();
