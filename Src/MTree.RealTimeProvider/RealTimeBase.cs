@@ -29,6 +29,7 @@ namespace MTree.RealTimeProvider
         Theme,
         BizType,
         CapitalScale,
+        Group
     }
 
     public class RealTimeBase

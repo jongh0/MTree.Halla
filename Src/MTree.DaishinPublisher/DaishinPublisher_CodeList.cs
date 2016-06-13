@@ -165,10 +165,12 @@ namespace MTree.DaishinPublisher
         {
             if (codemapType == CodeMapTypes.Theme)
                 return GetThemeCodeMap();
-            if (codemapType == CodeMapTypes.BizType)
+            else if (codemapType == CodeMapTypes.BizType)
                 return bizTypeCodeMap;
-            if (codemapType == CodeMapTypes.CapitalScale)
+            else if (codemapType == CodeMapTypes.CapitalScale)
                 return capitalScaleCodeMap;
+            else if (codemapType == CodeMapTypes.Group)
+                return GetGroupCodeMap();
             else
                 return null;
         }
@@ -220,14 +222,21 @@ namespace MTree.DaishinPublisher
             return themeList;
         }
 
-        public void GetIndustryList()
+        private Dictionary<string, object> GetGroupCodeMap()
         {
-            List<string> list = new List<string>();
-            object[] industryCodeList = (object[])codeMgrObj.GetIndustryList();
-            foreach (var industryCode in industryCodeList)
+            var groupCodemap = new Dictionary<string, object>();
+
+            foreach (string groupCode in (object[])codeMgrObj.GetGroupList())
             {
-                list.Add(codeMgrObj.CodeToName(industryCode.ToString()));
+                string groupName = codeMgrObj.GetGroupName(groupCode);
+                groupCodemap.Add(groupName, new Dictionary<string, object>());
+                foreach (string code in (object[])codeMgrObj.GetGroupCodeList(Convert.ToInt32(groupCode)))
+                {
+                    ((Dictionary<string, object>)groupCodemap[groupName]).Add(code, codeMgrObj.CodeToName(code));
+                }
             }
+
+            return groupCodemap;
         }
     }
 }

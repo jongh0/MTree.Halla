@@ -67,6 +67,18 @@ namespace MTree.RealTimeProvider
             }
         }
 
+        public void AddGroupMap(PublisherContract contract)
+        {
+            try
+            {
+                CodeMapBuilderUtil.BuildNode(codeMapHeader, "Group", contract.Callback.GetCodeMap(CodeMapTypes.Group));
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
         public void AddThemeMap(PublisherContract contract, string publisherName)
         {
             try

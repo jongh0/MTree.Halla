@@ -31,6 +31,14 @@ namespace MTree.RealTimeProvider
 
                     codemapBuildingTask.Add(Task.Run(() =>
                     {
+                        logger.Info(RealTimeState = "Build Group Map");
+                        if (DaishinContracts[0] != null)
+                            codeMapBuilder.AddGroupMap(DaishinContracts[0]);
+                        logger.Info(RealTimeState = "Build Group Map Done");
+                    }));
+
+                    codemapBuildingTask.Add(Task.Run(() =>
+                    {
                         logger.Info(RealTimeState = "Build BizType Map");
                         foreach (PublisherContract daishinContract in DaishinContracts)
                         {

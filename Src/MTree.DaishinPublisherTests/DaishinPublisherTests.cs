@@ -77,15 +77,8 @@ namespace MTree.DaishinPublisher.Tests
         public void GetThemeListTest()
         {
             DaishinPublisher publisher = new DaishinPublisher();
-            publisher.GetCodeMap(CodeMapTypes.Theme);
-            while (true) ;
-        }
-
-        [TestMethod()]
-        public void GetIndustryListTest()
-        {
-            DaishinPublisher publisher = new DaishinPublisher();
-            publisher.GetIndustryList();
+            //publisher.GetCodeMap(CodeMapTypes.Theme);
+            publisher.GetCodeMap(CodeMapTypes.Group);
             while (true) ;
         }
     }
