@@ -336,15 +336,6 @@ namespace MTree.RealTimeProvider
 
                 RealTimeState = "Kiwoom stock mastering done";
                 logger.Info($"{RealTimeState}, Elapsed time: {sw.Elapsed.ToString()}");
-
-                var contracts = KiwoomContracts;
-                if (contracts != null)
-                {
-                    foreach (var contract in contracts)
-                    {
-                        contract.Callback.NotifyMessage(MessageTypes.CloseClient, string.Empty);
-                    }
-                }
             }
         }
 

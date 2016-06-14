@@ -203,7 +203,15 @@ namespace MTree.RealTimeProvider
 
                     NotifyMessageToConsumer(MessageTypes.MasteringDone);
 
+                    #region Cleanup Processes
                     ProcessUtility.Kill(ProcessTypes.PopupStopper);
+
+                    foreach (var kiwoomContract in KiwoomContracts)
+                    {
+                        kiwoomContract.Callback.NotifyMessage(MessageTypes.CloseClient, string.Empty);
+                    } 
+                    #endregion
+
                 });
             }
             catch (Exception ex)
