@@ -125,7 +125,34 @@ namespace MTree.RealTimeProvider
                 logger.Info($"{RealTimeState}, Elapsed time: {sw.Elapsed.ToString()}");
             }
         }
-
+        private void StartCodeMapPublishing(string codemap)
+        {
+            RealTimeState = "Codemap publishing started";
+            logger.Info(RealTimeState);
+            try
+            {
+                foreach (var contract in MasteringContracts)
+                {
+                    try
+                    {
+                        contract.Value.Callback.ConsumeCodemap(codemap);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error(ex);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+            finally
+            {
+                RealTimeState = "Codemap publishing done";
+                logger.Info(RealTimeState);
+            }
+        }
         private void StartDaishinStockMastering()
         {
             RealTimeState = "Daishin stock mastering started";

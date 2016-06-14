@@ -48,6 +48,9 @@ namespace MTree.RealTimeProvider
         void ConsumeIndexMaster(List<IndexMaster> indexMaster);
 
         [OperationContract]
+        void ConsumeCodemap(string codeMap);
+
+        [OperationContract]
         void ConsumeChart(List<Candle> candles);
     }
 }

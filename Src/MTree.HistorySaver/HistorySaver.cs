@@ -176,6 +176,11 @@ namespace MTree.HistorySaver
             }
         }
 
+        public override void ConsumeCodemap(string codeMap)
+        {
+            //Dictionary<string, object> rebuilt = CodeMapBuilderUtil.RebuildNode(jsonString);
+        }
+
         /// <summary>
         /// 기존에 저장된 Day Chart는 Collection Drop 후 새로 저장한다.
         /// </summary>

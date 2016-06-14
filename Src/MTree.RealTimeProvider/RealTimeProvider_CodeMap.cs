@@ -88,7 +88,8 @@ namespace MTree.RealTimeProvider
 
                     bool masteringRet = Task.WaitAll(codemapBuildingTask.ToArray(), TimeSpan.FromMinutes(30));
                     var jsonString = codeMapBuilder.GetCodeMapAsJsonString();
-                    Dictionary<string, object> rebuilt = CodeMapBuilderUtil.RebuildNode(jsonString);
+                    
+                    StartCodeMapPublishing(jsonString);
                 }
                 catch (Exception ex)
                 {

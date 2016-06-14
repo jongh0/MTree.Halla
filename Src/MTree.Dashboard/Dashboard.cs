@@ -269,6 +269,10 @@ namespace MTree.Dashboard
                 logger.Error(ex);
             }
         }
+        public override void ConsumeCodemap(string codeMap)
+        {
+            Dictionary<string, object> rebuilt = CodeMapBuilderUtil.RebuildNode(codeMap);
+        }
 
         private void SaveDashboard()
         {

@@ -44,6 +44,10 @@ namespace MTree.Consumer
         {
         }
 
+        public virtual void ConsumeCodemap(string codeMap)
+        {
+        }
+
         public virtual void ConsumeChart(List<Candle> candles)
         {
         }
