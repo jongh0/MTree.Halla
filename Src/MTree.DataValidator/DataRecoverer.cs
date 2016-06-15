@@ -49,12 +49,6 @@ namespace MTree.DataValidator
             var filter = FilterFactory.Instance.BuildIndexMasterFilter(targetDate);
 
             IndexMaster master = To.Find(code, filter).FirstOrDefault();
-            if (master == null)
-            {
-                logger.Info($"Stock Master for {code} of {targetDate.ToString("yyyy-MM-dd")} is null.");
-                return;
-            }
-
             To.Delete(code, filter);
             To.Insert(From.Find(code, filter)?.FirstOrDefault());
             logger.Info($"Index Master Recovery for {code} of {targetDate.ToString("yyyy-MM-dd")} Done");
