@@ -230,14 +230,13 @@ namespace MTree.Dashboard
                     if (StockItems.ContainsKey(stockMaster.Code) == false)
                     {
                         var item = new DashboardItem(stockMaster.Code);
-                        item.Name = stockMaster.Name;
-                        item.Price = stockMaster.BasisPrice;
-                        item.BasisPrice = stockMaster.BasisPrice;
-                        item.PreviousVolume = stockMaster.PreviousVolume;
-                        item.MarketType = stockMaster.MarketType;
-
                         StockItems.Add(item.Code, item);
                     }
+                    StockItems[stockMaster.Code].Name = stockMaster.Name;
+                    StockItems[stockMaster.Code].Price = stockMaster.BasisPrice;
+                    StockItems[stockMaster.Code].BasisPrice = stockMaster.BasisPrice;
+                    StockItems[stockMaster.Code].PreviousVolume = stockMaster.PreviousVolume;
+                    StockItems[stockMaster.Code].MarketType = stockMaster.MarketType;
                 }
             }
             catch (Exception ex)
@@ -255,13 +254,12 @@ namespace MTree.Dashboard
                     if (IndexItems.ContainsKey(indexMaster.Code) == false)
                     {
                         var item = new DashboardItem(indexMaster.Code);
-                        item.Name = indexMaster.Name;
-                        item.Price = indexMaster.BasisPrice;
-                        item.BasisPrice = indexMaster.BasisPrice;
-                        item.MarketType = MarketTypes.INDEX;
-
                         IndexItems.Add(item.Code, item);
                     }
+                    IndexItems[indexMaster.Code].Name = indexMaster.Name;
+                    IndexItems[indexMaster.Code].Price = indexMaster.BasisPrice;
+                    IndexItems[indexMaster.Code].BasisPrice = indexMaster.BasisPrice;
+                    IndexItems[indexMaster.Code].MarketType = MarketTypes.INDEX;
                 }
             }
             catch (Exception ex)
