@@ -10,10 +10,19 @@ using System.Threading.Tasks;
 
 namespace MTree.Consumer
 {
-    public class ConsumerCallback : SubscribingBase, IConsumerCallback
+    public class ConsumerBase : SubscribingBase, IConsumerCallback
     {
+        public event Action<List<StockMaster>> ConsumeStockMasterEvent;
+
+        public event Action<List<IndexMaster>> ConsumeIndexMasterEvent;
+
+        public event Action<string> ConsumeCodemapEvent;
+
+        public event Action<MessageTypes, string> NotifyMessageEvent;
+        
         public virtual void NotifyMessage(MessageTypes type, string message)
         {
+            NotifyMessageEvent?.Invoke(type, message);
         }
 
         public virtual void ConsumeBiddingPrice(BiddingPrice biddingPrice)
@@ -38,14 +47,17 @@ namespace MTree.Consumer
 
         public virtual void ConsumeStockMaster(List<StockMaster> stockMasters)
         {
+            ConsumeStockMasterEvent?.Invoke(stockMasters);
         }
-
+        
         public virtual void ConsumeIndexMaster(List<IndexMaster> indexMasters)
         {
+            ConsumeIndexMasterEvent?.Invoke(indexMasters);
         }
 
         public virtual void ConsumeCodemap(string codeMap)
         {
+            ConsumeCodemapEvent?.Invoke(codeMap);
         }
 
         public virtual void ConsumeChart(List<Candle> candles)

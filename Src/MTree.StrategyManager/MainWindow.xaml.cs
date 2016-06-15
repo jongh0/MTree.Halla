@@ -20,14 +20,14 @@ namespace MTree.StrategyManager
     /// </summary>
     public partial class MainWindow : Window
     {
-        private StrategyManager Consumer { get; set; }
+        private StrategyManager strategyManager { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
 
-            Consumer = new StrategyManager();
-            this.DataContext = Consumer;
+            strategyManager = new StrategyManager();
+            this.DataContext = strategyManager;
         }
     }
 }

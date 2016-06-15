@@ -21,7 +21,7 @@ using System.ComponentModel;
 namespace MTree.Dashboard
 {
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false, ValidateMustUnderstand = false)]
-    public class Dashboard : ConsumerBase, INotifyPropertyChanged
+    public class Dashboard : INotifyPropertyChanged
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -33,34 +33,30 @@ namespace MTree.Dashboard
         public DataCounter Counter { get; set; } = null;
         public TrafficMonitor Monitor { get; set; } = null;
 
+        private ConsumerBase consumer;
+
         public Dashboard()
         {
             try
             {
-                TaskUtility.Run("Dashboard.CircuitBreakQueue", QueueTaskCancelToken, ProcessCircuitBreakQueue);
+                consumer = new RealTimeConsumer();
+                consumer.ConsumeStockMasterEvent += ConsumeStockMaster;
+                consumer.ConsumeIndexMasterEvent += ConsumeIndexMaster;
+                consumer.ConsumeCodemapEvent += ConsumeCodemap;
+                consumer.NotifyMessageEvent += NotifyMessage;
 
-                if (Config.General.VerifyOrdering == true)
-                {
-                    TaskUtility.Run($"Dashboard.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
-                }
-                else
-                {
-                    for (int i = 0; i < 5; i++)
-                        TaskUtility.Run($"Dashboard.StockConclusionQueue_{i + 1}", QueueTaskCancelToken, ProcessStockConclusionQueue);
-                }
+                TaskUtility.Run("Dashboard.CircuitBreakQueue", consumer.QueueTaskCancelToken, ProcessCircuitBreakQueue);
+                TaskUtility.Run("Dashboard.StockConclusionQueue", consumer.QueueTaskCancelToken, ProcessStockConclusionQueue);
+                TaskUtility.Run("Dashboard.IndexConclusionQueue", consumer.QueueTaskCancelToken, ProcessIndexConclusionQueue);
 
-                for (int i = 0; i < 2; i++)
-                    TaskUtility.Run($"Dashboard.IndexConclusionQueue_{i + 1}", QueueTaskCancelToken, ProcessIndexConclusionQueue);
+                if (Config.General.SkipBiddingPrice == false)
+                {
+                    TaskUtility.Run("Dashboard.BiddingPriceQueue", consumer.QueueTaskCancelToken, ProcessBiddingPriceQueue);
+                }
 
                 if (Config.General.VerifyLatency == true)
                 {
                     Monitor = new TrafficMonitor();
-
-                    if (Config.General.SkipBiddingPrice == false)
-                    {
-                        for (int i = 0; i < 10; i++)
-                            TaskUtility.Run($"Dashboard.BiddingPriceQueue_{i + 1}", QueueTaskCancelToken, ProcessBiddingPriceQueue);
-                    }
                 }
             }
             catch (Exception ex)
@@ -68,33 +64,13 @@ namespace MTree.Dashboard
                 logger.Error(ex);
             }
         }
-
-        protected override void ServiceClient_Opened(object sender, EventArgs e)
-        {
-            base.ServiceClient_Opened(sender, e);
-
-            try
-            {
-                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.Mastering));
-                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.CircuitBreak));
-                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.StockConclusion));
-                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.IndexConclusion));
-
-                if (Config.General.VerifyLatency == true && Config.General.SkipBiddingPrice == false)
-                    ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.BiddingPrice));
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-            }
-        }
-
+       
         private void ProcessBiddingPriceQueue()
         {
             try
             {
                 BiddingPrice biddingPrice;
-                if (BiddingPriceQueue.TryDequeue(out biddingPrice) == true)
+                if (consumer.BiddingPriceQueue.TryDequeue(out biddingPrice) == true)
                 {
                     if (Config.General.VerifyLatency == true)
                         Monitor.CheckLatency(biddingPrice);
@@ -113,7 +89,7 @@ namespace MTree.Dashboard
             try
             {
                 CircuitBreak circuitBreak;
-                if (CircuitBreakQueue.TryDequeue(out circuitBreak) == true)
+                if (consumer.CircuitBreakQueue.TryDequeue(out circuitBreak) == true)
                 {
                     if (Config.General.VerifyLatency == true)
                         Monitor.CheckLatency(circuitBreak);
@@ -139,7 +115,7 @@ namespace MTree.Dashboard
             try
             {
                 StockConclusion conclusion;
-                if (StockConclusionQueue.TryDequeue(out conclusion) == true)
+                if (consumer.StockConclusionQueue.TryDequeue(out conclusion) == true)
                 {
                     if (Config.General.VerifyLatency == true)
                         Monitor.CheckLatency(conclusion);
@@ -192,7 +168,7 @@ namespace MTree.Dashboard
             try
             {
                 IndexConclusion conclusion;
-                if (IndexConclusionQueue.TryDequeue(out conclusion) == true)
+                if (consumer.IndexConclusionQueue.TryDequeue(out conclusion) == true)
                 {
                     if (Config.General.VerifyLatency == true)
                         Monitor.CheckLatency(conclusion);
@@ -221,7 +197,7 @@ namespace MTree.Dashboard
             }
         }
 
-        public override void ConsumeStockMaster(List<StockMaster> stockMasters)
+        public void ConsumeStockMaster(List<StockMaster> stockMasters)
         {
             try
             {
@@ -245,7 +221,7 @@ namespace MTree.Dashboard
             }
         }
 
-        public override void ConsumeIndexMaster(List<IndexMaster> indexMasters)
+        public void ConsumeIndexMaster(List<IndexMaster> indexMasters)
         {
             try
             {
@@ -267,7 +243,8 @@ namespace MTree.Dashboard
                 logger.Error(ex);
             }
         }
-        public override void ConsumeCodemap(string codeMap)
+
+        public void ConsumeCodemap(string codeMap)
         {
             Dictionary<string, object> rebuilt = CodeMapBuilderUtil.RebuildNode(codeMap);
         }
@@ -306,7 +283,7 @@ namespace MTree.Dashboard
             }
         }
 
-        public override void NotifyMessage(MessageTypes type, string message)
+        public void NotifyMessage(MessageTypes type, string message)
         {
             try
             {
@@ -333,7 +310,7 @@ namespace MTree.Dashboard
                 logger.Error(ex);
             }
 
-            base.NotifyMessage(type, message);
+            //base.NotifyMessage(type, message);
         }
 
         #region Command

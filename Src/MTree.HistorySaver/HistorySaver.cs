@@ -19,7 +19,7 @@ using MongoDB.Bson;
 namespace MTree.HistorySaver
 {
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false, ValidateMustUnderstand = false)]
-    public class HistorySaver : ConsumerBase, INotifyPropertyChanged
+    public class HistorySaver : RealTimeConsumer, INotifyPropertyChanged
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -41,26 +41,6 @@ namespace MTree.HistorySaver
                 StartRefreshTimer();
 
                 var instance = DbAgent.Instance;
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-            }
-        }
-
-        protected override void ServiceClient_Opened(object sender, EventArgs e)
-        {
-            base.ServiceClient_Opened(sender, e);
-
-            try
-            {
-                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.Chart));
-                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.Mastering));
-                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.CircuitBreak));
-                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.StockConclusion));
-                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.IndexConclusion));
-                if (Config.General.SkipBiddingPrice == false)
-                    ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.BiddingPrice));
             }
             catch (Exception ex)
             {
