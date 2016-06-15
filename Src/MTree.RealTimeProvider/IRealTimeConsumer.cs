@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace MTree.RealTimeProvider
 {
-    [ServiceContract(CallbackContract = typeof(IRealTimeConsumerCallback))]
+    [ServiceContract(CallbackContract = typeof(IConsumerCallback))]
     public interface IRealTimeConsumer
     {
         [OperationContract(IsOneWay = true)]
@@ -24,7 +24,7 @@ namespace MTree.RealTimeProvider
         List<Candle> GetChart(string code, DateTime startDate, DateTime endDate, CandleTypes candleType);
     }
 
-    public interface IRealTimeConsumerCallback
+    public interface IConsumerCallback
     {
         [OperationContract(IsOneWay = true)]
         void NotifyMessage(MessageTypes type, string message);

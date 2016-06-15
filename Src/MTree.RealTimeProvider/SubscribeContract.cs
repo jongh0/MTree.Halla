@@ -31,7 +31,7 @@ namespace MTree.RealTimeProvider
 
         public HashSet<string> Codes { get; set; } = new HashSet<string>();
 
-        public IRealTimeConsumerCallback Callback { get; set; } = null;
+        public IConsumerCallback Callback { get; set; } = null;
 
         public SubscribeContract()
         {

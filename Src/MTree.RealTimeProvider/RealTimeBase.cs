@@ -32,7 +32,7 @@ namespace MTree.RealTimeProvider
         Group
     }
 
-    public class RealTimeBase
+    public class SubscribingBase
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -57,7 +57,7 @@ namespace MTree.RealTimeProvider
 
         private System.Timers.Timer RefreshTimer { get; set; }
 
-        public RealTimeBase()
+        public SubscribingBase()
         {
             QueueTaskCancelToken = QueueTaskCancelSource.Token;
         }

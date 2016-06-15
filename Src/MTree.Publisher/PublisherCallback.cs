@@ -9,7 +9,7 @@ using MTree.DataStructure;
 
 namespace MTree.Publisher
 {
-    public class PublisherCallback : RealTimeBase, IRealTimePublisherCallback
+    public class PublisherCallback : SubscribingBase, IRealTimePublisherCallback
     {
         public virtual void NotifyMessage(MessageTypes type, string message)
         {

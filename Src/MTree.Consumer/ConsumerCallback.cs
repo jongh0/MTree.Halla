@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MTree.Consumer
 {
-    public class ConsumerCallback : RealTimeBase, IRealTimeConsumerCallback
+    public class ConsumerCallback : SubscribingBase, IConsumerCallback
     {
         public virtual void NotifyMessage(MessageTypes type, string message)
         {

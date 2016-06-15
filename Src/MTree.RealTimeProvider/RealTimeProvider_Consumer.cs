@@ -44,7 +44,7 @@ namespace MTree.RealTimeProvider
         {
             try
             {
-                contract.Callback = OperationContext.Current.GetCallbackChannel<IRealTimeConsumerCallback>();
+                contract.Callback = OperationContext.Current.GetCallbackChannel<IConsumerCallback>();
 
                 // 모든 Contract 저장
                 if (ConsumerContracts.ContainsKey(clientId) == false)
