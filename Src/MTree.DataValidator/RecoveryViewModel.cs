@@ -340,9 +340,13 @@ namespace MTree.DataValidator
                                         Recoverer.RecoverStockConclusion(targetDate, Code);
                                 }
                             }
+                            else
+                            {
+                                logger.Info($"Stock Conclusion Validation for {Code} of {targetDate.ToString("yyyy-MM-dd")} success.");
+                            }
                         }
-
                         ApplyForAll = false;
+                        logger.Info("Stock Conclusion Recovery Done.");
                     }));
 
                 return _RecoverStockConclusionCommand;

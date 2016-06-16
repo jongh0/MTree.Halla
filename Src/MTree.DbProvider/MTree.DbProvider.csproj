@@ -57,6 +57,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataLoader.cs" />
     <Compile Include="DbAgent.cs" />
     <Compile Include="FilterFactory.cs" />
     <Compile Include="MongoDbProvider.cs" />

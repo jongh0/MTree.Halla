@@ -16,12 +16,17 @@
                 </ResourceDictionary.MergedDictionaries>
             </ResourceDictionary>
         </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="100"/>
             <ColumnDefinition Width="150"/>
         </Grid.ColumnDefinitions>
-        <TabControl Margin="5" Grid.ColumnSpan="3">
+        <Button Grid.Row="0" Content="Start" Click="Button_Click"/>
+        <TabControl Grid.Row="1" Margin="5" Grid.ColumnSpan="3">
             <TabItem Header="Stock">
                 <ListView x:Name="StockListView" ItemsSource="{Binding Path=StockItems.Values}" Margin="0" Style="{StaticResource GridViewStyle}" ItemContainerStyle="{StaticResource GridViewItemStyle}" utility:GridViewSort.AutoSort="True">
                     <i:Interaction.Triggers>

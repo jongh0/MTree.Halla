@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MTree.DataExtractor
+namespace MTree.DbProvider
 {
     public class DataLoader
     {

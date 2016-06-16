@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MTree.Consumer
@@ -19,19 +20,27 @@ namespace MTree.Consumer
     public class HistoryConsumer: ConsumerBase, ISimulation
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-        
+
+        private DataLoader dataLoader = new DataLoader();
+
         public void StartSimulation(string[] codes, DateTime targetDate)
         {
-            List<StockConclusion> conclusions = new List<StockConclusion>();
-            var builder = Builders<StockConclusion>.Filter;
-            var filter = builder.Gte(i => (i as Subscribable).Time, targetDate) & builder.Lte(i => (i as Subscribable).Time, targetDate);
+            List<StockMaster> masters = new List<StockMaster>();
+            foreach (string code in codes)
+            {
+                masters.AddRange(dataLoader.Load<StockMaster>(code, targetDate, targetDate));
+            }
+            ConsumeStockMaster(masters);
 
+            List<StockConclusion> conclusions = new List<StockConclusion>();
+            
             Stopwatch sw = new Stopwatch();
             logger.Info("Start to load history from db");
             sw.Start();
             foreach (string code in codes)
             {
-                conclusions.Union(DbAgent.Instance.Find(code, filter).ToList()).OrderBy(conclusion => conclusion.Time);
+                conclusions.AddRange(dataLoader.Load<StockConclusion>(code, targetDate, targetDate));
+                conclusions = conclusions.OrderBy(conclusion => conclusion.Time).ToList();
             }
             sw.Stop();
             logger.Info($"Loading done. Elapsed:{sw.Elapsed}");

@@ -13,17 +13,27 @@ namespace MTree.Dashboard
     public partial class MainWindow : Window
     {
         private Dashboard dashboard { get; set; }
-
+        private ConsumerBase consumer { get; set; }
         public MainWindow()
         {
             InitializeComponent();
+            
+            if (Environment.GetCommandLineArgs().Length > 1)
+            {
+                if (Environment.GetCommandLineArgs()[1] == "/Simul")
+                {
+                    consumer = new HistoryConsumer();
+                }
+            }
+            else
+            {
+                consumer = new RealTimeConsumer();
+            }
 
-            ConsumerBase consumer = new RealTimeConsumer();
             dashboard = new Dashboard(consumer);
+            this.DataContext = dashboard;
 
             //TestData();
-
-            this.DataContext = dashboard;
         }
 
         private void TestData()
@@ -70,6 +80,18 @@ namespace MTree.Dashboard
 
                 Thread.Sleep(1000);
                 dashboard.StockItems["000060"].Price = 12203;
+            });
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Task.Run(() =>
+            {
+                if (consumer is ISimulation)
+                {
+                    string[] codes = { "000020", "000030" };
+                    ((ISimulation)consumer).StartSimulation(codes, new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day));
+                }
             });
         }
     }
