@@ -1,4 +1,5 @@
-﻿using MTree.DataStructure;
+﻿using MTree.Consumer;
+using MTree.DataStructure;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,7 +18,9 @@ namespace MTree.Dashboard
         {
             InitializeComponent();
 
-            dashboard = new Dashboard();
+            ConsumerBase consumer = new RealTimeConsumer();
+            dashboard = new Dashboard(consumer);
+
             //TestData();
 
             this.DataContext = dashboard;

@@ -33,25 +33,26 @@ namespace MTree.Dashboard
         public DataCounter Counter { get; set; } = null;
         public TrafficMonitor Monitor { get; set; } = null;
 
-        private ConsumerBase consumer;
+        private ConsumerBase Consumer { get; set; }
 
-        public Dashboard()
+        public Dashboard(ConsumerBase consumer)
         {
             try
             {
-                consumer = new RealTimeConsumer();
-                consumer.ConsumeStockMasterEvent += ConsumeStockMaster;
-                consumer.ConsumeIndexMasterEvent += ConsumeIndexMaster;
-                consumer.ConsumeCodemapEvent += ConsumeCodemap;
-                consumer.NotifyMessageEvent += NotifyMessage;
+                Consumer = consumer;
+                
+                Consumer.ConsumeStockMasterEvent += ConsumeStockMaster;
+                Consumer.ConsumeIndexMasterEvent += ConsumeIndexMaster;
+                Consumer.ConsumeCodemapEvent += ConsumeCodemap;
+                Consumer.NotifyMessageEvent += NotifyMessage;
 
-                TaskUtility.Run("Dashboard.CircuitBreakQueue", consumer.QueueTaskCancelToken, ProcessCircuitBreakQueue);
-                TaskUtility.Run("Dashboard.StockConclusionQueue", consumer.QueueTaskCancelToken, ProcessStockConclusionQueue);
-                TaskUtility.Run("Dashboard.IndexConclusionQueue", consumer.QueueTaskCancelToken, ProcessIndexConclusionQueue);
+                TaskUtility.Run("Dashboard.CircuitBreakQueue", Consumer.QueueTaskCancelToken, ProcessCircuitBreakQueue);
+                TaskUtility.Run("Dashboard.StockConclusionQueue", Consumer.QueueTaskCancelToken, ProcessStockConclusionQueue);
+                TaskUtility.Run("Dashboard.IndexConclusionQueue", Consumer.QueueTaskCancelToken, ProcessIndexConclusionQueue);
 
                 if (Config.General.SkipBiddingPrice == false)
                 {
-                    TaskUtility.Run("Dashboard.BiddingPriceQueue", consumer.QueueTaskCancelToken, ProcessBiddingPriceQueue);
+                    TaskUtility.Run("Dashboard.BiddingPriceQueue", Consumer.QueueTaskCancelToken, ProcessBiddingPriceQueue);
                 }
 
                 if (Config.General.VerifyLatency == true)
@@ -70,7 +71,7 @@ namespace MTree.Dashboard
             try
             {
                 BiddingPrice biddingPrice;
-                if (consumer.BiddingPriceQueue.TryDequeue(out biddingPrice) == true)
+                if (Consumer.BiddingPriceQueue.TryDequeue(out biddingPrice) == true)
                 {
                     if (Config.General.VerifyLatency == true)
                         Monitor.CheckLatency(biddingPrice);
@@ -89,7 +90,7 @@ namespace MTree.Dashboard
             try
             {
                 CircuitBreak circuitBreak;
-                if (consumer.CircuitBreakQueue.TryDequeue(out circuitBreak) == true)
+                if (Consumer.CircuitBreakQueue.TryDequeue(out circuitBreak) == true)
                 {
                     if (Config.General.VerifyLatency == true)
                         Monitor.CheckLatency(circuitBreak);
@@ -115,7 +116,7 @@ namespace MTree.Dashboard
             try
             {
                 StockConclusion conclusion;
-                if (consumer.StockConclusionQueue.TryDequeue(out conclusion) == true)
+                if (Consumer.StockConclusionQueue.TryDequeue(out conclusion) == true)
                 {
                     if (Config.General.VerifyLatency == true)
                         Monitor.CheckLatency(conclusion);
@@ -168,7 +169,7 @@ namespace MTree.Dashboard
             try
             {
                 IndexConclusion conclusion;
-                if (consumer.IndexConclusionQueue.TryDequeue(out conclusion) == true)
+                if (Consumer.IndexConclusionQueue.TryDequeue(out conclusion) == true)
                 {
                     if (Config.General.VerifyLatency == true)
                         Monitor.CheckLatency(conclusion);
