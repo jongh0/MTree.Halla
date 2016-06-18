@@ -252,7 +252,7 @@ namespace MTree.DataValidator
                             }
                             else
                             {
-                                logger.Error($"Master Validation for {Code} of {targetDate.ToString("yyyy-MM-dd")} success.");
+                                logger.Info($"Master Validation for {Code} of {targetDate.ToString("yyyy-MM-dd")} success.");
                             }
                         }
                     }));
@@ -327,6 +327,7 @@ namespace MTree.DataValidator
                         {
                             if (Validator.ValidateStockConclusion(targetDate, Code, true) == false)
                             {
+                                logger.Error($"Stock Conclusion  Validation for {Code} of {targetDate.ToString("yyyy-MM-dd")} Fail.");
                                 if (ValidateOnly == false)
                                 {
                                     DialogResult needRecovery = DialogResult.None;
@@ -416,6 +417,7 @@ namespace MTree.DataValidator
                         {
                             if (Validator.ValidateIndexConclusion(targetDate, Code, true) == false)
                             {
+                                logger.Error($"Index Conclusion Validation for {Code} of {targetDate.ToString("yyyy-MM-dd")} Fail.");
                                 if (ValidateOnly == false)
                                 {
                                     DialogResult needRecovery = DialogResult.None;
@@ -429,7 +431,12 @@ namespace MTree.DataValidator
                                         Recoverer.RecoverIndexConclusion(targetDate, Code);
                                 }
                             }
+                            else
+                            {
+                                logger.Info($"Index Conclusion Validation for {Code} of {targetDate.ToString("yyyy-MM-dd")} success.");
+                            }
                         }
+                        logger.Info("Index Conclusion Recovery Done.");
                     }));
 
                 return _RecoverIndexConclusionCommand;
@@ -454,10 +461,12 @@ namespace MTree.DataValidator
 
             for (DateTime targetDate = StartingDate; targetDate <= EndingDate; targetDate = targetDate.AddDays(1))
             {
+                int cnt = 0;
                 Parallel.ForEach(codeList, new ParallelOptions { MaxDegreeOfParallelism = Config.Validator.ThreadLimit }, code =>
                 {
                     if (Validator.ValidateCircuitBreak(targetDate, code, true) == false)
                     {
+                        logger.Error($"Circuit Break Validation for {code} of {targetDate.ToString("yyyy-MM-dd")} Fail.");
                         if (ValidateOnly == false)
                         {
                             DialogResult needRecovery = DialogResult.None;
@@ -473,6 +482,10 @@ namespace MTree.DataValidator
                             if (needRecovery == DialogResult.OK)
                                 Recoverer.RecoverCircuitBreak(targetDate, code);
                         }
+                    }
+                    else
+                    {
+                        logger.Info($"Circuit Break Validation for {code} of {targetDate.ToString("yyyy-MM-dd")} success.{Interlocked.Increment(ref cnt)}/{codeList.Count}");
                     }
                 });
                 ApplyForAll = false;
@@ -495,6 +508,7 @@ namespace MTree.DataValidator
                         {
                             if (Validator.ValidateCircuitBreak(targetDate, Code, true) == false)
                             {
+                                logger.Error($"Circuit Break Validation for {Code} of {targetDate.ToString("yyyy-MM-dd")} Fail.");
                                 if (ValidateOnly == false)
                                 {
                                     DialogResult needRecovery = DialogResult.None;
@@ -507,6 +521,10 @@ namespace MTree.DataValidator
                                     if (needRecovery == DialogResult.OK)
                                         Recoverer.RecoverCircuitBreak(targetDate, Code);
                                 }
+                            }
+                            else
+                            {
+                                logger.Info($"Circuit Break Validation for {Code} of {targetDate.ToString("yyyy-MM-dd")} success.");
                             }
                         }
                     }));
