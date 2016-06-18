@@ -15,6 +15,7 @@ namespace TestPublisher
     {
         public void StartPublising()
         {
+            Random rand = new Random();
             Task.Run(() =>
             {
                 while (true)
@@ -25,7 +26,7 @@ namespace TestPublisher
                     var subscribable = new StockConclusion();
                     subscribable.Id = ObjectId.GenerateNewId();
                     subscribable.Code = "000020";
-                    subscribable.Price = 100;
+                    subscribable.Price = rand.Next(100, 200);
                     subscribable.Time = DateTime.Now;
                     
                     ServiceClient.PublishStockConclusion(subscribable);
@@ -44,7 +45,7 @@ namespace TestPublisher
                     var subscribable = new IndexConclusion();
                     subscribable.Id = ObjectId.GenerateNewId();
                     subscribable.Code = "000030";
-                    subscribable.Price = 100;
+                    subscribable.Price = rand.Next(100, 200);
                     subscribable.Time = DateTime.Now;
 
                     ServiceClient.PublishIndexConclusion(subscribable);
