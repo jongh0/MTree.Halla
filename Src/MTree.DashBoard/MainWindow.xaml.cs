@@ -18,12 +18,9 @@ namespace MTree.Dashboard
         {
             InitializeComponent();
             
-            if (Environment.GetCommandLineArgs().Length > 1)
+            if (Environment.GetCommandLineArgs().Length > 1 && Environment.GetCommandLineArgs()[1] == "/Simul")
             {
-                if (Environment.GetCommandLineArgs()[1] == "/Simul")
-                {
-                    consumer = new HistoryConsumer();
-                }
+                consumer = new HistoryConsumer();   
             }
             else
             {
