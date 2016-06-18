@@ -207,7 +207,7 @@ namespace MTree.DataValidator
         
         public bool ValidateStockConclusions(DateTime targetDate, bool makeReport = true)
         {
-            logger.Info("Stock Conclusion Validation Start");
+            //logger.Info("Stock Conclusion Validation Start");
             Stopwatch sw = new Stopwatch();
             sw.Start();
             int cnt = 0;
@@ -245,14 +245,14 @@ namespace MTree.DataValidator
                     
                     if (comparator.DoCompareItem(sourceList, destinationList, false) == false)
                     {
-                        logger.Error($"Stock Conclusion Validation for {code} of {targetDate.ToString("yyyy-MM-dd")} Fail. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
+                        //logger.Error($"Stock Conclusion Validation for {code} of {targetDate.ToString("yyyy-MM-dd")} Fail. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
                         if (makeReport == true)
                             comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, stockConclusionCompareResultPath, code + ".html"));
                         result = false;
                     }
                     else
                     {
-                        logger.Info($"Stock Conclusion Validation for {code} of {targetDate.ToString("yyyy-MM-dd")} success. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
+                        //logger.Info($"Stock Conclusion Validation for {code} of {targetDate.ToString("yyyy-MM-dd")} success. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
                     }
                 }
                 else
@@ -445,7 +445,7 @@ namespace MTree.DataValidator
 
         public bool ValidateIndexConclusions(DateTime targetDate, bool makeReport = true)
         {
-            logger.Info("Index Conclusion Validation Start.");
+            //logger.Info("Index Conclusion Validation Start.");
 
             bool result = true;
 
@@ -471,7 +471,7 @@ namespace MTree.DataValidator
 
                 if (comparator.DoCompareItem(sourceList, destinationList, false) == false)
                 {
-                    logger.Error($"Index Conclusion Validation for {code} of {targetDate.ToString("yyyy-MM-dd")} Fail.");
+                    //logger.Error($"Index Conclusion Validation for {code} of {targetDate.ToString("yyyy-MM-dd")} Fail.");
                     if (makeReport == true)
                         comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, indexConclusionCompareResultPath, code + ".html"));
                     result = false;
@@ -487,7 +487,7 @@ namespace MTree.DataValidator
             codeList.Clear();
 
             sw.Stop();
-            logger.Info($"Index Conclusion Validation Done. Elapsed:{sw.Elapsed}");
+            //logger.Info($"Index Conclusion Validation Done. Elapsed:{sw.Elapsed}");
 
             return result;
         }
@@ -517,7 +517,7 @@ namespace MTree.DataValidator
 
                 if (comparator.DoCompareItem(sourceList, destinationList, false) == false)
                 {
-                    logger.Error($"Index Conclusion Validation for {code} of {targetDate.ToString("yyyy-MM-dd")} Fail.");
+                    //logger.Error($"Index Conclusion Validation for {code} of {targetDate.ToString("yyyy-MM-dd")} Fail.");
                     if (makeReport == true)
                         comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, indexConclusionCompareResultPath, code + ".html"));
                     return false;
@@ -536,7 +536,7 @@ namespace MTree.DataValidator
                 GC.WaitForPendingFinalizers();
             }
             
-            logger.Info($"Index Conclusion Validation for {code} of {targetDate.ToString("yyyy-MM-dd")} Done.");
+            //logger.Info($"Index Conclusion Validation for {code} of {targetDate.ToString("yyyy-MM-dd")} Done.");
             return true;
         }
 
@@ -562,7 +562,7 @@ namespace MTree.DataValidator
 
                 if (comparator.DoCompareItem(sourceList, destinationList, false) == false)
                 {
-                    logger.Error($"Circuit Break Validation for {code} of {targetDate.ToString("yyyy-MM-dd")} Fail.");
+                    //logger.Error($"Circuit Break Validation for {code} of {targetDate.ToString("yyyy-MM-dd")} Fail.");
                     if (makeReport == true)
                         comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, circuitbreakCompareResultPath, code + ".html"));
                     return false;
@@ -582,13 +582,13 @@ namespace MTree.DataValidator
             }
 
             sw.Stop();
-            logger.Info($"Circuit Break Validation for {code} of {targetDate.ToString("yyyy-MM-dd")}. Elapsed:{sw.Elapsed}");
+            //logger.Info($"Circuit Break Validation for {code} of {targetDate.ToString("yyyy-MM-dd")}. Elapsed:{sw.Elapsed}");
 
             return true;
         }
         public bool ValidateCircuitBreaks(DateTime targetDate, bool makeReport = true)
         {
-            logger.Info("Circuit Break Validation Start.");
+            //logger.Info("Circuit Break Validation Start.");
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
@@ -614,7 +614,7 @@ namespace MTree.DataValidator
 
                 if (comparator.DoCompareItem(sourceList, destinationList, false) == false)
                 {
-                    logger.Error("Circuit Break Validation Fail.");
+                    //logger.Error("Circuit Break Validation Fail.");
                     if (makeReport == true)
                         comparator.MakeReport(sourceList, destinationList, Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, circuitbreakCompareResultPath));
                     return false;
@@ -634,7 +634,7 @@ namespace MTree.DataValidator
             }
 
             sw.Stop();
-            logger.Info($"Circuit Break Validation Done. Elapsed:{sw.Elapsed}");
+            //logger.Info($"Circuit Break Validation Done. Elapsed:{sw.Elapsed}");
 
             return true;
         }
