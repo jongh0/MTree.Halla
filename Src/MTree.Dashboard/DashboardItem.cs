@@ -11,6 +11,17 @@ namespace MTree.Dashboard
 {
     public class DashboardItem : INotifyPropertyChanged
     {
+        private DateTime _Time = DateTime.MinValue;
+        public DateTime Time
+        {
+            get { return _Time; }
+            set
+            {
+                _Time = value;
+                NotifyPropertyChanged(nameof(Time));
+            }
+        }
+
         private string _Code = string.Empty;
         public string Code
         {

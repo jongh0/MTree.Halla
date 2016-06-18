@@ -42,6 +42,14 @@
         <Setter Property="View">
             <Setter.Value>
                 <GridView>
+                    <!--Time-->
+                    <GridViewColumn Header="Time" Width="80" utility:GridViewSort.PropertyName="Time">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=Time}" Style="{StaticResource StringTextBlock}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                     <!--Code-->
                     <GridViewColumn Header="Code" Width="80" utility:GridViewSort.PropertyName="Code">
                         <GridViewColumn.CellTemplate>

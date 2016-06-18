@@ -26,22 +26,28 @@ namespace MTree.Consumer
         public void StartSimulation(string[] codes, DateTime targetDate)
         {
             List<StockMaster> masters = new List<StockMaster>();
-            foreach (string code in codes)
+            Parallel.ForEach(codes, code =>
             {
                 masters.AddRange(dataLoader.Load<StockMaster>(code, targetDate, targetDate));
-            }
+            });
+
             ConsumeStockMaster(masters);
 
+            object conclusionLock = new object();
             List<StockConclusion> conclusions = new List<StockConclusion>();
             
             Stopwatch sw = new Stopwatch();
             logger.Info("Start to load history from db");
             sw.Start();
-            foreach (string code in codes)
+            Parallel.ForEach(codes, code =>
             {
-                conclusions.AddRange(dataLoader.Load<StockConclusion>(code, targetDate, targetDate));
-                conclusions = conclusions.OrderBy(conclusion => conclusion.Time).ToList();
-            }
+                List<StockConclusion> tempConclusions = dataLoader.Load<StockConclusion>(code, targetDate, targetDate);
+                lock (conclusionLock)
+                {
+                    conclusions.AddRange(tempConclusions);
+                    conclusions = conclusions.OrderBy(conclusion => conclusion.Time).ToList();
+                }
+            });
             sw.Stop();
             logger.Info($"Loading done. Elapsed:{sw.Elapsed}");
             
@@ -50,6 +56,7 @@ namespace MTree.Consumer
             foreach (StockConclusion conclusion in conclusions)
             {
                 ConsumeStockConclusion(conclusion);
+                //Thread.Sleep(1);
             }
             sw.Stop();
             logger.Info($"Consuming done. Elapsed:{sw.Elapsed}");

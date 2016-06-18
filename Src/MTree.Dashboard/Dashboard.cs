@@ -21,7 +21,7 @@ using System.ComponentModel;
 namespace MTree.Dashboard
 {
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false, ValidateMustUnderstand = false)]
-    public class Dashboard : INotifyPropertyChanged
+    public class Dashboard
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -130,6 +130,7 @@ namespace MTree.Dashboard
                     var item = StockItems[conclusion.Code];
                     lock (item)
                     {
+                        item.Time = conclusion.Time;
                         item.Price = conclusion.Price;
                         item.Volume += conclusion.Amount;
                     }
@@ -183,6 +184,7 @@ namespace MTree.Dashboard
                     var item = IndexItems[conclusion.Code];
                     lock (item)
                     {
+                        item.Time = conclusion.Time;
                         item.Price = conclusion.Price;
                         item.Volume += conclusion.Amount;
                     }
@@ -209,9 +211,11 @@ namespace MTree.Dashboard
                         var item = new DashboardItem(stockMaster.Code);
                         StockItems.Add(item.Code, item);
                     }
+                    StockItems[stockMaster.Code].Time = stockMaster.Time;
                     StockItems[stockMaster.Code].Name = stockMaster.Name;
                     StockItems[stockMaster.Code].Price = stockMaster.BasisPrice;
                     StockItems[stockMaster.Code].BasisPrice = stockMaster.BasisPrice;
+                    StockItems[stockMaster.Code].Volume = 0;
                     StockItems[stockMaster.Code].PreviousVolume = stockMaster.PreviousVolume;
                     StockItems[stockMaster.Code].MarketType = stockMaster.MarketType;
                 }
@@ -233,8 +237,10 @@ namespace MTree.Dashboard
                         var item = new DashboardItem(indexMaster.Code);
                         IndexItems.Add(item.Code, item);
                     }
+                    IndexItems[indexMaster.Code].Time = indexMaster.Time;
                     IndexItems[indexMaster.Code].Name = indexMaster.Name;
                     IndexItems[indexMaster.Code].Price = indexMaster.BasisPrice;
+                    IndexItems[indexMaster.Code].Volume = 0;
                     IndexItems[indexMaster.Code].BasisPrice = indexMaster.BasisPrice;
                     IndexItems[indexMaster.Code].MarketType = MarketTypes.INDEX;
                 }
@@ -314,32 +320,5 @@ namespace MTree.Dashboard
             //base.NotifyMessage(type, message);
         }
 
-        #region Command
-        private RelayCommand<DashboardItem> _DoubleClickCommand;
-        public ICommand DoubleClickCommand
-        {
-            get
-            {
-                if (_DoubleClickCommand == null)
-                    _DoubleClickCommand = new RelayCommand<DashboardItem>((param) => ExecuteDoubleClick(param));
-
-                return _DoubleClickCommand;
-            }
-        }
-
-        public void ExecuteDoubleClick(DashboardItem item)
-        {
-            Process.Start("https://search.naver.com/search.naver?where=nexearch&query=" + item.Name);
-        }
-        #endregion
-
-        #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void NotifyPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-        #endregion
     }
 }
