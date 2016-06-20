@@ -153,11 +153,6 @@ namespace MTree.DataValidator
             //logger.Info($"Index Conclusion Recovery for {code} Started");
             var filter = FilterFactory.Instance.BuildIndexConclusionFilter(targetDate);
             List<IndexConclusion> conclusions = To.Find(code, filter).ToList();
-            if (conclusions.Count == 0)
-            {
-                logger.Info($"Index Conclusion for {code} of {targetDate.ToString("yyyy-MM-dd")} is null.");
-                return;
-            }
             To.Delete(code, filter);
             conclusions = From.Find(code, filter).ToList();
             foreach (IndexConclusion conclusion in conclusions)
