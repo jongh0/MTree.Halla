@@ -37,10 +37,10 @@ namespace MTree.RealTimeProvider
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         #region Queue
-        protected ConcurrentQueue<BiddingPrice> BiddingPriceQueue { get; } = new ConcurrentQueue<BiddingPrice>();
-        protected ConcurrentQueue<CircuitBreak> CircuitBreakQueue { get; } = new ConcurrentQueue<CircuitBreak>();
-        protected ConcurrentQueue<StockConclusion> StockConclusionQueue { get; } = new ConcurrentQueue<StockConclusion>();
-        protected ConcurrentQueue<IndexConclusion> IndexConclusionQueue { get; } = new ConcurrentQueue<IndexConclusion>();
+        public ConcurrentQueue<BiddingPrice> BiddingPriceQueue { get; } = new ConcurrentQueue<BiddingPrice>();
+        public ConcurrentQueue<CircuitBreak> CircuitBreakQueue { get; } = new ConcurrentQueue<CircuitBreak>();
+        public ConcurrentQueue<StockConclusion> StockConclusionQueue { get; } = new ConcurrentQueue<StockConclusion>();
+        public ConcurrentQueue<IndexConclusion> IndexConclusionQueue { get; } = new ConcurrentQueue<IndexConclusion>();
         #endregion
 
         #region Queue Count
@@ -52,7 +52,7 @@ namespace MTree.RealTimeProvider
 
         #region Queue Task
         protected CancellationTokenSource QueueTaskCancelSource { get; } = new CancellationTokenSource();
-        protected CancellationToken QueueTaskCancelToken { get; set; }
+        public CancellationToken QueueTaskCancelToken { get; set; }
         #endregion
 
         private System.Timers.Timer RefreshTimer { get; set; }

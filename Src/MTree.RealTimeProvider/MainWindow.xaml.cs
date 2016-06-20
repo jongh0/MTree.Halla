@@ -76,6 +76,13 @@ namespace MTree.RealTimeProvider
                     // Daishin Master 실행
                     ProcessUtility.Start(ProcessTypes.DaishinPublisherMaster, ProcessWindowStyle.Minimized);
                 }
+                else
+                {
+                    Thread.Sleep(5000);
+                    ProcessUtility.Start(ProcessTypes.Dashboard);
+                    for (int i = 0; i < 40; i++)
+                        ProcessUtility.Start(ProcessTypes.TestPublisher);
+                }
             });
         }
     }

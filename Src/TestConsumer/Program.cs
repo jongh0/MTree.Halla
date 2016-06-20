@@ -11,7 +11,7 @@ namespace TestConsumer
     {
         static void Main(string[] args)
         {
-            var consumer = new Consumer();
+            var consumer = new TestConsumer();
 
             Thread.Sleep(1000);
             consumer.StartConsume();

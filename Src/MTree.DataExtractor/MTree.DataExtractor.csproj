@@ -106,7 +106,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DataExtractor.cs" />
-    <Compile Include="DataLoader.cs" />
     <Compile Include="ExtractField.cs" />
     <Compile Include="MainViewModel.cs" />
     <Compile Include="MainWindow.xaml.cs">

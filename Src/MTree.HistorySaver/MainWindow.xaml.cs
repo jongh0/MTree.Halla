@@ -21,34 +21,34 @@ namespace MTree.HistorySaver
     /// </summary>
     public partial class MainWindow : Window
     {
-        private HistorySaver Consumer { get; set; }
+        private HistorySaver historySaver { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
 
-            Consumer = new HistorySaver();
+            historySaver = new HistorySaver();
             //TestData();
 
-            this.DataContext = Consumer;
+            this.DataContext = historySaver;
         }
 
         private void TestData()
         {
-            Consumer.Counter.StockMasterCount = 100000;
+            historySaver.Counter.StockMasterCount = 100000;
 
             Task.Run(() =>
             {
                 Thread.Sleep(1000);
-                Consumer.Counter.Increment(DataStructure.CounterTypes.CircuitBreak);
-                Consumer.Counter.Increment(DataStructure.CounterTypes.CircuitBreak);
-                Consumer.Counter.Increment(DataStructure.CounterTypes.CircuitBreak);
+                historySaver.Counter.Increment(DataStructure.CounterTypes.CircuitBreak);
+                historySaver.Counter.Increment(DataStructure.CounterTypes.CircuitBreak);
+                historySaver.Counter.Increment(DataStructure.CounterTypes.CircuitBreak);
 
                 Thread.Sleep(1000);
-                Consumer.Counter.Increment(DataStructure.CounterTypes.StockConclusion);
-                Consumer.Counter.Increment(DataStructure.CounterTypes.StockConclusion);
-                Consumer.Counter.Increment(DataStructure.CounterTypes.StockConclusion);
-                Consumer.Counter.Increment(DataStructure.CounterTypes.StockConclusion);
+                historySaver.Counter.Increment(DataStructure.CounterTypes.StockConclusion);
+                historySaver.Counter.Increment(DataStructure.CounterTypes.StockConclusion);
+                historySaver.Counter.Increment(DataStructure.CounterTypes.StockConclusion);
+                historySaver.Counter.Increment(DataStructure.CounterTypes.StockConclusion);
             });
         }
     }

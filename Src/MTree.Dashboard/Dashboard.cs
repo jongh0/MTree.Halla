@@ -21,7 +21,7 @@ using System.ComponentModel;
 namespace MTree.Dashboard
 {
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false, ValidateMustUnderstand = false)]
-    public class Dashboard : ConsumerBase, INotifyPropertyChanged
+    public class Dashboard
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -33,34 +33,31 @@ namespace MTree.Dashboard
         public DataCounter Counter { get; set; } = null;
         public TrafficMonitor Monitor { get; set; } = null;
 
-        public Dashboard()
+        private ConsumerBase Consumer { get; set; }
+
+        public Dashboard(ConsumerBase consumer)
         {
             try
             {
-                TaskUtility.Run("Dashboard.CircuitBreakQueue", QueueTaskCancelToken, ProcessCircuitBreakQueue);
+                Consumer = consumer;
+                
+                Consumer.ConsumeStockMasterEvent += ConsumeStockMaster;
+                Consumer.ConsumeIndexMasterEvent += ConsumeIndexMaster;
+                Consumer.ConsumeCodemapEvent += ConsumeCodemap;
+                Consumer.NotifyMessageEvent += NotifyMessage;
 
-                if (Config.General.VerifyOrdering == true)
-                {
-                    TaskUtility.Run($"Dashboard.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
-                }
-                else
-                {
-                    for (int i = 0; i < 5; i++)
-                        TaskUtility.Run($"Dashboard.StockConclusionQueue_{i + 1}", QueueTaskCancelToken, ProcessStockConclusionQueue);
-                }
+                TaskUtility.Run("Dashboard.CircuitBreakQueue", Consumer.QueueTaskCancelToken, ProcessCircuitBreakQueue);
+                TaskUtility.Run("Dashboard.StockConclusionQueue", Consumer.QueueTaskCancelToken, ProcessStockConclusionQueue);
+                TaskUtility.Run("Dashboard.IndexConclusionQueue", Consumer.QueueTaskCancelToken, ProcessIndexConclusionQueue);
 
-                for (int i = 0; i < 2; i++)
-                    TaskUtility.Run($"Dashboard.IndexConclusionQueue_{i + 1}", QueueTaskCancelToken, ProcessIndexConclusionQueue);
+                if (Config.General.SkipBiddingPrice == false)
+                {
+                    TaskUtility.Run("Dashboard.BiddingPriceQueue", Consumer.QueueTaskCancelToken, ProcessBiddingPriceQueue);
+                }
 
                 if (Config.General.VerifyLatency == true)
                 {
                     Monitor = new TrafficMonitor();
-
-                    if (Config.General.SkipBiddingPrice == false)
-                    {
-                        for (int i = 0; i < 10; i++)
-                            TaskUtility.Run($"Dashboard.BiddingPriceQueue_{i + 1}", QueueTaskCancelToken, ProcessBiddingPriceQueue);
-                    }
                 }
             }
             catch (Exception ex)
@@ -68,33 +65,13 @@ namespace MTree.Dashboard
                 logger.Error(ex);
             }
         }
-
-        protected override void ServiceClient_Opened(object sender, EventArgs e)
-        {
-            base.ServiceClient_Opened(sender, e);
-
-            try
-            {
-                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.Mastering));
-                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.CircuitBreak));
-                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.StockConclusion));
-                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.IndexConclusion));
-
-                if (Config.General.VerifyLatency == true && Config.General.SkipBiddingPrice == false)
-                    ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.BiddingPrice));
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-            }
-        }
-
+       
         private void ProcessBiddingPriceQueue()
         {
             try
             {
                 BiddingPrice biddingPrice;
-                if (BiddingPriceQueue.TryDequeue(out biddingPrice) == true)
+                if (Consumer.BiddingPriceQueue.TryDequeue(out biddingPrice) == true)
                 {
                     if (Config.General.VerifyLatency == true)
                         Monitor.CheckLatency(biddingPrice);
@@ -113,7 +90,7 @@ namespace MTree.Dashboard
             try
             {
                 CircuitBreak circuitBreak;
-                if (CircuitBreakQueue.TryDequeue(out circuitBreak) == true)
+                if (Consumer.CircuitBreakQueue.TryDequeue(out circuitBreak) == true)
                 {
                     if (Config.General.VerifyLatency == true)
                         Monitor.CheckLatency(circuitBreak);
@@ -139,7 +116,7 @@ namespace MTree.Dashboard
             try
             {
                 StockConclusion conclusion;
-                if (StockConclusionQueue.TryDequeue(out conclusion) == true)
+                if (Consumer.StockConclusionQueue.TryDequeue(out conclusion) == true)
                 {
                     if (Config.General.VerifyLatency == true)
                         Monitor.CheckLatency(conclusion);
@@ -153,6 +130,7 @@ namespace MTree.Dashboard
                     var item = StockItems[conclusion.Code];
                     lock (item)
                     {
+                        item.Time = conclusion.Time;
                         item.Price = conclusion.Price;
                         item.Volume += conclusion.Amount;
                     }
@@ -192,7 +170,7 @@ namespace MTree.Dashboard
             try
             {
                 IndexConclusion conclusion;
-                if (IndexConclusionQueue.TryDequeue(out conclusion) == true)
+                if (Consumer.IndexConclusionQueue.TryDequeue(out conclusion) == true)
                 {
                     if (Config.General.VerifyLatency == true)
                         Monitor.CheckLatency(conclusion);
@@ -206,6 +184,7 @@ namespace MTree.Dashboard
                     var item = IndexItems[conclusion.Code];
                     lock (item)
                     {
+                        item.Time = conclusion.Time;
                         item.Price = conclusion.Price;
                         item.Volume += conclusion.Amount;
                     }
@@ -221,7 +200,7 @@ namespace MTree.Dashboard
             }
         }
 
-        public override void ConsumeStockMaster(List<StockMaster> stockMasters)
+        public void ConsumeStockMaster(List<StockMaster> stockMasters)
         {
             try
             {
@@ -232,9 +211,11 @@ namespace MTree.Dashboard
                         var item = new DashboardItem(stockMaster.Code);
                         StockItems.Add(item.Code, item);
                     }
+                    StockItems[stockMaster.Code].Time = stockMaster.Time;
                     StockItems[stockMaster.Code].Name = stockMaster.Name;
                     StockItems[stockMaster.Code].Price = stockMaster.BasisPrice;
                     StockItems[stockMaster.Code].BasisPrice = stockMaster.BasisPrice;
+                    StockItems[stockMaster.Code].Volume = 0;
                     StockItems[stockMaster.Code].PreviousVolume = stockMaster.PreviousVolume;
                     StockItems[stockMaster.Code].MarketType = stockMaster.MarketType;
                 }
@@ -245,7 +226,7 @@ namespace MTree.Dashboard
             }
         }
 
-        public override void ConsumeIndexMaster(List<IndexMaster> indexMasters)
+        public void ConsumeIndexMaster(List<IndexMaster> indexMasters)
         {
             try
             {
@@ -256,8 +237,10 @@ namespace MTree.Dashboard
                         var item = new DashboardItem(indexMaster.Code);
                         IndexItems.Add(item.Code, item);
                     }
+                    IndexItems[indexMaster.Code].Time = indexMaster.Time;
                     IndexItems[indexMaster.Code].Name = indexMaster.Name;
                     IndexItems[indexMaster.Code].Price = indexMaster.BasisPrice;
+                    IndexItems[indexMaster.Code].Volume = 0;
                     IndexItems[indexMaster.Code].BasisPrice = indexMaster.BasisPrice;
                     IndexItems[indexMaster.Code].MarketType = MarketTypes.INDEX;
                 }
@@ -267,7 +250,8 @@ namespace MTree.Dashboard
                 logger.Error(ex);
             }
         }
-        public override void ConsumeCodemap(string codeMap)
+
+        public void ConsumeCodemap(string codeMap)
         {
             Dictionary<string, object> rebuilt = CodeMapBuilderUtil.RebuildNode(codeMap);
         }
@@ -306,7 +290,7 @@ namespace MTree.Dashboard
             }
         }
 
-        public override void NotifyMessage(MessageTypes type, string message)
+        public void NotifyMessage(MessageTypes type, string message)
         {
             try
             {
@@ -333,35 +317,8 @@ namespace MTree.Dashboard
                 logger.Error(ex);
             }
 
-            base.NotifyMessage(type, message);
+            //base.NotifyMessage(type, message);
         }
 
-        #region Command
-        private RelayCommand<DashboardItem> _DoubleClickCommand;
-        public ICommand DoubleClickCommand
-        {
-            get
-            {
-                if (_DoubleClickCommand == null)
-                    _DoubleClickCommand = new RelayCommand<DashboardItem>((param) => ExecuteDoubleClick(param));
-
-                return _DoubleClickCommand;
-            }
-        }
-
-        public void ExecuteDoubleClick(DashboardItem item)
-        {
-            Process.Start("https://search.naver.com/search.naver?where=nexearch&query=" + item.Name);
-        }
-        #endregion
-
-        #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void NotifyPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-        #endregion
     }
 }

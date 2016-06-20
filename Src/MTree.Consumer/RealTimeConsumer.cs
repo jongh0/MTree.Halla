@@ -1,4 +1,5 @@
-﻿using MTree.RealTimeProvider;
+﻿using MTree.Configuration;
+using MTree.RealTimeProvider;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MTree.Consumer
 {
-    public class ConsumerBase : ConsumerCallback
+    public class RealTimeConsumer : ConsumerBase
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -18,10 +19,12 @@ namespace MTree.Consumer
         protected InstanceContext CallbackInstance { get; set; }
         protected ConsumerClient ServiceClient { get; set; }
 
-        public ConsumerBase()
+        public RealTimeConsumer()
         {
             try
             {
+                NotifyMessageEvent += HandleNotifyMessage;
+
                 CallbackInstance = new InstanceContext(this);
                 OpenChannel();
             }
@@ -30,7 +33,7 @@ namespace MTree.Consumer
                 logger.Error(ex);
             }
         }
-
+        
         protected void OpenChannel()
         {
             try
@@ -69,6 +72,21 @@ namespace MTree.Consumer
         protected virtual void ServiceClient_Opened(object sender, EventArgs e)
         {
             logger.Info($"[{GetType().Name}] Channel opened");
+
+            try
+            {
+                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.Mastering));
+                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.CircuitBreak));
+                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.StockConclusion));
+                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.IndexConclusion));
+
+                if (Config.General.VerifyLatency == true && Config.General.SkipBiddingPrice == false)
+                    ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.BiddingPrice));
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
         }
 
         protected virtual void ServiceClient_Closed(object sender, EventArgs e)
@@ -76,10 +94,10 @@ namespace MTree.Consumer
             logger.Info($"[{GetType().Name}] Channel closed");
         }
 
-        public override void NotifyMessage(MessageTypes type, string message)
+        public void HandleNotifyMessage(MessageTypes type, string message)
         {
             logger.Info($"[{GetType().Name}] NotifyMessage, type: {type.ToString()}, message: {message}");
-
+            
             try
             {
                 if (type == MessageTypes.CloseClient)

@@ -26,6 +26,14 @@ namespace MTree.RealTimeProvider
 
     public interface IConsumerCallback
     {
+        event Action<List<StockMaster>> ConsumeStockMasterEvent;
+
+        event Action<List<IndexMaster>> ConsumeIndexMasterEvent;
+
+        event Action<string> ConsumeCodemapEvent;
+
+        event Action<MessageTypes, string> NotifyMessageEvent;
+
         [OperationContract(IsOneWay = true)]
         void NotifyMessage(MessageTypes type, string message);
 
