@@ -59,6 +59,7 @@ namespace MTree.RealTimeProvider
 
         public static string ConvertToJsonString(Dictionary<string, object> codeMapHead)
         {
+            /*
             StringBuilder sb = new StringBuilder();
             using (StringWriter sw = new StringWriter(sb))
             using (JsonWriter writer = new JsonTextWriter(sw))
@@ -69,6 +70,8 @@ namespace MTree.RealTimeProvider
                 serializer.Serialize(writer, codeMapHead);
             }
             return sb.ToString();
+            */
+            return JsonConvert.SerializeObject(codeMapHead, Formatting.Indented);
         }
 
         public static Dictionary<string, object> RebuildNode(string jsonString)
@@ -122,6 +125,5 @@ namespace MTree.RealTimeProvider
             }
             return ret;
         }
-
     }
 }

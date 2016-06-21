@@ -104,5 +104,36 @@ namespace MTree.Consumer
             return ret;
         }
 
+        public static string CodeMapToJson(ICodeMap codeMapHead)
+        {
+            //return JsonConvert.SerializeObject(CodeMapToDic(codeMapHead), Formatting.Indented);
+            return JsonConvert.SerializeObject(CodeMapToDic(codeMapHead));
+        }
+
+        private static Dictionary<string, object> CodeMapToDic(ICodeMap codeMap)
+        {
+            if (codeMap is Stock)
+                return null;
+
+            Dictionary<string, object> ret = new Dictionary<string, object>();
+
+            foreach (ICodeMap child in ((CodeMapHead)codeMap).CodeMapList)
+            {
+                if (child is CodeMapHead)
+                {
+                    ret.Add(((CodeMapHead)child).Name, CodeMapToDic(child));
+                }
+                else if (child is Stock)
+                {
+                    ret.Add(((Stock)child).Code, ((Stock)child).Name);
+                }
+                else
+                {
+                    // Error
+                }
+            }
+
+            return ret;
+        }
     }
 }
