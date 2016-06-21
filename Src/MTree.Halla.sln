@@ -77,9 +77,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.ResourceMonitor", "MT
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.DataExtractor", "MTree.DataExtractor\MTree.DataExtractor.csproj", "{15082D3E-625D-411E-BCF6-7AE6A3C61B8E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.DataStructureTests", "MTree.DataStructureTests\MTree.DataStructureTests.csproj", "{3D38F421-DC43-4BEA-A88C-3062522F034F}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.KiwoomSessionManager", "MTree.KiwoomSessionManager\MTree.KiwoomSessionManager.csproj", "{B6C51F64-D22D-4993-8995-59FD093E5475}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.ConsumerTests", "MTree.ConsumerTests\MTree.ConsumerTests.csproj", "{BDAFEA23-EF5C-4268-85BB-A630519A8E27}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -215,14 +215,14 @@ Global
 		{15082D3E-625D-411E-BCF6-7AE6A3C61B8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{15082D3E-625D-411E-BCF6-7AE6A3C61B8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{15082D3E-625D-411E-BCF6-7AE6A3C61B8E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3D38F421-DC43-4BEA-A88C-3062522F034F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3D38F421-DC43-4BEA-A88C-3062522F034F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3D38F421-DC43-4BEA-A88C-3062522F034F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3D38F421-DC43-4BEA-A88C-3062522F034F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B6C51F64-D22D-4993-8995-59FD093E5475}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B6C51F64-D22D-4993-8995-59FD093E5475}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B6C51F64-D22D-4993-8995-59FD093E5475}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B6C51F64-D22D-4993-8995-59FD093E5475}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BDAFEA23-EF5C-4268-85BB-A630519A8E27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDAFEA23-EF5C-4268-85BB-A630519A8E27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDAFEA23-EF5C-4268-85BB-A630519A8E27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDAFEA23-EF5C-4268-85BB-A630519A8E27}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -257,5 +257,6 @@ Global
 		{BE13E412-D35A-4C3F-A7D0-2C8FE5905642} = {C22A1011-FE40-49F1-AB42-3CBF4921ACBD}
 		{15082D3E-625D-411E-BCF6-7AE6A3C61B8E} = {C22A1011-FE40-49F1-AB42-3CBF4921ACBD}
 		{B6C51F64-D22D-4993-8995-59FD093E5475} = {C22A1011-FE40-49F1-AB42-3CBF4921ACBD}
+		{BDAFEA23-EF5C-4268-85BB-A630519A8E27} = {45A22074-BF98-4455-B6DE-D6B8CF4ADF18}
 	EndGlobalSection
 EndGlobal

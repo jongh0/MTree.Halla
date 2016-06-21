@@ -8,7 +8,7 @@ using System.Text;
 
 namespace MTree.Consumer
 {
-    public class Stock : IChartable
+    public class Stock : IChartable, ICodeMap
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -16,15 +16,18 @@ namespace MTree.Consumer
 
         public string Code { get; set; }
 
+        public string Name { get; set; }
+        
         public DateTime LastTime { get; set; }
 
         public float LastValue { get; set; }
 
         public MarketTypes MarketType { get; set; }
 
-        public Stock(string code)
+        public Stock(string code, string name = "")
         {
             Code = code;
+            Name = name;
         }
 
         public Chart GetChart(ChartTypes chartType, DateTime startDate, DateTime endDate)

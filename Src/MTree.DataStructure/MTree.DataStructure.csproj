@@ -66,7 +66,6 @@
     <Compile Include="Candle.cs" />
     <Compile Include="CircuitBreak.cs" />
     <Compile Include="CodeEntity.cs" />
-    <Compile Include="CodeMapBuilderUtil.cs" />
     <Compile Include="Conclusion.cs" />
     <Compile Include="DataCounter.cs" />
     <Compile Include="IndexConclusion.cs" />

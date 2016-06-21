@@ -123,6 +123,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="CodeMapBuilder.cs" />
+    <Compile Include="CodeMapBuilderUtil.cs" />
     <Compile Include="IndexMastering.cs" />
     <Compile Include="IRealTimeConsumer.cs" />
     <Compile Include="PublisherContract.cs" />

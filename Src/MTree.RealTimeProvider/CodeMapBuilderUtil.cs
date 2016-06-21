@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MTree.DataStructure
+namespace MTree.RealTimeProvider
 {
     public static class CodeMapBuilderUtil
     {
@@ -57,7 +57,7 @@ namespace MTree.DataStructure
             return returnDic;
         }
 
-        public static string ConvertToJsonString(Dictionary<string, object> codeMapHeader)
+        public static string ConvertToJsonString(Dictionary<string, object> codeMapHead)
         {
             StringBuilder sb = new StringBuilder();
             using (StringWriter sw = new StringWriter(sb))
@@ -66,7 +66,7 @@ namespace MTree.DataStructure
                 JsonSerializer serializer = new JsonSerializer();
                 serializer.NullValueHandling = NullValueHandling.Ignore;
                 serializer.Formatting = Formatting.Indented;
-                serializer.Serialize(writer, codeMapHeader);
+                serializer.Serialize(writer, codeMapHead);
             }
             return sb.ToString();
         }

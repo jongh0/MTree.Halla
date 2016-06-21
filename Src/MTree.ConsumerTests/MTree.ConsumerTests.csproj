@@ -3,11 +3,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3D38F421-DC43-4BEA-A88C-3062522F034F}</ProjectGuid>
+    <ProjectGuid>{BDAFEA23-EF5C-4268-85BB-A630519A8E27}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MTree.DataStructureTests</RootNamespace>
-    <AssemblyName>MTree.DataStructureTests</AssemblyName>
+    <RootNamespace>MTree.ConsumerTests</RootNamespace>
+    <AssemblyName>MTree.ConsumerTests</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -51,13 +51,13 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="CodeMapBuilderUtilTests.cs" />
+    <Compile Include="CodeMapConverterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MTree.DataStructure\MTree.DataStructure.csproj">
-      <Project>{DA1959A9-15FA-47AA-98AC-3844A723FEA1}</Project>
-      <Name>MTree.DataStructure</Name>
+    <ProjectReference Include="..\MTree.Consumer\MTree.Consumer.csproj">
+      <Project>{ED1A77AE-4393-45DB-B89C-DC98F1678578}</Project>
+      <Name>MTree.Consumer</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>
