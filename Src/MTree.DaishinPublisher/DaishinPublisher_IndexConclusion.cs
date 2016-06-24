@@ -157,14 +157,7 @@ namespace MTree.DaishinPublisher
                 long time = Convert.ToInt64(indexCurObj.GetHeaderValue(18));
                 try
                 {
-                    if (time == 240000)
-                    {
-                        conclusion.Time = new DateTime(now.Year, now.Month, now.Day, 23, 59, 59); // End of day
-                    }
-                    else
-                    {
-                        conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100); // Daishin doesn't provide milisecond 
-                    }
+                    conclusion.Time = new DateTime(now.Year, now.Month, now.Day, (int)(time / 10000), (int)((time / 100) % 100), (int)time % 100); // Daishin doesn't provide milisecond 
                 }
                 catch (ArgumentOutOfRangeException)
                 {
