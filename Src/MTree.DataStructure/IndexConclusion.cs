@@ -15,14 +15,15 @@ namespace MTree.DataStructure
 
         public override string ToString(params string[] excludeProperties)
         {
-            List<string> passing = new List<string>();
-            foreach (string param in excludeProperties)
-            {
-                passing.Add(param);
-            }
-            passing.Add(nameof(this.Time));
+            //List<string> passing = new List<string>();
+            //foreach (string param in excludeProperties)
+            //{
+            //    passing.Add(param);
+            //}
+            //passing.Add(nameof(this.Time));
 
-            return ToString(typeof(IndexConclusion), passing.ToArray());
+            //return ToString(typeof(IndexConclusion), passing.ToArray());
+            return ToString(typeof(IndexConclusion), excludeProperties);
         }
     }
 }
