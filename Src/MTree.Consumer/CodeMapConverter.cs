@@ -12,7 +12,7 @@ namespace MTree.Consumer
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public static ICodeMap JsonToCodeMap(string headName, string jsonString)
+        public static ICodeMap JsonStringToCodeMap(string headName, string jsonString)
         {
             Dictionary<string, object> deserialized = JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonString, new JsonSerializerSettings
             {
@@ -23,11 +23,11 @@ namespace MTree.Consumer
                 }
             });
 
-            ICodeMap child = JsonToCodeMap("Codemap", deserialized);
+            ICodeMap child = JsonDicToCodeMap("Codemap", deserialized);
             return child;
         }
 
-        private static ICodeMap JsonToCodeMap(string headName, Dictionary<string, object> deserialized)
+        public static ICodeMap JsonDicToCodeMap(string headName, Dictionary<string, object> deserialized)
         {
             CodeMapHead ret = new CodeMapHead(headName);
 
@@ -70,7 +70,7 @@ namespace MTree.Consumer
                         if (deserializedChild == null)
                             continue;
 
-                        ret.Add(JsonToCodeMap(key, deserializedChild));
+                        ret.Add(JsonDicToCodeMap(key, deserializedChild));
                     }
                 }
                 catch (Exception ex)
@@ -81,10 +81,10 @@ namespace MTree.Consumer
             return ret;
         }
 
-        public static string CodeMapToJson(ICodeMap codeMapHead)
+        public static string CodeMapToJson(ICodeMap codeMapHead, bool indented = false)
         {
-            //return JsonConvert.SerializeObject(CodeMapToDic(codeMapHead), Formatting.Indented);
-            return JsonConvert.SerializeObject(CodeMapToDic(codeMapHead));
+            return indented == false ? JsonConvert.SerializeObject(CodeMapToDic(codeMapHead)) :
+                JsonConvert.SerializeObject(CodeMapToDic(codeMapHead), Formatting.Indented);
         }
 
         private static Dictionary<string, object> CodeMapToDic(ICodeMap codeMap)

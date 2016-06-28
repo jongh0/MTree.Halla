@@ -251,9 +251,9 @@ namespace MTree.Dashboard
             }
         }
 
-        public void ConsumeCodemap(string codeMap)
+        public void ConsumeCodemap(Dictionary<string, object> codeMap)
         {
-            Dictionary<string, object> rebuilt = CodeMapBuilderUtil.RebuildNode(codeMap);
+            //Dictionary<string, object> rebuilt = CodeMapBuilderUtil.RebuildNode(codeMap);
         }
 
         private void SaveDashboard()

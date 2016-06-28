@@ -125,7 +125,7 @@ namespace MTree.RealTimeProvider
                 logger.Info($"{RealTimeState}, Elapsed time: {sw.Elapsed.ToString()}");
             }
         }
-        private void StartCodeMapPublishing(string codemap)
+        private void StartCodeMapPublishing(Dictionary<string, object> codemap)
         {
             RealTimeState = "Codemap publishing started";
             logger.Info(RealTimeState);
