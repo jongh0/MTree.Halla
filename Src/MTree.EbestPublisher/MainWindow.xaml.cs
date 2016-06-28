@@ -28,6 +28,8 @@ namespace MTree.EbestPublisher
         {
             InitializeComponent();
 
+            Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.RealTime;
+
             Publisher = new EbestPublisher();
             this.DataContext = Publisher;
 

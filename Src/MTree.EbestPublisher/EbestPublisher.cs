@@ -85,6 +85,8 @@ namespace MTree.EbestPublisher
         {
             try
             {
+                Thread.CurrentThread.Priority = ThreadPriority.Highest;
+                
                 CommTimer = new System.Timers.Timer(CommTimerInterval);
                 CommTimer.Elapsed += OnCommunTimer;
                 CommTimer.AutoReset = true;
