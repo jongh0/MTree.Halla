@@ -27,6 +27,9 @@ namespace MTree.DaishinPublisher
         {
             InitializeComponent();
 
+            System.Diagnostics.Process.GetCurrentProcess().PriorityClass = System.Diagnostics.ProcessPriorityClass.RealTime;
+
+
             Publisher = new DaishinPublisher();
             this.DataContext = Publisher;
 

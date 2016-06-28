@@ -32,6 +32,8 @@ namespace MTree.RealTimeProvider
         {
             InitializeComponent();
 
+            Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High;
+
             var instance = new RealTimeProvider();
             Host = new ServiceHost(instance);
             Host.Opened += Host_Opened;
