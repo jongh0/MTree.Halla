@@ -1,36 +1,13 @@
-﻿using Newtonsoft.Json;
+﻿using MTree.DataStructure;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace MTree.Consumer
 {
-    public interface ICodeMap
-    {
-        string Name { get; set; }
-    }
-
-    public class CodeMapHead : ICodeMap
-    {
-        public List<ICodeMap> CodeMapList { get; set; }
-
-        public string Name { get; set; }
-
-        public CodeMapHead(string name = "")
-        {
-            Name = name;
-            CodeMapList = new List<ICodeMap>();
-        }
-
-        public void Add(ICodeMap codeMap)
-        {
-            CodeMapList.Add(codeMap);
-        }
-    }
-
     public class CodeMapConverter
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
@@ -45,7 +22,7 @@ namespace MTree.Consumer
                     args.ErrorContext.Handled = true;
                 }
             });
-           
+
             ICodeMap child = JsonToCodeMap("Codemap", deserialized);
             return child;
         }
@@ -53,7 +30,7 @@ namespace MTree.Consumer
         private static ICodeMap JsonToCodeMap(string headName, Dictionary<string, object> deserialized)
         {
             CodeMapHead ret = new CodeMapHead(headName);
-            
+
             List<string> keyList = new List<string>(deserialized.Keys);
             foreach (string key in keyList)
             {

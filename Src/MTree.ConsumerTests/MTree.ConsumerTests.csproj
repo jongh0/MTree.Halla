@@ -36,6 +36,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MongoDB.Bson, Version=2.2.4.26, Culture=neutral, PublicKeyToken=null" />
+    <Reference Include="MongoDB.Driver, Version=2.2.4.26, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="System" />
   </ItemGroup>
   <Choose>
@@ -58,6 +60,18 @@
     <ProjectReference Include="..\MTree.Consumer\MTree.Consumer.csproj">
       <Project>{ED1A77AE-4393-45DB-B89C-DC98F1678578}</Project>
       <Name>MTree.Consumer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MTree.DataStructure\MTree.DataStructure.csproj">
+      <Project>{da1959a9-15fa-47aa-98ac-3844a723fea1}</Project>
+      <Name>MTree.DataStructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MTree.DbProvider\MTree.DbProvider.csproj">
+      <Project>{57195e80-20a3-4fd0-83c8-92af91784dda}</Project>
+      <Name>MTree.DbProvider</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MTree.Utility\MTree.Utility.csproj">
+      <Project>{d8291168-4d81-4acd-81c4-da122a249102}</Project>
+      <Name>MTree.Utility</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

@@ -37,7 +37,8 @@ namespace MTree.DataStructure
                     typeof(IndexConclusion), 
                     typeof(StockConclusion), 
                     typeof(StockMaster),
-                    typeof(IndexMaster))]
+                    typeof(IndexMaster),
+                    typeof(CodeMapDbObject))]
     [Serializable]
     public class Subscribable
     {
