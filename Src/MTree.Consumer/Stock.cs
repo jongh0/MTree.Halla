@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Driver;
 using MTree.Configuration;
 using MTree.DataStructure;
 using MTree.DbProvider;
@@ -8,20 +9,26 @@ using System.Text;
 
 namespace MTree.Consumer
 {
+    [Serializable]
     public class Stock : IChartable, ICodeMap
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         public static ConcurrentDictionary<string, Stock> Stocks { get; set; } = new ConcurrentDictionary<string, Stock>();
 
+        [BsonElement("C")]
         public string Code { get; set; }
 
+        [BsonElement("N")]
         public string Name { get; set; }
-        
+
+        [BsonIgnore]
         public DateTime LastTime { get; set; }
 
+        [BsonIgnore]
         public float LastValue { get; set; }
 
+        [BsonIgnore]
         public MarketTypes MarketType { get; set; }
 
         public Stock(string code, string name = "")

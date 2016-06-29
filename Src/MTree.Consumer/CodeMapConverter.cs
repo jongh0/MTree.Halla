@@ -27,7 +27,7 @@ namespace MTree.Consumer
             return child;
         }
 
-        public static ICodeMap JsonDicToCodeMap(string headName, Dictionary<string, object> deserialized)
+        private static ICodeMap JsonDicToCodeMap(string headName, Dictionary<string, object> deserialized)
         {
             CodeMapHead ret = new CodeMapHead(headName);
 
@@ -81,13 +81,13 @@ namespace MTree.Consumer
             return ret;
         }
 
-        public static string CodeMapToJson(ICodeMap codeMapHead, bool indented = false)
+        public static string CodeMapToJsonString(ICodeMap codeMapHead, bool indented = false)
         {
             return indented == false ? JsonConvert.SerializeObject(CodeMapToDic(codeMapHead)) :
                 JsonConvert.SerializeObject(CodeMapToDic(codeMapHead), Formatting.Indented);
         }
 
-        private static Dictionary<string, object> CodeMapToDic(ICodeMap codeMap)
+        public static Dictionary<string, object> CodeMapToDic(ICodeMap codeMap)
         {
             if (codeMap is Stock)
                 return null;
@@ -110,6 +110,44 @@ namespace MTree.Consumer
                 }
             }
 
+            return ret;
+        }
+
+        public static ICodeMap DicToCodeMap(string headName, Dictionary<string, object> dic)
+        {
+            CodeMapHead ret = new CodeMapHead(headName);
+
+            List<string> keyList = new List<string>(dic.Keys);
+            foreach (string key in keyList)
+            {
+                try
+                {
+                    if (dic[key] is string) // For leap node (Stock instance)
+                    {
+                        Stock s = Stock.GetStock(key);
+                        if (string.IsNullOrEmpty(s.Name))
+                        {
+                            s.Name = dic[key].ToString();
+                        }
+                        else
+                        {
+                            if (s.Name != dic[key].ToString())
+                            {
+                                logger.Error($"Stock instance has diffrent name, {s.Name} vs. {dic[key].ToString()}");
+                            }
+                        }
+                        ret.Add(s);
+                    }
+                    else // For composite
+                    {
+                        ret.Add(DicToCodeMap(key, (Dictionary<string, object>)dic[key]));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex);
+                }
+            }
             return ret;
         }
     }

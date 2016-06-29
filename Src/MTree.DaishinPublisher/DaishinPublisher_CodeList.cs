@@ -232,7 +232,7 @@ namespace MTree.DaishinPublisher
                 groupCodemap.Add(groupName, new Dictionary<string, object>());
                 foreach (string code in (object[])codeMgrObj.GetGroupCodeList(Convert.ToInt32(groupCode)))
                 {
-                    ((Dictionary<string, object>)groupCodemap[groupName]).Add(code, codeMgrObj.CodeToName(code));
+                    ((Dictionary<string, object>)groupCodemap[groupName]).Add(CodeEntity.RemovePrefix(code), codeMgrObj.CodeToName(code));
                 }
             }
 

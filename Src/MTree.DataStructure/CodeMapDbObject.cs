@@ -8,6 +8,6 @@ namespace MTree.DataStructure
 {
     public class CodeMapDbObject : Subscribable
     {
-        public ICodeMap CodeMapHead { get; set; }
+        public string CodeMap { get; set; }
     }
 }

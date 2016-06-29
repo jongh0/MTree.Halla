@@ -1,4 +1,5 @@
-﻿using MTree.DataStructure;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using MTree.DataStructure;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -16,8 +17,10 @@ namespace MTree.DataStructure
 
     public class CodeMapHead : ICodeMap
     {
+        [BsonElement("CL")]
         public List<ICodeMap> CodeMapList { get; set; }
 
+        [BsonElement("N")]
         public string Name { get; set; }
 
         public CodeMapHead(string name = "")
