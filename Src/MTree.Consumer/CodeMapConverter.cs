@@ -52,6 +52,7 @@ namespace MTree.Consumer
                         {
                             if (s.Name != deserialized[key].ToString())
                             {
+                                // TODO : Select correct stock name
                                 logger.Error($"Stock instance has diffrent name, {s.Name} vs. {deserialized[key].ToString()}");
                             }
                         }
@@ -133,6 +134,7 @@ namespace MTree.Consumer
                         {
                             if (s.Name != dic[key].ToString())
                             {
+                                // TODO : Select correct stock name
                                 logger.Error($"Stock instance has diffrent name, {s.Name} vs. {dic[key].ToString()}");
                             }
                         }
