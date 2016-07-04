@@ -129,8 +129,7 @@ namespace MTree.DataValidator
             set
             {
                 _FromSourceToDestination = value;
-                NotifyPropertyChanged(nameof(FromSourceToDestination));
-
+                
                 if (_FromSourceToDestination == true)
                 {
                     Recoverer.From = DbAgent.Instance;
@@ -141,6 +140,7 @@ namespace MTree.DataValidator
                     Recoverer.From = DbAgent.RemoteInstance;
                     Recoverer.To = DbAgent.Instance;
                 }
+                //NotifyPropertyChanged(nameof(FromSourceToDestination));
             }
         }
 

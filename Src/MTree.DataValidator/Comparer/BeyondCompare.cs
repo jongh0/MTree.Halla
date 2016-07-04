@@ -124,7 +124,7 @@ namespace MTree.DataValidator
                         if (compareProcess.WaitForExit(10 * 1000) == false)
                         {
                             compareProcess.Kill();
-                            logger.Error($"Beyond Compare Timeout. Retry Count:{retCnt} ExitCode:{exitCode}");
+                            //logger.Error($"Beyond Compare Timeout. Retry Count:{retCnt} ExitCode:{exitCode}");
                         }
                         exitCode = compareProcess.ExitCode;
                     }
@@ -137,8 +137,8 @@ namespace MTree.DataValidator
                     retCnt++;
                 } while (exitCode == 100 || exitCode < 0);
 
-                if (exitCode != 0 && exitCode != 1 && exitCode != 2)
-                    logger.Error($"ExitCode:{exitCode}");
+                //if (exitCode != 0 && exitCode != 1 && exitCode != 2)
+                //    logger.Error($"ExitCode:{exitCode}");
                 return exitCode == 1;
             }
             catch (Exception ex)
@@ -319,7 +319,7 @@ namespace MTree.DataValidator
                         if (compareProcess.WaitForExit(10 * 1000) == false)
                         {
                             compareProcess.Kill();
-                            logger.Error($"Beyond Compare Timeout. Retry Count:{retCnt} ExitCode:{exitCode}");
+                            //logger.Error($"Beyond Compare Timeout. Retry Count:{retCnt} ExitCode:{exitCode}");
                         }
                         exitCode = compareProcess.ExitCode;
                     }
@@ -332,10 +332,9 @@ namespace MTree.DataValidator
                     retCnt++;
                 } while (exitCode == 100 || exitCode < 0);
 
-                if (exitCode != 0 && exitCode != 1 && exitCode != 2)
-                    logger.Error($"ExitCode:{exitCode}");
-
-                logger.Info($"Compare result report created at {reportPath}");
+                //if (exitCode != 0 && exitCode != 1 && exitCode != 2)
+                //    logger.Error($"ExitCode:{exitCode}");
+                //logger.Info($"Compare result report created at {reportPath}");
 
                 return;
             }

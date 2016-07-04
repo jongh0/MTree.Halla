@@ -4,9 +4,14 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MTree.DataValidator"
+        xmlns:utility="clr-namespace:MTree.Utility;assembly=MTree.Utility"
         mc:Ignorable="d"
-        Title="RecoveryPopup" Height="Auto" Width="Auto">
+        Title="RecoveryPopup" Height="Auto" Width="Auto"
+        WindowState="Maximized">
     <Grid>
+        <Grid.Resources>
+            <utility:BoolInverterConverter x:Key="BoolInverterConverter"/>
+        </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -17,7 +22,7 @@
             <Label Content="{Binding SourceAddress, Mode=OneWay}"/>
             <Label Content=" -> "/>
             <Label Content="{Binding DestinationAddress, Mode=OneWay}"  Margin="5,0,100,0" />
-            <RadioButton GroupName="RecoveryDirection" VerticalAlignment="Center" Margin="100,0,0,0"/>
+            <RadioButton GroupName="RecoveryDirection" VerticalAlignment="Center" Margin="100,0,0,0" IsChecked="{Binding FromSourceToDestination, Converter={StaticResource BoolInverterConverter}}"/>
             <Label Content="{Binding SourceAddress, Mode=OneWay}"/>
             <Label Content=" &lt;- "/>
             <Label Content="{Binding DestinationAddress, Mode=OneWay}"/>
