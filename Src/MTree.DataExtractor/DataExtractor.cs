@@ -162,22 +162,7 @@ namespace MTree.DataExtractor
                     var property = conclusion.GetType().GetProperty(field.ToString());
                     object value = property.GetValue(conclusion);
                     
-                    columns.Add(GetNormalizedValue(property, value));
-
-                    if (field.ToString() == "Price")
-                    {
-                        int outBegIdx;
-                        int outNBElement;
-                        double[] outReal = new double[1];
-
-                        priceQueue.Enqueue((float)value);
-                        if (priceQueue.Count > term)
-                        {
-                            priceQueue.Dequeue();
-                        }
-                        Core.MovingAverage(0, priceQueue.Count - 1, priceQueue.ToArray(), term, Core.MAType.Sma, out outBegIdx, out outNBElement, outReal);
-                        columns.Add(outReal[0].ToString());
-                    }
+                    columns.Add(GetNormalizedValue(value));
                 }
 
                 foreach (var field in Enum.GetValues(typeof(StockMasterField)))
@@ -185,11 +170,27 @@ namespace MTree.DataExtractor
                     var property = master.GetType().GetProperty(field.ToString());
                     object value = property.GetValue(master);
 
-                    columns.Add(GetNormalizedValue(property, value));
+                    columns.Add(GetNormalizedValue(value));
                 }
 
                 foreach (var field in Enum.GetValues(typeof(StockTAField)))
                 {
+                    var property = master.GetType().GetProperty(field.ToString());
+                    object value = property.GetValue(master);
+
+                    if ((StockTAField)field == StockTAField.MovingAverage)
+                    {
+                        int outBegIdx;
+                        int outNBElement;
+                        double[] outReal = new double[1];
+
+                        priceQueue.Enqueue((float)value);
+                        if (priceQueue.Count > term)
+                            priceQueue.Dequeue();
+
+                        Core.MovingAverage(0, priceQueue.Count - 1, priceQueue.ToArray(), term, Core.MAType.Sma, out outBegIdx, out outNBElement, outReal);
+                        columns.Add(outReal[0].ToString());
+                    }
                 }
 
                 sw.WriteLine(string.Join(delimeter, columns));
@@ -217,7 +218,7 @@ namespace MTree.DataExtractor
                     var property = conclusion.GetType().GetProperty(field.ToString());
                     object value = property.GetValue(conclusion);
 
-                    columns.Add(GetNormalizedValue(property, value));
+                    columns.Add(GetNormalizedValue(value));
                 }
 
                 foreach (var field in Enum.GetValues(typeof(IndexMaster)))
@@ -225,7 +226,7 @@ namespace MTree.DataExtractor
                     var property = master.GetType().GetProperty(field.ToString());
                     object value = property.GetValue(master);
 
-                    columns.Add(GetNormalizedValue(property, value));
+                    columns.Add(GetNormalizedValue(value));
                 }
 
                 foreach (var field in Enum.GetValues(typeof(IndexTAField)))
@@ -244,7 +245,7 @@ namespace MTree.DataExtractor
             }
         }
 
-        private string GetNormalizedValue(PropertyInfo property, object value)
+        private string GetNormalizedValue(object value)
         {
             Type type = value.GetType();
 
@@ -255,7 +256,6 @@ namespace MTree.DataExtractor
             }
             else if (type == typeof(bool))
             {
-
                 return Convert.ToInt32(value).ToString();
             }
             else if (type.IsEnum)
