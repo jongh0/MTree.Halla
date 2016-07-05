@@ -81,7 +81,7 @@ namespace MTree.Dashboard
             get
             {
                 if (_StartSimulationCommand == null)
-                    _StartSimulationCommand = new RelayCommand((Action)(() => Task.Run((Action)(() =>
+                    _StartSimulationCommand = new RelayCommand(() => Task.Run(() =>
                     {
                         DataLoader loader = new DataLoader();
                         CodeMapDbObject result = loader.Load<CodeMapDbObject>("CodeMap", StartingDate, EndingDate)[0];
@@ -95,7 +95,7 @@ namespace MTree.Dashboard
                                 ((ISimulation)consumer).StartSimulation(codes, targetDate);
                             }
                         }
-                    }))));
+                    }));
 
                 return _StartSimulationCommand;
             }
