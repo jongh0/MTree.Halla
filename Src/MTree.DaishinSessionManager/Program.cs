@@ -63,6 +63,18 @@ namespace MTree.DaishinSessionManager
                 ClickLoginButton(cybosStarterH);
 
                 ClosePopup("인증서 만료 안내", "나중에 갱신");
+
+                while (true)
+                {
+                    Process dibServer = Process.GetProcessesByName("DibServer")[0];
+                    if (dibServer != null)
+                    {
+                        dibServer.PriorityClass = ProcessPriorityClass.RealTime;
+                        logger.Info("Set DibServer Priority to Realtime");
+                        break;
+                    }
+                    Thread.Sleep(1000);
+                }
             }
             catch (Exception ex)
             {
