@@ -68,6 +68,7 @@ namespace MTree.DataExtractor
 
     public enum StockTAField
     {
+        MovingAverage,
     }
 
     public enum IndexConclusionField
