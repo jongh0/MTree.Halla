@@ -19,6 +19,9 @@ namespace MTree.DataExtractor
 
         private object masterBak;
 
+        int term = 5;
+        Queue<float> priceQueue = new Queue<float>();
+
         public void Extract(List<StockConclusion> conclusionList, List<StockMaster> masterList, string path)
         {
             if (conclusionList == null || masterList == null) return;
@@ -147,8 +150,6 @@ namespace MTree.DataExtractor
             }
         }
 
-        Queue<float> priceQueue = new Queue<float>();
-        int term = 5;
         private void WriteContent(StreamWriter sw, StockConclusion conclusion, StockMaster master)
         {
             if (conclusion == null || master == null) return;
@@ -175,19 +176,18 @@ namespace MTree.DataExtractor
 
                 foreach (var field in Enum.GetValues(typeof(StockTAField)))
                 {
-                    var property = master.GetType().GetProperty(field.ToString());
-                    object value = property.GetValue(master);
-
                     if ((StockTAField)field == StockTAField.MovingAverage)
                     {
                         int outBegIdx;
                         int outNBElement;
                         double[] outReal = new double[1];
 
-                        priceQueue.Enqueue((float)value);
+                        priceQueue.Enqueue(conclusion.Price);
+
                         if (priceQueue.Count > term)
                             priceQueue.Dequeue();
 
+                        // MovingAverage(int startIdx, int endIdx, float[] inReal, int optInTimePeriod, MAType optInMAType, out int outBegIdx, out int outNBElement, double[] outReal)
                         Core.MovingAverage(0, priceQueue.Count - 1, priceQueue.ToArray(), term, Core.MAType.Sma, out outBegIdx, out outNBElement, outReal);
                         columns.Add(outReal[0].ToString());
                     }
