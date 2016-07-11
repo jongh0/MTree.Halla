@@ -19,8 +19,7 @@ namespace MTree.DataExtractor
 
         private object masterBak;
 
-        int term = 5;
-        Queue<float> priceQueue = new Queue<float>();
+        List<float> priceList = new List<float>();
 
         public void Extract(List<StockConclusion> conclusionList, List<StockMaster> masterList, string path)
         {
@@ -45,6 +44,10 @@ namespace MTree.DataExtractor
             catch (Exception ex)
             {
                 logger.Error(ex);
+            }
+            finally
+            {
+                priceList.Clear();
             }
         }
 
@@ -74,6 +77,10 @@ namespace MTree.DataExtractor
             catch (Exception ex)
             {
                 logger.Error(ex);
+            }
+            finally
+            {
+                priceList.Clear();
             }
         }
 
@@ -156,6 +163,8 @@ namespace MTree.DataExtractor
 
             List<string> columns = new List<string>();
 
+            priceList.Add(conclusion.Price);
+
             try
             {
                 foreach (var field in Enum.GetValues(typeof(StockConclusionField)))
@@ -176,19 +185,21 @@ namespace MTree.DataExtractor
 
                 foreach (var field in Enum.GetValues(typeof(StockTAField)))
                 {
-                    if ((StockTAField)field == StockTAField.MovingAverage)
+                    if (field.ToString().Contains("MovingAverage"))
                     {
+                        var strArr = field.ToString().Split('_');
+                        var term = int.Parse(strArr[1]);
+                        var maType = (Core.MAType)Enum.Parse(typeof(Core.MAType), strArr[2]);
+
+                        var startIdx = Math.Max(0, priceList.Count - term);
+                        var endIdx = priceList.Count - 1;
+
                         int outBegIdx;
                         int outNBElement;
                         double[] outReal = new double[1];
 
-                        priceQueue.Enqueue(conclusion.Price);
-
-                        if (priceQueue.Count > term)
-                            priceQueue.Dequeue();
-
                         // MovingAverage(int startIdx, int endIdx, float[] inReal, int optInTimePeriod, MAType optInMAType, out int outBegIdx, out int outNBElement, double[] outReal)
-                        Core.MovingAverage(0, priceQueue.Count - 1, priceQueue.ToArray(), term, Core.MAType.Sma, out outBegIdx, out outNBElement, outReal);
+                        Core.MovingAverage(startIdx, endIdx, priceList.ToArray(), term, maType, out outBegIdx, out outNBElement, outReal);
                         columns.Add(outReal[0].ToString());
                     }
                 }
