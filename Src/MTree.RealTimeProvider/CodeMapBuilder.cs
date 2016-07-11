@@ -13,21 +13,21 @@ namespace MTree.RealTimeProvider
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private Dictionary<string, object> codeMapHeader;
+        private Dictionary<string, object> codeMapHead;
 
         public CodeMapBuilder()
         {
-            codeMapHeader = new Dictionary<string, object>();
+            codeMapHead = new Dictionary<string, object>();
         }
 
         public Dictionary<string, object> GetCodeMap()
         {
-            return codeMapHeader;
+            return codeMapHead;
         }
 
         public string GetCodeMapAsJsonString()
         {
-            return CodeMapBuilderUtil.ConvertToJsonString(codeMapHeader);
+            return CodeMapBuilderUtil.ConvertToJsonString(codeMapHead);
         }
 
         public void AddMarketTypeMap(PublisherContract contract)
@@ -35,7 +35,7 @@ namespace MTree.RealTimeProvider
             try
             {
                 var codeList = contract.Callback.GetCodeList();
-                CodeMapBuilderUtil.BuildNode(codeMapHeader, "MarketType", BuildMarketTypeMap(codeList));
+                CodeMapBuilderUtil.BuildNode(codeMapHead, "MarketType", BuildMarketTypeMap(codeList));
             }
             catch (Exception ex)
             {
@@ -47,7 +47,7 @@ namespace MTree.RealTimeProvider
         {
             try
             {
-                CodeMapBuilderUtil.BuildNode(codeMapHeader, "BizType", contract.Callback.GetCodeMap(CodeMapTypes.BizType));
+                CodeMapBuilderUtil.BuildNode(codeMapHead, "BizType", contract.Callback.GetCodeMap(CodeMapTypes.BizType));
             }
             catch (Exception ex)
             {
@@ -59,7 +59,7 @@ namespace MTree.RealTimeProvider
         {
             try
             {
-                CodeMapBuilderUtil.BuildNode(codeMapHeader, "CapitalScale", contract.Callback.GetCodeMap(CodeMapTypes.CapitalScale));
+                CodeMapBuilderUtil.BuildNode(codeMapHead, "CapitalScale", contract.Callback.GetCodeMap(CodeMapTypes.CapitalScale));
             }
             catch (Exception ex)
             {
@@ -71,7 +71,7 @@ namespace MTree.RealTimeProvider
         {
             try
             {
-                CodeMapBuilderUtil.BuildNode(codeMapHeader, "Group", contract.Callback.GetCodeMap(CodeMapTypes.Group));
+                CodeMapBuilderUtil.BuildNode(codeMapHead, "Group", contract.Callback.GetCodeMap(CodeMapTypes.Group));
             }
             catch (Exception ex)
             {
@@ -83,7 +83,7 @@ namespace MTree.RealTimeProvider
         {
             try
             {
-                var theme = CodeMapBuilderUtil.BuildNode(codeMapHeader, "Theme");
+                var theme = CodeMapBuilderUtil.BuildNode(codeMapHead, "Theme");
                 CodeMapBuilderUtil.BuildNode(theme, publisherName, contract.Callback.GetCodeMap(CodeMapTypes.Theme));
             }
             catch (Exception ex)

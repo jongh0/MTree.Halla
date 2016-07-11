@@ -30,7 +30,7 @@ namespace MTree.RealTimeProvider
 
         event Action<List<IndexMaster>> ConsumeIndexMasterEvent;
 
-        event Action<string> ConsumeCodemapEvent;
+        event Action<Dictionary<string, object>> ConsumeCodemapEvent;
 
         event Action<MessageTypes, string> NotifyMessageEvent;
 
@@ -56,7 +56,7 @@ namespace MTree.RealTimeProvider
         void ConsumeIndexMaster(List<IndexMaster> indexMaster);
 
         [OperationContract]
-        void ConsumeCodemap(string codeMap);
+        void ConsumeCodemap(Dictionary<string, object> codeMap);
 
         [OperationContract]
         void ConsumeChart(List<Candle> candles);

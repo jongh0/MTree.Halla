@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using MTree.Consumer;
+using MTree.DataStructure;
 using MTree.DbProvider;
 using System;
 using System.Collections.Generic;
@@ -80,8 +81,12 @@ namespace MTree.Dashboard
             get
             {
                 if (_StartSimulationCommand == null)
-                    _StartSimulationCommand = new RelayCommand((Action)(() => Task.Run((Action)(() =>
+                    _StartSimulationCommand = new RelayCommand(() => Task.Run(() =>
                     {
+                        DataLoader loader = new DataLoader();
+                        CodeMapDbObject result = loader.Load<CodeMapDbObject>("CodeMap", StartingDate, EndingDate)[0];
+                        ICodeMap codemap = CodeMapConverter.JsonStringToCodeMap(result.Code, result.CodeMap);
+
                         if (consumer is ISimulation)
                         {
                             string[] codes = DbAgent.Instance.GetCollectionList(DbTypes.StockMaster).OrderBy(s => s).ToArray();
@@ -90,7 +95,7 @@ namespace MTree.Dashboard
                                 ((ISimulation)consumer).StartSimulation(codes, targetDate);
                             }
                         }
-                    }))));
+                    }));
 
                 return _StartSimulationCommand;
             }

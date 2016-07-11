@@ -189,7 +189,7 @@ namespace MTree.RealTimeProvider
                     logger.Info(RealTimeState);
 
                     Thread.Sleep(1000 * 20);
-
+                    
                     StartCodeDistributing();
 
                     if (SkipMastering == false)
@@ -197,7 +197,7 @@ namespace MTree.RealTimeProvider
                         StartStockMastering();
                         StartIndexMastering();
                     }
-
+                    
                     if (Config.General.SkipCodeBuilding == false)
                         StartCodeMapBuilding(contract); // Should be after master finished
 

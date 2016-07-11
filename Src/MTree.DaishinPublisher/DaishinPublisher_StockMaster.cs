@@ -96,7 +96,7 @@ namespace MTree.DaishinPublisher
                 var daishinBizTypeName = codeMgrObj.CodeToName(daishinBizTypeCode);
                 if (bizTypeCodeMap.ContainsKey(daishinBizTypeName) == false)
                     bizTypeCodeMap.Add(daishinBizTypeName, new Dictionary<string, object>());
-                ((Dictionary<string, object>)bizTypeCodeMap[daishinBizTypeName]).Add(code, QuotingStockMaster.Name);
+                ((Dictionary<string, object>)bizTypeCodeMap[daishinBizTypeName]).Add(CodeEntity.RemovePrefix(code), QuotingStockMaster.Name);
 
                 // 3 - (string) 그룹코드 => Not working
                 //var groupCode = stockMstObj.GetHeaderValue(3).ToString();
@@ -111,7 +111,7 @@ namespace MTree.DaishinPublisher
                 {
                     if (capitalScaleCodeMap.ContainsKey(size) == false)
                         capitalScaleCodeMap.Add(size, new Dictionary<string, object>());
-                    ((Dictionary<string, object>)capitalScaleCodeMap[size]).Add(code, QuotingStockMaster.Name);
+                    ((Dictionary<string, object>)capitalScaleCodeMap[size]).Add(CodeEntity.RemovePrefix(code), QuotingStockMaster.Name);
                 }
 
                 // 8 - (long) 상한가

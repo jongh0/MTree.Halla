@@ -159,6 +159,8 @@ namespace MTree.DbProvider
                     return (IMongoCollection<T>)IndexConclusionDb.GetCollection<IndexConclusion>(collectionName);
                 else if (typeof(T) == typeof(DataCounter))
                     return (IMongoCollection<T>)CommonDb.GetCollection<DataCounter>(collectionName);
+                else if (typeof(T) == typeof(CodeMapDbObject))
+                    return (IMongoCollection<T>)CommonDb.GetCollection<CodeMapDbObject>(collectionName);
                 else
                     logger.Error($"Can not find collection, type: {typeof(T)}");
             }
@@ -197,6 +199,8 @@ namespace MTree.DbProvider
                     return (IMongoCollection<T>)IndexConclusionDb.GetCollection<IndexConclusion>(collectionName);
                 else if (item is DataCounter)
                     return (IMongoCollection<T>)CommonDb.GetCollection<DataCounter>(collectionName);
+                else if (item is CodeMapDbObject)
+                    return (IMongoCollection<T>)CommonDb.GetCollection<CodeMapDbObject>(collectionName);
                 else
                     logger.Error($"Can not find collection, item: {item}");
             }

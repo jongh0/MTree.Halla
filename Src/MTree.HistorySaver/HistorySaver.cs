@@ -156,9 +156,18 @@ namespace MTree.HistorySaver
             }
         }
 
-        public override void ConsumeCodemap(string codeMap)
+        public override void ConsumeCodemap(Dictionary<string, object> jsonDic)
         {
-            //Dictionary<string, object> rebuilt = CodeMapBuilderUtil.RebuildNode(jsonString);
+            ICodeMap codeMap = CodeMapConverter.DicToCodeMap(DateTime.Now.ToString(Config.General.DateFormat), jsonDic);
+            
+            CodeMapDbObject codemapDbObj = new CodeMapDbObject();
+            codemapDbObj.Id = new ObjectId();
+            codemapDbObj.Time = DateTimeUtility.DateOnly(DateTime.Now);
+            codemapDbObj.ReceivedTime = DateTime.Now;
+            codemapDbObj.Code = "CodeMap";
+            codemapDbObj.CodeMap = CodeMapConverter.CodeMapToJsonString(codeMap);
+
+            DbAgent.Instance.Insert(codemapDbObj);
         }
 
         /// <summary>

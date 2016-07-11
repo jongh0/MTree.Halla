@@ -16,7 +16,7 @@ namespace MTree.Consumer
 
         public event Action<List<IndexMaster>> ConsumeIndexMasterEvent;
 
-        public event Action<string> ConsumeCodemapEvent;
+        public event Action<Dictionary<string, object>> ConsumeCodemapEvent;
 
         public event Action<MessageTypes, string> NotifyMessageEvent;
         
@@ -55,7 +55,7 @@ namespace MTree.Consumer
             ConsumeIndexMasterEvent?.Invoke(indexMasters);
         }
 
-        public virtual void ConsumeCodemap(string codeMap)
+        public virtual void ConsumeCodemap(Dictionary<string, object> codeMap)
         {
             ConsumeCodemapEvent?.Invoke(codeMap);
         }
