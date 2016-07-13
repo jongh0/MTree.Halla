@@ -35,11 +35,17 @@ namespace MTree.DaishinSessionManager
 
                 LaunchStarter();
 
-                // 중복실행 방지 팝업 정리 
-                //CloseDuplicationPopup(); //=> CpStart Process Kill하면서 필요없는듯
+                while(true)
+                {
+                    // 중복실행 방지 팝업 정리 
+                    ClosePopup("ncStarter", "예(&Y)"); 
 
-                // 보안 경고창 Close 
-                ClosePopup("대신증권 CYBOS FAMILY", "예(&Y)"); //=> 키보드 보안 및 메모리 보안 프로그램 사용 미체크 시 Popup뜸
+                    // 보안 경고창 Close 
+                    if (ClosePopup("대신증권 CYBOS FAMILY", "예(&Y)")) //=> 키보드 보안 및 메모리 보안 프로그램 사용 미체크 시 Popup뜸
+                        break;
+
+                    Thread.Sleep(1000);
+                }
 
                 // Find CYBOS Starter
                 var cybosStarterH = WindowsAPI.findWindow("CYBOS Starter", retryCount: 100);
@@ -170,31 +176,8 @@ namespace MTree.DaishinSessionManager
                 logger.Error(ex);
             }
         }
-
-        private static void CloseDuplicationPopup()
-        {
-            try
-            {
-                var popupH = WindowsAPI.findWindow("ncStarter", 10);
-                if (popupH != IntPtr.Zero)
-                {
-                    var buttonH = WindowsAPI.findWindowEx(popupH, "Button", "아니요(&N)", retryCount: 10);
-                    if (buttonH != IntPtr.Zero)
-                    {
-                        WindowsAPI.setForegroundWindow(popupH);
-                        WindowsAPI.sendMessage(buttonH, WindowsAPI.BM_CLICK, 0, 0);
-
-                        logger.Info("Duplicated launcher popup closed");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-            }
-        }
-
-        private static void ClosePopup(string title, string buttonName)
+        
+        private static bool ClosePopup(string title, string buttonName)
         {
             try
             {
@@ -210,6 +193,7 @@ namespace MTree.DaishinSessionManager
                         WindowsAPI.sendMessage(buttonH, WindowsAPI.BM_CLICK, 0, 0);
 
                         logger.Info($"{buttonName} info popup closed");
+                        return true;
                     }
                 }
             }
@@ -217,6 +201,7 @@ namespace MTree.DaishinSessionManager
             {
                 logger.Error(ex);
             }
+            return false;
         }
 
         private static void LaunchStarter()
