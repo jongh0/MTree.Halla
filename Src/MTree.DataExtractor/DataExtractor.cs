@@ -191,15 +191,21 @@ namespace MTree.DataExtractor
                         var term = int.Parse(strArr[1]);
                         var maType = (Core.MAType)Enum.Parse(typeof(Core.MAType), strArr[2]);
 
-                        var startIdx = Math.Max(0, priceList.Count - term);
-                        var endIdx = priceList.Count - 1;
+                        if (priceList.Count < term)
+                        {
+                            columns.Add("0");
+                            continue;
+                        }
+
+                        var inReal = priceList.GetRange(priceList.Count - term, term).ToArray();
 
                         int outBegIdx;
                         int outNBElement;
-                        double[] outReal = new double[1];
+                        var outReal = new double[term];
 
                         // MovingAverage(int startIdx, int endIdx, float[] inReal, int optInTimePeriod, MAType optInMAType, out int outBegIdx, out int outNBElement, double[] outReal)
-                        Core.MovingAverage(startIdx, endIdx, priceList.ToArray(), term, maType, out outBegIdx, out outNBElement, outReal);
+                        Core.MovingAverage(0, inReal.Length - 1, inReal, term, maType, out outBegIdx, out outNBElement, outReal);
+
                         columns.Add(outReal[0].ToString());
                     }
                 }
