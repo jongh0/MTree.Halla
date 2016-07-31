@@ -329,12 +329,12 @@ namespace MTree.RealTimeProvider
 
                 if (int.TryParse(endTimeStr, out endTime) == true)
                 {
-                    MarketEndTime = new DateTime(now.Year, now.Month, now.Day, endTime, 0, 0).AddHours(3); // 시간외 3시간 추가
+                    MarketEndTime = new DateTime(now.Year, now.Month, now.Day, endTime, 0, 0).Add(new TimeSpan(2, 30, 00)); // 시간외 2시간 30분 추가
                 }
                 else
                 {
                     logger.Error("Market end time parsing error");
-                    MarketEndTime = new DateTime(now.Year, now.Month, now.Day, 15, 0, 0).AddHours(3); // 시간외 3시간 추가
+                    MarketEndTime = new DateTime(now.Year, now.Month, now.Day, 15, 30, 0).Add(new TimeSpan(2, 30, 00)); // 시간외 2시간 30분 추가
                 }
 
                 logger.Info($"Market end time: {MarketEndTime.ToString(Config.General.TimeFormat)}");
