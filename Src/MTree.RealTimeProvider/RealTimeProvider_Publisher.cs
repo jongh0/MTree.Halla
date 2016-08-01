@@ -313,7 +313,7 @@ namespace MTree.RealTimeProvider
 
                 if (int.TryParse(startTimeStr, out startTime) == true)
                 {
-                    MarketStartTime = new DateTime(now.Year, now.Month, now.Day, startTime, 0, 0);
+                    MarketStartTime = new DateTime(now.Year, now.Month, now.Day, startTime / 100, startTime % 100, 0);
                 }
                 else
                 {
@@ -329,7 +329,7 @@ namespace MTree.RealTimeProvider
 
                 if (int.TryParse(endTimeStr, out endTime) == true)
                 {
-                    MarketEndTime = new DateTime(now.Year, now.Month, now.Day, endTime, 0, 0).Add(new TimeSpan(2, 30, 00)); // 시간외 2시간 30분 추가
+                    MarketEndTime = new DateTime(now.Year, now.Month, now.Day, endTime / 100, endTime % 100, 0).Add(new TimeSpan(2, 30, 00)); // 시간외 2시간 30분 추가
                 }
                 else
                 {
