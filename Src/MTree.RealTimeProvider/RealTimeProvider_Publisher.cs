@@ -198,7 +198,7 @@ namespace MTree.RealTimeProvider
                         StartIndexMastering();
                     }
                     
-                    if (Config.General.SkipCodeBuilding == false)
+                    if (SkipCodeBuilding == false)
                         StartCodeMapBuilding(contract); // Should be after master finished
 
                     NotifyMessageToConsumer(MessageTypes.MasteringDone);

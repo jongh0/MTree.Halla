@@ -44,6 +44,7 @@ namespace MTree.RealTimeProvider
         public DataCounter Counter { get; set; } = new DataCounter(DataTypes.RealTimeProvider);
 
         private bool SkipMastering { get; set; } = false;
+        private bool SkipCodeBuilding { get; set; } = false;
         private bool MasteringDone { get; set; } = false;
 
         private string _RealTimeState = string.Empty;
@@ -60,8 +61,8 @@ namespace MTree.RealTimeProvider
         public RealTimeProvider()
         {
             string[] args = Environment.GetCommandLineArgs();
-
-            if (args.Length > 1 && args[1] == "SkipMastering")
+            
+            if (args.Contains("SkipMastering") == true)
             {
                 logger.Info("Command args, SkipMastering");
                 SkipMastering = true;
@@ -69,6 +70,16 @@ namespace MTree.RealTimeProvider
             else if (Config.General.SkipMastering == true)
             {
                 SkipMastering = true;
+            }
+
+            if (args.Contains("SkipCodeBuilding") == true)
+            {
+                logger.Info("Command args, SkipCodeBuilding");
+                SkipCodeBuilding = true;
+            }
+            else if (Config.General.SkipCodeBuilding == true)
+            {
+                SkipCodeBuilding = true;
             }
 
             TaskUtility.Run("RealTimeProvider.CircuitBreakQueue", QueueTaskCancelToken, ProcessCircuitBreakQueue);
@@ -321,7 +332,7 @@ namespace MTree.RealTimeProvider
 
                         //Application.Restart();
                         if (MasteringDone == true)
-                            ProcessUtility.Start(ProcessTypes.RealTimeProvider, "SkipMastering");
+                            ProcessUtility.Start(ProcessTypes.RealTimeProvider, "SkipMastering SkipCodeBuilding");
                         else
                             ProcessUtility.Start(ProcessTypes.RealTimeProvider);
                     }

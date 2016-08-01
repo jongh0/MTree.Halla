@@ -80,7 +80,7 @@ namespace MTree.RealTimeProvider
                         codemapBuildingTask.Add(Task.Run(() =>
                         {
                             logger.Info(RealTimeState = $"Build Kiwoom Theme Map");
-                            if (KiwoomContracts[0] != null)
+                            if (KiwoomContracts.Count > 1 && KiwoomContracts[0] != null)
                                 codeMapBuilder.AddThemeMap(KiwoomContracts[0], "KiwoomTheme");
                             logger.Info(RealTimeState = $"Build Kiwoom Theme Map Done");
                         }));
