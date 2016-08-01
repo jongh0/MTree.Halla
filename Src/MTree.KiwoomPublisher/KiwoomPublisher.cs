@@ -176,7 +176,7 @@ namespace MTree.KiwoomPublisher
                         var shortCode = code.Substring(1);
                         if (themeGroup.ContainsKey(shortCode) == true)
                         {
-                            logger.Error($"{shortCode} is already exist in {themeCode}.");
+                            logger.Warn($"{shortCode} is already exist in {themeCode}.");
                             continue;
                         }
                         themeGroup.Add(shortCode, kiwoomObj.GetMasterCodeName(shortCode));

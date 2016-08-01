@@ -202,8 +202,7 @@ namespace MTree.DataExtractor
                         int outBegIdx;
                         int outNBElement;
                         var outReal = new double[term];
-
-                        // MovingAverage(int startIdx, int endIdx, float[] inReal, int optInTimePeriod, MAType optInMAType, out int outBegIdx, out int outNBElement, double[] outReal)
+                        
                         Core.MovingAverage(0, inReal.Length - 1, inReal, term, maType, out outBegIdx, out outNBElement, outReal);
 
                         columns.Add(outReal[0].ToString());

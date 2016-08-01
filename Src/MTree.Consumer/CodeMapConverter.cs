@@ -135,7 +135,7 @@ namespace MTree.Consumer
                             if (s.Name != dic[key].ToString())
                             {
                                 // TODO : Select correct stock name
-                                logger.Error($"Stock instance has diffrent name, {s.Name} vs. {dic[key].ToString()}");
+                                logger.Warn($"Stock instance has diffrent name, {s.Name} vs. {dic[key].ToString()}");
                             }
                         }
                         ret.Add(s);
