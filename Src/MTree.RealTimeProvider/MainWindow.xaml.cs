@@ -81,7 +81,8 @@ namespace MTree.RealTimeProvider
                 else
                 {
                     Thread.Sleep(5000);
-                    ProcessUtility.Start(ProcessTypes.Dashboard);
+                    //ProcessUtility.Start(ProcessTypes.Dashboard);
+                    ProcessUtility.Start(ProcessTypes.TestConsumer);
                     for (int i = 0; i < 40; i++)
                         ProcessUtility.Start(ProcessTypes.TestPublisher);
                 }

@@ -17,12 +17,12 @@
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal" Margin="20,20,20,20">
             <Label Content="Code" VerticalAlignment="Center"/>
-            <TextBox Margin="5,0,5,0" Width="50" Text="{Binding Code}" VerticalContentAlignment="Center" MaxLength="6" TextAlignment="Center"/>
+            <TextBox Margin="5,0,5,0" Width="50" Text="{Binding Code, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" MaxLength="6" TextAlignment="Center"/>
             <DatePicker SelectedDate="{Binding Path=StartingDate, Mode=TwoWay}"/>
             <Label Content="~" Margin="5,0,5,0" VerticalAlignment="Center"/>
-            <DatePicker SelectedDate="{Binding Path=EndingDate, Mode=TwoWay}"/>
+            <DatePicker SelectedDate="{Binding Path=EndingDate, Mode=TwoWay}"/> 
             <Label Margin="5,0,5,0" VerticalAlignment="Center"/>
-            <Button Grid.Row="0" Content="Start Extract" Command="{Binding StartExtractCommand}"/>
+            <Button Grid.Row="0" Content="Start Extract" Command="{Binding StartExtractCommand}" IsEnabled="{Binding Path=CanExecuteExtract}"/>
         </StackPanel>
     </Grid>
 </Window>

@@ -29,8 +29,9 @@ namespace TestConsumer
 
                 Console.WriteLine($"{interval.ToString()}, {conclusion.Price}, {conclusion.Code} consumed");
 
-                if (count++ > 10000)
-                    Debugger.Break();
+                //if (count++ > 10000)
+                //    Debugger.Break();
+                //Thread.Sleep(100);
             }
             else
                 Thread.Sleep(10);

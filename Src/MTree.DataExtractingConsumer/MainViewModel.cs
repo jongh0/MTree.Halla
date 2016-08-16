@@ -1,8 +1,10 @@
 ﻿using GalaSoft.MvvmLight.Command;
+using MTree.Configuration;
 using MTree.Consumer;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +14,10 @@ namespace MTree.DataExtractingConsumer
 {
     public class MainViewModel : INotifyPropertyChanged
     {
+        private static readonly string defaultTitle = "DataExtractor";
+        private readonly string defaultDir = Path.Combine(Environment.CurrentDirectory, "Extract");
+        private string fileName;
+        private string filePath;
 
         private string _Code;
         public string Code
@@ -21,6 +27,7 @@ namespace MTree.DataExtractingConsumer
             {
                 _Code = value.Trim();
                 NotifyPropertyChanged(nameof(Code));
+                NotifyPropertyChanged(nameof(CanExecuteExtract));
             }
         }
 
@@ -64,21 +71,45 @@ namespace MTree.DataExtractingConsumer
                     _StartExtractCommand = new RelayCommand(() => Task.Run(() =>
                     {
                         string[] codes = { Code };
+
+                        fileName = $"{Code}_{StartingDate.ToString(Config.General.DateFormat)}~{EndingDate.ToString(Config.General.DateFormat)}.csv";
+                        filePath = Path.Combine(defaultDir, fileName);
+
+                        if (Directory.Exists(defaultDir) == false)
+                            Directory.CreateDirectory(defaultDir);
+
+                        extractor.StartExtract(filePath);
                         for (DateTime targetDate = StartingDate; targetDate <= EndingDate; targetDate = targetDate.AddDays(1))
                         {
-                            extractor.StartSimulation(codes, targetDate);
+                            consumer.StartSimulation(codes, targetDate);
                         }
                     }));
 
                 return _StartExtractCommand;
             }
         }
+
+        private bool _CanExecuteExtract = true;
+        public bool CanExecuteExtract
+        {
+            get
+            {
+                return _CanExecuteExtract && Code?.Length >= 6;
+            }
+            set
+            {
+                _CanExecuteExtract = value;
+                NotifyPropertyChanged(nameof(CanExecuteExtract));
+            }
+        }
         #endregion
 
-        private ISimulation extractor { get; set; }
+        private ISimulation consumer { get; set; }
+        private DataExtractor extractor { get; set; }
         public MainViewModel()
         {
-            extractor = new HistoryConsumer();
+            consumer = new HistoryConsumer();
+            extractor = new DataExtractor((ConsumerBase)consumer);
         }
 
         #region INotifyPropertyChanged
