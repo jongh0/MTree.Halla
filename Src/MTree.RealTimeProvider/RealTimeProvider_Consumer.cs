@@ -24,6 +24,7 @@ namespace MTree.RealTimeProvider
         private ConcurrentDictionary<Guid, SubscribeContract> IndexConclusionContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
         #endregion
 
+
         public List<Candle> GetChart(string code, DateTime startDate, DateTime endDate, CandleTypes candleType)
         {
             try
@@ -156,7 +157,7 @@ namespace MTree.RealTimeProvider
                         {
                             try
                             {
-                                contract.Value.Callback.ConsumeBiddingPrice(biddingPrice);
+                                    contract.Value.Callback.ConsumeBiddingPrice(biddingPrice);
                             }
                             catch (Exception ex)
                             {
@@ -190,7 +191,7 @@ namespace MTree.RealTimeProvider
                         {
                             try
                             {
-                                contract.Value.Callback.ConsumeCircuitBreak(circuitBreak);
+                                    contract.Value.Callback.ConsumeCircuitBreak(circuitBreak);
                             }
                             catch (Exception ex)
                             {
@@ -224,7 +225,7 @@ namespace MTree.RealTimeProvider
                         {
                             try
                             {
-                                contract.Value.Callback.ConsumeStockConclusion(conclusion);
+                                    contract.Value.Callback.ConsumeStockConclusion(conclusion);
                             }
                             catch (Exception ex)
                             {
@@ -258,7 +259,7 @@ namespace MTree.RealTimeProvider
                         {
                             try
                             {
-                                contract.Value.Callback.ConsumeIndexConclusion(conclusion);
+                                    contract.Value.Callback.ConsumeIndexConclusion(conclusion);
                             }
                             catch (Exception ex)
                             {
