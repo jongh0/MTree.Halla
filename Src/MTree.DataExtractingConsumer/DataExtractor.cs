@@ -4,10 +4,7 @@ using MTree.Utility;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using TicTacTec.TA.Library;
 
 namespace MTree.DataExtractingConsumer
@@ -177,25 +174,30 @@ namespace MTree.DataExtractingConsumer
                         var strArr = field.ToString().Split('_');
                         var term = int.Parse(strArr[1]);
                         var maType = (Core.MAType)Enum.Parse(typeof(Core.MAType), strArr[2]);
-
-                        if (priceList.Count < term)
-                        {
-                            columns.Add("0");
-                            continue;
-                        }
-
-                        var inReal = priceList.GetRange(priceList.Count - term, term).ToArray();
-
+                        
                         int outBegIdx;
-                        int outNBElement;
-                        var outReal = new double[term];
+                        int outNBElement = 0;
+                        int elementCount = term;
+                        do
+                        {
+                            if (priceList.Count < elementCount)
+                            {
+                                columns.Add("0");
+                                break;
+                            }
 
-                        Core.MovingAverage(0, inReal.Length - 1, inReal, term, maType, out outBegIdx, out outNBElement, outReal);
+                            var inReal = priceList.GetRange(priceList.Count - elementCount, elementCount).ToArray();
 
-                        columns.Add(outReal[0].ToString());
+                            var outReal = new double[elementCount];
+
+                            Core.MovingAverage(0, inReal.Length - 1, inReal, term, maType, out outBegIdx, out outNBElement, outReal);
+                            if (outNBElement != 0)
+                                columns.Add(outReal[0].ToString());
+                            else
+                                elementCount++;
+                        } while (outNBElement == 0);
                     }
                 }
-
                 sw.WriteLine(string.Join(delimeter, columns));
             }
             catch (Exception ex)
