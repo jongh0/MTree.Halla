@@ -24,6 +24,7 @@ namespace MTree.RealTimeProvider
         private ConcurrentDictionary<Guid, SubscribeContract> IndexConclusionContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
         #endregion
 
+        object communicationLockObj = new object();
 
         public List<Candle> GetChart(string code, DateTime startDate, DateTime endDate, CandleTypes candleType)
         {
@@ -157,6 +158,7 @@ namespace MTree.RealTimeProvider
                         {
                             try
                             {
+                                lock(communicationLockObj)
                                     contract.Value.Callback.ConsumeBiddingPrice(biddingPrice);
                             }
                             catch (Exception ex)
@@ -191,6 +193,7 @@ namespace MTree.RealTimeProvider
                         {
                             try
                             {
+                                lock (communicationLockObj)
                                     contract.Value.Callback.ConsumeCircuitBreak(circuitBreak);
                             }
                             catch (Exception ex)
@@ -225,6 +228,7 @@ namespace MTree.RealTimeProvider
                         {
                             try
                             {
+                                lock (communicationLockObj)
                                     contract.Value.Callback.ConsumeStockConclusion(conclusion);
                             }
                             catch (Exception ex)
@@ -259,6 +263,7 @@ namespace MTree.RealTimeProvider
                         {
                             try
                             {
+                                lock (communicationLockObj)
                                     contract.Value.Callback.ConsumeIndexConclusion(conclusion);
                             }
                             catch (Exception ex)
