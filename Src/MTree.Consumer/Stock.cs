@@ -25,7 +25,7 @@ namespace MTree.Consumer
         
         public MarketTypes MarketType { get; set; }
 
-        public Stock(string code, string name = "")
+        private Stock(string code, string name = "")
         {
             Code = code;
             Name = name;
@@ -33,7 +33,7 @@ namespace MTree.Consumer
 
         public Chart GetChart(ChartTypes chartType, DateTime startDate, DateTime endDate)
         {
-            return new Chart(chartType, startDate, endDate);
+            return new Chart(Code, chartType, startDate, endDate);
         }
 
         public StockMaster GetMaster(DateTime date)

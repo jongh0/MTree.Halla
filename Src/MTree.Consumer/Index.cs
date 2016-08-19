@@ -25,7 +25,7 @@ namespace MTree.Consumer
 
         public Chart GetChart(ChartTypes chartType, DateTime startDate, DateTime endDate)
         {
-            return new Chart(chartType, startDate, endDate);
+            return new Chart(Code, chartType, startDate, endDate);
         }
 
         public static Index GetIndex(string code)

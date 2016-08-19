@@ -38,8 +38,9 @@ namespace MTree.Consumer
 
         public SortedList<DateTime, Candle> Candles { get; private set; } = new SortedList<DateTime, Candle>();
 
-        public Chart(ChartTypes chartType, DateTime startDate, DateTime endDate)
+        public Chart(string code, ChartTypes chartType, DateTime startDate, DateTime endDate)
         {
+            Code = code;
             ChartType = chartType;
             SetRange(startDate, endDate);
         }
