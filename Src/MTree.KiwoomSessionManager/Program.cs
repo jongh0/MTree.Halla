@@ -57,6 +57,7 @@ namespace MTree.KiwoomSessionManager
                 {
                     HandleVersionUpdate();
                     HandleAdditionalPopupFail();
+                    HandleUpdateNotiPopup();
                 }
                 logger.Info("Kiwoom Starter Closed");
             }
@@ -194,6 +195,22 @@ namespace MTree.KiwoomSessionManager
 
                     Thread.Sleep(2000);
                 }
+            }
+        }
+        private static void HandleUpdateNotiPopup()
+        {
+            // Server Connection Fail
+            var popupHandle = WindowsAPI.findWindow("업그레이드 확인", retryCount: 10);
+            if (popupHandle != IntPtr.Zero)
+            {
+                IntPtr okBtnHandle = WindowsAPI.getWindow(popupHandle, WindowsAPI.GW_CHILD);
+                string buttonCaption = WindowsAPI.getWindowCaption(okBtnHandle);
+                logger.Info($"{buttonCaption} popup window found");
+
+                ClickButton(okBtnHandle);
+
+                // Wait for popup closed
+                Thread.Sleep(2000);
             }
         }
     }
