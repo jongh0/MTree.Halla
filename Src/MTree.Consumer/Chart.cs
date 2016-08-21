@@ -83,7 +83,7 @@ namespace MTree.Consumer
         /// <summary>
         /// Async로 동작하며 Initializing, WaitInitialing()를 사용해서 동작중인지 확인해야 한다
         /// </summary>
-        private async void FillCandles()
+        private void FillCandles()
         {
             int startTick = Environment.TickCount;
 
@@ -97,12 +97,14 @@ namespace MTree.Consumer
 
                 // CandleType, Time으로 Query 생성
                 var builder = Builders<Candle>.Filter;
-                var filter = builder.Eq(i => i.CandleType, ConvertToCandleType(ChartType)) & 
-                             builder.Gte(i => i.Time, StartDate) & 
-                             builder.Lte(i => i.Time, EndDate);
+                var filter = builder.Eq(i => i.Code, Code);
+                //var filter = builder.Eq(i => i.CandleType, ConvertToCandleType(ChartType)) & 
+                //             builder.Gte(i => i.Time, StartDate) & 
+                //             builder.Lte(i => i.Time, EndDate);
 
                 // Async Query 수행
-                var result = await DbAgent.Instance.Find(Code, filter).ToListAsync();
+                //var result = await DbAgent.Instance.Find(Code, filter).ToListAsync();
+                var result = DbAgent.Instance.Find(Code, filter).ToList();
 
                 // Candle 리스트에 삽입
                 foreach (var candle in result)

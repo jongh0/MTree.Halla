@@ -95,6 +95,9 @@ namespace MTree.DataExtractingConsumer
         MovingAverage_20_Kama,
         MovingAverage_20_Mama,
         MovingAverage_20_T3,
+        AverageDirectionalIndex_14,
+        AverageDirectionalIndex_20,
+        AverageDirectionalIndex_60,
     }
 
     public enum IndexConclusionField
