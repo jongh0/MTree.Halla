@@ -23,6 +23,15 @@ namespace MTree.DataExtractingConsumer
 
         private List<float> priceList = new List<float>();
 
+        private int numOfCandles;
+        private float[] open;
+        private float[] high;
+        private float[] low;
+        private float[] close;
+
+        private int outBegIdx;
+        private int outNBElement = 0;
+
         #region Queue Task
         public CancellationToken QueueTaskCancelToken { get; set; }
         #endregion
@@ -85,13 +94,7 @@ namespace MTree.DataExtractingConsumer
                 logger.Error(ex);
             }
         }
-
-        private int numOfCandles;
-        private float[] open;
-        private float[] high;
-        private float[] low;
-        private float[] close;
-
+        
         private void InitCandles()
         {
             Candle[] candles = new Candle[chart.Candles.Count];
@@ -198,12 +201,15 @@ namespace MTree.DataExtractingConsumer
             if (conclusion == null || master == null) return;
 
             List<string> columns = new List<string>();
-
-            priceList.Add(conclusion.Price);
-            stock.UpdateLastConclusion(conclusion);
-
             try
             {
+                priceList.Add(conclusion.Price);
+                stock.UpdateLastConclusion(conclusion);
+
+                high[high.Length - 1] = stock.High;
+                low[low.Length - 1] = stock.Low;
+                close[close.Length - 1] = stock.Close;
+
                 foreach (var field in Enum.GetValues(typeof(StockConclusionField)))
                 {
                     var property = conclusion.GetType().GetProperty(field.ToString());
@@ -222,20 +228,27 @@ namespace MTree.DataExtractingConsumer
 
                 foreach (var field in Enum.GetValues(typeof(StockTAField)))
                 {
-                    if (field.ToString().Contains("MovingAverage"))
-                    {
-                        var strArr = field.ToString().Split('_');
-                        var term = int.Parse(strArr[1]);
-                        var maType = (Core.MAType)Enum.Parse(typeof(Core.MAType), strArr[2]);
+                    var strArr = field.ToString().Split('_');
+                    var fieldName = strArr[0];
+                    var term = strArr.Length > 1 ? int.Parse(strArr[1]) : 0;
+                    var maType = strArr.Length > 2 ? (Core.MAType)Enum.Parse(typeof(Core.MAType), strArr[2]) : Core.MAType.Sma;
 
+                    if (fieldName == "MovingAverage")
                         GetMovingAverage(term, maType, ref columns);
-                    }
-                    if (field.ToString().Contains("AverageDirectionalIndex"))
-                    {
-                        var strArr = field.ToString().Split('_');
-                        var term = int.Parse(strArr[1]);
+                    else if (fieldName == "AverageTrueRange")
+                        GetAtr(term, ref columns);
+                    else if (fieldName == "AverageDirectionalIndexRating")
+                        GetAdxr(term, ref columns);
+                    else if (fieldName == "AverageDirectionalIndex")
                         GetAdx(term, ref columns);
-                    }
+                    else if (fieldName == "MinusDI")
+                        GetMinusDI(term, ref columns);
+                    else if (fieldName == "PlusDI")
+                        GetPlusDI(term, ref columns);
+                    else if (fieldName == "MinusDM")
+                        GetMinusDM(term, ref columns);
+                    else if (fieldName == "PlusDM")
+                        GetPlusDM(term, ref columns);
                 }
                 sw.WriteLine(string.Join(delimeter, columns));
             }
@@ -251,8 +264,6 @@ namespace MTree.DataExtractingConsumer
 
         private void GetMovingAverage(int term, Core.MAType maType, ref List<string> columns)
         {
-            int outBegIdx;
-            int outNBElement = 0;
             int elementCount = term;
             do
             {
@@ -273,17 +284,52 @@ namespace MTree.DataExtractingConsumer
             } while (outNBElement == 0);
         }
 
+        private void GetAtr(int term, ref List<string> columns)
+        {
+            var outReal = new double[chart.Candles.Count];
+            Core.Atr(0, chart.Candles.Count - 1, high, low, close, term, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+
+        private void GetAdxr(int term, ref List<string> columns)
+        {
+            var outReal = new double[chart.Candles.Count];
+            Core.Adxr(0, chart.Candles.Count - 1, high, low, close, term, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+
         private void GetAdx(int term, ref List<string> columns)
         {
-            int outBegIdx;
-            int outNBElement = 0;
-            var outReal = new double[chart.Candles.Count];
-
-            high[high.Length - 1] = stock.High;
-            low[low.Length - 1] = stock.Low;
-            close[close.Length - 1] = stock.Close;
-
+            var outReal = new double[chart.Candles.Count];            
             Core.Adx(0, chart.Candles.Count - 1, high, low, close, term, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+
+        private void GetMinusDI(int term, ref List<string> columns)
+        {
+            var outReal = new double[chart.Candles.Count];
+            Core.MinusDI(0, chart.Candles.Count - 1, high, low, close, term, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+
+        private void GetPlusDI(int term, ref List<string> columns)
+        {
+            var outReal = new double[chart.Candles.Count];
+            Core.PlusDI(0, chart.Candles.Count - 1, high, low, close, term, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+
+        private void GetMinusDM(int term, ref List<string> columns)
+        {
+            var outReal = new double[chart.Candles.Count];
+            Core.MinusDM(0, chart.Candles.Count - 1, high, low, term, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+
+        private void GetPlusDM(int term, ref List<string> columns)
+        {
+            var outReal = new double[chart.Candles.Count];
+            Core.PlusDM(0, chart.Candles.Count - 1, high, low, term, out outBegIdx, out outNBElement, outReal);
             columns.Add(outReal[outNBElement - 1].ToString());
         }
 
