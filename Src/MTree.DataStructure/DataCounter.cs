@@ -21,6 +21,7 @@ namespace MTree.DataStructure
         IndexMaster,
         StockConclusion,
         IndexConclusion,
+        ETFConclusion,
     }
 
     public enum DataTypes
@@ -140,6 +141,20 @@ namespace MTree.DataStructure
                 {
                     _IndexConclusionCount = value;
                     NotifyPropertyChanged(nameof(IndexConclusionCount));
+                }
+            }
+        }
+
+        private int _ETFConclusionCount = 0;
+        public int ETFConclusionCount
+        {
+            get { return _ETFConclusionCount; }
+            set
+            {
+                if (_ETFConclusionCount != value)
+                {
+                    _ETFConclusionCount = value;
+                    NotifyPropertyChanged(nameof(ETFConclusionCount));
                 }
             }
         }

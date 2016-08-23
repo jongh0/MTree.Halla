@@ -71,6 +71,7 @@ namespace MTree.DbProvider
         public IMongoDatabase IndexMasterDb { get; set; }
         public IMongoDatabase StockConclusionDb { get; set; }
         public IMongoDatabase IndexConclusionDb { get; set; }
+        public IMongoDatabase ETFConclusionDb { get; set; }
         public IMongoDatabase CommonDb { get; set; }
         
         private DbAgent(string connectionString = null)
@@ -91,6 +92,7 @@ namespace MTree.DbProvider
             IndexMasterDb = DbProvider.GetDatabase(DbTypes.IndexMaster);
             StockConclusionDb = DbProvider.GetDatabase(DbTypes.StockConclusion);
             IndexConclusionDb = DbProvider.GetDatabase(DbTypes.IndexConclusion);
+            ETFConclusionDb = DbProvider.GetDatabase(DbTypes.ETFConclusion);
             CommonDb = DbProvider.GetDatabase(DbTypes.Common);
         }
 
@@ -157,6 +159,8 @@ namespace MTree.DbProvider
                     return (IMongoCollection<T>)StockConclusionDb.GetCollection<StockConclusion>(collectionName);
                 else if (typeof(T) == typeof(IndexConclusion))
                     return (IMongoCollection<T>)IndexConclusionDb.GetCollection<IndexConclusion>(collectionName);
+                else if (typeof(T) == typeof(ETFConclusion))
+                    return (IMongoCollection<T>)IndexConclusionDb.GetCollection<ETFConclusion>(collectionName);
                 else if (typeof(T) == typeof(DataCounter))
                     return (IMongoCollection<T>)CommonDb.GetCollection<DataCounter>(collectionName);
                 else if (typeof(T) == typeof(CodeMapDbObject))
@@ -197,6 +201,8 @@ namespace MTree.DbProvider
                     return (IMongoCollection<T>)StockConclusionDb.GetCollection<StockConclusion>(collectionName);
                 else if (item is IndexConclusion)
                     return (IMongoCollection<T>)IndexConclusionDb.GetCollection<IndexConclusion>(collectionName);
+                else if (item is ETFConclusion)
+                    return (IMongoCollection<T>)IndexConclusionDb.GetCollection<ETFConclusion>(collectionName);
                 else if (item is DataCounter)
                     return (IMongoCollection<T>)CommonDb.GetCollection<DataCounter>(collectionName);
                 else if (item is CodeMapDbObject)
@@ -323,6 +329,7 @@ namespace MTree.DbProvider
             {
                 logger.Info($"Create database index, recreate: {recreate}");
 
+                #region Chart
                 foreach (var collectionName in GetCollectionList(DbTypes.Chart))
                 {
                     var collection = GetCollection<Candle>(collectionName);
@@ -332,7 +339,9 @@ namespace MTree.DbProvider
 
                     collection.Indexes.CreateOne(Builders<Candle>.IndexKeys.Ascending(i => i.CandleType).Ascending(i => i.Time));
                 }
+                #endregion
 
+                #region BiddingPrice
                 foreach (var collectionName in GetCollectionList(DbTypes.BiddingPrice))
                 {
                     var collection = GetCollection<BiddingPrice>(collectionName);
@@ -342,7 +351,9 @@ namespace MTree.DbProvider
 
                     collection.Indexes.CreateOne(Builders<BiddingPrice>.IndexKeys.Ascending(i => i.Time));
                 }
+                #endregion
 
+                #region CircuitBreak
                 foreach (var collectionName in GetCollectionList(DbTypes.CircuitBreak))
                 {
                     var collection = GetCollection<CircuitBreak>(collectionName);
@@ -352,7 +363,9 @@ namespace MTree.DbProvider
 
                     collection.Indexes.CreateOne(Builders<CircuitBreak>.IndexKeys.Ascending(i => i.Time));
                 }
+                #endregion
 
+                #region StockMaster
                 foreach (var collectionName in GetCollectionList(DbTypes.StockMaster))
                 {
                     var collection = GetCollection<StockMaster>(collectionName);
@@ -362,7 +375,9 @@ namespace MTree.DbProvider
 
                     collection.Indexes.CreateOne(Builders<StockMaster>.IndexKeys.Ascending(i => i.Time));
                 }
+                #endregion
 
+                #region IndexMaster
                 foreach (var collectionName in GetCollectionList(DbTypes.IndexMaster))
                 {
                     var collection = GetCollection<IndexMaster>(collectionName);
@@ -372,7 +387,9 @@ namespace MTree.DbProvider
 
                     collection.Indexes.CreateOne(Builders<IndexMaster>.IndexKeys.Ascending(i => i.Time));
                 }
+                #endregion
 
+                #region StockConclusion
                 foreach (var collectionName in GetCollectionList(DbTypes.StockConclusion))
                 {
                     var collection = GetCollection<StockConclusion>(collectionName);
@@ -382,7 +399,9 @@ namespace MTree.DbProvider
 
                     collection.Indexes.CreateOne(Builders<StockConclusion>.IndexKeys.Ascending(i => i.Time));
                 }
+                #endregion
 
+                #region IndexConclusion
                 foreach (var collectionName in GetCollectionList(DbTypes.IndexConclusion))
                 {
                     var collection = GetCollection<IndexConclusion>(collectionName);
@@ -392,6 +411,19 @@ namespace MTree.DbProvider
 
                     collection.Indexes.CreateOne(Builders<IndexConclusion>.IndexKeys.Ascending(i => i.Time));
                 }
+                #endregion
+
+                #region ETFConclusion
+                foreach (var collectionName in GetCollectionList(DbTypes.ETFConclusion))
+                {
+                    var collection = GetCollection<ETFConclusion>(collectionName);
+
+                    if (recreate == true)
+                        collection.Indexes.DropAll();
+
+                    collection.Indexes.CreateOne(Builders<ETFConclusion>.IndexKeys.Ascending(i => i.Time));
+                } 
+                #endregion
 
                 var msg = "Database indexing done";
                 logger.Info(msg);
@@ -425,6 +457,7 @@ namespace MTree.DbProvider
 
                 var Counter = new DataCounter(DataTypes.Database);
 
+                #region Chart
                 foreach (var collectionName in GetCollectionList(DbTypes.Chart))
                 {
                     var collection = GetCollection<Candle>(collectionName);
@@ -432,7 +465,9 @@ namespace MTree.DbProvider
                     var filter = builder.Empty;
                     Counter.ChartCount += (int)collection.Find(filter).Count();
                 }
+                #endregion
 
+                #region BiddingPrice
                 foreach (var collectionName in GetCollectionList(DbTypes.BiddingPrice))
                 {
                     var collection = GetCollection<BiddingPrice>(collectionName);
@@ -440,7 +475,9 @@ namespace MTree.DbProvider
                     var filter = builder.Gte(i => i.Time, startDate) & builder.Lte(i => i.Time, endDate);
                     Counter.BiddingPriceCount += (int)collection.Find(filter).Count();
                 }
+                #endregion
 
+                #region CircuitBreak
                 foreach (var collectionName in GetCollectionList(DbTypes.CircuitBreak))
                 {
                     var collection = GetCollection<CircuitBreak>(collectionName);
@@ -448,7 +485,9 @@ namespace MTree.DbProvider
                     var filter = builder.Gte(i => i.Time, startDate) & builder.Lte(i => i.Time, endDate);
                     Counter.CircuitBreakCount += (int)collection.Find(filter).Count();
                 }
+                #endregion
 
+                #region StockMaster
                 foreach (var collectionName in GetCollectionList(DbTypes.StockMaster))
                 {
                     var collection = GetCollection<StockMaster>(collectionName);
@@ -456,7 +495,9 @@ namespace MTree.DbProvider
                     var filter = builder.Gte(i => i.Time, startDate) & builder.Lte(i => i.Time, endDate);
                     Counter.StockMasterCount += (int)collection.Find(filter).Count();
                 }
+                #endregion
 
+                #region IndexMaster
                 foreach (var collectionName in GetCollectionList(DbTypes.IndexMaster))
                 {
                     var collection = GetCollection<IndexMaster>(collectionName);
@@ -464,7 +505,9 @@ namespace MTree.DbProvider
                     var filter = builder.Gte(i => i.Time, startDate) & builder.Lte(i => i.Time, endDate);
                     Counter.IndexMasterCount += (int)collection.Find(filter).Count();
                 }
+                #endregion
 
+                #region StockConclusion
                 foreach (var collectionName in GetCollectionList(DbTypes.StockConclusion))
                 {
                     var collection = GetCollection<StockConclusion>(collectionName);
@@ -472,7 +515,9 @@ namespace MTree.DbProvider
                     var filter = builder.Gte(i => i.Time, startDate) & builder.Lte(i => i.Time, endDate);
                     Counter.StockConclusionCount += (int)collection.Find(filter).Count();
                 }
+                #endregion
 
+                #region IndexConclusion
                 foreach (var collectionName in GetCollectionList(DbTypes.IndexConclusion))
                 {
                     var collection = GetCollection<IndexConclusion>(collectionName);
@@ -480,6 +525,17 @@ namespace MTree.DbProvider
                     var filter = builder.Gte(i => i.Time, startDate) & builder.Lte(i => i.Time, endDate);
                     Counter.IndexConclusionCount += (int)collection.Find(filter).Count();
                 }
+                #endregion
+
+                #region ETFConclusion
+                foreach (var collectionName in GetCollectionList(DbTypes.ETFConclusion))
+                {
+                    var collection = GetCollection<ETFConclusion>(collectionName);
+                    var builder = Builders<ETFConclusion>.Filter;
+                    var filter = builder.Gte(i => i.Time, startDate) & builder.Lte(i => i.Time, endDate);
+                    Counter.ETFConclusionCount += (int)collection.Find(filter).Count();
+                }
+                #endregion
 
                 PushUtility.NotifyMessage("DB Statistics" + Environment.NewLine + Counter.ToString());
 

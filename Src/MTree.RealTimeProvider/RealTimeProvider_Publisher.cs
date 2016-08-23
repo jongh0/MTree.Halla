@@ -93,6 +93,9 @@ namespace MTree.RealTimeProvider
                 else
                     daishinProcessCount = (StockCodeList.Count * 3 + IndexCodeList.Count) / 400 + 1;
 
+                if (Config.General.SkipETFConclusion == false)
+                    daishinProcessCount += StockCodeList.Values.Where(c => c.MarketType == MarketTypes.ETF).Count() / 400;
+
                 for (int i = 0; i < daishinProcessCount; i++)
                     ProcessUtility.Start(ProcessTypes.DaishinPublisher, ProcessWindowStyle.Minimized);
 
@@ -246,7 +249,8 @@ namespace MTree.RealTimeProvider
                     }
                 }
 
-                logger.Info($"Stock code: {StockCodeList.Count}, Index code: {IndexCodeList.Count}");
+                logger.Info($"Stock code list count: {StockCodeList.Count}");
+                logger.Info($"Index code list count: {IndexCodeList.Count}");
             }
             catch (Exception ex)
             {
@@ -413,6 +417,13 @@ namespace MTree.RealTimeProvider
 
                     if (contract.Callback.SubscribeStock(code) == false)
                         logger.Error($"Stock conclusioin code distribution fail. code: {code}");
+
+                    if (Config.General.SkipETFConclusion == false &&
+                        codeEntiry.MarketType == MarketTypes.ETF)
+                    {
+                        if (contract.Callback.SubscribeETF(code) == false)
+                            logger.Error($"ETF conclusion code distribution fail. code: {code}");
+                    }
 
                     if (Config.General.SkipBiddingPrice == false)
                     {
@@ -652,6 +663,12 @@ namespace MTree.RealTimeProvider
         {
             StockConclusionQueue.Enqueue(conclusion);
             Counter.Increment(CounterTypes.StockConclusion);
+        }
+
+        public void PublishETFConclusion(ETFConclusion conclusion)
+        {
+            ETFConclusionQueue.Enqueue(conclusion);
+            Counter.Increment(CounterTypes.ETFConclusion);
         }
     }
 }

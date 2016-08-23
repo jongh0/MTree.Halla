@@ -17,6 +17,7 @@ namespace MTree.DbProvider
         IndexMaster,
         StockConclusion,
         IndexConclusion,
+        ETFConclusion,
         CircuitBreak,
         Common,
         Test,
@@ -33,6 +34,7 @@ namespace MTree.DbProvider
         private readonly string indexMasterDbString = "MTree_IndexMaster";
         private readonly string stockConclusionDbString = "MTree_StockConclusion";
         private readonly string indexConclusionDbString = "MTree_IndexConclusion";
+        private readonly string etfConclusionDbString = "MTree_ETFConclusion";
         private readonly string commonDbString = "MTree_Common";
         private readonly string testDbString = "MTree_Test";
 
@@ -84,6 +86,7 @@ namespace MTree.DbProvider
                 case DbTypes.IndexMaster:       return Client.GetDatabase(indexMasterDbString);
                 case DbTypes.StockConclusion:   return Client.GetDatabase(stockConclusionDbString);
                 case DbTypes.IndexConclusion:   return Client.GetDatabase(indexConclusionDbString);
+                case DbTypes.ETFConclusion:     return Client.GetDatabase(etfConclusionDbString);
                 case DbTypes.Common:            return Client.GetDatabase(commonDbString);
                 case DbTypes.Test:              return Client.GetDatabase(testDbString);
                 default:                        return null;

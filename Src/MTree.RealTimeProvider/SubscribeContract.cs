@@ -14,6 +14,7 @@ namespace MTree.RealTimeProvider
         CircuitBreak,
         StockConclusion,
         IndexConclusion,
+        ETFConclusion,
     }
 
     public enum SubscribeScopes

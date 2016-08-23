@@ -41,6 +41,7 @@ namespace MTree.RealTimeProvider
         public ConcurrentQueue<CircuitBreak> CircuitBreakQueue { get; } = new ConcurrentQueue<CircuitBreak>();
         public ConcurrentQueue<StockConclusion> StockConclusionQueue { get; } = new ConcurrentQueue<StockConclusion>();
         public ConcurrentQueue<IndexConclusion> IndexConclusionQueue { get; } = new ConcurrentQueue<IndexConclusion>();
+        public ConcurrentQueue<ETFConclusion> ETFConclusionQueue { get; } = new ConcurrentQueue<ETFConclusion>();
         #endregion
 
         #region Queue Count
