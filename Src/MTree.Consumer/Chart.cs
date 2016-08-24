@@ -43,7 +43,7 @@ namespace MTree.Consumer
 
         private DataLoader dataLoader = new DataLoader();
 
-        public Chart(string code, ChartTypes chartType, DateTime startDate, DateTime endDate, int interval = 0)
+        public Chart(string code, ChartTypes chartType, DateTime startDate, DateTime endDate, int interval = 1)
         {
             Code = code;
             ChartType = chartType;
@@ -195,19 +195,22 @@ namespace MTree.Consumer
 
                 // Candle 리스트 초기화
                 Candles.Clear();
-                var result = dataLoader.Load<StockConclusion>(Code, StartDate, EndDate);
-
+                var builder = Builders<StockConclusion>.Filter;
+                var filter = builder.Gte(i => (i as Subscribable).Time, StartDate) & builder.Lte(i => (i as Subscribable).Time, EndDate);
+                
+                var result = await DbAgent.Instance.Find(Code, filter).ToListAsync();
+                
                 // Candle 리스트에 삽입
                 foreach (var conclusion in result)
                 {
                     if (conclusion.MarketTimeType != MarketTimeTypes.Normal)
                         continue;
-
                     var candle = ChartConverter.ConvertToTickCandle(conclusion);
-                    if (Candles.ContainsKey(candle.Time) == false)
-                        Candles.Add(candle.Time, candle);
-                    else
-                        logger.Warn($"Already exists in candle list, {candle.Code}/{candle.Time.ToString(Config.General.DateTimeFormat)}");
+
+                    while (Candles.ContainsKey(candle.Time) == true)
+                        candle.Time = candle.Time.AddMilliseconds(1);
+
+                    Candles.Add(candle.Time, candle);
                 }
             }
             catch (Exception ex)
