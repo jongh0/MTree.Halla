@@ -186,7 +186,7 @@ namespace MTree.Consumer
         /// <summary>
         /// DB로부터 Tick Type Chart을 불러온다.
         /// </summary>
-        private void ExtractTickCandles()
+        private async void ExtractTickCandles()
         {
             try
             {
