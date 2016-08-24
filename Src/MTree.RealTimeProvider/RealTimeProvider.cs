@@ -356,6 +356,7 @@ namespace MTree.RealTimeProvider
             NotifyPropertyChanged(nameof(BiddingPriceQueueCount));
             NotifyPropertyChanged(nameof(StockConclusionQueueCount));
             NotifyPropertyChanged(nameof(IndexConclusionQueueCount));
+            NotifyPropertyChanged(nameof(ETFConclusionQueueCount));
         }
 
         #region Command

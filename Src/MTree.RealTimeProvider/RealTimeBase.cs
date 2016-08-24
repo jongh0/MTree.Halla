@@ -49,6 +49,7 @@ namespace MTree.RealTimeProvider
         public int CircuitBreakQueueCount { get { return CircuitBreakQueue.Count; } }
         public int StockConclusionQueueCount { get { return StockConclusionQueue.Count; } }
         public int IndexConclusionQueueCount { get { return IndexConclusionQueue.Count; } }
+        public int ETFConclusionQueueCount { get { return ETFConclusionQueue.Count; } }
         #endregion
 
         #region Queue Task

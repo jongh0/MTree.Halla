@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MTree.DaishinPublisher"
         mc:Ignorable="d"
-        Title="DaishinPublisher" Height="153.787" Width="348.94" ResizeMode="CanMinimize">
+        Title="DaishinPublisher" Height="168.511" Width="348.94" ResizeMode="CanMinimize">
     <Grid>
         <Grid.Resources>
             <Style TargetType="TextBlock">
@@ -33,6 +33,10 @@
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Index Subscribe : "/>
                 <TextBox Text="{Binding Path=IndexSubscribeCount, Mode=OneWay}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="ETF Subscribe : "/>
+                <TextBox Text="{Binding Path=ETFSubscribeCount, Mode=OneWay}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Bidding Subscribe : "/>

@@ -40,7 +40,7 @@ namespace MTree.DataStructure
         public double Comparision { get; set; }
 
         [BsonElement("NI")]
-        public double NAVIndex { get; set; }
+        public long NAVIndex { get; set; }
 
         [BsonElement("NC")]
         public double NAVComparision { get; set; }
@@ -55,6 +55,6 @@ namespace MTree.DataStructure
         public double ETFIndexComparision { get; set; }
 
         [BsonElement("EI")]
-        public double ETFIndex { get; set; }
+        public long ETFIndex { get; set; }
     }
 }
