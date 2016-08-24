@@ -121,7 +121,7 @@ namespace MTree.DataValidator
                 {
                     using (Process compareProcess = Process.Start(beyondComparePath, param))
                     {
-                        if (compareProcess.WaitForExit(10 * 1000) == false)
+                        if (compareProcess.WaitForExit(100 * 1000) == false)
                         {
                             compareProcess.Kill();
                             //logger.Error($"Beyond Compare Timeout. Retry Count:{retCnt} ExitCode:{exitCode}");
@@ -316,7 +316,7 @@ namespace MTree.DataValidator
                 {
                     using (Process compareProcess = Process.Start(beyondComparePath, param))
                     {
-                        if (compareProcess.WaitForExit(10 * 1000) == false)
+                        if (compareProcess.WaitForExit(100 * 1000) == false)
                         {
                             compareProcess.Kill();
                             //logger.Error($"Beyond Compare Timeout. Retry Count:{retCnt} ExitCode:{exitCode}");
