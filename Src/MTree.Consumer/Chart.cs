@@ -17,6 +17,7 @@ namespace MTree.Consumer
         Day,
         Week,
         Month,
+        Year,
     }
 
     [Serializable]
@@ -27,26 +28,32 @@ namespace MTree.Consumer
         public string Code { get; private set; }
 
         public ChartTypes ChartType { get; private set; }
-
+        
         public DateTime StartDate { get; private set; }
 
         public DateTime EndDate { get; private set; }
 
+        public int ChartInterval { get; private set; }
+
         public bool IsInitializing { get; private set; }
 
         private ManualResetEvent WaitInitializingEvent { get; set; } = new ManualResetEvent(false);
-
+        
         public SortedList<DateTime, Candle> Candles { get; private set; } = new SortedList<DateTime, Candle>();
 
-        public Chart(string code, ChartTypes chartType, DateTime startDate, DateTime endDate)
+        private DataLoader dataLoader = new DataLoader();
+
+        public Chart(string code, ChartTypes chartType, DateTime startDate, DateTime endDate, int interval = 0)
         {
             Code = code;
             ChartType = chartType;
             SetRange(startDate, endDate);
+            ChartInterval = interval;
+            FillCandles();
         }
 
         /// <summary>
-        /// Chart 범위 설정을 다시 한다. 기존 데이터는 사라진다.
+        /// Chart 범위 설정을 다시 한다.
         /// </summary>
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
@@ -59,8 +66,6 @@ namespace MTree.Consumer
 
                 StartDate = DateTimeUtility.StartDateTime(startDate);
                 EndDate = DateTimeUtility.EndDateTime(endDate);
-
-                FillCandles();
             }
             catch (Exception ex)
             {
@@ -81,10 +86,60 @@ namespace MTree.Consumer
         }
 
         /// <summary>
-        /// Async로 동작하며 Initializing, WaitInitialing()를 사용해서 동작중인지 확인해야 한다
+        /// Chart를 새로 갱신한다. 기존 데이터는 사라진다.
         /// </summary>
         private void FillCandles()
         {
+            SortedList<DateTime, Candle> temp;
+            if (ChartType == ChartTypes.Tick || ChartType == ChartTypes.Month)
+            {
+                ExtractTickCandles();
+                if (ChartType == ChartTypes.Tick && ChartInterval > 1)
+                {
+                    temp = ChartConverter.ConvertToTickChart(Candles, ChartInterval);
+                    Candles.Clear();
+                    Candles = temp;
+                }
+                else if (ChartType == ChartTypes.Min)
+                {
+                    temp = ChartConverter.ConvertToMinChart(Candles, ChartInterval);
+                    Candles.Clear();
+                    Candles = temp;
+                }
+                else
+                    ; // Default 1Tick Chart
+            }
+            else
+            {
+                ExtractDayCandles();
+                if (ChartType == ChartTypes.Week)
+                {
+                    temp = ChartConverter.ConvertToWeekChart(Candles);
+                    Candles.Clear();
+                    Candles = temp;
+                }
+                else if (ChartType == ChartTypes.Month)
+                {
+                    temp = ChartConverter.ConvertToMonthChart(Candles);
+                    Candles.Clear();
+                    Candles = temp;
+                }
+                else if (ChartType == ChartTypes.Year)
+                {
+                    temp = ChartConverter.ConvertToYearChart(Candles);
+                    Candles.Clear();
+                    Candles = temp;
+                }
+                else
+                    ; // Default Day Chart
+            }
+        }
+
+        /// <summary>
+        /// DB로부터 Day Type Chart 불러온다. Async로 동작하며 Initializing, WaitInitialing()를 사용해서 동작중인지 확인해야 한다
+        /// </summary>
+        private async void ExtractDayCandles()
+        { 
             int startTick = Environment.TickCount;
 
             try
@@ -103,8 +158,7 @@ namespace MTree.Consumer
                 //             builder.Lte(i => i.Time, EndDate);
 
                 // Async Query 수행
-                //var result = await DbAgent.Instance.Find(Code, filter).ToListAsync();
-                var result = DbAgent.Instance.Find(Code, filter).ToList();
+                var result = await DbAgent.Instance.Find(Code, filter).ToListAsync();
 
                 // Candle 리스트에 삽입
                 foreach (var candle in result)
@@ -126,6 +180,46 @@ namespace MTree.Consumer
 
                 var duration = Environment.TickCount - startTick;
                 logger.Info($"Candle list filled, Tick: {duration}, {this.ToString()}");
+            }
+        }
+
+        /// <summary>
+        /// DB로부터 Tick Type Chart을 불러온다.
+        /// </summary>
+        private void ExtractTickCandles()
+        {
+            try
+            {
+                IsInitializing = true;
+                WaitInitializingEvent.Reset();
+
+                // Candle 리스트 초기화
+                Candles.Clear();
+                var result = dataLoader.Load<StockConclusion>(Code, StartDate, EndDate);
+
+                // Candle 리스트에 삽입
+                foreach (var conclusion in result)
+                {
+                    if (conclusion.MarketTimeType != MarketTimeTypes.Normal)
+                        continue;
+
+                    var candle = ChartConverter.ConvertToTickCandle(conclusion);
+                    if (Candles.ContainsKey(candle.Time) == false)
+                        Candles.Add(candle.Time, candle);
+                    else
+                        logger.Warn($"Already exists in candle list, {candle.Code}/{candle.Time.ToString(Config.General.DateTimeFormat)}");
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+            finally
+            {
+                IsInitializing = false;
+                WaitInitializingEvent.Set();
+                
+                logger.Info($"Candle list filled, {this.ToString()}");
             }
         }
 
@@ -212,16 +306,5 @@ namespace MTree.Consumer
             return $"{Code}/{ChartType}/{StartDate.ToString(Config.General.DateTimeFormat)}/{EndDate.ToString(Config.General.DateTimeFormat)}/{Candles.Count}";
         }
 
-        public static CandleTypes ConvertToCandleType(ChartTypes chartType)
-        {
-            switch (chartType)
-            {
-                case ChartTypes.Min:    return CandleTypes.Min;
-                case ChartTypes.Day:    return CandleTypes.Day;
-                case ChartTypes.Week:   return CandleTypes.Week;
-                case ChartTypes.Month:  return CandleTypes.Month;
-                default:                return CandleTypes.Tick;
-            }
-        }
     }
 }

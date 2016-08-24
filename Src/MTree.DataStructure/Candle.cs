@@ -15,6 +15,7 @@ namespace MTree.DataStructure
         Day,
         Week,
         Month,
+        Year,
     }
 
     [Serializable]
