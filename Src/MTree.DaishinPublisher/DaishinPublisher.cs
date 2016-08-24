@@ -30,7 +30,7 @@ namespace MTree.DaishinPublisher
         private StockMstClass indexMstObj;
         private StockCurClass stockCurObj;
         private StockCurClass indexCurObj;
-        //private CpSvrNew7224Class etfCurObj;
+        private CpSvrNew7244SClass etfCurObj;
         private StockOutCurClass stockOutCurObj;
         private StockJpbidClass stockJpbidObj;
         private StockChartClass stockChartObj;
@@ -62,7 +62,7 @@ namespace MTree.DaishinPublisher
                 indexCurObj = new StockCurClass();
                 indexCurObj.Received += indexCurObj_Received;
 
-                //etfCurObj = new CpSvrNew7224Class();
+                etfCurObj = new CpSvrNew7244SClass();
 
                 stockOutCurObj = new StockOutCurClass();
                 stockOutCurObj.Received += stockOutCurObj_Received;
