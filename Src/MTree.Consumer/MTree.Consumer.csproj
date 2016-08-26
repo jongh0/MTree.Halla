@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Chart.cs" />
+    <Compile Include="ChartConverter.cs" />
     <Compile Include="CodeMapConverter.cs" />
     <Compile Include="HistoryConsumer.cs" />
     <Compile Include="Index.cs" />

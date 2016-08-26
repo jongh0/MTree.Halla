@@ -121,7 +121,7 @@ namespace MTree.DataExtractingConsumer
                     if (stock == null)
                         stock = Stock.GetStock(stockMasters[0].Code);
                     chart = stock.GetChart(ChartTypes.Day, currentMaster.Time.AddMonths(-2), currentMaster.Time);
-                    
+                    chart.WaitInitialing();
                     InitCandles();
                 }
                 else
