@@ -15,32 +15,45 @@ namespace MTree.Consumer
 
         private static void UpdateCandlePrice(ref Candle targetCandle, Candle newCandle)
         {
-            targetCandle.Volume += newCandle.Volume;
-            targetCandle.Value += newCandle.Value;
-            if (newCandle.Volume == 0)
+            try
             {
-                targetCandle.Open = targetCandle.High = targetCandle.Low = targetCandle.Close = newCandle.Open;
+                targetCandle.Volume += newCandle.Volume;
+                targetCandle.Value += newCandle.Value;
+                if (targetCandle.Volume == newCandle.Volume)
+                {
+                    targetCandle.Open = targetCandle.High = targetCandle.Low = targetCandle.Close = newCandle.Open;
+                }
+                else
+                {
+                    if (targetCandle.High < newCandle.High)
+                        targetCandle.High = newCandle.High;
+                    if (targetCandle.Low > newCandle.Low)
+                        targetCandle.Low = newCandle.Low;
+                    targetCandle.Close = newCandle.Close;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                if (targetCandle.High < newCandle.High)
-                    targetCandle.High = newCandle.High;
-                if (targetCandle.Low > newCandle.Low)
-                    targetCandle.Low = newCandle.Low;
-                targetCandle.Close = newCandle.Close;
+                logger.Error(ex);
             }
         }
 
         public static Candle ConvertToTickCandle(Conclusion conclusion)
         {
             Candle candle = new Candle();
-
-            candle.CandleType = CandleTypes.Tick;
-            candle.Time = conclusion.Time;
-            candle.Volume = (ulong)conclusion.Amount;
-            candle.Value = (ulong)(conclusion.Price * conclusion.Amount);
-            candle.Open = candle.High = candle.Low = candle.Close = conclusion.Price;
-
+            try
+            {
+                candle.CandleType = CandleTypes.Tick;
+                candle.Code = conclusion.Code;
+                candle.Time = conclusion.Time;
+                candle.Volume = (ulong)conclusion.Amount;
+                candle.Value = (ulong)(conclusion.Price * conclusion.Amount);
+                candle.Open = candle.High = candle.Low = candle.Close = conclusion.Price;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
             return candle;
         }
 
@@ -49,29 +62,37 @@ namespace MTree.Consumer
             SortedList<DateTime, Candle> retCandles = new SortedList<DateTime, Candle>();
             int candleIndex = 0;
 
-            do
+            try
             {
-                if (original.Values[candleIndex].CandleType > CandleTypes.Tick)
+                do
                 {
-                    logger.Error("Converting chart scope should be greater than orignal");
-                    return null;
-                }
+                    if (original.Values[candleIndex].CandleType > CandleTypes.Tick)
+                    {
+                        logger.Error("Converting chart scope should be greater than orignal");
+                        return null;
+                    }
 
-                Candle candle = new Candle();
-                candle.CandleType = CandleTypes.Tick;
-                candle.Time = original.Values[candleIndex].Time;
-
-                for (int i = 0; i < interval; i++)
-                {
-                    UpdateCandlePrice(ref candle, original.Values[candleIndex]);
-                    candleIndex++;
-                    if (candleIndex >= original.Count)
-                        break;
-                    if (candle.ToString(Config.General.DateFormat) != original.Values[candleIndex].Time.ToString(Config.General.DateFormat))
-                        break;
-                }
-                retCandles.Add(candle.Time, candle);
-            } while (candleIndex < original.Count);
+                    Candle candle = new Candle();
+                    candle.CandleType = CandleTypes.Tick;
+                    candle.Code = original.Values[candleIndex].Code;
+                    candle.Time = original.Values[candleIndex].Time;
+                    
+                    for (int i = 0; i < interval; i++)
+                    {
+                        UpdateCandlePrice(ref candle, original.Values[candleIndex]);
+                        candleIndex++;
+                        if (candleIndex >= original.Count)
+                            break;
+                        if (candle.Time.ToString(Config.General.DateFormat) != original.Values[candleIndex].Time.ToString(Config.General.DateFormat))
+                            break;
+                    }
+                    retCandles.Add(candle.Time, candle);
+                } while (candleIndex < original.Count);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
 
             return retCandles;
         }
@@ -80,33 +101,40 @@ namespace MTree.Consumer
         {
             SortedList<DateTime, Candle> retCandles = new SortedList<DateTime, Candle>();
             int candleIndex = 0;
-
-            do
+            try
             {
-                if (original.Values[candleIndex].CandleType > CandleTypes.Min)
-                {
-                    logger.Error("Converting chart scope should be greater than orignal");
-                    return null;
-                }
-                Candle candle = new Candle();
-
-                candle.CandleType = CandleTypes.Min;
-                DateTime baseTime = original.Values[candleIndex].Time;
-                candle.Time = new DateTime(baseTime.Year, baseTime.Month, baseTime.Day,
-                                           baseTime.Hour, (baseTime.Minute / interval) * interval, 0); // N의 배수 중 Time 보다 작은 최대 값 찾기
-
                 do
                 {
-                    UpdateCandlePrice(ref candle, original.Values[candleIndex]);
-                    candleIndex++;
+                    if (original.Values[candleIndex].CandleType > CandleTypes.Min)
+                    {
+                        logger.Error("Converting chart scope should be greater than orignal");
+                        return null;
+                    }
+                    Candle candle = new Candle();
 
-                    if (candleIndex >= original.Count)
-                        break;
-                    if (candle.ToString(Config.General.DateFormat) != original.Values[candleIndex].Time.ToString(Config.General.DateFormat))
-                        break;
-                } while (original.Values[candleIndex].Time < candle.Time.AddMinutes(interval));
-                retCandles.Add(candle.Time, candle);
-            } while (candleIndex < original.Count);
+                    candle.CandleType = CandleTypes.Min;
+                    candle.Code = original.Values[candleIndex].Code;
+                    DateTime baseTime = original.Values[candleIndex].Time;
+                    candle.Time = new DateTime(baseTime.Year, baseTime.Month, baseTime.Day,
+                                               baseTime.Hour, (baseTime.Minute / interval) * interval, 0); // N의 배수 중 Time 보다 작은 최대 값 찾기
+
+                    do
+                    {
+                        UpdateCandlePrice(ref candle, original.Values[candleIndex]);
+                        candleIndex++;
+
+                        if (candleIndex >= original.Count)
+                            break;
+                        if (candle.Time.ToString(Config.General.DateFormat) != original.Values[candleIndex].Time.ToString(Config.General.DateFormat))
+                            break;
+                    } while (original.Values[candleIndex].Time < candle.Time.AddMinutes(interval));
+                    retCandles.Add(candle.Time, candle);
+                } while (candleIndex < original.Count);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
             return retCandles;
         }
 
@@ -114,28 +142,34 @@ namespace MTree.Consumer
         {
             SortedList<DateTime, Candle> retCandles = new SortedList<DateTime, Candle>();
             int candleIndex = 0;
-
-            do
+            try
             {
-                if (original.Values[candleIndex].CandleType > CandleTypes.Day)
-                {
-                    logger.Error("Converting chart scope should be greater than orignal");
-                    return null;
-                }
-                Candle candle = new Candle();
-                candle.CandleType = CandleTypes.Day;
-                candle.Time = original.Values[candleIndex].Time;
-
                 do
                 {
-                    UpdateCandlePrice(ref candle, original.Values[candleIndex]);
-                    candleIndex++;
-                    if (candleIndex >= original.Count)
-                        break;
-                } while (candle.Time.Day == original.Values[candleIndex].Time.Day);
-                retCandles.Add(candle.Time, candle);
-            } while (candleIndex < original.Count);
+                    if (original.Values[candleIndex].CandleType > CandleTypes.Day)
+                    {
+                        logger.Error("Converting chart scope should be greater than orignal");
+                        return null;
+                    }
+                    Candle candle = new Candle();
+                    candle.CandleType = CandleTypes.Day;
+                    candle.Code = original.Values[candleIndex].Code;
+                    candle.Time = original.Values[candleIndex].Time;
 
+                    do
+                    {
+                        UpdateCandlePrice(ref candle, original.Values[candleIndex]);
+                        candleIndex++;
+                        if (candleIndex >= original.Count)
+                            break;
+                    } while (candle.Time.Day == original.Values[candleIndex].Time.Day);
+                    retCandles.Add(candle.Time, candle);
+                } while (candleIndex < original.Count);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
             return retCandles;
         }
 
@@ -147,28 +181,35 @@ namespace MTree.Consumer
             SortedList<DateTime, Candle> retCandles = new SortedList<DateTime, Candle>();
             int candleIndex = 0;
 
-            do
+            try
             {
-                if (original.Values[candleIndex].CandleType > CandleTypes.Week)
-                {
-                    logger.Error("Converting chart scope should be greater than orignal");
-                    return null;
-                }
-                Candle candle = new Candle();
-                candle.CandleType = CandleTypes.Week;
-                candle.Time = original.Values[candleIndex].Time;
-
                 do
                 {
-                    UpdateCandlePrice(ref candle, original.Values[candleIndex]);
-                    candleIndex++;
-                    if (candleIndex >= original.Count)
-                        break;
-                } while (cal.GetWeekOfYear(original.Values[candleIndex].Time, dfi.CalendarWeekRule, dfi.FirstDayOfWeek) ==
-                         cal.GetWeekOfYear(candle.Time, dfi.CalendarWeekRule, dfi.FirstDayOfWeek));
-                retCandles.Add(candle.Time, candle);
-            } while (candleIndex < original.Count);
+                    if (original.Values[candleIndex].CandleType > CandleTypes.Week)
+                    {
+                        logger.Error("Converting chart scope should be greater than orignal");
+                        return null;
+                    }
+                    Candle candle = new Candle();
+                    candle.CandleType = CandleTypes.Week;
+                    candle.Code = original.Values[candleIndex].Code;
+                    candle.Time = original.Values[candleIndex].Time;
 
+                    do
+                    {
+                        UpdateCandlePrice(ref candle, original.Values[candleIndex]);
+                        candleIndex++;
+                        if (candleIndex >= original.Count)
+                            break;
+                    } while (cal.GetWeekOfYear(original.Values[candleIndex].Time, dfi.CalendarWeekRule, dfi.FirstDayOfWeek) ==
+                             cal.GetWeekOfYear(candle.Time, dfi.CalendarWeekRule, dfi.FirstDayOfWeek));
+                    retCandles.Add(candle.Time, candle);
+                } while (candleIndex < original.Count);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
             return retCandles;
         }
 
@@ -176,29 +217,35 @@ namespace MTree.Consumer
         {
             SortedList<DateTime, Candle> retCandles = new SortedList<DateTime, Candle>();
             int candleIndex = 0;
-
-            do
+            try
             {
-                if (original.Values[candleIndex].CandleType > CandleTypes.Month)
-                {
-                    logger.Error("Converting chart scope should be greater than orignal");
-                    return null;
-                }
-                Candle candle = new Candle();
-
-                candle.CandleType = CandleTypes.Month;
-                candle.Time = original.Values[candleIndex].Time;
-
                 do
                 {
-                    UpdateCandlePrice(ref candle, original.Values[candleIndex]);
-                    candleIndex++;
-                    if (candleIndex >= original.Count)
-                        break;
-                } while (candle.Time.Month == original.Values[candleIndex].Time.Month);
-                retCandles.Add(candle.Time, candle);
-            } while (candleIndex < original.Count);
+                    if (original.Values[candleIndex].CandleType > CandleTypes.Month)
+                    {
+                        logger.Error("Converting chart scope should be greater than orignal");
+                        return null;
+                    }
+                    Candle candle = new Candle();
 
+                    candle.CandleType = CandleTypes.Month;
+                    candle.Code = original.Values[candleIndex].Code;
+                    candle.Time = original.Values[candleIndex].Time;
+
+                    do
+                    {
+                        UpdateCandlePrice(ref candle, original.Values[candleIndex]);
+                        candleIndex++;
+                        if (candleIndex >= original.Count)
+                            break;
+                    } while (candle.Time.Month == original.Values[candleIndex].Time.Month);
+                    retCandles.Add(candle.Time, candle);
+                } while (candleIndex < original.Count);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
             return retCandles;
         }
 
@@ -206,30 +253,36 @@ namespace MTree.Consumer
         {
             SortedList<DateTime, Candle> retCandles = new SortedList<DateTime, Candle>();
             int candleIndex = 0;
-
-            do
+            try
             {
-                if (original.Values[candleIndex].CandleType > CandleTypes.Month)
-                {
-                    logger.Error("Converting chart scope should be greater than orignal");
-                    return null;
-                }
-
-                Candle candle = new Candle();
-
-                candle.CandleType = CandleTypes.Year;
-                candle.Time = original.Values[candleIndex].Time;
-
                 do
                 {
-                    UpdateCandlePrice(ref candle, original.Values[candleIndex]);
-                    candleIndex++;
-                    if (candleIndex >= original.Count)
-                        break;
-                } while (candle.Time.Year == original.Values[candleIndex].Time.Year);
-                retCandles.Add(candle.Time, candle);
-            } while (candleIndex < original.Count);
+                    if (original.Values[candleIndex].CandleType > CandleTypes.Month)
+                    {
+                        logger.Error("Converting chart scope should be greater than orignal");
+                        return null;
+                    }
 
+                    Candle candle = new Candle();
+
+                    candle.CandleType = CandleTypes.Year;
+                    candle.Code = original.Values[candleIndex].Code;
+                    candle.Time = original.Values[candleIndex].Time;
+
+                    do
+                    {
+                        UpdateCandlePrice(ref candle, original.Values[candleIndex]);
+                        candleIndex++;
+                        if (candleIndex >= original.Count)
+                            break;
+                    } while (candle.Time.Year == original.Values[candleIndex].Time.Year);
+                    retCandles.Add(candle.Time, candle);
+                } while (candleIndex < original.Count);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
             return retCandles;
         }
 

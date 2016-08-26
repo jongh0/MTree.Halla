@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace MTree.Consumer
 {
@@ -88,65 +89,75 @@ namespace MTree.Consumer
         /// <summary>
         /// Chart를 새로 갱신한다. 기존 데이터는 사라진다.
         /// </summary>
-        private void FillCandles()
+        private async void FillCandles()
         {
-            SortedList<DateTime, Candle> temp;
-            if (ChartType == ChartTypes.Tick || ChartType == ChartTypes.Month)
+            try
             {
-                ExtractTickCandles();
-                if (ChartType == ChartTypes.Tick && ChartInterval > 1)
+                IsInitializing = true;
+                WaitInitializingEvent.Reset();
+
+                SortedList<DateTime, Candle> temp;
+                if (ChartType == ChartTypes.Tick || ChartType == ChartTypes.Min)
                 {
-                    temp = ChartConverter.ConvertToTickChart(Candles, ChartInterval);
-                    Candles.Clear();
-                    Candles = temp;
-                }
-                else if (ChartType == ChartTypes.Min)
-                {
-                    temp = ChartConverter.ConvertToMinChart(Candles, ChartInterval);
-                    Candles.Clear();
-                    Candles = temp;
+                    await ExtractTickCandles();
+                    if (ChartType == ChartTypes.Tick && ChartInterval > 1)
+                    {
+                        temp = ChartConverter.ConvertToTickChart(Candles, ChartInterval);
+                        Candles.Clear();
+                        Candles = temp;
+                    }
+                    else if (ChartType == ChartTypes.Min)
+                    {
+                        temp = ChartConverter.ConvertToMinChart(Candles, ChartInterval);
+                        Candles.Clear();
+                        Candles = temp;
+                    }
+                    else
+                        ; // Default 1Tick Chart
                 }
                 else
-                    ; // Default 1Tick Chart
+                {
+                    await ExtractDayCandles();
+                    if (ChartType == ChartTypes.Week)
+                    {
+                        temp = ChartConverter.ConvertToWeekChart(Candles);
+                        Candles.Clear();
+                        Candles = temp;
+                    }
+                    else if (ChartType == ChartTypes.Month)
+                    {
+                        temp = ChartConverter.ConvertToMonthChart(Candles);
+                        Candles.Clear();
+                        Candles = temp;
+                    }
+                    else if (ChartType == ChartTypes.Year)
+                    {
+                        temp = ChartConverter.ConvertToYearChart(Candles);
+                        Candles.Clear();
+                        Candles = temp;
+                    }
+                    else
+                        ; // Default Day Chart
+                }
+
+                IsInitializing = false;
+                WaitInitializingEvent.Set();
             }
-            else
+            catch (Exception ex)
             {
-                ExtractDayCandles();
-                if (ChartType == ChartTypes.Week)
-                {
-                    temp = ChartConverter.ConvertToWeekChart(Candles);
-                    Candles.Clear();
-                    Candles = temp;
-                }
-                else if (ChartType == ChartTypes.Month)
-                {
-                    temp = ChartConverter.ConvertToMonthChart(Candles);
-                    Candles.Clear();
-                    Candles = temp;
-                }
-                else if (ChartType == ChartTypes.Year)
-                {
-                    temp = ChartConverter.ConvertToYearChart(Candles);
-                    Candles.Clear();
-                    Candles = temp;
-                }
-                else
-                    ; // Default Day Chart
+                logger.Error(ex);
             }
         }
 
         /// <summary>
         /// DB로부터 Day Type Chart 불러온다. Async로 동작하며 Initializing, WaitInitialing()를 사용해서 동작중인지 확인해야 한다
         /// </summary>
-        private async void ExtractDayCandles()
+        private async Task ExtractDayCandles()
         { 
             int startTick = Environment.TickCount;
 
             try
             {
-                IsInitializing = true;
-                WaitInitializingEvent.Reset();
-
                 // Candle 리스트 초기화
                 Candles.Clear();
 
@@ -175,9 +186,6 @@ namespace MTree.Consumer
             }
             finally
             {
-                IsInitializing = false;
-                WaitInitializingEvent.Set();
-
                 var duration = Environment.TickCount - startTick;
                 logger.Info($"Candle list filled, Tick: {duration}, {this.ToString()}");
             }
@@ -186,13 +194,10 @@ namespace MTree.Consumer
         /// <summary>
         /// DB로부터 Tick Type Chart을 불러온다.
         /// </summary>
-        private async void ExtractTickCandles()
+        private async Task ExtractTickCandles()
         {
             try
             {
-                IsInitializing = true;
-                WaitInitializingEvent.Reset();
-
                 // Candle 리스트 초기화
                 Candles.Clear();
                 var builder = Builders<StockConclusion>.Filter;
@@ -219,9 +224,6 @@ namespace MTree.Consumer
             }
             finally
             {
-                IsInitializing = false;
-                WaitInitializingEvent.Set();
-                
                 logger.Info($"Candle list filled, {this.ToString()}");
             }
         }
