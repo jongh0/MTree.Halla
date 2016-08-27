@@ -131,7 +131,7 @@ namespace MTree.DaishinPublisher
                     logger.Error($"ETF conclusion price error, {conclusion.Price}");
 
                 // 3 - (char)대비부호
-                var sign = (char)etfCurObj.GetHeaderValue(3);
+                var sign = Convert.ToChar(etfCurObj.GetHeaderValue(3));
 
                 // 4 - (long) 대비
                 conclusion.Comparision = Convert.ToDouble(etfCurObj.GetHeaderValue(4));
@@ -145,7 +145,7 @@ namespace MTree.DaishinPublisher
                 conclusion.NAVIndex = Convert.ToInt64(etfCurObj.GetHeaderValue(6));
 
                 // 7 - (char) NAV대비부호
-                sign = (char)etfCurObj.GetHeaderValue(7);
+                sign = Convert.ToChar(etfCurObj.GetHeaderValue(7));
 
                 // 8 - (long) NAV 대비
                 conclusion.NAVComparision = Convert.ToDouble(etfCurObj.GetHeaderValue(8));
@@ -153,7 +153,7 @@ namespace MTree.DaishinPublisher
                     conclusion.NAVComparision *= -1;
 
                 // 9 - (char) 추적오차율부호
-                sign = (char)etfCurObj.GetHeaderValue(9);
+                sign = Convert.ToChar(etfCurObj.GetHeaderValue(9));
 
                 // 10 - (long)추적오차율
                 conclusion.TracingErrorRate = Convert.ToDouble(etfCurObj.GetHeaderValue(10));
@@ -161,7 +161,7 @@ namespace MTree.DaishinPublisher
                     conclusion.TracingErrorRate *= -1;
 
                 // 11 - (char)괴리율부호
-                sign = (char)etfCurObj.GetHeaderValue(11);
+                sign = Convert.ToChar(etfCurObj.GetHeaderValue(11));
 
                 // 12 - (long)괴리율
                 conclusion.DisparateRatio = Convert.ToDouble(etfCurObj.GetHeaderValue(10));
@@ -169,7 +169,7 @@ namespace MTree.DaishinPublisher
                     conclusion.DisparateRatio *= -1;
 
                 // 13 - (char)해당 ETF 지수 대비 부호
-                sign = (char)etfCurObj.GetHeaderValue(13);
+                sign = Convert.ToChar(etfCurObj.GetHeaderValue(13));
 
                 // 14 - (long)해당 ETF 지수 대비
                 conclusion.ETFIndexComparision = Convert.ToDouble(etfCurObj.GetHeaderValue(14));
