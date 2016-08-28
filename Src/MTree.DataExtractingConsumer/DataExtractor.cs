@@ -185,7 +185,21 @@ namespace MTree.DataExtractingConsumer
 
                 foreach (var field in Enum.GetValues(typeof(StockTAField)))
                 {
-                    columns.Add(field.ToString());
+                    var strArr = field.ToString().Split('_');
+                    var fieldName = strArr[0];
+                    if (fieldName == "Aroon")
+                    {
+                        columns.Add(field.ToString() + "_Up");
+                        columns.Add(field.ToString() + "_Down");
+                    }
+                    else if (fieldName == "BollingerBands")
+                    {
+                        columns.Add(field.ToString() + "_Upper");
+                        columns.Add(field.ToString() + "_Middle");
+                        columns.Add(field.ToString() + "_Lower");
+                    }
+                    else
+                        columns.Add(field.ToString());
                 }
                 
                 sw.WriteLine(string.Join(delimeter, columns));
@@ -260,11 +274,7 @@ namespace MTree.DataExtractingConsumer
                         GetAPO(term, longTerm, maType, ref columns);
                     }
                     else if (fieldName == "Aroon")
-                    {
-                        var upDown = strArr.Length > 3 ? strArr[3] : "Up";
-                        bool isUp = (upDown == "Up");
-                        GetAroon(term, ref columns, isUp);
-                    }
+                        GetAroon(term, ref columns);
                     else if (fieldName == "AroonOsc")
                         GetAroonOsc(term, ref columns);
                     else if (fieldName == "AverageTrueRange")
@@ -281,6 +291,14 @@ namespace MTree.DataExtractingConsumer
                         GetMinusDM(term, ref columns);
                     else if (fieldName == "PlusDM")
                         GetPlusDM(term, ref columns);
+                    else if (fieldName == "BollingerBands")
+                    {
+                        var dev = strArr.Length > 3 ? float.Parse(strArr[3]) : 2;
+                        var maType = strArr.Length > 4 ? (Core.MAType)Enum.Parse(typeof(Core.MAType), strArr[4]) : Core.MAType.Sma;
+                        GetBbands(term, dev, maType, ref columns);
+                    }
+                    else if (fieldName == "BalanceOfPower")
+                        GetBop(ref columns);
                 }
                 sw.WriteLine(string.Join(delimeter, columns));
             }
@@ -327,7 +345,6 @@ namespace MTree.DataExtractingConsumer
             Core.Ad(0, dayChart.Candles.Count - 1, high, low, close, volume, out outBegIdx, out outNBElement, outReal);
             columns.Add(outReal[outNBElement - 1].ToString());
         }
-
         private void GetAdOsc(int fastPeriod, int slowPeriod, ref List<string> columns)
         {
             var outReal = new double[dayChart.Candles.Count];
@@ -340,15 +357,13 @@ namespace MTree.DataExtractingConsumer
             Core.Apo(0, dayChart.Candles.Count - 1, close, fastPeriod, slowPeriod, maType, out outBegIdx, out outNBElement, outReal);
             columns.Add(outReal[outNBElement - 1].ToString());
         }
-        private void GetAroon(int term,  ref List<string> columns, bool isUp)
+        private void GetAroon(int term,  ref List<string> columns)
         {
             var outDownReal = new double[dayChart.Candles.Count];
             var outUpReal = new double[dayChart.Candles.Count];
             Core.Aroon(0, dayChart.Candles.Count - 1, high, low, term, out outBegIdx, out outNBElement, outDownReal, outUpReal);
-            if(isUp == true)
-                columns.Add(outDownReal[outNBElement - 1].ToString());
-            else
-                columns.Add(outUpReal[outNBElement - 1].ToString());
+            columns.Add(outDownReal[outNBElement - 1].ToString());
+            columns.Add(outUpReal[outNBElement - 1].ToString());
         }
         private void GetAroonOsc(int term, ref List<string> columns)
         {
@@ -357,53 +372,62 @@ namespace MTree.DataExtractingConsumer
             columns.Add(outReal[outNBElement - 1].ToString());
             
         }
-
         private void GetAtr(int term, ref List<string> columns)
         {
             var outReal = new double[dayChart.Candles.Count];
             Core.Atr(0, dayChart.Candles.Count - 1, high, low, close, term, out outBegIdx, out outNBElement, outReal);
             columns.Add(outReal[outNBElement - 1].ToString());
         }
-
         private void GetAdxr(int term, ref List<string> columns)
         {
             var outReal = new double[dayChart.Candles.Count];
             Core.Adxr(0, dayChart.Candles.Count - 1, high, low, close, term, out outBegIdx, out outNBElement, outReal);
             columns.Add(outReal[outNBElement - 1].ToString());
         }
-
         private void GetAdx(int term, ref List<string> columns)
         {
             var outReal = new double[dayChart.Candles.Count];            
             Core.Adx(0, dayChart.Candles.Count - 1, high, low, close, term, out outBegIdx, out outNBElement, outReal);
             columns.Add(outReal[outNBElement - 1].ToString());
         }
-
         private void GetMinusDI(int term, ref List<string> columns)
         {
             var outReal = new double[dayChart.Candles.Count];
             Core.MinusDI(0, dayChart.Candles.Count - 1, high, low, close, term, out outBegIdx, out outNBElement, outReal);
             columns.Add(outReal[outNBElement - 1].ToString());
         }
-
         private void GetPlusDI(int term, ref List<string> columns)
         {
             var outReal = new double[dayChart.Candles.Count];
             Core.PlusDI(0, dayChart.Candles.Count - 1, high, low, close, term, out outBegIdx, out outNBElement, outReal);
             columns.Add(outReal[outNBElement - 1].ToString());
         }
-
         private void GetMinusDM(int term, ref List<string> columns)
         {
             var outReal = new double[dayChart.Candles.Count];
             Core.MinusDM(0, dayChart.Candles.Count - 1, high, low, term, out outBegIdx, out outNBElement, outReal);
             columns.Add(outReal[outNBElement - 1].ToString());
         }
-
         private void GetPlusDM(int term, ref List<string> columns)
         {
             var outReal = new double[dayChart.Candles.Count];
             Core.PlusDM(0, dayChart.Candles.Count - 1, high, low, term, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetBbands(int term, float dev, Core.MAType maType, ref List<string> columns)
+        {
+            var outUpperReal = new double[dayChart.Candles.Count];
+            var outMiddleReal = new double[dayChart.Candles.Count];
+            var outLowerReal = new double[dayChart.Candles.Count];
+            Core.Bbands(0, dayChart.Candles.Count - 1, close, term, dev, dev, maType, out outBegIdx, out outNBElement, outUpperReal, outMiddleReal, outLowerReal);
+            columns.Add(outUpperReal[outNBElement - 1].ToString());
+            columns.Add(outMiddleReal[outNBElement - 1].ToString());
+            columns.Add(outLowerReal[outNBElement - 1].ToString());
+        }
+        private void GetBop(ref List<string> columns)
+        {
+            var outReal = new double[dayChart.Candles.Count];
+            Core.Bop(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
             columns.Add(outReal[outNBElement - 1].ToString());
         }
 
