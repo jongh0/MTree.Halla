@@ -19,7 +19,7 @@ namespace MTree.DataExtractingConsumer
         private StockMaster currentMaster = null;
 
         private Stock stock;
-        private Chart chart;
+        private Chart dayChart;
 
         private List<float> priceList = new List<float>();
 
@@ -28,6 +28,7 @@ namespace MTree.DataExtractingConsumer
         private float[] high;
         private float[] low;
         private float[] close;
+        private float[] volume;
 
         private int outBegIdx;
         private int outNBElement = 0;
@@ -72,12 +73,13 @@ namespace MTree.DataExtractingConsumer
             TaskUtility.Run("Dashboard.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
         }
 
-        private void SplitCandles(Candle[] candles, ref float[] open, ref float[] high, ref float[] low, ref float[] close)
+        private void SplitCandles(Candle[] candles, ref float[] open, ref float[] high, ref float[] low, ref float[] close, ref float[] volume)
         {
             open = new float[candles.Length];
             high = new float[candles.Length];
             low = new float[candles.Length];
             close = new float[candles.Length];
+            volume = new float[candles.Length];
 
             try
             {
@@ -87,6 +89,7 @@ namespace MTree.DataExtractingConsumer
                     high[i] = candles[i].High;
                     low[i] = candles[i].Low;
                     close[i] = candles[i].Close;
+                    volume[i] = candles[i].Volume;
                 }
             }
             catch (Exception ex)
@@ -97,8 +100,8 @@ namespace MTree.DataExtractingConsumer
         
         private void InitCandles()
         {
-            Candle[] candles = new Candle[chart.Candles.Count];
-            chart.Candles.Values.CopyTo(candles, 0);
+            Candle[] candles = new Candle[dayChart.Candles.Count];
+            dayChart.Candles.Values.CopyTo(candles, 0);
 
             // 전날까지의 Candle + 당일 Candle을 위한 Buffer(1)
             numOfCandles = candles.Length + 1;
@@ -107,8 +110,9 @@ namespace MTree.DataExtractingConsumer
             high = new float[numOfCandles];
             low = new float[numOfCandles];
             close = new float[numOfCandles];
+            volume = new float[numOfCandles];
 
-            SplitCandles(candles, ref open, ref high, ref low, ref close);
+            SplitCandles(candles, ref open, ref high, ref low, ref close, ref volume);
         }
 
         public void ConsumeStockMaster(List<StockMaster> stockMasters)
@@ -120,8 +124,8 @@ namespace MTree.DataExtractingConsumer
                     currentMaster = stockMasters[0];
                     if (stock == null)
                         stock = Stock.GetStock(stockMasters[0].Code);
-                    chart = stock.GetChart(ChartTypes.Day, currentMaster.Time.AddMonths(-2), currentMaster.Time);
-                    chart.WaitInitialing();
+                    dayChart = stock.GetChart(ChartTypes.Day, currentMaster.Time.AddMonths(-2), currentMaster.Time);
+                    dayChart.WaitInitialing();
                     InitCandles();
                 }
                 else
@@ -230,11 +234,39 @@ namespace MTree.DataExtractingConsumer
                 {
                     var strArr = field.ToString().Split('_');
                     var fieldName = strArr[0];
-                    var term = strArr.Length > 1 ? int.Parse(strArr[1]) : 0;
-                    var maType = strArr.Length > 2 ? (Core.MAType)Enum.Parse(typeof(Core.MAType), strArr[2]) : Core.MAType.Sma;
+                    var chartType = strArr.Length > 1 ? (ChartTypes)Enum.Parse(typeof(ChartTypes), strArr[1]) : ChartTypes.Day;
+                    var term = strArr.Length > 2 ? int.Parse(strArr[2]) : 0;
 
                     if (fieldName == "MovingAverage")
-                        GetMovingAverage(term, maType, ref columns);
+                    {
+                        var maType = strArr.Length > 3 ? (Core.MAType)Enum.Parse(typeof(Core.MAType), strArr[3]) : Core.MAType.Sma;
+
+                        if (chartType == ChartTypes.Tick)
+                            GetTickMovingAverage(term, maType, ref columns);
+                        else if (chartType == ChartTypes.Day)
+                            GetTickMovingAverage(term, maType, ref columns);
+                    }
+                    else if (fieldName == "AccumulationDistributionLine")
+                        GetAdl(ref columns);
+                    else if (fieldName == "AccumulationDistributionOscillator")
+                    {
+                        var longTerm = strArr.Length > 3 ? int.Parse(strArr[3]) : 0;
+                        GetAdOsc(term, longTerm, ref columns);
+                    }
+                    else if (fieldName == "AbsolutePriceOscillator")
+                    {
+                        var longTerm = strArr.Length > 3 ? int.Parse(strArr[3]) : 0;
+                        var maType = strArr.Length > 4 ? (Core.MAType)Enum.Parse(typeof(Core.MAType), strArr[4]) : Core.MAType.Sma;
+                        GetAPO(term, longTerm, maType, ref columns);
+                    }
+                    else if (fieldName == "Aroon")
+                    {
+                        var upDown = strArr.Length > 3 ? strArr[3] : "Up";
+                        bool isUp = (upDown == "Up");
+                        GetAroon(term, ref columns, isUp);
+                    }
+                    else if (fieldName == "AroonOsc")
+                        GetAroonOsc(term, ref columns);
                     else if (fieldName == "AverageTrueRange")
                         GetAtr(term, ref columns);
                     else if (fieldName == "AverageDirectionalIndexRating")
@@ -262,7 +294,7 @@ namespace MTree.DataExtractingConsumer
             }
         }
 
-        private void GetMovingAverage(int term, Core.MAType maType, ref List<string> columns)
+        private void GetTickMovingAverage(int term, Core.MAType maType, ref List<string> columns)
         {
             int elementCount = term;
             do
@@ -283,53 +315,95 @@ namespace MTree.DataExtractingConsumer
                     elementCount++;
             } while (outNBElement == 0);
         }
+        private void GetDayMovingAverage(int term, Core.MAType maType, ref List<string> columns)
+        {
+            var outReal = new double[dayChart.Candles.Count];
+            Core.MovingAverage(0, dayChart.Candles.Count - 1, close, term, maType, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetAdl(ref List<string> columns)
+        {
+            var outReal = new double[dayChart.Candles.Count];
+            Core.Ad(0, dayChart.Candles.Count - 1, high, low, close, volume, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+
+        private void GetAdOsc(int fastPeriod, int slowPeriod, ref List<string> columns)
+        {
+            var outReal = new double[dayChart.Candles.Count];
+            Core.AdOsc(0, dayChart.Candles.Count - 1, high, low, close, volume, fastPeriod, slowPeriod, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetAPO(int fastPeriod, int slowPeriod, Core.MAType maType, ref List<string> columns)
+        {
+            var outReal = new double[dayChart.Candles.Count];
+            Core.Apo(0, dayChart.Candles.Count - 1, close, fastPeriod, slowPeriod, maType, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetAroon(int term,  ref List<string> columns, bool isUp)
+        {
+            var outDownReal = new double[dayChart.Candles.Count];
+            var outUpReal = new double[dayChart.Candles.Count];
+            Core.Aroon(0, dayChart.Candles.Count - 1, high, low, term, out outBegIdx, out outNBElement, outDownReal, outUpReal);
+            if(isUp == true)
+                columns.Add(outDownReal[outNBElement - 1].ToString());
+            else
+                columns.Add(outUpReal[outNBElement - 1].ToString());
+        }
+        private void GetAroonOsc(int term, ref List<string> columns)
+        {
+            var outReal = new double[dayChart.Candles.Count];            
+            Core.AroonOsc(0, dayChart.Candles.Count - 1, high, low, term, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+            
+        }
 
         private void GetAtr(int term, ref List<string> columns)
         {
-            var outReal = new double[chart.Candles.Count];
-            Core.Atr(0, chart.Candles.Count - 1, high, low, close, term, out outBegIdx, out outNBElement, outReal);
+            var outReal = new double[dayChart.Candles.Count];
+            Core.Atr(0, dayChart.Candles.Count - 1, high, low, close, term, out outBegIdx, out outNBElement, outReal);
             columns.Add(outReal[outNBElement - 1].ToString());
         }
 
         private void GetAdxr(int term, ref List<string> columns)
         {
-            var outReal = new double[chart.Candles.Count];
-            Core.Adxr(0, chart.Candles.Count - 1, high, low, close, term, out outBegIdx, out outNBElement, outReal);
+            var outReal = new double[dayChart.Candles.Count];
+            Core.Adxr(0, dayChart.Candles.Count - 1, high, low, close, term, out outBegIdx, out outNBElement, outReal);
             columns.Add(outReal[outNBElement - 1].ToString());
         }
 
         private void GetAdx(int term, ref List<string> columns)
         {
-            var outReal = new double[chart.Candles.Count];            
-            Core.Adx(0, chart.Candles.Count - 1, high, low, close, term, out outBegIdx, out outNBElement, outReal);
+            var outReal = new double[dayChart.Candles.Count];            
+            Core.Adx(0, dayChart.Candles.Count - 1, high, low, close, term, out outBegIdx, out outNBElement, outReal);
             columns.Add(outReal[outNBElement - 1].ToString());
         }
 
         private void GetMinusDI(int term, ref List<string> columns)
         {
-            var outReal = new double[chart.Candles.Count];
-            Core.MinusDI(0, chart.Candles.Count - 1, high, low, close, term, out outBegIdx, out outNBElement, outReal);
+            var outReal = new double[dayChart.Candles.Count];
+            Core.MinusDI(0, dayChart.Candles.Count - 1, high, low, close, term, out outBegIdx, out outNBElement, outReal);
             columns.Add(outReal[outNBElement - 1].ToString());
         }
 
         private void GetPlusDI(int term, ref List<string> columns)
         {
-            var outReal = new double[chart.Candles.Count];
-            Core.PlusDI(0, chart.Candles.Count - 1, high, low, close, term, out outBegIdx, out outNBElement, outReal);
+            var outReal = new double[dayChart.Candles.Count];
+            Core.PlusDI(0, dayChart.Candles.Count - 1, high, low, close, term, out outBegIdx, out outNBElement, outReal);
             columns.Add(outReal[outNBElement - 1].ToString());
         }
 
         private void GetMinusDM(int term, ref List<string> columns)
         {
-            var outReal = new double[chart.Candles.Count];
-            Core.MinusDM(0, chart.Candles.Count - 1, high, low, term, out outBegIdx, out outNBElement, outReal);
+            var outReal = new double[dayChart.Candles.Count];
+            Core.MinusDM(0, dayChart.Candles.Count - 1, high, low, term, out outBegIdx, out outNBElement, outReal);
             columns.Add(outReal[outNBElement - 1].ToString());
         }
 
         private void GetPlusDM(int term, ref List<string> columns)
         {
-            var outReal = new double[chart.Candles.Count];
-            Core.PlusDM(0, chart.Candles.Count - 1, high, low, term, out outBegIdx, out outNBElement, outReal);
+            var outReal = new double[dayChart.Candles.Count];
+            Core.PlusDM(0, dayChart.Candles.Count - 1, high, low, term, out outBegIdx, out outNBElement, outReal);
             columns.Add(outReal[outNBElement - 1].ToString());
         }
 

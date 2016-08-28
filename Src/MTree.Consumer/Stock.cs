@@ -25,7 +25,8 @@ namespace MTree.Consumer
         public float High { get; set; }
         public float Low { get; set; }
         public float Close { get; set; }
-        
+        public float Volume { get; set; }
+
         public float LastValue { get; set; }
 
         public MarketTypes MarketType { get; set; }
@@ -92,6 +93,7 @@ namespace MTree.Consumer
                 Low = Math.Min(Low, conclusion.Price);
                 Close = conclusion.Price;
             }
+            Volume += conclusion.Amount;
 
             LastTime = conclusion.Time;
         }
