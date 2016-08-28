@@ -231,7 +231,12 @@ namespace MTree.DataExtractingConsumer
         BollingerBands_Day_50_3_Kama,
         BollingerBands_Day_50_3_Mama,
         BollingerBands_Day_50_3_T3,
-        BalanceOfPower,
+        BalanceOfPower_Day,
+        CommodityChannelIndex_Day_20,
+        CommodityChannelIndex_Day_50,
+        CommodityChannelIndex_Day_100,
+        TwoCrows_Day,
+        ThreeBlackCrows_Day,
     }
 
     public enum IndexConclusionField

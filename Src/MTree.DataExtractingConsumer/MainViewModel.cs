@@ -61,6 +61,18 @@ namespace MTree.DataExtractingConsumer
             }
         }
 
+        private bool _IsExtracting = false;
+        public bool IsExtracting
+        {
+            get { return _IsExtracting; }
+            set
+            {
+                _IsExtracting = value;
+                NotifyPropertyChanged(nameof(IsExtracting));
+                NotifyPropertyChanged(nameof(CanExecuteExtract));
+            }
+        }
+
         #region Command
         private RelayCommand _StartExtractCommand;
         public ICommand StartExtractCommand
@@ -70,6 +82,8 @@ namespace MTree.DataExtractingConsumer
                 if (_StartExtractCommand == null)
                     _StartExtractCommand = new RelayCommand(() => Task.Run(() =>
                     {
+                        IsExtracting = true;
+
                         string[] codes = { Code };
 
                         fileName = $"{Code}_{StartingDate.ToString(Config.General.DateFormat)}~{EndingDate.ToString(Config.General.DateFormat)}.csv";
@@ -82,7 +96,10 @@ namespace MTree.DataExtractingConsumer
                         for (DateTime targetDate = StartingDate; targetDate <= EndingDate; targetDate = targetDate.AddDays(1))
                         {
                             consumer.StartSimulation(codes, targetDate);
+                            extractor.WaitSubscribingDone();
                         }
+
+                        IsExtracting = false;
                     }));
 
                 return _StartExtractCommand;
@@ -94,7 +111,7 @@ namespace MTree.DataExtractingConsumer
         {
             get
             {
-                return _CanExecuteExtract && Code?.Length >= 6;
+                return _CanExecuteExtract && Code?.Length >= 6 && IsExtracting == false;
             }
             set
             {

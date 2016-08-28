@@ -1,5 +1,6 @@
 ﻿using MTree.Consumer;
 using MTree.DataStructure;
+using MTree.RealTimeProvider;
 using MTree.Utility;
 using System;
 using System.Collections.Generic;
@@ -38,6 +39,8 @@ namespace MTree.DataExtractingConsumer
         #endregion
 
         private ConsumerBase Consumer { get; set; }
+        private bool isSubscribingDone = false;
+        private ManualResetEvent WaitSubscribingEvent { get; set; } = new ManualResetEvent(false);
 
         public DataExtractor(ConsumerBase consumer)
         {
@@ -45,13 +48,22 @@ namespace MTree.DataExtractingConsumer
             {
                 Consumer = consumer;
 
-                Consumer.ConsumeStockMasterEvent += ConsumeStockMaster;                
-                
+                Consumer.ConsumeStockMasterEvent += ConsumeStockMaster;
+                Consumer.NotifyMessageEvent += ConsumeNotifyMessage;
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
             }
+        }
+        public bool WaitSubscribingDone(int timeout = Timeout.Infinite)
+        {
+            return WaitSubscribingEvent.WaitOne(timeout);
+        }
+
+        private void ConsumeNotifyMessage(MessageTypes type, string message)
+        {
+            isSubscribingDone = true;
         }
 
         public void StartExtract(string path)
@@ -119,6 +131,10 @@ namespace MTree.DataExtractingConsumer
         {
             try
             {
+                logger.Info("New stock master received");
+                isSubscribingDone = false;
+                WaitSubscribingEvent.Reset();
+
                 if (stockMasters.Count == 1)
                 {
                     currentMaster = stockMasters[0];
@@ -158,6 +174,13 @@ namespace MTree.DataExtractingConsumer
                 }
                 else
                 {
+                    if (isSubscribingDone == true)
+                    {
+                        isSubscribingDone = false;
+                        WaitSubscribingEvent.Set();
+                        
+                        logger.Info("Subscribing completed");
+                    }
                     Thread.Sleep(10);
                 }
             }
@@ -299,6 +322,12 @@ namespace MTree.DataExtractingConsumer
                     }
                     else if (fieldName == "BalanceOfPower")
                         GetBop(ref columns);
+                    else if (fieldName == "CommodityChannelIndex")
+                        GetCci(term, ref columns);
+                    else if (fieldName == "TwoCrows")
+                        GetCdl2Crows(ref columns);
+                    else if (fieldName == "ThreeBlackCrows")
+                        GetCdl3BlackCrows(ref columns);
                 }
                 sw.WriteLine(string.Join(delimeter, columns));
             }
@@ -430,7 +459,24 @@ namespace MTree.DataExtractingConsumer
             Core.Bop(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
             columns.Add(outReal[outNBElement - 1].ToString());
         }
-
+        private void GetCci(int term, ref List<string> columns)
+        {
+            var outReal = new double[dayChart.Candles.Count];
+            Core.Cci(0, dayChart.Candles.Count - 1, high, low, close, term, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdl2Crows(ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.Cdl2Crows(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdl3BlackCrows(ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.Cdl3BlackCrows(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
         private string GetNormalizedValue(object value)
         {
             Type type = value.GetType();

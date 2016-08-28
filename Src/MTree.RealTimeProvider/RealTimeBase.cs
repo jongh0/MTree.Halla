@@ -14,6 +14,7 @@ namespace MTree.RealTimeProvider
         KeepAlive,
         CloseClient,
         MasteringDone,
+        SubscribingDone,
         DaishinSessionDisconnected,
     }
 

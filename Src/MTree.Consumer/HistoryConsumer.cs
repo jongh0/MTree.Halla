@@ -22,7 +22,7 @@ namespace MTree.Consumer
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         private DataLoader dataLoader = new DataLoader();
-
+        
         public void StartSimulation(string[] codes, DateTime targetDate)
         {
             List<StockMaster> masters = new List<StockMaster>();
@@ -30,6 +30,9 @@ namespace MTree.Consumer
             {
                 masters.AddRange(dataLoader.Load<StockMaster>(code, targetDate, targetDate));
             });
+
+            if (masters.Count == 0)
+                return;
 
             ConsumeStockMaster(masters);
 
@@ -56,8 +59,10 @@ namespace MTree.Consumer
             foreach (StockConclusion conclusion in conclusions)
             {
                 ConsumeStockConclusion(conclusion);
-                //Thread.Sleep(1);
             }
+
+            NotifyMessage(RealTimeProvider.MessageTypes.SubscribingDone, null);
+
             sw.Stop();
             logger.Info($"Consuming done. Elapsed:{sw.Elapsed}");
         }
