@@ -22,6 +22,7 @@ namespace MTree.RealTimeProvider
         private ConcurrentDictionary<Guid, SubscribeContract> CircuitBreakContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
         private ConcurrentDictionary<Guid, SubscribeContract> StockConclusionContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
         private ConcurrentDictionary<Guid, SubscribeContract> IndexConclusionContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
+        private ConcurrentDictionary<Guid, SubscribeContract> ETFConclusionContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
         #endregion
 
 
@@ -109,7 +110,8 @@ namespace MTree.RealTimeProvider
                     BiddingPriceContracts.ContainsKey(clientId) == false &&
                     CircuitBreakContracts.ContainsKey(clientId) == false &&
                     StockConclusionContracts.ContainsKey(clientId) == false &&
-                    IndexConclusionContracts.ContainsKey(clientId) == false)
+                    IndexConclusionContracts.ContainsKey(clientId) == false &&
+                    ETFConclusionContracts.ContainsKey(clientId) == false)
                 {
                     SubscribeContract temp;
                     if (ConsumerContracts.TryRemove(clientId, out temp) == true)
@@ -139,6 +141,7 @@ namespace MTree.RealTimeProvider
                 case SubscribeTypes.CircuitBreak:       return CircuitBreakContracts;
                 case SubscribeTypes.StockConclusion:    return StockConclusionContracts;
                 case SubscribeTypes.IndexConclusion:    return IndexConclusionContracts;
+                case SubscribeTypes.ETFConclusion:      return ETFConclusionContracts;
                 default:                                return null;
             }
         }
@@ -271,6 +274,41 @@ namespace MTree.RealTimeProvider
                             }
                         }
                     } 
+                }
+                else
+                {
+                    Thread.Sleep(10);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
+        private void ProcessETFConclusionQueue()
+        {
+            try
+            {
+                ETFConclusion conclusion;
+                if (ETFConclusionQueue.TryDequeue(out conclusion) == true)
+                {
+                    foreach (var contract in ETFConclusionContracts)
+                    {
+                        if (contract.Value.Scope == SubscribeScopes.All ||
+                            contract.Value.ContainCode(conclusion.Code) == true)
+                        {
+                            try
+                            {
+                                lock (contract.Value.Callback)
+                                    contract.Value.Callback.ConsumeETFConclusion(conclusion);
+                            }
+                            catch (Exception ex)
+                            {
+                                logger.Error(ex);
+                            }
+                        }
+                    }
                 }
                 else
                 {

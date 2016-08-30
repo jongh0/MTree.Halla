@@ -85,6 +85,10 @@ namespace MTree.RealTimeProvider
             TaskUtility.Run("RealTimeProvider.CircuitBreakQueue", QueueTaskCancelToken, ProcessCircuitBreakQueue);
             TaskUtility.Run("RealTimeProvider.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
             TaskUtility.Run("RealTimeProvider.IndexConclusionQueue", QueueTaskCancelToken, ProcessIndexConclusionQueue);
+
+            if (Config.General.SkipETFConclusion == false)
+                TaskUtility.Run("RealTimeProvider.ETFConclusionQueue", QueueTaskCancelToken, ProcessETFConclusionQueue);
+
             if (Config.General.SkipBiddingPrice == false)
                 TaskUtility.Run("RealTimeProvider.BiddingPriceQueue", QueueTaskCancelToken, ProcessBiddingPriceQueue);
 
@@ -352,6 +356,7 @@ namespace MTree.RealTimeProvider
             NotifyPropertyChanged(nameof(BiddingPriceQueueCount));
             NotifyPropertyChanged(nameof(StockConclusionQueueCount));
             NotifyPropertyChanged(nameof(IndexConclusionQueueCount));
+            NotifyPropertyChanged(nameof(ETFConclusionQueueCount));
         }
 
         #region Command

@@ -38,6 +38,7 @@ namespace MTree.DataStructure
                     typeof(StockConclusion), 
                     typeof(StockMaster),
                     typeof(IndexMaster),
+                    typeof(ETFConclusion),
                     typeof(CodeMapDbObject))]
     [Serializable]
     public class Subscribable

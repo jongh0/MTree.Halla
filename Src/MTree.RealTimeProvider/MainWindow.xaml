@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:MTree.RealTimeProvider"
         xmlns:utility="clr-namespace:MTree.Utility;assembly=MTree.Utility"
         mc:Ignorable="d"
-        Title="RealTimeProvider" Height="413.735" Width="377.584" ResizeMode="CanMinimize">
+        Title="RealTimeProvider" Height="444.825" Width="377.584" ResizeMode="CanMinimize">
     <Grid>
         <Grid.Resources>
             <utility:NumberToCurrencyConverter x:Key="NumberToCurrencyConverter"/>
@@ -66,6 +66,11 @@
                 <TextBlock Text="IndexConclusion : "/>
                 <TextBox Text="{Binding Path=Counter.IndexConclusionCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}"/>
                 <TextBox Text="{Binding Path=IndexConclusionQueueCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}" Margin="5,0,0,0" Width="55" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="ETFConclusion : "/>
+                <TextBox Text="{Binding Path=Counter.ETFConclusionCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}"/>
+                <TextBox Text="{Binding Path=ETFConclusionQueueCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}" Margin="5,0,0,0" Width="55" />
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Total : "/>

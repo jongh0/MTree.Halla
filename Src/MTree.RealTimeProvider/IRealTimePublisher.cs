@@ -28,6 +28,9 @@ namespace MTree.RealTimeProvider
 
         [OperationContract]
         void PublishIndexConclusion(IndexConclusion conclusion);
+
+        [OperationContract]
+        void PublishETFConclusion(ETFConclusion conclusion);
     }
 
     public interface IRealTimePublisherCallback
@@ -79,5 +82,11 @@ namespace MTree.RealTimeProvider
 
         [OperationContract]
         bool UnsubscribeCircuitBreak(string code);
+
+        [OperationContract]
+        bool SubscribeETF(string code);
+
+        [OperationContract]
+        bool UnsubscribeETF(string code);
     }
 }

@@ -21,6 +21,7 @@ namespace MTree.DataStructure
         IndexMaster,
         StockConclusion,
         IndexConclusion,
+        ETFConclusion,
     }
 
     public enum DataTypes
@@ -144,9 +145,23 @@ namespace MTree.DataStructure
             }
         }
 
+        private int _ETFConclusionCount = 0;
+        public int ETFConclusionCount
+        {
+            get { return _ETFConclusionCount; }
+            set
+            {
+                if (_ETFConclusionCount != value)
+                {
+                    _ETFConclusionCount = value;
+                    NotifyPropertyChanged(nameof(ETFConclusionCount));
+                }
+            }
+        }
+
         public int TotalCount
         {
-            get { return ChartCount + StockMasterCount + IndexMasterCount + BiddingPriceCount + CircuitBreakCount + StockConclusionCount + IndexConclusionCount; }
+            get { return ChartCount + StockMasterCount + IndexMasterCount + BiddingPriceCount + CircuitBreakCount + StockConclusionCount + IndexConclusionCount + ETFConclusionCount; }
         }
 
         public DataCounter(DataTypes type)
@@ -164,6 +179,7 @@ namespace MTree.DataStructure
             NotifyPropertyChanged(nameof(IndexMasterCount));
             NotifyPropertyChanged(nameof(StockConclusionCount));
             NotifyPropertyChanged(nameof(IndexConclusionCount));
+            NotifyPropertyChanged(nameof(ETFConclusionCount));
             NotifyPropertyChanged(nameof(TotalCount));
         }
 
@@ -207,6 +223,10 @@ namespace MTree.DataStructure
                 case CounterTypes.IndexConclusion:
                     Interlocked.Increment(ref _IndexConclusionCount);
                     break;
+
+                case CounterTypes.ETFConclusion:
+                    Interlocked.Increment(ref _ETFConclusionCount);
+                    break;
             }
         }
 
@@ -241,6 +261,10 @@ namespace MTree.DataStructure
                 case CounterTypes.IndexConclusion:
                     Interlocked.Add(ref _IndexConclusionCount, value);
                     break;
+
+                case CounterTypes.ETFConclusion:
+                    Interlocked.Add(ref _ETFConclusionCount, value);
+                    break;
             }
         }
 
@@ -261,6 +285,7 @@ namespace MTree.DataStructure
                     sw.WriteLine($"IndexMaster, {IndexMasterCount}");
                     sw.WriteLine($"StockConclusion, {StockConclusionCount}");
                     sw.WriteLine($"IndexConclusion, {IndexConclusionCount}");
+                    sw.WriteLine($"ETFConclusion, {ETFConclusionCount}");
                     sw.WriteLine($"Total, {TotalCount}");
 
                     sw.Flush();
@@ -288,6 +313,7 @@ namespace MTree.DataStructure
                 sb.AppendLine($"IndexMaster: {IndexMasterCount.ToString(Config.General.CurrencyFormat)}");
                 sb.AppendLine($"StockConclusion: {StockConclusionCount.ToString(Config.General.CurrencyFormat)}");
                 sb.AppendLine($"IndexConclusion: {IndexConclusionCount.ToString(Config.General.CurrencyFormat)}");
+                sb.AppendLine($"ETFConclusion: {ETFConclusionCount.ToString(Config.General.CurrencyFormat)}");
                 sb.Append($"Total: {TotalCount.ToString(Config.General.CurrencyFormat)}");
             }
             catch (Exception ex)

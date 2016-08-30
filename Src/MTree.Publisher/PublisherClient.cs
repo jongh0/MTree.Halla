@@ -48,5 +48,10 @@ namespace MTree.Publisher
         {
             base.Channel.PublishStockConclusion(conclusion);
         }
+
+        public void PublishETFConclusion(ETFConclusion conclusion)
+        {
+            base.Channel.PublishETFConclusion(conclusion);
+        }
     }
 }

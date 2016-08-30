@@ -45,6 +45,11 @@ namespace MTree.Consumer
             StockConclusionQueue.Enqueue(conclusion);
         }
 
+        public virtual void ConsumeETFConclusion(ETFConclusion conclusion)
+        {
+            ETFConclusionQueue.Enqueue(conclusion);
+        }
+
         public virtual void ConsumeStockMaster(List<StockMaster> stockMasters)
         {
             ConsumeStockMasterEvent?.Invoke(stockMasters);

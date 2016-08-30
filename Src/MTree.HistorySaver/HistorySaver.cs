@@ -33,10 +33,11 @@ namespace MTree.HistorySaver
                 TaskUtility.Run($"HistorySaver.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
                 TaskUtility.Run($"HistorySaver.IndexConclusionQueue", QueueTaskCancelToken, ProcessIndexConclusionQueue);
 
+                if (Config.General.SkipETFConclusion == false)
+                    TaskUtility.Run($"HistorySaver.ETFConclusionQueue", QueueTaskCancelToken, ProcessETFConclusionQueue);
+
                 if (Config.General.SkipBiddingPrice == false)
-                {
                     TaskUtility.Run($"HistorySaver.BiddingPriceQueue", QueueTaskCancelToken, ProcessBiddingPriceQueue);
-                }
 
                 StartRefreshTimer();
 
@@ -114,6 +115,25 @@ namespace MTree.HistorySaver
                 {
                     DbAgent.Instance.Insert(conclusion);
                     Counter.Increment(CounterTypes.IndexConclusion);
+                }
+                else
+                    Thread.Sleep(10);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
+        private void ProcessETFConclusionQueue()
+        {
+            try
+            {
+                ETFConclusion conclusion;
+                if (ETFConclusionQueue.TryDequeue(out conclusion) == true)
+                {
+                    DbAgent.Instance.Insert(conclusion);
+                    Counter.Increment(CounterTypes.ETFConclusion);
                 }
                 else
                     Thread.Sleep(10);
@@ -231,6 +251,7 @@ namespace MTree.HistorySaver
             NotifyPropertyChanged(nameof(BiddingPriceQueueCount));
             NotifyPropertyChanged(nameof(StockConclusionQueueCount));
             NotifyPropertyChanged(nameof(IndexConclusionQueueCount));
+            NotifyPropertyChanged(nameof(ETFConclusionQueueCount));
         }
 
         #region INotifyPropertyChanged

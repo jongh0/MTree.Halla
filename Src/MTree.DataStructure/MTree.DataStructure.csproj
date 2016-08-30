@@ -71,6 +71,7 @@
     <Compile Include="CodeMapDbObject.cs" />
     <Compile Include="Conclusion.cs" />
     <Compile Include="DataCounter.cs" />
+    <Compile Include="ETFConclusion.cs" />
     <Compile Include="IndexConclusion.cs" />
     <Compile Include="IndexMaster.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
