@@ -56,5 +56,11 @@ namespace MTree.DataStructure
 
         [BsonElement("EI")]
         public long ETFIndex { get; set; }
+
+        public override string ToString(params string[] excludeProperties)
+        {
+            return ToString(GetType(), excludeProperties);
+        }
+
     }
 }

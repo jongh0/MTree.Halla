@@ -36,7 +36,7 @@ namespace MTree.DaishinPublisher
             //TestBidding();
             //TestSubscribingSingle();
             //TestCodeListAndSubscribing();
-
+            //TestEtfSubscribing();
         }
 
         void TestSubscribingSingle()
@@ -60,6 +60,11 @@ namespace MTree.DaishinPublisher
         void TestBidding()
         {
             Publisher.SubscribeBidding("A000020");
+        }
+        void TestEtfSubscribing()
+        {
+            Publisher.SubscribeStock("A122630");
+            Publisher.SubscribeETF("A122630");
         }
     }
 }
