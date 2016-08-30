@@ -328,6 +328,27 @@ namespace MTree.DataExtractingConsumer
                         GetCdl2Crows(ref columns);
                     else if (fieldName == "ThreeBlackCrows")
                         GetCdl3BlackCrows(ref columns);
+                    else if (fieldName == "ThreeInsideUpDown")
+                        GetCdl3Inside(ref columns);
+                    else if (fieldName == "ThreeLineStrike")
+                        GetCdl3LineStrike(ref columns);
+                    else if (fieldName == "ThreeOutsideUpDown")
+                        GetCdl3Outside(ref columns);
+                    else if (fieldName == "ThreeStarsInTheSouth")
+                        GetCdl3StarsInSouth(ref columns);
+                    else if (fieldName == "ThreeAdvancingWhiteSoldiers")
+                        GetCdl3WhiteSoldiers(ref columns);
+                    else if (fieldName == "AbandonedBaby")
+                    {
+                        double penetration = strArr.Length > 2 ? double.Parse(strArr[2]) / 10 : 0.3;
+                        GetCdlAbandonedBaby(penetration, ref columns);
+                    }
+                    else if (fieldName == "AdvanceBlock")
+                        GetCdlAdvanceBlock(ref columns);
+                    else if (fieldName == "BeltHold")
+                        GetCdlBeltHold(ref columns);
+                    else if (fieldName == "Breakaway")
+                        GetCdlBreakaway(ref columns);
                 }
                 sw.WriteLine(string.Join(delimeter, columns));
             }
@@ -477,6 +498,61 @@ namespace MTree.DataExtractingConsumer
             Core.Cdl3BlackCrows(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
             columns.Add(outReal[outNBElement - 1].ToString());
         }
+        private void GetCdl3Inside(ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.Cdl3Inside(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdl3LineStrike(ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.Cdl3LineStrike(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdl3Outside(ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.Cdl3Outside(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdl3StarsInSouth(ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.Cdl3StarsInSouth(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdl3WhiteSoldiers(ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.Cdl3WhiteSoldiers(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdlAbandonedBaby(double penetration, ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.CdlAbandonedBaby(0, dayChart.Candles.Count - 1, open, high, low, close, penetration, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdlAdvanceBlock(ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.CdlAdvanceBlock(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdlBeltHold(ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.CdlBeltHold(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdlBreakaway(ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.CdlBreakaway(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+
         private string GetNormalizedValue(object value)
         {
             Type type = value.GetType();

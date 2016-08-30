@@ -237,6 +237,15 @@ namespace MTree.DataExtractingConsumer
         CommodityChannelIndex_Day_100,
         TwoCrows_Day,
         ThreeBlackCrows_Day,
+        ThreeInsideUpDown_Day,
+        ThreeLineStrike_Day,
+        ThreeOutsideUpDown_Day,
+        ThreeStarsInTheSouth_Day,
+        ThreeAdvancingWhiteSoldiers_Day,
+        AbandonedBaby_Day_30,
+        AdvanceBlock_Day,
+        BeltHold_Day,
+        Breakaway_Day,
     }
 
     public enum IndexConclusionField
