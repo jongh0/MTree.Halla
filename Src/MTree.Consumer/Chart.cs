@@ -79,7 +79,7 @@ namespace MTree.Consumer
         /// </summary>
         /// <param name="timeout"></param>
         /// <returns></returns>
-        public bool WaitInitialing(int timeout = Timeout.Infinite)
+        public bool WaitInitializing(int timeout = Timeout.Infinite)
         {
             if (IsInitializing == false) return true;
 
@@ -150,7 +150,7 @@ namespace MTree.Consumer
         }
 
         /// <summary>
-        /// DB로부터 Day Type Chart 불러온다. Async로 동작하며 Initializing, WaitInitialing()를 사용해서 동작중인지 확인해야 한다
+        /// DB로부터 Day Type Chart 불러온다. Async로 동작하며 Initializing, WaitInitializing()를 사용해서 동작중인지 확인해야 한다
         /// </summary>
         private async Task ExtractDayCandles()
         { 

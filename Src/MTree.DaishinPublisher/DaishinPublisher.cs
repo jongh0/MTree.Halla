@@ -30,7 +30,6 @@ namespace MTree.DaishinPublisher
         private StockMstClass indexMstObj;
         private StockCurClass stockCurObj;
         private StockCurClass indexCurObj;
-        // CpSvrNew7224SClass 대신 CpSvrNew7244SClass 사용함 (테스트)
         private CpSvrNew7244SClass etfCurObj;
         private StockOutCurClass stockOutCurObj;
         private StockJpbidClass stockJpbidObj;
@@ -63,7 +62,6 @@ namespace MTree.DaishinPublisher
                 indexCurObj = new StockCurClass();
                 indexCurObj.Received += indexCurObj_Received;
 
-                // CpSvrNew7224SClass 대신 CpSvrNew7244SClass 사용함 (테스트)
                 etfCurObj = new CpSvrNew7244SClass();
                 etfCurObj.Received += etfCurObj_Received;
 

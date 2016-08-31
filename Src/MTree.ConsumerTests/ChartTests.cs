@@ -20,7 +20,7 @@ namespace MTree.Consumer.Tests
             DateTime endDate = DateTime.Now;
             int interval = 3;
             Chart chart = new Chart(code, chartType, startDate, endDate, interval);
-            chart.WaitInitialing();
+            chart.WaitInitializing();
             
             Assert.Fail();
         }
@@ -33,7 +33,7 @@ namespace MTree.Consumer.Tests
             DateTime endDate = DateTime.Now;
             int interval = 3;
             Chart chart = new Chart(code, chartType, startDate, endDate, interval);
-            chart.WaitInitialing();
+            chart.WaitInitializing();
 
             Assert.Fail();
         }
@@ -46,7 +46,7 @@ namespace MTree.Consumer.Tests
             DateTime startDate = new DateTime(2016, 05, 10);
             DateTime endDate = DateTime.Now;
             Chart chart = new Chart(code, chartType, startDate, endDate);
-            chart.WaitInitialing();
+            chart.WaitInitializing();
 
             Assert.Fail();
         }
@@ -59,7 +59,7 @@ namespace MTree.Consumer.Tests
             DateTime startDate = new DateTime(2016, 05, 10);
             DateTime endDate = DateTime.Now;
             Chart chart = new Chart(code, chartType, startDate, endDate);
-            chart.WaitInitialing();
+            chart.WaitInitializing();
 
             Assert.Fail();
         }
@@ -72,7 +72,7 @@ namespace MTree.Consumer.Tests
             DateTime startDate = new DateTime(2016, 05, 10);
             DateTime endDate = DateTime.Now;
             Chart chart = new Chart(code, chartType, startDate, endDate);
-            chart.WaitInitialing();
+            chart.WaitInitializing();
 
             Assert.Fail();
         }
@@ -85,7 +85,7 @@ namespace MTree.Consumer.Tests
             DateTime startDate = new DateTime(2016, 05, 10);
             DateTime endDate = DateTime.Now;
             Chart chart = new Chart(code, chartType, startDate, endDate);
-            chart.WaitInitialing();
+            chart.WaitInitializing();
 
             Assert.Fail();
         }
