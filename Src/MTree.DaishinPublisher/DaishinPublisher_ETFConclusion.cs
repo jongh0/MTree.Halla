@@ -112,7 +112,7 @@ namespace MTree.DaishinPublisher
             try
             {
                 var now = DateTime.Now;
-
+             
                 var conclusion = new ETFConclusion();
                 conclusion.Id = ObjectIdUtility.GenerateNewId(now);
                 conclusion.ReceivedTime = now;
@@ -142,13 +142,13 @@ namespace MTree.DaishinPublisher
                 conclusion.Amount = Convert.ToInt64(etfCurObj.GetHeaderValue(5));
 
                 // 6 - (long) NAV 지수
-                conclusion.NAVIndex = Convert.ToInt64(etfCurObj.GetHeaderValue(6));
+                conclusion.NAVIndex = Convert.ToInt64(etfCurObj.GetHeaderValue(6)) / 100;
 
                 // 7 - (char) NAV대비부호
                 sign = Convert.ToChar(etfCurObj.GetHeaderValue(7));
 
                 // 8 - (long) NAV 대비
-                conclusion.NAVComparision = Convert.ToDouble(etfCurObj.GetHeaderValue(8));
+                conclusion.NAVComparision = Convert.ToDouble(etfCurObj.GetHeaderValue(8)) / 100;
                 if (sign == '-')
                     conclusion.NAVComparision *= -1;
 
@@ -156,7 +156,7 @@ namespace MTree.DaishinPublisher
                 sign = Convert.ToChar(etfCurObj.GetHeaderValue(9));
 
                 // 10 - (long)추적오차율
-                conclusion.TracingErrorRate = Convert.ToDouble(etfCurObj.GetHeaderValue(10));
+                conclusion.TracingErrorRate = Convert.ToDouble(etfCurObj.GetHeaderValue(10)) / 100;
                 if (sign == '-')
                     conclusion.TracingErrorRate *= -1;
 
@@ -164,7 +164,7 @@ namespace MTree.DaishinPublisher
                 sign = Convert.ToChar(etfCurObj.GetHeaderValue(11));
 
                 // 12 - (long)괴리율
-                conclusion.DisparateRatio = Convert.ToDouble(etfCurObj.GetHeaderValue(10));
+                conclusion.DisparateRatio = Convert.ToDouble(etfCurObj.GetHeaderValue(12)) / 100;
                 if (sign == '-')
                     conclusion.DisparateRatio *= -1;
 
@@ -172,12 +172,12 @@ namespace MTree.DaishinPublisher
                 sign = Convert.ToChar(etfCurObj.GetHeaderValue(13));
 
                 // 14 - (long)해당 ETF 지수 대비
-                conclusion.ETFIndexComparision = Convert.ToDouble(etfCurObj.GetHeaderValue(14));
+                conclusion.ETFIndexComparision = Convert.ToDouble(etfCurObj.GetHeaderValue(14)) / 100;
                 if (sign == '-')
                     conclusion.ETFIndexComparision *= -1;
 
                 // 15 - (long)해당 ETF 지수
-                conclusion.ETFIndex = Convert.ToInt64(etfCurObj.GetHeaderValue(15));
+                conclusion.ETFIndex = Convert.ToInt64(etfCurObj.GetHeaderValue(15)) / 100;
 
                 ETFConclusionQueue.Enqueue(conclusion);
             }
