@@ -24,6 +24,7 @@ namespace MTree.Consumer.Tests
             
             Assert.Fail();
         }
+
         [TestMethod()]
         public void MinChartTest()
         {
@@ -89,6 +90,5 @@ namespace MTree.Consumer.Tests
 
             Assert.Fail();
         }
-
     }
 }

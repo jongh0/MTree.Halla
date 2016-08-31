@@ -97,9 +97,11 @@ namespace MTree.Consumer
                 WaitInitializingEvent.Reset();
 
                 SortedList<DateTime, Candle> temp;
+
                 if (ChartType == ChartTypes.Tick || ChartType == ChartTypes.Min)
                 {
                     await ExtractTickCandles();
+
                     if (ChartType == ChartTypes.Tick && ChartInterval > 1)
                     {
                         temp = ChartConverter.ConvertToTickChart(Candles, ChartInterval);
@@ -112,12 +114,11 @@ namespace MTree.Consumer
                         Candles.Clear();
                         Candles = temp;
                     }
-                    else
-                        ; // Default 1Tick Chart
                 }
                 else
                 {
                     await ExtractDayCandles();
+
                     if (ChartType == ChartTypes.Week)
                     {
                         temp = ChartConverter.ConvertToWeekChart(Candles);
@@ -136,16 +137,16 @@ namespace MTree.Consumer
                         Candles.Clear();
                         Candles = temp;
                     }
-                    else
-                        ; // Default Day Chart
                 }
-
-                IsInitializing = false;
-                WaitInitializingEvent.Set();
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
+            }
+            finally
+            {
+                IsInitializing = false;
+                WaitInitializingEvent.Set();
             }
         }
 
