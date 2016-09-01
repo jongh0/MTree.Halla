@@ -55,7 +55,7 @@ namespace MTree.DataStructure
         public double ETFIndexComparision { get; set; }
 
         [BsonElement("EI")]
-        public long ETFIndex { get; set; }
+        public double ETFIndex { get; set; }
 
         public override string ToString(params string[] excludeProperties)
         {

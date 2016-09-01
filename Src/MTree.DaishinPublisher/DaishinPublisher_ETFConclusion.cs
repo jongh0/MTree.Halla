@@ -112,7 +112,7 @@ namespace MTree.DaishinPublisher
             try
             {
                 var now = DateTime.Now;
-             
+
                 var conclusion = new ETFConclusion();
                 conclusion.Id = ObjectIdUtility.GenerateNewId(now);
                 conclusion.ReceivedTime = now;
@@ -135,7 +135,7 @@ namespace MTree.DaishinPublisher
 
                 // 4 - (long) 대비
                 conclusion.Comparision = Convert.ToDouble(etfCurObj.GetHeaderValue(4));
-                if (sign == '-')
+                if (sign == '-' || sign == '5') // Sign값이 '-'가 아닌 '5'로 들어옴. 대신 API Bug로 추정.
                     conclusion.Comparision *= -1;
 
                 // 5 - (long) 거래량
@@ -177,8 +177,8 @@ namespace MTree.DaishinPublisher
                     conclusion.ETFIndexComparision *= -1;
 
                 // 15 - (long)해당 ETF 지수
-                conclusion.ETFIndex = Convert.ToInt64(etfCurObj.GetHeaderValue(15)) / 100;
-
+                conclusion.ETFIndex = Convert.ToDouble(etfCurObj.GetHeaderValue(15)) / 100;
+                
                 ETFConclusionQueue.Enqueue(conclusion);
             }
             catch (Exception ex)
