@@ -52,10 +52,10 @@ namespace MTree.DataStructure
         public double DisparateRatio { get; set; }
 
         [BsonElement("EIC")]
-        public double ETFIndexComparision { get; set; }
+        public double ReferenceIndexComparision { get; set; }
 
         [BsonElement("EI")]
-        public double ETFIndex { get; set; }
+        public float ReferenceIndex { get; set; }
 
         public override string ToString(params string[] excludeProperties)
         {

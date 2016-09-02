@@ -172,12 +172,12 @@ namespace MTree.DaishinPublisher
                 sign = Convert.ToChar(etfCurObj.GetHeaderValue(13));
 
                 // 14 - (long)해당 ETF 지수 대비
-                conclusion.ETFIndexComparision = Convert.ToDouble(etfCurObj.GetHeaderValue(14)) / 100;
+                conclusion.ReferenceIndexComparision = Convert.ToDouble(etfCurObj.GetHeaderValue(14)) / 100;
                 if (sign == '-')
-                    conclusion.ETFIndexComparision *= -1;
+                    conclusion.ReferenceIndexComparision *= -1;
 
                 // 15 - (long)해당 ETF 지수
-                conclusion.ETFIndex = Convert.ToDouble(etfCurObj.GetHeaderValue(15)) / 100;
+                conclusion.ReferenceIndex = Convert.ToSingle(etfCurObj.GetHeaderValue(15)) / 100;
                 
                 ETFConclusionQueue.Enqueue(conclusion);
             }
