@@ -396,7 +396,80 @@ namespace MTree.DataExtractingConsumer
                         GetCdlHikkake(ref columns);
                     else if (fieldName == "ModifiedHikkakePattern")
                         GetCdlHikkakeMod(ref columns);
+                    else if (fieldName == "HomingPigeon")
+                        GetCdlHomingPigeon(ref columns);
+                    else if (fieldName == "IdenticalThreeCrows")
+                        GetCdlIdentical3Crows(ref columns);
+                    else if (fieldName == "InNeck")
+                        GetCdlInNeck(ref columns);
+                    else if (fieldName == "InvertedHammer")
+                        GetCdlInvertedHammer(ref columns);
+                    else if (fieldName == "Kicking")
+                        GetCdlKicking(ref columns);
+                    else if (fieldName == "KickingByLenghth")
+                        GetCdlKickingByLength(ref columns);
+                    else if (fieldName == "LadderBottom")
+                        GetCdlLadderBottom(ref columns);
+                    else if (fieldName == "LongLeggedDoji")
+                        GetCdlLongLeggedDoji(ref columns);
+                    else if (fieldName == "LongLineCandle")
+                        GetCdlLongLine(ref columns);
+                    else if (fieldName == "Marubozu")
+                        GetCdlMarubozu(ref columns);
+                    else if (fieldName == "MatchingLow")
+                        GetCdlMatchingLow(ref columns);
+                    else if (fieldName == "MatHold")
+                    {
+                        double penetration = strArr.Length > 2 ? double.Parse(strArr[2]) / 100 : 0.3;
+                        GetCdlMatHold(penetration, ref columns);
+                    }
+                    else if (fieldName == "MorningDojiStar")
+                    {
+                        double penetration = strArr.Length > 2 ? double.Parse(strArr[2]) / 100 : 0.3;
+                        GetCdlMorningDojiStar(penetration, ref columns);
+                    }
+                    else if (fieldName == "MorningStar")
+                    {
+                        double penetration = strArr.Length > 2 ? double.Parse(strArr[2]) / 100 : 0.3;
+                        GetCdlMorningStar(penetration, ref columns);
+                    }
+                    else if (fieldName == "OnNeckPattern")
+                        GetCdlOnNeck(ref columns);
+                    else if (fieldName == "PiercingPattern")
+                        GetCdlPiercing(ref columns);
+                    else if (fieldName == "RickshawMan")
+                        GetCdlRickshawMan(ref columns);
+                    else if (fieldName == "RisingFallingThreeMethods")
+                        GetCdlRiseFall3Methods(ref columns);
+                    else if (fieldName == "SeparatingLines")
+                        GetCdlSeperatingLines(ref columns);
+                    else if (fieldName == "ShootingStar")
+                        GetCdlShootingStar(ref columns);
+                    else if (fieldName == "ShortLineCandle")
+                        GetCdlShortLine(ref columns);
+                    else if (fieldName == "SpinningTop")
+                        GetCdlSpinningTop(ref columns);
+                    else if (fieldName == "StalledPattern")
+                        GetCdlStalledPattern(ref columns);
+                    else if (fieldName == "StickSandwich")
+                        GetCdlStickSandwhich(ref columns);
+                    else if (fieldName == "Takuri")
+                        GetCdlTakuri(ref columns);
+                    else if (fieldName == "TasukiGap")
+                        GetCdlTasukiGap(ref columns);
+                    else if (fieldName == "ThrustingPattern")
+                        GetCdlThrusting(ref columns);
+                    else if (fieldName == "TristarPattern")
+                        GetCdlTristar(ref columns);
+                    else if (fieldName == "Unique3River")
+                        GetCdlUnique3River(ref columns);
+                    else if (fieldName == "UpsideGapTwoCrows")
+                        GetCdlUpsideGap2Crows(ref columns);
+                    else if (fieldName == "UpsideDownsideGapThreeMethods_Day")
+                        GetCdlXSideGap3Methods(ref columns);
                     
+
+
                 }
                 sw.WriteLine(string.Join(delimeter, columns));
             }
@@ -713,6 +786,192 @@ namespace MTree.DataExtractingConsumer
         {
             var outReal = new int[dayChart.Candles.Count];
             Core.CdlHikkakeMod(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdlHomingPigeon(ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.CdlHomingPigeon(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdlIdentical3Crows(ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.CdlIdentical3Crows(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdlInNeck(ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.CdlInNeck(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdlInvertedHammer(ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.CdlInvertedHammer(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdlKicking(ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.CdlKicking(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdlKickingByLength(ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.CdlKickingByLength(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdlLadderBottom(ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.CdlLadderBottom(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdlLongLeggedDoji(ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.CdlLongLeggedDoji(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdlLongLine(ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.CdlLongLine(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdlMarubozu(ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.CdlMarubozu(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdlMatchingLow(ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.CdlMatchingLow(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdlMatHold(double penetration, ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.CdlMatHold(0, dayChart.Candles.Count - 1, open, high, low, close, penetration, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdlMorningDojiStar(double penetration, ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.CdlMorningDojiStar(0, dayChart.Candles.Count - 1, open, high, low, close, penetration, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdlMorningStar(double penetration, ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.CdlMorningStar(0, dayChart.Candles.Count - 1, open, high, low, close, penetration, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdlOnNeck(ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.CdlOnNeck(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdlPiercing(ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.CdlPiercing(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdlRickshawMan(ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.CdlRickshawMan(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdlRiseFall3Methods(ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.CdlRiseFall3Methods(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdlSeperatingLines(ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.CdlSeperatingLines(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdlShootingStar(ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.CdlShootingStar(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdlShortLine(ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.CdlShortLine(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdlSpinningTop(ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.CdlSpinningTop(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdlStalledPattern(ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.CdlStalledPattern(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdlStickSandwhich(ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.CdlStickSandwhich(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdlTakuri(ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.CdlTakuri(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdlTasukiGap(ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.CdlTasukiGap(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdlThrusting(ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.CdlThrusting(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdlTristar(ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.CdlTristar(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdlUnique3River(ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.CdlUnique3River(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdlUpsideGap2Crows(ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.CdlUpsideGap2Crows(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+        private void GetCdlXSideGap3Methods(ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            Core.CdlXSideGap3Methods(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
             columns.Add(outReal[outNBElement - 1].ToString());
         }
         private string GetNormalizedValue(object value)
