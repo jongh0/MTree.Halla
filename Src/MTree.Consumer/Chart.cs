@@ -164,10 +164,9 @@ namespace MTree.Consumer
 
                 // CandleType, Time으로 Query 생성
                 var builder = Builders<Candle>.Filter;
-                var filter = builder.Eq(i => i.Code, Code);
-                //var filter = builder.Eq(i => i.CandleType, ConvertToCandleType(ChartType)) & 
-                //             builder.Gte(i => i.Time, StartDate) & 
-                //             builder.Lte(i => i.Time, EndDate);
+                var filter = builder.Eq(i => i.CandleType, CandleTypes.Day) &
+                             builder.Gte(i => i.Time, StartDate) &
+                             builder.Lte(i => i.Time, EndDate);
 
                 // Async Query 수행
                 var result = await DbAgent.Instance.Find(Code, filter).ToListAsync();
@@ -211,6 +210,7 @@ namespace MTree.Consumer
                 {
                     if (conclusion.MarketTimeType != MarketTimeTypes.Normal)
                         continue;
+
                     var candle = ChartConverter.ConvertToTickCandle(conclusion);
 
                     while (Candles.ContainsKey(candle.Time) == true)
@@ -311,6 +311,5 @@ namespace MTree.Consumer
         {
             return $"{Code}/{ChartType}/{StartDate.ToString(Config.General.DateTimeFormat)}/{EndDate.ToString(Config.General.DateTimeFormat)}/{Candles.Count}";
         }
-
     }
 }
