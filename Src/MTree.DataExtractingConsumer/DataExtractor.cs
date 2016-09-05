@@ -11,6 +11,9 @@ using static TicTacTec.TA.Library.Core;
 
 namespace MTree.DataExtractingConsumer
 {
+    delegate RetCode TADelegate_C_Int(int startIdx, int endIdx, float[] inReal, out int outBegIdx, out int outNBElement, int[] outReal);
+    delegate RetCode TADelegate_C_Double(int startIdx, int endIdx, float[] inReal, out int outBegIdx, out int outNBElement, double[] outReal);
+    delegate RetCode TADelegate_CT_Double(int startIdx, int endIdx, float[] inReal, int optInTimePeriod, out int outBegIdx, out int outNBElement, double[] outReal);
     delegate RetCode TADelegate_CTM_Double(int startIdx, int endIdx, float[] inReal, int optInTimePeriod, MAType optInMAType, out int outBegIdx, out int outNBElement, double[] outReal);
     delegate RetCode TADelegate_HLCV_Double(int startIdx, int endIdx, float[] inHigh, float[] inLow, float[] inClose, float[] inVolume, out int outBegIdx, out int outNBElement, double[] outReal);
     delegate RetCode TADelegate_HLCVTT_Double(int startIdx, int endIdx, float[] inHigh, float[] inLow, float[] inClose, float[] inVolume, int optInFastPeriod, int optInSlowPeriod, out int outBegIdx, out int outNBElement, double[] outReal);
@@ -20,7 +23,8 @@ namespace MTree.DataExtractingConsumer
     delegate RetCode TADelegate_OHLCP_Int(int startIdx, int endIdx, float[] inOpen, float[] inHigh, float[] inLow, float[] inClose, double optInPenetration, out int outBegIdx, out int outNBElement, int[] outInteger);
     delegate RetCode TADelegate_HLCT_Double(int startIdx, int endIdx, float[] inHigh, float[] inLow, float[] inClose, int optInTimePeriod, out int outBegIdx, out int outNBElement, double[] outReal);
     delegate RetCode TADelegate_HLT_Double(int startIdx, int endIdx, float[] inHigh, float[] inLow, int optInTimePeriod, out int outBegIdx, out int outNBElement, double[] outReal);
-
+    
+    
     public class DataExtractor
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
@@ -232,6 +236,16 @@ namespace MTree.DataExtractingConsumer
                         columns.Add(field.ToString() + "_Middle");
                         columns.Add(field.ToString() + "_Lower");
                     }
+                    else if (fieldName == "HilbertTransformPhasorComponents")
+                    {
+                        columns.Add(field.ToString() + "_InPhase");
+                        columns.Add(field.ToString() + "_Quadrature");
+                    }
+                    else if (fieldName == "HilbertTransformSineWave")
+                    {
+                        columns.Add(field.ToString() + "_Sine");
+                        columns.Add(field.ToString() + "_LeadSine");
+                    }
                     else
                         columns.Add(field.ToString());
                 }
@@ -295,7 +309,7 @@ namespace MTree.DataExtractingConsumer
                             GetTAValue(MovingAverage, term, maType, ref columns);
                     }
                     else if (fieldName == "AccumulationDistributionLine")
-                        GetTAValue(Ad, ref columns);
+                        GetTAValue((TADelegate_HLCV_Double)Ad, ref columns);
                     else if (fieldName == "AccumulationDistributionOscillator")
                     {
                         var longTerm = strArr.Length > 3 ? int.Parse(strArr[3]) : 0;
@@ -332,7 +346,7 @@ namespace MTree.DataExtractingConsumer
                         GetBbands(term, dev, maType, ref columns);
                     }
                     else if (fieldName == "BalanceOfPower")
-                        GetTAValueDefault(Bop, ref columns);
+                        GetTAValue((TADelegate_OHLC_Double)Bop, ref columns);
                     else if (fieldName == "CommodityChannelIndex")
                         GetTAValue(Cci, term, ref columns);
                     else if (fieldName == "TwoCrows")
@@ -478,6 +492,20 @@ namespace MTree.DataExtractingConsumer
                         GetTAValue(CdlUpsideGap2Crows, ref columns);
                     else if (fieldName == "UpsideDownsideGapThreeMethods")
                         GetTAValue(CdlXSideGap3Methods, ref columns);
+                    else if (fieldName == "ChandeMomentumOscillator")
+                        GetTAValue(Cmo, term, ref columns);
+                    else if (fieldName == "HilbertTransformDominantCyclePeriod")
+                        GetTAValue(HtDcPeriod, ref columns);
+                    else if (fieldName == "HilbertTransformDominantCyclePhase")
+                        GetTAValue(HtDcPhase, ref columns);
+                    else if (fieldName == "HilbertTransformPhasorComponents")
+                        GetHtPhasor(ref columns);
+                    else if (fieldName == "HilbertTransformSineWave")
+                        GetHtSine(ref columns);
+                    else if (fieldName == "HilbertTransformInstantaneousTrendline")
+                        GetTAValue(HtTrendline, ref columns);
+                    else if (fieldName == "HilbertTransformTrendVsCycleMode")
+                        GetTAValue(HtTrendMode, ref columns);
                 }
                 sw.WriteLine(string.Join(delimeter, columns));
             }
@@ -530,7 +558,43 @@ namespace MTree.DataExtractingConsumer
             columns.Add(outMiddleReal[outNBElement - 1].ToString());
             columns.Add(outLowerReal[outNBElement - 1].ToString());
         }
+        private void GetHtPhasor(ref List<string> columns)
+        {
+            var outInPhase = new double[dayChart.Candles.Count];
+            var outQuadrature = new double[dayChart.Candles.Count];
+            Core.HtPhasor(0, dayChart.Candles.Count - 1, close, out outBegIdx, out outNBElement, outInPhase, outQuadrature);
+            columns.Add(outInPhase[outNBElement - 1].ToString());
+            columns.Add(outQuadrature[outNBElement - 1].ToString());
+        }
+        private void GetHtSine(ref List<string> columns)
+        {
+            var outSine = new double[dayChart.Candles.Count];
+            var outLeadSine = new double[dayChart.Candles.Count];
+            Core.HtSine(0, dayChart.Candles.Count - 1, close, out outBegIdx, out outNBElement, outSine, outLeadSine);
+            columns.Add(outSine[outNBElement - 1].ToString());
+            columns.Add(outLeadSine[outNBElement - 1].ToString());
+        }
         
+        private void GetTAValue(TADelegate_C_Int function, ref List<string> columns)
+        {
+            var outInt = new int[dayChart.Candles.Count];
+            function(0, dayChart.Candles.Count - 1, close, out outBegIdx, out outNBElement, outInt);
+            columns.Add(outInt[outNBElement - 1].ToString());
+        }
+
+        private void GetTAValue(TADelegate_C_Double function, ref List<string> columns)
+        {
+            var outReal = new double[dayChart.Candles.Count];
+            function(0, dayChart.Candles.Count - 1, close, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
+
+        private void GetTAValue(TADelegate_CT_Double function, int term, ref List<string> columns)
+        {
+            var outReal = new double[dayChart.Candles.Count];
+            function(0, dayChart.Candles.Count - 1, close, term, out outBegIdx, out outNBElement, outReal);
+            columns.Add(outReal[outNBElement - 1].ToString());
+        }
         private void GetTAValue(TADelegate_CTM_Double function, int term, MAType maType, ref List<string> columns)
         {
             var outReal = new double[dayChart.Candles.Count];
@@ -561,7 +625,7 @@ namespace MTree.DataExtractingConsumer
             function(0, dayChart.Candles.Count - 1, high, low, close, term, out outBegIdx, out outNBElement, outReal);
             columns.Add(outReal[outNBElement - 1].ToString());
         }
-        private void GetTAValueDefault(TADelegate_OHLC_Double function, ref List<string> columns)
+        private void GetTAValue(TADelegate_OHLC_Double function, ref List<string> columns)
         {
             var outReal = new double[dayChart.Candles.Count];
             function(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
@@ -569,15 +633,15 @@ namespace MTree.DataExtractingConsumer
         }
         private void GetTAValue(TADelegate_OHLC_Int function, ref List<string> columns)
         {
-            var outReal = new int[dayChart.Candles.Count];
-            function(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outReal);
-            columns.Add(outReal[outNBElement - 1].ToString());
+            var outInt = new int[dayChart.Candles.Count];
+            function(0, dayChart.Candles.Count - 1, open, high, low, close, out outBegIdx, out outNBElement, outInt);
+            columns.Add(outInt[outNBElement - 1].ToString());
         }
         private void GetTAValue(TADelegate_OHLCP_Int function, double penetration, ref List<string> columns)
         {
-            var outReal = new int[dayChart.Candles.Count];
-            function(0, dayChart.Candles.Count - 1, open, high, low, close, penetration, out outBegIdx, out outNBElement, outReal);
-            columns.Add(outReal[outNBElement - 1].ToString());
+            var outInt = new int[dayChart.Candles.Count];
+            function(0, dayChart.Candles.Count - 1, open, high, low, close, penetration, out outBegIdx, out outNBElement, outInt);
+            columns.Add(outInt[outNBElement - 1].ToString());
         }
         private void GetTAValue(TADelegate_HLT_Double function, int term, ref List<string> columns)
         {

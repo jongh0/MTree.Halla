@@ -295,7 +295,16 @@ namespace MTree.DataExtractingConsumer
         TristarPattern_Day,
         Unique3River_Day,
         UpsideGapTwoCrows_Day,
-        UpsideDownsideGapThreeMethods_Day
+        UpsideDownsideGapThreeMethods_Day,
+        ChandeMomentumOscillator_Day_10,
+        ChandeMomentumOscillator_Day_20,
+        ChandeMomentumOscillator_Day_40,
+        HilbertTransformDominantCyclePeriod_Day,
+        HilbertTransformDominantCyclePhase_Day,
+        HilbertTransformPhasorComponents_Day,
+        HilbertTransformSineWave_Day,
+        HilbertTransformInstantaneousTrendline_Day,
+        HilbertTransformTrendVsCycleMode_Day,
     }
 
     public enum IndexConclusionField
