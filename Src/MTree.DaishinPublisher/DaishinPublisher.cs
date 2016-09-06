@@ -91,6 +91,7 @@ namespace MTree.DaishinPublisher
                 StartBiddingPriceQueueTask();
                 StartStockConclusionQueueTask();
                 StartIndexConclusionQueueTask();
+                StartEtfConclusionQueueTask();
 
                 if (Environment.GetCommandLineArgs()[1] == ProcessTypes.DaishinPublisherMaster.ToString())
                     IsMasterProcess = true;

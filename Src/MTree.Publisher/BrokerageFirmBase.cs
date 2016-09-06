@@ -63,7 +63,10 @@ namespace MTree.Publisher
         {
             TaskUtility.Run($"{GetType().Name}.IndexConclusionQueue", QueueTaskCancelToken, ProcessIndexConclusionQueue);
         }
-
+        protected void StartEtfConclusionQueueTask()
+        {
+            TaskUtility.Run($"{GetType().Name}.EtfConclusionQueue", QueueTaskCancelToken, ProcessETFConclusionQueue);
+        }
         private void ProcessBiddingPriceQueue()
         {
             try
@@ -147,7 +150,26 @@ namespace MTree.Publisher
                 logger.Error(ex);
             }
         }
-
+        private void ProcessETFConclusionQueue()
+        {
+            try
+            {
+                ETFConclusion conclusion;
+                if (ServiceClient.State == CommunicationState.Opened &&
+                    ETFConclusionQueue.TryDequeue(out conclusion) == true)
+                {
+                    ServiceClient.PublishETFConclusion(conclusion);
+                }
+                else
+                {
+                    Thread.Sleep(10);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
         protected bool WaitQuoting()
         {
             if (WaitQuotingEvent.WaitOne(WaitQuotingTimeout) == false)
