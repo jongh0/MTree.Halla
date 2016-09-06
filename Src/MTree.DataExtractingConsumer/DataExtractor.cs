@@ -246,6 +246,12 @@ namespace MTree.DataExtractingConsumer
                         columns.Add(field.ToString() + "_Sine");
                         columns.Add(field.ToString() + "_LeadSine");
                     }
+                    else if (fieldName == "MovingAverageConvergenceDivergence")
+                    {
+                        columns.Add(field.ToString());
+                        columns.Add(field.ToString() + "_Signal");
+                        columns.Add(field.ToString() + "_Hist");
+                    }
                     else
                         columns.Add(field.ToString());
                 }
@@ -506,6 +512,32 @@ namespace MTree.DataExtractingConsumer
                         GetTAValue(HtTrendline, ref columns);
                     else if (fieldName == "HilbertTransformTrendVsCycleMode")
                         GetTAValue(HtTrendMode, ref columns);
+                    else if (fieldName == "LinearRegression")
+                        GetTAValue(LinearReg, term, ref columns);
+                    else if (fieldName == "LinearRegressionAngle")
+                        GetTAValue(LinearRegAngle, term, ref columns);
+                    else if (fieldName == "LinearRegressionIntercept")
+                        GetTAValue(LinearRegIntercept, term, ref columns);
+                    else if (fieldName == "LinearRegressionSlope")
+                        GetTAValue(LinearRegSlope, term, ref columns);
+                    else if (fieldName == "MovingAverageConvergenceDivergence")
+                    {
+                        int optInFastPeriod = strArr.Length > 2 ? int.Parse(strArr[2]) : 12;
+                        int optInSlowPeriod = strArr.Length > 3 ? int.Parse(strArr[3]) : 26;
+                        int optInSignalPeriod = strArr.Length > 4 ? int.Parse(strArr[4]) : 9;
+
+                        GetMacd(optInFastPeriod, optInSlowPeriod, optInSignalPeriod, ref columns);
+                    }
+                    else if (fieldName == "MacdWithMAType")
+                    {
+                        int optInFastPeriod = strArr.Length > 2 ? int.Parse(strArr[2]) : 12;
+                        int optInSlowPeriod = strArr.Length > 3 ? int.Parse(strArr[3]) : 26;
+                        int optInSignalPeriod = strArr.Length > 4 ? int.Parse(strArr[4]) : 9;
+                        var maType = strArr.Length > 5 ? (MAType)Enum.Parse(typeof(MAType), strArr[5]) : MAType.Sma;
+
+                        GetMacd(optInFastPeriod, optInSlowPeriod, optInSignalPeriod, maType, ref columns);
+                    }
+                    
                 }
                 sw.WriteLine(string.Join(delimeter, columns));
             }
@@ -533,7 +565,7 @@ namespace MTree.DataExtractingConsumer
                 var inReal = priceList.GetRange(priceList.Count - elementCount, elementCount).ToArray();
                 var outReal = new double[elementCount];
 
-                Core.MovingAverage(0, inReal.Length - 1, inReal, term, maType, out outBegIdx, out outNBElement, outReal);
+                MovingAverage(0, inReal.Length - 1, inReal, term, maType, out outBegIdx, out outNBElement, outReal);
                 if (outNBElement != 0)
                     columns.Add(outReal[0].ToString());
                 else
@@ -544,7 +576,7 @@ namespace MTree.DataExtractingConsumer
         {
             var outDownReal = new double[dayChart.Candles.Count];
             var outUpReal = new double[dayChart.Candles.Count];
-            Core.Aroon(0, dayChart.Candles.Count - 1, high, low, term, out outBegIdx, out outNBElement, outDownReal, outUpReal);
+            Aroon(0, dayChart.Candles.Count - 1, high, low, term, out outBegIdx, out outNBElement, outDownReal, outUpReal);
             columns.Add(outDownReal[outNBElement - 1].ToString());
             columns.Add(outUpReal[outNBElement - 1].ToString());
         }
@@ -553,7 +585,7 @@ namespace MTree.DataExtractingConsumer
             var outUpperReal = new double[dayChart.Candles.Count];
             var outMiddleReal = new double[dayChart.Candles.Count];
             var outLowerReal = new double[dayChart.Candles.Count];
-            Core.Bbands(0, dayChart.Candles.Count - 1, close, term, dev, dev, maType, out outBegIdx, out outNBElement, outUpperReal, outMiddleReal, outLowerReal);
+            Bbands(0, dayChart.Candles.Count - 1, close, term, dev, dev, maType, out outBegIdx, out outNBElement, outUpperReal, outMiddleReal, outLowerReal);
             columns.Add(outUpperReal[outNBElement - 1].ToString());
             columns.Add(outMiddleReal[outNBElement - 1].ToString());
             columns.Add(outLowerReal[outNBElement - 1].ToString());
@@ -562,7 +594,7 @@ namespace MTree.DataExtractingConsumer
         {
             var outInPhase = new double[dayChart.Candles.Count];
             var outQuadrature = new double[dayChart.Candles.Count];
-            Core.HtPhasor(0, dayChart.Candles.Count - 1, close, out outBegIdx, out outNBElement, outInPhase, outQuadrature);
+            HtPhasor(0, dayChart.Candles.Count - 1, close, out outBegIdx, out outNBElement, outInPhase, outQuadrature);
             columns.Add(outInPhase[outNBElement - 1].ToString());
             columns.Add(outQuadrature[outNBElement - 1].ToString());
         }
@@ -570,11 +602,33 @@ namespace MTree.DataExtractingConsumer
         {
             var outSine = new double[dayChart.Candles.Count];
             var outLeadSine = new double[dayChart.Candles.Count];
-            Core.HtSine(0, dayChart.Candles.Count - 1, close, out outBegIdx, out outNBElement, outSine, outLeadSine);
+            HtSine(0, dayChart.Candles.Count - 1, close, out outBegIdx, out outNBElement, outSine, outLeadSine);
             columns.Add(outSine[outNBElement - 1].ToString());
             columns.Add(outLeadSine[outNBElement - 1].ToString());
         }
-        
+        private void GetMacd(int optInFastPeriod, int optInSlowPeriod, int optInSignalPeriod, ref List<string> columns)
+        {
+            
+            var outMACD = new double[dayChart.Candles.Count];
+            var outMACDSignal = new double[dayChart.Candles.Count];
+            var outMACDHist = new double[dayChart.Candles.Count];
+
+            Macd(0, dayChart.Candles.Count - 1, close, optInFastPeriod, optInSlowPeriod, optInSignalPeriod, out outBegIdx, out outNBElement, outMACD, outMACDSignal, outMACDHist);
+            columns.Add(outMACD[outNBElement - 1].ToString());
+            columns.Add(outMACDSignal[outNBElement - 1].ToString());
+            columns.Add(outMACDHist[outNBElement - 1].ToString());
+        }
+        private void GetMacd(int optInFastPeriod, int optInSlowPeriod, int optInSignalPeriod, MAType maType, ref List<string> columns)
+        {
+            var outMACD = new double[dayChart.Candles.Count];
+            var outMACDSignal = new double[dayChart.Candles.Count];
+            var outMACDHist = new double[dayChart.Candles.Count];
+
+            MacdExt(0, dayChart.Candles.Count - 1, close, optInFastPeriod, maType, optInSlowPeriod, maType, optInSignalPeriod, maType, out outBegIdx, out outNBElement, outMACD, outMACDSignal, outMACDHist);
+            columns.Add(outMACD[outNBElement - 1].ToString());
+            columns.Add(outMACDSignal[outNBElement - 1].ToString());
+            columns.Add(outMACDHist[outNBElement - 1].ToString());
+        }
         private void GetTAValue(TADelegate_C_Int function, ref List<string> columns)
         {
             var outInt = new int[dayChart.Candles.Count];
