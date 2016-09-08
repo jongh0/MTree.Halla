@@ -202,7 +202,7 @@ namespace MTree.DbProvider
                 else if (item is IndexConclusion)
                     return (IMongoCollection<T>)IndexConclusionDb.GetCollection<IndexConclusion>(collectionName);
                 else if (item is ETFConclusion)
-                    return (IMongoCollection<T>)IndexConclusionDb.GetCollection<ETFConclusion>(collectionName);
+                    return (IMongoCollection<T>)ETFConclusionDb.GetCollection<ETFConclusion>(collectionName);
                 else if (item is DataCounter)
                     return (IMongoCollection<T>)CommonDb.GetCollection<DataCounter>(collectionName);
                 else if (item is CodeMapDbObject)
