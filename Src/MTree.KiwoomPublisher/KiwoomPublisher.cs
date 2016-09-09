@@ -349,7 +349,14 @@ namespace MTree.KiwoomPublisher
                     // Contract 등록
                     RegisterPublishContract();
                 else
+                {
                     logger.Error("Login Fail");
+
+                    ProcessUtility.Kill("khministarter");
+                    logger.Error("Restart Kiwoom Publisher");
+                    Process.Start(System.Windows.Forms.Application.ExecutablePath);
+                    Environment.Exit(-1);
+                }
             });
         }
 
