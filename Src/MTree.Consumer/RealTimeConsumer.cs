@@ -82,6 +82,9 @@ namespace MTree.Consumer
 
                 if (Config.General.VerifyLatency == true && Config.General.SkipBiddingPrice == false)
                     ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.BiddingPrice));
+
+                if (Config.General.SkipETFConclusion == false)
+                    ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.ETFConclusion));
             }
             catch (Exception ex)
             {
