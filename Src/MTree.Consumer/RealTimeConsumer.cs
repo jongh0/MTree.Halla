@@ -75,6 +75,7 @@ namespace MTree.Consumer
 
             try
             {
+                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.Chart));
                 ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.Mastering));
                 ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.CircuitBreak));
                 ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.StockConclusion));
