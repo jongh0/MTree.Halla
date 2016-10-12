@@ -14,8 +14,15 @@ namespace MTree.DataExtractingConsumer
     delegate RetCode TADelegate_C_Int(int startIdx, int endIdx, float[] inReal, out int outBegIdx, out int outNBElement, int[] outReal);
     delegate RetCode TADelegate_C_Double(int startIdx, int endIdx, float[] inReal, out int outBegIdx, out int outNBElement, double[] outReal);
     delegate RetCode TADelegate_CT_Double(int startIdx, int endIdx, float[] inReal, int optInTimePeriod, out int outBegIdx, out int outNBElement, double[] outReal);
+    delegate RetCode TADelegate_CT_Int(int startIdx, int endIdx, float[] inReal, int optInTimePeriod, out int outBegIdx, out int outNBElement, int[] outReal);
+    delegate RetCode TADelegate_CTD_Double(int startIdx, int endIdx, float[] inReal, int optInTimePeriod, double optInNbDev, out int outBegIdx, out int outNBElement, double[] outReal);
+    delegate RetCode TADelegate_CV_Double(int startIdx, int endIdx, float[] inReal, float[] inVolume, out int outBegIdx, out int outNBElement, double[] outReal);
     delegate RetCode TADelegate_CTM_Double(int startIdx, int endIdx, float[] inReal, int optInTimePeriod, MAType optInMAType, out int outBegIdx, out int outNBElement, double[] outReal);
+    delegate RetCode TADelegate_HL_Double(int startIdx, int endIdx, float[] inHigh, float[] inLow, out int outBegIdx, out int outNBElement, double[] outReal);
+    delegate RetCode TADelegate_HLAM_Double(int startIdx, int endIdx, float[] inHigh, float[] inLow, double optInAcceleration, double optInMaximum, out int outBegIdx, out int outNBElement, double[] outReal);
+    delegate RetCode TADelegate_HLC_Double(int startIdx, int endIdx, float[] inHigh, float[] inLow, float[] inClose, out int outBegIdx, out int outNBElement, double[] outReal);
     delegate RetCode TADelegate_HLCV_Double(int startIdx, int endIdx, float[] inHigh, float[] inLow, float[] inClose, float[] inVolume, out int outBegIdx, out int outNBElement, double[] outReal);
+    delegate RetCode TADelegate_HLCVT_Double(int startIdx, int endIdx, float[] inHigh, float[] inLow, float[] inClose, float[] inVolume, int optInTimePeriod, out int outBegIdx, out int outNBElement, double[] outReal);
     delegate RetCode TADelegate_HLCVTT_Double(int startIdx, int endIdx, float[] inHigh, float[] inLow, float[] inClose, float[] inVolume, int optInFastPeriod, int optInSlowPeriod, out int outBegIdx, out int outNBElement, double[] outReal);
     delegate RetCode TADelegate_CTTM_Double(int startIdx, int endIdx, float[] inReal, int optInFastPeriod, int optInSlowPeriod, MAType optInMAType, out int outBegIdx, out int outNBElement, double[] outReal);
     delegate RetCode TADelegate_OHLC_Int(int startIdx, int endIdx, float[] inOpen, float[] inHigh, float[] inLow, float[] inClose, out int outBegIdx, out int outNBElement, int[] outInteger);
@@ -155,7 +162,7 @@ namespace MTree.DataExtractingConsumer
                     currentMaster = stockMasters[0];
                     if (stock == null)
                         stock = Stock.GetStock(stockMasters[0].Code);
-                    dayChart = stock.GetChart(ChartTypes.Day, currentMaster.Time.AddMonths(-2), currentMaster.Time);
+                    dayChart = stock.GetChart(ChartTypes.Day, currentMaster.Time.AddMonths(-12), currentMaster.Time);
                     dayChart.WaitInitializing();
                     InitCandles();
                 }
@@ -251,6 +258,27 @@ namespace MTree.DataExtractingConsumer
                         columns.Add(field.ToString());
                         columns.Add(field.ToString() + "_Signal");
                         columns.Add(field.ToString() + "_Hist");
+                    }
+                    else if (fieldName == "MacdWithMAType")
+                    {
+                        columns.Add(field.ToString());
+                        columns.Add(field.ToString() + "_Signal");
+                        columns.Add(field.ToString() + "_Hist");
+                    }
+                    else if (fieldName == "Stochastic")
+                    {
+                        columns.Add(field.ToString() + "_SlowK");
+                        columns.Add(field.ToString() + "_SlowD");
+                    }
+                    else if (fieldName == "StochasticFast")
+                    {
+                        columns.Add(field.ToString() + "_FastK");
+                        columns.Add(field.ToString() + "_FastD");
+                    }
+                    else if (fieldName == "StochasticRelativeStrengthIndex")
+                    {
+                        columns.Add(field.ToString() + "_FastK");
+                        columns.Add(field.ToString() + "_FastD");
                     }
                     else
                         columns.Add(field.ToString());
@@ -537,7 +565,154 @@ namespace MTree.DataExtractingConsumer
 
                         GetMacd(optInFastPeriod, optInSlowPeriod, optInSignalPeriod, maType, ref columns);
                     }
-                    
+                    else if (fieldName == "Max")
+                        GetTAValue(Max, term, ref columns);
+                    else if (fieldName == "MaxIndex")
+                        GetTAValue(MaxIndex, term, ref columns);
+                    else if (fieldName == "MedPrice")
+                        GetTAValue((TADelegate_HL_Double)MedPrice, ref columns);
+                    else if (fieldName == "MoneyFlowIndex")
+                        GetTAValue(Mfi, term, ref columns);
+                    else if (fieldName == "MidPoint")
+                        GetTAValue(MidPoint, term, ref columns);
+                    else if (fieldName == "MidPrice")
+                        GetTAValue(MidPrice, term, ref columns);
+                    else if (fieldName == "Min")
+                        GetTAValue(Min, term, ref columns);
+                    else if (fieldName == "MinIndex")
+                        GetTAValue(MinIndex, term, ref columns);
+                    else if (fieldName == "Momentum")
+                        GetTAValue(Mom, term, ref columns);
+                    else if (fieldName == "NormalizedAverageTrueRange")
+                        GetTAValue(Natr, term, ref columns);
+                    else if (fieldName == "OnBalanceVolume")
+                        GetTAValue((TADelegate_CV_Double)Obv, ref columns);
+                    else if (fieldName == "PercentagePriceOscillator")
+                    {
+                        int optInFastPeriod = strArr.Length > 2 ? int.Parse(strArr[2]) : 12;
+                        int optInSlowPeriod = strArr.Length > 3 ? int.Parse(strArr[3]) : 26;
+                        var maType = strArr.Length > 4 ? (MAType)Enum.Parse(typeof(MAType), strArr[4]) : MAType.Sma;
+                        GetTAValue(Ppo, optInFastPeriod, optInSlowPeriod, maType, ref columns);
+                    }
+                    else if (fieldName == "RelativeStrengthIndex")
+                        GetTAValue(Rsi, term, ref columns);
+                    else if (fieldName == "ParabolicSAR")
+                    {
+                        double acceleration = strArr.Length > 2 ? double.Parse(strArr[2]) / 100 : 0.01;
+                        double Maximum = strArr.Length > 3 ? double.Parse(strArr[3]) / 100 : 0.2;
+                        GetTAValue(Sar, acceleration, Maximum, ref columns);
+                    }
+                    else if (fieldName == "ParabolicSARExt")
+                    {
+                        var outReal = new double[dayChart.Candles.Count];
+                        double optInStartValue = strArr.Length > 2 ? double.Parse(strArr[2]) / 1000 : 0;
+                        double optInOffsetOnReverse = strArr.Length > 3 ? double.Parse(strArr[3]) / 1000 : 0;
+                        double optInAccelerationInitLong = strArr.Length > 4 ? double.Parse(strArr[4]) / 1000 : 0.02;
+                        double optInAccelerationLong = strArr.Length > 5 ? double.Parse(strArr[5]) / 1000 : 0.02;
+                        double optInAccelerationMaxLong = strArr.Length > 6 ? double.Parse(strArr[6]) / 1000 : 0.2;
+                        double optInAccelerationInitShort = strArr.Length > 7 ? double.Parse(strArr[7]) / 1000 : 0.02;
+                        double optInAccelerationShort = strArr.Length > 8 ? double.Parse(strArr[8]) / 1000 : 0.02;
+                        double optInAccelerationMaxShort = strArr.Length > 9 ? double.Parse(strArr[9]) / 1000 : 0.2;
+
+                        SarExt(0, dayChart.Candles.Count - 1, high, low, optInStartValue, optInOffsetOnReverse, optInAccelerationInitLong, optInAccelerationLong, optInAccelerationMaxLong, optInAccelerationInitShort, optInAccelerationShort, optInAccelerationMaxShort, out outBegIdx, out outNBElement, outReal);
+                        if (outNBElement > 0)
+                            columns.Add(outReal[outNBElement - 1].ToString());
+                        else
+                            columns.Add("0"); // Chart가 모자를때
+                    }
+                    else if (fieldName == "StandardDeviation")
+                    {
+                        double optInNbDev = strArr.Length > 3 ? double.Parse(strArr[3]) : 2;
+                        GetTAValue(StdDev, term, optInNbDev, ref columns);
+                    }
+                    else if (fieldName == "Stochastic")
+                    {
+                        double[] outSlowK = new double[dayChart.Candles.Count];
+                        double[] outSlowD = new double[dayChart.Candles.Count];
+
+                        int optInFastK_Period = strArr.Length > 2 ? int.Parse(strArr[2]) : 0;
+                        int optInSlowK_Period = strArr.Length > 3 ? int.Parse(strArr[3]) : 0;
+                        MAType optInSlowK_MAType = strArr.Length > 4 ? (MAType)Enum.Parse(typeof(MAType), strArr[4]) : MAType.Sma;
+                        int optInSlowD_Period = strArr.Length > 5 ? int.Parse(strArr[5]) : 0;
+                        MAType optInSlowD_MAType = strArr.Length > 6 ? (MAType)Enum.Parse(typeof(MAType), strArr[6]) : MAType.Sma;
+
+                        Stoch(0, dayChart.Candles.Count - 1, high, low, close, optInFastK_Period, optInSlowK_Period, optInSlowK_MAType, optInSlowD_Period, optInSlowD_MAType, out outBegIdx, out outNBElement, outSlowK, outSlowD);
+                        if (outNBElement > 0)
+                        {
+                            columns.Add(outSlowK[outNBElement - 1].ToString());
+                            columns.Add(outSlowD[outNBElement - 1].ToString());
+                        }
+                        else
+                        {
+                            columns.Add("0"); // Chart가 모자를때
+                            columns.Add("0"); // Chart가 모자를때
+                        }
+                    }
+                    else if (fieldName == "StochasticFast")
+                    {
+                        double[] outFastK = new double[dayChart.Candles.Count];
+                        double[] outFastD = new double[dayChart.Candles.Count];
+                        int optInFastK_Period = strArr.Length > 2 ? int.Parse(strArr[2]) : 0;
+                        int optInFastD_Period = strArr.Length > 3 ? int.Parse(strArr[3]) : 0;
+                        MAType optInFastD_MAType = strArr.Length > 4 ? (MAType)Enum.Parse(typeof(MAType), strArr[4]) : MAType.Sma;
+                        StochF(0, dayChart.Candles.Count - 1, high, low, close, optInFastK_Period, optInFastD_Period, optInFastD_MAType, out outBegIdx, out outNBElement, outFastK, outFastD);
+                        if (outNBElement > 0)
+                        {
+                            columns.Add(outFastK[outNBElement - 1].ToString());
+                            columns.Add(outFastD[outNBElement - 1].ToString());
+                        }
+                        else
+                        {
+                            columns.Add("0"); // Chart가 모자를때
+                            columns.Add("0"); // Chart가 모자를때
+                        }
+                    }
+                    else if (fieldName == "StochasticRelativeStrengthIndex")
+                    {
+                        double[] outFastK = new double[dayChart.Candles.Count];
+                        double[] outFastD = new double[dayChart.Candles.Count];
+                        int optInFastK_Period = strArr.Length > 3 ? int.Parse(strArr[3]) : 0;
+                        int optInFastD_Period = strArr.Length > 4 ? int.Parse(strArr[4]) : 0;
+                        MAType optInFastD_MAType = strArr.Length > 5 ? (MAType)Enum.Parse(typeof(MAType), strArr[5]) : MAType.Sma;
+                        StochRsi(0, dayChart.Candles.Count - 1, close, term, optInFastK_Period, optInFastD_Period, optInFastD_MAType, out outBegIdx, out outNBElement, outFastK, outFastD);
+                        if (outNBElement > 0)
+                        {
+                            columns.Add(outFastK[outNBElement - 1].ToString());
+                            columns.Add(outFastD[outNBElement - 1].ToString());
+                        }
+                        else
+                        {
+                            columns.Add("0"); // Chart가 모자를때
+                            columns.Add("0"); // Chart가 모자를때
+                        }
+                    }
+                    else if (fieldName == "TrueRange")
+                        GetTAValue(TrueRange, ref columns);
+                    else if (fieldName == "TripleSmoothEma")
+                        GetTAValue(Trix, term, ref columns);
+                    else if (fieldName == "TimeSeriesForecast")
+                        GetTAValue(Tsf, term, ref columns);
+                    else if (fieldName == "UltimateOscillator")
+                    {
+                        var outReal = new double[dayChart.Candles.Count];
+                        int optInTimePeriod1 = strArr.Length > 2 ? int.Parse(strArr[2]) : 4;
+                        int optInTimePeriod2 = strArr.Length > 3 ? int.Parse(strArr[3]) : 8;
+                        int optInTimePeriod3 = strArr.Length > 4 ? int.Parse(strArr[4]) : 16;
+                        UltOsc(0, dayChart.Candles.Count - 1, high, low, close, optInTimePeriod1, optInTimePeriod2, optInTimePeriod3, out outBegIdx, out outNBElement, outReal);
+                        if (outNBElement > 0)
+                            columns.Add(outReal[outNBElement - 1].ToString());
+                        else
+                            columns.Add("0"); // Chart가 모자를때
+                    }
+                    else if (fieldName == "Variance")
+                    {
+                        double optInNbDev = strArr.Length > 3 ? double.Parse(strArr[3]) : 2;
+                        GetTAValue(Variance, term, optInNbDev, ref columns);
+                    }
+                    else if (fieldName == "WeightedClosePrice")
+                        GetTAValue(WclPrice, ref columns);
+                    else if (fieldName == "WilliamsR")
+                        GetTAValue(WillR, term, ref columns);
                 }
                 sw.WriteLine(string.Join(delimeter, columns));
             }
@@ -625,10 +800,20 @@ namespace MTree.DataExtractingConsumer
             var outMACDHist = new double[dayChart.Candles.Count];
 
             MacdExt(0, dayChart.Candles.Count - 1, close, optInFastPeriod, maType, optInSlowPeriod, maType, optInSignalPeriod, maType, out outBegIdx, out outNBElement, outMACD, outMACDSignal, outMACDHist);
-            columns.Add(outMACD[outNBElement - 1].ToString());
-            columns.Add(outMACDSignal[outNBElement - 1].ToString());
-            columns.Add(outMACDHist[outNBElement - 1].ToString());
+            if (outNBElement > 0)
+            {
+                columns.Add(outMACD[outNBElement - 1].ToString());
+                columns.Add(outMACDSignal[outNBElement - 1].ToString());
+                columns.Add(outMACDHist[outNBElement - 1].ToString());
+            }
+            else
+            {
+                columns.Add("0");
+                columns.Add("0");
+                columns.Add("0");
+            }
         }
+        
         private void GetTAValue(TADelegate_C_Int function, ref List<string> columns)
         {
             var outInt = new int[dayChart.Candles.Count];
@@ -647,12 +832,71 @@ namespace MTree.DataExtractingConsumer
         {
             var outReal = new double[dayChart.Candles.Count];
             function(0, dayChart.Candles.Count - 1, close, term, out outBegIdx, out outNBElement, outReal);
-            columns.Add(outReal[outNBElement - 1].ToString());
+            if (outNBElement > 0)
+                columns.Add(outReal[outNBElement - 1].ToString());
+            else
+                columns.Add("0"); // Chart가 모자를때
         }
+        private void GetTAValue(TADelegate_CT_Int function, int term, ref List<string> columns)
+        {
+            var outReal = new int[dayChart.Candles.Count];
+            function(0, dayChart.Candles.Count - 1, close, term, out outBegIdx, out outNBElement, outReal);
+            if (outNBElement > 0)
+                columns.Add(outReal[outNBElement - 1].ToString());
+            else
+                columns.Add("0"); // Chart가 모자를때
+        }
+        private void GetTAValue(TADelegate_CTD_Double function, int term, double nbDev, ref List<string> columns)
+        {
+            var outReal = new double[dayChart.Candles.Count];
+            function(0, dayChart.Candles.Count - 1, close, term, nbDev, out outBegIdx, out outNBElement, outReal);
+            if (outNBElement > 0)
+                columns.Add(outReal[outNBElement - 1].ToString());
+            else
+                columns.Add("0"); // Chart가 모자를때
+        }
+        private void GetTAValue(TADelegate_CV_Double function, ref List<string> columns)
+        {
+            var outReal = new double[dayChart.Candles.Count];
+            function(0, dayChart.Candles.Count - 1, close, volume, out outBegIdx, out outNBElement, outReal);
+            if (outNBElement > 0)
+                columns.Add(outReal[outNBElement - 1].ToString());
+            else
+                columns.Add("0"); // Chart가 모자를때
+        }
+
         private void GetTAValue(TADelegate_CTM_Double function, int term, MAType maType, ref List<string> columns)
         {
             var outReal = new double[dayChart.Candles.Count];
             function(0, dayChart.Candles.Count - 1, close, term, maType, out outBegIdx, out outNBElement, outReal);
+
+            if (outNBElement > 0)
+                columns.Add(outReal[outNBElement - 1].ToString());
+            else
+                columns.Add("0"); // Chart가 모자를때
+        }
+        private void GetTAValue(TADelegate_HL_Double function, ref List<string> columns)
+        {
+            var outReal = new double[dayChart.Candles.Count];
+            function(0, dayChart.Candles.Count - 1, high, low, out outBegIdx, out outNBElement, outReal);
+            if (outNBElement > 0)
+                columns.Add(outReal[outNBElement - 1].ToString());
+            else
+                columns.Add("0"); // Chart가 모자를때
+        }
+        private void GetTAValue(TADelegate_HLAM_Double function, double optInAcceleration, double optInMaximum, ref List<string> columns)
+        {
+            var outReal = new double[dayChart.Candles.Count];
+            function(0, dayChart.Candles.Count - 1, high, low, optInAcceleration, optInMaximum, out outBegIdx, out outNBElement, outReal);
+            if (outNBElement > 0)
+                columns.Add(outReal[outNBElement - 1].ToString());
+            else
+                columns.Add("0"); // Chart가 모자를때
+        }
+        private void GetTAValue(TADelegate_HLC_Double function, ref List<string> columns)
+        {
+            var outReal = new double[dayChart.Candles.Count];
+            function(0, dayChart.Candles.Count - 1, high, low, close, out outBegIdx, out outNBElement, outReal);
             columns.Add(outReal[outNBElement - 1].ToString());
         }
         private void GetTAValue(TADelegate_HLCV_Double function,ref List<string> columns)
@@ -661,6 +905,16 @@ namespace MTree.DataExtractingConsumer
             function(0, dayChart.Candles.Count - 1, high, low, close, volume, out outBegIdx, out outNBElement, outReal);
             columns.Add(outReal[outNBElement - 1].ToString());
         }
+        private void GetTAValue(TADelegate_HLCVT_Double function, int period, ref List<string> columns)
+        {
+            var outReal = new double[dayChart.Candles.Count];
+            function(0, dayChart.Candles.Count - 1, high, low, close, volume, period, out outBegIdx, out outNBElement, outReal);
+            if (outNBElement > 0)
+                columns.Add(outReal[outNBElement - 1].ToString());
+            else
+                columns.Add("0"); // Chart가 모자를때
+        }
+
         private void GetTAValue(TADelegate_HLCVTT_Double function, int fastPeriod, int slowPeriod, ref List<string> columns)
         {
             var outReal = new double[dayChart.Candles.Count];
@@ -677,7 +931,10 @@ namespace MTree.DataExtractingConsumer
         {
             var outReal = new double[dayChart.Candles.Count];
             function(0, dayChart.Candles.Count - 1, high, low, close, term, out outBegIdx, out outNBElement, outReal);
-            columns.Add(outReal[outNBElement - 1].ToString());
+            if (outNBElement > 0)
+                columns.Add(outReal[outNBElement - 1].ToString());
+            else
+                columns.Add("0");
         }
         private void GetTAValue(TADelegate_OHLC_Double function, ref List<string> columns)
         {
