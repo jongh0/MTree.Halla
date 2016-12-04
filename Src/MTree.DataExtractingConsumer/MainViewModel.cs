@@ -93,10 +93,11 @@ namespace MTree.DataExtractingConsumer
                             Directory.CreateDirectory(defaultDir);
 
                         extractor.StartExtract(filePath);
+
                         for (DateTime targetDate = StartingDate; targetDate <= EndingDate; targetDate = targetDate.AddDays(1))
                         {
-                            consumer.StartSimulation(codes, targetDate);
-                            extractor.WaitSubscribingDone();
+                            if (consumer.StartSimulation(codes, targetDate) == true)
+                                extractor.WaitSubscribingDone();
                         }
 
                         IsExtracting = false;
