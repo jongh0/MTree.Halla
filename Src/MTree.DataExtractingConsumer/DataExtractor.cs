@@ -5,6 +5,7 @@ using MTree.Utility;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using TicTacTec.TA.Library;
 using static TicTacTec.TA.Library.Core;
@@ -55,6 +56,9 @@ namespace MTree.DataExtractingConsumer
 
         private int outBegIdx;
         private int outNBElement = 0;
+
+        private List<double> minLimit = new List<double>();
+        private List<double> maxLimit = new List<double>();
 
         #region Queue Task
         public CancellationToken QueueTaskCancelToken { get; set; }
@@ -191,6 +195,12 @@ namespace MTree.DataExtractingConsumer
                         using (var sw = new StreamWriter(fs))
                         {
                             WriteContent(sw, conclusion, currentMaster);
+                        }
+                        using (var fs = File.Open(extractingPath.Substring(0, extractingPath.Length - 4) + "_range.csv", FileMode.Create))
+                        using (var sw = new StreamWriter(fs))
+                        {
+                            sw.WriteLine(string.Join(delimeter, minLimit));
+                            sw.WriteLine(string.Join(delimeter, maxLimit));
                         }
                     }
                 }
@@ -715,6 +725,20 @@ namespace MTree.DataExtractingConsumer
                         GetTAValue(WillR, term, ref columns);
                 }
                 sw.WriteLine(string.Join(delimeter, columns));
+                for (int i = 0; i < columns.Count; i++)
+                {
+                    var value = Convert.ToDouble(columns[i]);
+                    if (i + 1 > minLimit.Count)
+                    {
+                        minLimit.Add(value);
+                        maxLimit.Add(value);
+                    }
+                    else
+                    {
+                        if (minLimit[i] > value) minLimit[i] = value;
+                        if (maxLimit[i] < value) maxLimit[i] = value;
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -733,7 +757,7 @@ namespace MTree.DataExtractingConsumer
             {
                 if (priceList.Count < elementCount)
                 {
-                    columns.Add("0");
+                    columns.Add(priceList.Average().ToString());
                     break;
                 }
 

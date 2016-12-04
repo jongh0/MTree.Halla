@@ -32,7 +32,10 @@ namespace MTree.Consumer
             });
 
             if (masters.Count == 0)
+            {
+                NotifyMessage(RealTimeProvider.MessageTypes.SubscribingDone, null);
                 return;
+            }
 
             ConsumeStockMaster(masters);
 

@@ -14,10 +14,10 @@ namespace MTree.DataExtractingConsumer
 
     public enum StockConclusionField
     {
-        Time,
+        //Time,
+        Price,
         Amount,
         MarketTimeType,
-        Price,
         ConclusionType,
     }
 
