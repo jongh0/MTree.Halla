@@ -43,6 +43,7 @@ namespace MTree.Consumer
                 ServiceClient = new ConsumerClient(CallbackInstance, "RealTimeConsumerConfig");
                 ServiceClient.InnerChannel.Opened += ServiceClient_Opened;
                 ServiceClient.InnerChannel.Closed += ServiceClient_Closed;
+                ServiceClient.InnerChannel.Faulted += ServiceClient_Faulted;
                 ServiceClient.Open();
             }
             catch (Exception ex)
@@ -98,6 +99,11 @@ namespace MTree.Consumer
             logger.Info($"[{GetType().Name}] Channel closed");
         }
 
+        protected virtual void ServiceClient_Faulted(object sender, EventArgs e)
+        {
+            logger.Error($"[{GetType().Name}] Channel faulted");
+        }
+
         public void HandleNotifyMessage(MessageTypes type, string message)
         {
             logger.Info($"[{GetType().Name}] NotifyMessage, type: {type.ToString()}, message: {message}");
@@ -109,6 +115,18 @@ namespace MTree.Consumer
                     StopQueueTask();
                     CloseChannel();
                 }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
+        public void RegisterConsumerContract(SubscribeContract contract)
+        {
+            try
+            {
+                ServiceClient.RegisterContract(ClientId, contract);
             }
             catch (Exception ex)
             {

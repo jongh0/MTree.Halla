@@ -122,13 +122,9 @@ namespace MTree.Dashboard
         public MainViewModel()
         {
             if (Environment.GetCommandLineArgs().Length > 1 && Environment.GetCommandLineArgs()[1] == "/Simul")
-            {
                 consumer = new HistoryConsumer();
-            }
             else
-            {
                 consumer = new RealTimeConsumer();
-            }
 
             Dashboard = new Dashboard(consumer);
 

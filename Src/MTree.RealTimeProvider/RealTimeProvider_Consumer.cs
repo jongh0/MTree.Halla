@@ -58,12 +58,12 @@ namespace MTree.RealTimeProvider
 
                 if (contractList.ContainsKey(clientId) == true)
                 {
-                    logger.Error($"{contract.ToString()} contract exist / {clientId}");
+                    logger.Error($"{contract.ToString()} consumer contract exist / {clientId}");
                 }
                 else
                 {
                     if (contractList.TryAdd(clientId, contract) == true)
-                        logger.Info($"{contract.ToString()} contract registered / {clientId}");
+                        logger.Info($"{contract.ToString()} consumer contract registered / {clientId}");
                 }
             }
             catch (Exception ex)
@@ -160,7 +160,7 @@ namespace MTree.RealTimeProvider
                         {
                             try
                             {
-                                lock(contract.Value.Callback)
+                                lock (contract.Value.Callback)
                                     contract.Value.Callback.ConsumeBiddingPrice(biddingPrice);
                             }
                             catch (Exception ex)

@@ -119,7 +119,7 @@ namespace MTree.RealTimeProvider
             {
                 if (PublisherContracts.ContainsKey(clientId) == true)
                 {
-                    logger.Error($"{contract.ToString()} contract exist / {clientId}");
+                    logger.Error($"{contract.ToString()} publisher contract exist / {clientId}");
                 }
                 else
                 {
@@ -129,7 +129,7 @@ namespace MTree.RealTimeProvider
                     if (contract.Type == ProcessTypes.Unknown)
                     {
                         PublisherContracts.TryAdd(clientId, contract);
-                        logger.Warn($"{contract.ToString()} contract type is not set / {clientId}");
+                        logger.Warn($"{contract.ToString()} publisher contract type is not set / {clientId}");
                     }
                     else
                     {
@@ -137,7 +137,7 @@ namespace MTree.RealTimeProvider
                         if (contract.Type == ProcessTypes.DaishinPublisherMaster) contract.Type = ProcessTypes.DaishinPublisher;
 
                         PublisherContracts.TryAdd(clientId, contract);
-                        logger.Info($"{contract.ToString()} contract registered / {clientId}");
+                        logger.Info($"{contract.ToString()} publisher contract registered / {clientId}");
 
                         if (isMasterContract == true)
                         {

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:MTree.RealTimeProvider"
         xmlns:utility="clr-namespace:MTree.Utility;assembly=MTree.Utility"
         mc:Ignorable="d"
-        Title="RealTimeProvider" Height="444.825" Width="377.584" ResizeMode="CanMinimize">
+        Title="RealTimeProvider" Height="444.825" Width="400" ResizeMode="CanMinimize">
     <Grid>
         <Grid.Resources>
             <utility:NumberToCurrencyConverter x:Key="NumberToCurrencyConverter"/>
@@ -55,29 +55,29 @@
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="BiddingPrice : "/>
                 <TextBox Text="{Binding Path=Counter.BiddingPriceCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}"/>
-                <TextBox Text="{Binding Path=BiddingPriceQueueCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}" Margin="5,0,0,0" Width="55" />
+                <TextBox Text="{Binding Path=BiddingPriceQueueCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}" Margin="5,0,0,0" Width="80" />
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="StockConclusion : "/>
                 <TextBox Text="{Binding Path=Counter.StockConclusionCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}"/>
-                <TextBox Text="{Binding Path=StockConclusionQueueCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}" Margin="5,0,0,0" Width="55" />
+                <TextBox Text="{Binding Path=StockConclusionQueueCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}" Margin="5,0,0,0" Width="80" />
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="IndexConclusion : "/>
                 <TextBox Text="{Binding Path=Counter.IndexConclusionCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}"/>
-                <TextBox Text="{Binding Path=IndexConclusionQueueCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}" Margin="5,0,0,0" Width="55" />
+                <TextBox Text="{Binding Path=IndexConclusionQueueCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}" Margin="5,0,0,0" Width="80" />
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="ETFConclusion : "/>
                 <TextBox Text="{Binding Path=Counter.ETFConclusionCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}"/>
-                <TextBox Text="{Binding Path=ETFConclusionQueueCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}" Margin="5,0,0,0" Width="55" />
+                <TextBox Text="{Binding Path=ETFConclusionQueueCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}" Margin="5,0,0,0" Width="80" />
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Total : "/>
                 <TextBox Text="{Binding Path=Counter.TotalCount, Mode=OneWay, Converter={StaticResource NumberToCurrencyConverter}}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                <TextBox Text="{Binding Path=RealTimeState, Mode=OneWay}" Width="300"/>
+                <TextBox Text="{Binding Path=RealTimeState, Mode=OneWay}" Width="325"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="0,10,0,0" HorizontalAlignment="Center">
                 <Button Content="Send log to email" Command="{Binding SendLogCommand}" IsEnabled="{Binding Path=CanSendLog}" Width="120" Height="30" Margin="0,0,10,0"/>

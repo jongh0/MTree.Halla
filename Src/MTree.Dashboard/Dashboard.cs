@@ -316,9 +316,6 @@ namespace MTree.Dashboard
             {
                 logger.Error(ex);
             }
-
-            //base.NotifyMessage(type, message);
         }
-
     }
 }

@@ -32,16 +32,23 @@ namespace MTree.RealTimeProvider
         {
             InitializeComponent();
 
-            Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High;
+            try
+            {
+                Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High;
 
-            var instance = new RealTimeProvider();
-            Host = new ServiceHost(instance);
-            Host.Opened += Host_Opened;
-            Host.Closed += Host_Closed;
-            Host.Faulted += Host_Faulted;
-            Host.Open();
+                var instance = new RealTimeProvider();
+                Host = new ServiceHost(instance);
+                Host.Opened += Host_Opened;
+                Host.Closed += Host_Closed;
+                Host.Faulted += Host_Faulted;
+                Host.Open();
 
-            this.DataContext = instance;
+                this.DataContext = instance;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
         }
 
         private void Host_Faulted(object sender, EventArgs e)
@@ -80,12 +87,14 @@ namespace MTree.RealTimeProvider
                 }
                 else
                 {
+#if false
                     Thread.Sleep(5000);
-                    //ProcessUtility.Start(ProcessTypes.Dashboard);
+
                     ProcessUtility.Start(ProcessTypes.TestConsumer);
                     for (int i = 0; i < 40; i++)
-                        ProcessUtility.Start(ProcessTypes.TestPublisher);
-                }
+                        ProcessUtility.Start(ProcessTypes.TestPublisher, ProcessWindowStyle.Minimized); 
+#endif
+                } 
             });
         }
     }

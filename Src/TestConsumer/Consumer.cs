@@ -16,7 +16,7 @@ namespace TestConsumer
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
     public class TestConsumer : RealTimeConsumer
     {
-        int count = 0;
+        //int count = 0;
         double tick = 0;
 
         private void ProcessStockConclusionQueue()

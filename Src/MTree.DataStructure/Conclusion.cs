@@ -17,7 +17,7 @@ namespace MTree.DataStructure
         BeforeExpect,
         AfterOffTheClock,
         AfterExpect,
-    } 
+    }
     #endregion
 
     [Serializable]

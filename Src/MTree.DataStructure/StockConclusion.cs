@@ -14,7 +14,7 @@ namespace MTree.DataStructure
         Unknown,
         Sell,
         Buy,
-    } 
+    }
     #endregion
 
     [Serializable]

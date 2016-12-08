@@ -14,7 +14,6 @@ namespace MTree.DataExtractingConsumer
 {
     public class MainViewModel : INotifyPropertyChanged
     {
-        private static readonly string defaultTitle = "DataExtractor";
         private readonly string defaultDir = Path.Combine(Environment.CurrentDirectory, "Extract");
         private string fileName;
         private string filePath;

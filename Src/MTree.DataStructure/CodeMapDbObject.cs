@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace MTree.DataStructure
 {
+    [Serializable]
     public class CodeMapDbObject : Subscribable
     {
         public string CodeMap { get; set; }

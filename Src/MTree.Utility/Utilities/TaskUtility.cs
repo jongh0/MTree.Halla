@@ -26,7 +26,7 @@ namespace MTree.Utility
                     try
                     {
                         _cancelToken.ThrowIfCancellationRequested();
-                        _action();
+                        _action?.Invoke();
                     }
                     catch (OperationCanceledException)
                     {

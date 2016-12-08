@@ -38,6 +38,7 @@ namespace MTree.Trader
                 ServiceClient = new TraderClient(CallbackInstance, endpointConfigurationName);
                 ServiceClient.InnerChannel.Opened += ServiceClient_Opened;
                 ServiceClient.InnerChannel.Closed += ServiceClient_Closed;
+                ServiceClient.InnerChannel.Faulted += ServiceClient_Faulted;
                 ServiceClient.Open();
             }
             catch (Exception ex)
@@ -70,6 +71,11 @@ namespace MTree.Trader
         protected virtual void ServiceClient_Closed(object sender, EventArgs e)
         {
             logger.Info($"[{GetType().Name}] Channel closed");
+        }
+
+        protected virtual void ServiceClient_Faulted(object sender, EventArgs e)
+        {
+            logger.Error($"[{GetType().Name}] Channel faulted");
         }
     }
 }

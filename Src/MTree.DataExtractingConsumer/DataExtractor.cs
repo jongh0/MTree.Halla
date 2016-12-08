@@ -75,7 +75,7 @@ namespace MTree.DataExtractingConsumer
                 Consumer = consumer;
 
                 Consumer.ConsumeStockMasterEvent += ConsumeStockMaster;
-                Consumer.NotifyMessageEvent += ConsumeNotifyMessage;
+                Consumer.NotifyMessageEvent += NotifyMessage;
             }
             catch (Exception ex)
             {
@@ -87,7 +87,7 @@ namespace MTree.DataExtractingConsumer
             return WaitSubscribingEvent.WaitOne(timeout);
         }
 
-        private void ConsumeNotifyMessage(MessageTypes type, string message)
+        private void NotifyMessage(MessageTypes type, string message)
         {
             isSubscribingDone = true;
         }

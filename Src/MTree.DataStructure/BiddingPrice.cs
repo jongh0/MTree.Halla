@@ -23,6 +23,7 @@ namespace MTree.DataStructure
             try
             {
                 sb.Append(base.ToString());
+                sb.Append(Environment.NewLine);
 
                 if (Bids != null)
                 {

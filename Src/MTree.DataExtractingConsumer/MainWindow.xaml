@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MTree.DataExtractingConsumer"
         mc:Ignorable="d"
-        Title="MainWindow" SizeToContent="WidthAndHeight">
+        Title="Data Extractor" SizeToContent="WidthAndHeight">
     <Window.DataContext>
         <local:MainViewModel/>
     </Window.DataContext>

@@ -15,6 +15,7 @@ namespace MTree.DataStructure
         string Name { get; set; }
     }
 
+    [Serializable]
     public class CodeMapHead : ICodeMap
     {
         [BsonElement("CL")]
