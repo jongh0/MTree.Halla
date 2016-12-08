@@ -34,10 +34,8 @@ namespace MTree.Consumer
             if (masters.Count == 0)
             {
                 NotifyMessage(RealTimeProvider.MessageTypes.SubscribingDone, null);
-                return;
+                return false;
             }
-
-			return false;
 
             ConsumeStockMaster(masters);
 
