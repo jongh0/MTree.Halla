@@ -72,6 +72,17 @@ namespace MTree.DataExtractingConsumer
             }
         }
 
+        private bool _IncludeTAValues = true;
+        public bool IncludeTAValues
+        {
+            get { return _IncludeTAValues; }
+            set
+            {
+                _IncludeTAValues = value;
+                NotifyPropertyChanged(nameof(IncludeTAValues));
+            }
+        }
+
         #region Command
         private RelayCommand _StartExtractCommand;
         public ICommand StartExtractCommand
@@ -90,6 +101,8 @@ namespace MTree.DataExtractingConsumer
 
                         if (Directory.Exists(defaultDir) == false)
                             Directory.CreateDirectory(defaultDir);
+
+                        extractor.IncludeTAValues = IncludeTAValues;
 
                         extractor.StartExtract(filePath);
 
