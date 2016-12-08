@@ -66,7 +66,6 @@ namespace MTree.RealTimeProvider
                 {
                     RealTimeState = "Stock mastering success";
                     logger.Info($"{RealTimeState}, Elapsed time: {sw.Elapsed.ToString()}");
-                    PushUtility.NotifyMessage(RealTimeState);
 
                     Task.Run(() => StartStockMasterPublishing()).ContinueWith((x) => MasteringDone = true);
                 }
@@ -74,7 +73,6 @@ namespace MTree.RealTimeProvider
                 {
                     RealTimeState = "Stock mastering failed";
                     logger.Info(RealTimeState);
-                    PushUtility.NotifyMessage(RealTimeState);
                 }
             }
         }

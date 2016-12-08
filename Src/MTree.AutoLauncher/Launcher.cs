@@ -121,9 +121,7 @@ namespace MTree.AutoLauncher
                     ProcessUtility.Start(LaunchProcess, LaunchArguments);
                 }
 
-                var msg = $"{LaunchProcess} launched";
-                logger.Info(msg);
-                PushUtility.NotifyMessage(msg);
+                logger.Info($"{LaunchProcess} launched");
             }
             catch (Exception ex)
             {

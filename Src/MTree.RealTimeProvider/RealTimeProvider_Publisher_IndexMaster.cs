@@ -55,7 +55,6 @@ namespace MTree.RealTimeProvider
                 {
                     RealTimeState = "Index mastering success";
                     logger.Info($"{RealTimeState}, Elapsed time: {sw.Elapsed.ToString()}");
-                    PushUtility.NotifyMessage(RealTimeState);
 
                     Task.Run(() => StartIndexMasterPublishing());
                 }
@@ -63,7 +62,6 @@ namespace MTree.RealTimeProvider
                 {
                     RealTimeState = "Index mastering failed";
                     logger.Info(RealTimeState);
-                    PushUtility.NotifyMessage(RealTimeState);
                 }
             }
         }

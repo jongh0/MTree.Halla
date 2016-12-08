@@ -104,7 +104,6 @@ namespace MTree.RealTimeProvider
                 {
                     RealTimeState = "Daishin session disconnected";
                     logger.Info(RealTimeState);
-                    PushUtility.NotifyMessage(RealTimeState);
 
                     ExitProgram(ExitProgramTypes.Restart);
                 }
@@ -320,7 +319,6 @@ namespace MTree.RealTimeProvider
                         // 20초후 프로그램 종료
                         RealTimeState = "RealTimeProvider will be closed after 20sec";
                         logger.Info(RealTimeState);
-                        PushUtility.NotifyMessage(RealTimeState);
                     }
 
                     Thread.Sleep(1000 * 20);
@@ -332,7 +330,6 @@ namespace MTree.RealTimeProvider
                     {
                         RealTimeState = "RealTimeProvider will be restarted";
                         logger.Info(RealTimeState);
-                        PushUtility.NotifyMessage(RealTimeState);
 
                         //Application.Restart();
                         if (MasteringDone == true)

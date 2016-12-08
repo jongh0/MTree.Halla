@@ -425,9 +425,7 @@ namespace MTree.DbProvider
                 } 
                 #endregion
 
-                var msg = "Database indexing done";
-                logger.Info(msg);
-                PushUtility.NotifyMessage(msg);
+                logger.Info("Database indexing done");
             }
             catch (Exception ex)
             {
@@ -536,8 +534,6 @@ namespace MTree.DbProvider
                     Counter.ETFConclusionCount += (int)collection.Find(filter).Count();
                 }
                 #endregion
-
-                PushUtility.NotifyMessage("DB Statistics" + Environment.NewLine + Counter.ToString());
 
                 // DB 통계를 파일로 저장
                 Counter.SaveToFile();

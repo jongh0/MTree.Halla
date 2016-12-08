@@ -29,7 +29,6 @@ namespace TestConsole
             //TestConfig();
             //TestCreateIndex();
             //TestDbAgent();
-            //TestPushService();
             //TestEmail();
             //TestDaishinInstanceLimit();
 
@@ -151,11 +150,6 @@ namespace TestConsole
         {
             //EmailUtility.SendEmail("vvvv", "vvvv", @"D:\Documents\GitHub\MTree.Halla\Src\bin\Debug\Logs\MTree.All.2016-03-23.zip");
             EmailUtility.SendEmail("vvv", "vvvvv");
-        }
-
-        private static void TestPushService()
-        {
-            PushUtility.NotifyMessage("Hello MTree");
         }
 
         private static void TestDaishinInstanceLimit()
