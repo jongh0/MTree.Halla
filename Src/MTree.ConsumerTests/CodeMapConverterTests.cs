@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MongoDB.Bson;
 using MTree.Configuration;
 using MTree.Consumer;
 using MTree.DataStructure;
@@ -23,7 +24,7 @@ namespace MTree.Consumer.Tests
             //ICodeMap codemap2 = CodeMapConverter.DicToCodeMap(DateTime.Now.ToString(Config.General.DateFormat), jsonDic);
 
             CodeMapDbObject codemapDbObj = new CodeMapDbObject();
-            codemapDbObj.Id = new MongoDB.Bson.ObjectId();
+            codemapDbObj.Id = new ObjectId();
             codemapDbObj.Time = DateTimeUtility.DateOnly(DateTime.Now);
             codemapDbObj.ReceivedTime = DateTime.Now;
             codemapDbObj.Code = "CodeMap";
