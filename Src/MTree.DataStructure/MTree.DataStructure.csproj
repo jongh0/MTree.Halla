@@ -92,6 +92,10 @@
       <Project>{9c52064a-188b-449a-89a1-de3a9dd3f766}</Project>
       <Name>MTree.Configuration</Name>
     </ProjectReference>
+    <ProjectReference Include="..\protobuf-net\protobuf-net.csproj">
+      <Project>{8374e4d7-2a91-48f1-9360-09b09cf27c3f}</Project>
+      <Name>protobuf-net</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

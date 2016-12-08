@@ -25,6 +25,8 @@ namespace MTree.StrategyManager
 
         public StrategyManager()
         {
+            base.OpenChannel();
+
             ConcernCodeList.Add("005930"); // 삼성전자
             ConcernCodeList.Add("035420"); // Naver
 

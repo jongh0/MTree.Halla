@@ -2,6 +2,7 @@
 using MTree.DataStructure;
 using MTree.Publisher;
 using MTree.RealTimeProvider;
+using MTree.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +12,10 @@ using System.Threading.Tasks;
 
 namespace TestPublisher
 {
-    class Publisher : PublisherBase
+    class Publisher : RealTimePublisher
     {
+        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
         public void StartPublising()
         {
             Random rand = new Random();
@@ -23,15 +26,28 @@ namespace TestPublisher
                     if (QueueTaskCancelToken.IsCancellationRequested)
                         break;
 
-                    var subscribable = new StockConclusion();
-                    subscribable.Id = ObjectId.GenerateNewId();
-                    subscribable.Code = "000020";
-                    subscribable.Price = rand.Next(100, 200);
-                    subscribable.Time = DateTime.Now;
-                    
-                    ServiceClient.PublishStockConclusion(subscribable);
+                    var c = new StockConclusion();
+                    c.Id = ObjectId.GenerateNewId();
+                    c.Code = "000020";
+                    c.Price = rand.Next(100, 200);
+                    c.Time = DateTime.Now;
+                    c.ConclusionType = ConclusionTypes.Buy;
+                    c.Amount = 400;
+                    c.MarketTimeType = MarketTimeTypes.BeforeExpect;
+                    c.ReceivedTime = DateTime.Now.AddMinutes(1);
 
-                    Thread.Sleep(2);
+                    try
+                    {
+                        logger.Info($"StockConclusion >>> {c}");
+                        ServiceClient.PublishStockConclusion(c);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error(ex);
+                        break;
+                    }
+
+                    Thread.Sleep(5000);
                 }
             }, QueueTaskCancelToken);
 
@@ -42,15 +58,28 @@ namespace TestPublisher
                     if (QueueTaskCancelToken.IsCancellationRequested)
                         break;
 
-                    var subscribable = new IndexConclusion();
-                    subscribable.Id = ObjectId.GenerateNewId();
-                    subscribable.Code = "000030";
-                    subscribable.Price = rand.Next(100, 200);
-                    subscribable.Time = DateTime.Now;
+                    var c = new IndexConclusion();
+                    c.Id = ObjectId.GenerateNewId();
+                    c.Code = "000030";
+                    c.Price = rand.Next(100, 200);
+                    c.Time = DateTime.Now;
+                    c.ReceivedTime = DateTime.Now.AddMinutes(1);
+                    c.MarketCapitalization = 10000;
+                    c.Amount = 500;
+                    c.MarketTimeType = MarketTimeTypes.AfterExpect;
 
-                    ServiceClient.PublishIndexConclusion(subscribable);
+                    try
+                    {
+                        logger.Info($"IndexConclusion >>> {c}");
+                        ServiceClient.PublishIndexConclusion(c);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error(ex);
+                        break;
+                    }
 
-                    Thread.Sleep(2);
+                    Thread.Sleep(5000);
                 }
             }, QueueTaskCancelToken);
 
@@ -61,22 +90,32 @@ namespace TestPublisher
                     if (QueueTaskCancelToken.IsCancellationRequested)
                         break;
 
-                    var subscribable = new BiddingPrice();
-                    subscribable.Id = ObjectId.GenerateNewId();
-                    subscribable.Code = "000040";
-                    subscribable.Time = DateTime.Now;
-                    subscribable.Bids = new List<BiddingPriceEntity>();
-                    subscribable.Bids.Add(new BiddingPriceEntity(10, 10, 10));
-                    subscribable.Bids.Add(new BiddingPriceEntity(10, 10, 10));
-                    subscribable.Bids.Add(new BiddingPriceEntity(10, 10, 10));
-                    subscribable.Offers = new List<BiddingPriceEntity>();
-                    subscribable.Offers.Add(new BiddingPriceEntity(10, 10, 10));
-                    subscribable.Offers.Add(new BiddingPriceEntity(10, 10, 10));
-                    subscribable.Offers.Add(new BiddingPriceEntity(10, 10, 10));
+                    var b = new BiddingPrice();
+                    b.Id = ObjectId.GenerateNewId();
+                    b.Code = "000040";
+                    b.Time = DateTime.Now;
+                    b.ReceivedTime = DateTime.Now.AddMinutes(1);
+                    b.Bids = new List<BiddingPriceEntity>();
+                    b.Bids.Add(new BiddingPriceEntity(1, 2, 3));
+                    b.Bids.Add(new BiddingPriceEntity(4, 5, 6));
+                    b.Bids.Add(new BiddingPriceEntity(7, 8, 9));
+                    b.Offers = new List<BiddingPriceEntity>();
+                    b.Offers.Add(new BiddingPriceEntity(10, 20, 30));
+                    b.Offers.Add(new BiddingPriceEntity(40, 50, 60));
+                    b.Offers.Add(new BiddingPriceEntity(70, 80, 90));
 
-                    ServiceClient.PublishBiddingPrice(subscribable);
+                    try
+                    {
+                        logger.Info($"BiddingPrice >>> {b}");
+                        ServiceClient.PublishBiddingPrice(b);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error(ex);
+                        break;
+                    }
 
-                    Thread.Sleep(2);
+                    Thread.Sleep(5000);
                 }
             }, QueueTaskCancelToken);
         }
@@ -85,6 +124,17 @@ namespace TestPublisher
         {
             StopQueueTask();
             CloseChannel();
+        }
+
+        protected override void ServiceClient_Opened(object sender, EventArgs e)
+        {
+            base.ServiceClient_Opened(sender, e);
+
+            Task.Run(() =>
+            {
+                // Contract 등록
+                RegisterPublishContract(ProcessTypes.TestPublisher);
+            });
         }
     }
 }

@@ -2,10 +2,12 @@
 using System.ServiceModel;
 using MTree.DataStructure;
 using System.Collections.Generic;
+using ProtoBuf;
 
 namespace MTree.RealTimeProvider
 {
     [ServiceContract(CallbackContract = typeof(IConsumerCallback))]
+    [ProtoContract]
     public interface IRealTimeConsumer
     {
         [OperationContract(IsOneWay = true)]

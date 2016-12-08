@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
+using ProtoBuf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +24,7 @@ namespace MTree.DataStructure
     #endregion
 
     [Serializable]
+    [ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
     public class StockMaster : Subscribable
     {
         // 종목명(Daishin)

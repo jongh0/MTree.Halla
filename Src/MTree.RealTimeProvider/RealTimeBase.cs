@@ -1,4 +1,6 @@
-﻿using MTree.DataStructure;
+﻿using MongoDB.Bson;
+using MTree.DataStructure;
+using ProtoBuf.Meta;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -62,6 +64,13 @@ namespace MTree.RealTimeProvider
 
         public SubscribingBase()
         {
+            #region protobuf-net에서 자동으로 인식 못하는 class 추가
+            var metaType = RuntimeTypeModel.Default.Add(typeof(ObjectId), false);
+            metaType.AddField(1, "_a");
+            metaType.AddField(2, "_b");
+            metaType.AddField(3, "_c"); 
+            #endregion
+
             QueueTaskCancelToken = QueueTaskCancelSource.Token;
         }
 

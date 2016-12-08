@@ -2,10 +2,12 @@
 using System.ServiceModel;
 using MTree.DataStructure;
 using System.Collections.Generic;
+using ProtoBuf;
 
 namespace MTree.RealTimeProvider
 {
     [ServiceContract(CallbackContract = typeof(IRealTimePublisherCallback))]
+    [ProtoContract]
     public interface IRealTimePublisher
     {
         [OperationContract(IsOneWay = true)]

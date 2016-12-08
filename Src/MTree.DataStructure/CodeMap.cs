@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using MTree.DataStructure;
 using Newtonsoft.Json;
+using ProtoBuf;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,6 +17,7 @@ namespace MTree.DataStructure
     }
 
     [Serializable]
+    [ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
     public class CodeMapHead : ICodeMap
     {
         [BsonElement("CL")]

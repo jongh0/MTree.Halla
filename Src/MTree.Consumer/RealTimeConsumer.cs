@@ -19,14 +19,15 @@ namespace MTree.Consumer
         protected InstanceContext CallbackInstance { get; set; }
         protected ConsumerClient ServiceClient { get; set; }
 
+        public event EventHandler ServiceClientOpended;
+        public event EventHandler ServiceClientClosed;
+        public event EventHandler ServiceClientFaulted;
+
         public RealTimeConsumer()
         {
             try
             {
-                NotifyMessageEvent += HandleNotifyMessage;
-
                 CallbackInstance = new InstanceContext(this);
-                OpenChannel();
             }
             catch (Exception ex)
             {
@@ -34,7 +35,7 @@ namespace MTree.Consumer
             }
         }
         
-        protected void OpenChannel()
+        public void OpenChannel()
         {
             try
             {
@@ -52,7 +53,7 @@ namespace MTree.Consumer
             }
         }
 
-        protected void CloseChannel()
+        public void CloseChannel()
         {
             try
             {
@@ -73,41 +74,25 @@ namespace MTree.Consumer
         protected virtual void ServiceClient_Opened(object sender, EventArgs e)
         {
             logger.Info($"[{GetType().Name}] Channel opened");
-
-            try
-            {
-                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.Chart));
-                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.Mastering));
-                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.CircuitBreak));
-                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.StockConclusion));
-                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.IndexConclusion));
-
-                if (Config.General.VerifyLatency == true && Config.General.SkipBiddingPrice == false)
-                    ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.BiddingPrice));
-
-                if (Config.General.SkipETFConclusion == false)
-                    ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.ETFConclusion));
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-            }
+            ServiceClientOpended?.Invoke(sender, e);
         }
 
         protected virtual void ServiceClient_Closed(object sender, EventArgs e)
         {
             logger.Info($"[{GetType().Name}] Channel closed");
+            ServiceClientClosed?.Invoke(sender, e);
         }
 
         protected virtual void ServiceClient_Faulted(object sender, EventArgs e)
         {
             logger.Error($"[{GetType().Name}] Channel faulted");
+            ServiceClientFaulted?.Invoke(sender, e);
         }
 
-        public void HandleNotifyMessage(MessageTypes type, string message)
+        public override void NotifyMessage(MessageTypes type, string message)
         {
             logger.Info($"[{GetType().Name}] NotifyMessage, type: {type.ToString()}, message: {message}");
-            
+
             try
             {
                 if (type == MessageTypes.CloseClient)

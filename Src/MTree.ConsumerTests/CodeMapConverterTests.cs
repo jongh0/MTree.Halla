@@ -24,7 +24,7 @@ namespace MTree.Consumer.Tests
             //ICodeMap codemap2 = CodeMapConverter.DicToCodeMap(DateTime.Now.ToString(Config.General.DateFormat), jsonDic);
 
             CodeMapDbObject codemapDbObj = new CodeMapDbObject();
-            codemapDbObj.Id = new ObjectId();
+            codemapDbObj.Id = ObjectId.GenerateNewId();
             codemapDbObj.Time = DateTimeUtility.DateOnly(DateTime.Now);
             codemapDbObj.ReceivedTime = DateTime.Now;
             codemapDbObj.Code = "CodeMap";

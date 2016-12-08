@@ -1,4 +1,5 @@
-﻿using MTree.DataStructure;
+﻿using MongoDB.Bson;
+using MTree.DataStructure;
 using MTree.Utility;
 using System;
 using System.Collections.Concurrent;

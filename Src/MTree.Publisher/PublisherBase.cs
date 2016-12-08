@@ -2,121 +2,102 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.ServiceModel;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using MTree.DataStructure;
 
 namespace MTree.Publisher
 {
-    public class PublisherBase : PublisherCallback
+    public class PublisherBase : SubscribingBase, IRealTimePublisherCallback
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-
-        protected Guid ClientId { get; } = Guid.NewGuid();
-
-        protected InstanceContext CallbackInstance { get; set; }
-        protected PublisherClient ServiceClient { get; set; }
-
-        public PublisherBase()
+        public virtual void NotifyMessage(MessageTypes type, string message)
         {
-            try
-            {
-                CallbackInstance = new InstanceContext(this);
-                OpenChannel();
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-            }
         }
 
-        protected void OpenChannel()
+        public virtual Dictionary<string, CodeEntity> GetCodeList()
         {
-            try
-            {
-                logger.Info($"[{GetType().Name}] Open channel");
-
-                ServiceClient = new PublisherClient(CallbackInstance, "RealTimePublisherConfig");
-                ServiceClient.InnerChannel.Opened += ServiceClient_Opened;
-                ServiceClient.InnerChannel.Closed += ServiceClient_Closed;
-                ServiceClient.Open();
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-            }
+            return null;
         }
 
-        protected void CloseChannel()
+        public virtual Dictionary<string, object> GetCodeMap(CodeMapTypes codemapType)
         {
-            try
-            {
-                if (ServiceClient != null)
-                {
-                    logger.Info($"[{GetType().Name}] Close channel");
-
-                    ServiceClient.UnregisterContract(ClientId);
-                    ServiceClient.Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-            }
+            return null;
         }
 
-        protected virtual void ServiceClient_Opened(object sender, EventArgs e)
+        public virtual StockMaster GetStockMaster(string code)
         {
-            logger.Info($"[{GetType().Name}] Channel opened");
+            return null;
         }
 
-        protected virtual void ServiceClient_Closed(object sender, EventArgs e)
+        public virtual IndexMaster GetIndexMaster(string code)
         {
-            logger.Info($"[{GetType().Name}] Channel closed");
+            return null;
         }
 
-        public void RegisterPublishContract()
+        public virtual List<Candle> GetChart(string code, DateTime startDate, DateTime endDate, CandleTypes chartType)
         {
-            try
-            {
-                var args = Environment.GetCommandLineArgs();
-                if (args?.Length > 1)
-                {
-                    logger.Info($"Argument: {string.Join(" ", args)}");
-
-                    var contract = new PublisherContract();
-                    contract.Type = PublisherContract.ConvertToType(args[1]);
-
-                    ServiceClient.RegisterContract(ClientId, contract);
-                }
-                else
-                {
-                    logger.Error($"[{GetType().Name}] Wrong argument");
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-            }
+            return null;
         }
 
-        public override void NotifyMessage(MessageTypes type, string message)
+        public virtual string GetMarketInfo(MarketInfoTypes type)
         {
-            logger.Info($"[{GetType().Name}] NotifyMessage, type: {type.ToString()}, message: {message}");
+            return string.Empty;
+        }
 
-            try
-            {
-                if (type == MessageTypes.CloseClient)
-                {
-                    StopQueueTask();
-                    CloseChannel();
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-            }
+        public virtual bool IsSubscribable()
+        {
+            return true;
+        }
+
+        public virtual bool SubscribeStock(string code)
+        {
+            return false;
+        }
+
+        public virtual bool UnsubscribeStock(string code)
+        {
+            return false;
+        }
+
+        public virtual bool SubscribeIndex(string code)
+        {
+            return false;
+        }
+
+        public virtual bool UnsubscribeIndex(string code)
+        {
+            return false;
+        }
+
+        public virtual bool SubscribeBidding(string code)
+        {
+            return false;
+        }
+
+        public virtual bool UnsubscribeBidding(string code)
+        {
+            return false;
+        }
+
+        public virtual bool SubscribeCircuitBreak(string code)
+        {
+            return false;
+        }
+
+        public virtual bool UnsubscribeCircuitBreak(string code)
+        {
+            return false;
+        }
+
+        public virtual bool SubscribeETF(string code)
+        {
+            return false;
+        }
+
+        public virtual bool UnsubscribeETF(string code)
+        {
+            return false;
         }
     }
 }

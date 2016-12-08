@@ -12,13 +12,15 @@ namespace MTree.Consumer
 {
     public class ConsumerBase : SubscribingBase, IConsumerCallback
     {
+        public event Action<MessageTypes, string> NotifyMessageEvent;
+
         public event Action<List<StockMaster>> ConsumeStockMasterEvent;
 
         public event Action<List<IndexMaster>> ConsumeIndexMasterEvent;
 
         public event Action<Dictionary<string, object>> ConsumeCodemapEvent;
 
-        public event Action<MessageTypes, string> NotifyMessageEvent;
+        public event Action<List<Candle>> ConsumeChartEvent;
         
         public virtual void NotifyMessage(MessageTypes type, string message)
         {
@@ -67,6 +69,7 @@ namespace MTree.Consumer
 
         public virtual void ConsumeChart(List<Candle> candles)
         {
+            ConsumeChartEvent?.Invoke(candles);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.DaishinPublisher", "MTree.DaishinPublisher\MTree.DaishinPublisher.csproj", "{0DE033E7-A072-4450-B357-CA69165B9CA8}"
 EndProject
@@ -82,6 +82,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.ConsumerTests", "MTree.ConsumerTests\MTree.ConsumerTests.csproj", "{BDAFEA23-EF5C-4268-85BB-A630519A8E27}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.DataExtractingConsumer", "MTree.DataExtractingConsumer\MTree.DataExtractingConsumer.csproj", "{C160AB94-812B-402A-A73D-6FDD60CF2E2F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "protobuf-net", "protobuf-net\protobuf-net.csproj", "{8374E4D7-2A91-48F1-9360-09B09CF27C3F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -229,6 +231,10 @@ Global
 		{C160AB94-812B-402A-A73D-6FDD60CF2E2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C160AB94-812B-402A-A73D-6FDD60CF2E2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C160AB94-812B-402A-A73D-6FDD60CF2E2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8374E4D7-2A91-48F1-9360-09B09CF27C3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8374E4D7-2A91-48F1-9360-09B09CF27C3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8374E4D7-2A91-48F1-9360-09B09CF27C3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8374E4D7-2A91-48F1-9360-09B09CF27C3F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -265,5 +271,6 @@ Global
 		{B6C51F64-D22D-4993-8995-59FD093E5475} = {C22A1011-FE40-49F1-AB42-3CBF4921ACBD}
 		{BDAFEA23-EF5C-4268-85BB-A630519A8E27} = {45A22074-BF98-4455-B6DE-D6B8CF4ADF18}
 		{C160AB94-812B-402A-A73D-6FDD60CF2E2F} = {45A22074-BF98-4455-B6DE-D6B8CF4ADF18}
+		{8374E4D7-2A91-48F1-9360-09B09CF27C3F} = {C22A1011-FE40-49F1-AB42-3CBF4921ACBD}
 	EndGlobalSection
 EndGlobal

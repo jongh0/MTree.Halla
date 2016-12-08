@@ -29,6 +29,8 @@ namespace MTree.HistorySaver
         {
             try
             {
+                base.OpenChannel();
+
                 TaskUtility.Run("HistorySaver.CircuitBreakQueue", QueueTaskCancelToken, ProcessCircuitBreakQueue);
                 TaskUtility.Run($"HistorySaver.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
                 TaskUtility.Run($"HistorySaver.IndexConclusionQueue", QueueTaskCancelToken, ProcessIndexConclusionQueue);
@@ -42,6 +44,28 @@ namespace MTree.HistorySaver
                 StartRefreshTimer();
 
                 var instance = DbAgent.Instance;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
+        protected override void ServiceClient_Opened(object sender, EventArgs e)
+        {
+            base.ServiceClient_Opened(sender, e);
+
+            try
+            {
+                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.Chart));
+                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.Mastering));
+                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.CircuitBreak));
+                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.StockConclusion));
+                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.IndexConclusion));
+                if (Config.General.SkipBiddingPrice == false)
+                    ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.BiddingPrice));
+                if (Config.General.SkipETFConclusion == false)
+                    ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.ETFConclusion));
             }
             catch (Exception ex)
             {
@@ -181,7 +205,7 @@ namespace MTree.HistorySaver
             ICodeMap codeMap = CodeMapConverter.DicToCodeMap(DateTime.Now.ToString(Config.General.DateFormat), jsonDic);
             
             CodeMapDbObject codemapDbObj = new CodeMapDbObject();
-            codemapDbObj.Id = new ObjectId();
+            codemapDbObj.Id = ObjectId.GenerateNewId();
             codemapDbObj.Time = DateTimeUtility.DateOnly(DateTime.Now);
             codemapDbObj.ReceivedTime = DateTime.Now;
             codemapDbObj.Code = "CodeMap";

@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
+using ProtoBuf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,9 @@ namespace MTree.DataStructure
     #endregion
 
     [Serializable]
+    [ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
+    [ProtoInclude(10, typeof(StockConclusion))]
+    [ProtoInclude(11, typeof(IndexConclusion))]
     public class Conclusion : Subscribable
     {
         [BsonElement("A")]

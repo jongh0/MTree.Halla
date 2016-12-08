@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MTree.Configuration;
+using ProtoBuf;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -35,6 +36,7 @@ namespace MTree.DataStructure
 
     [BsonDiscriminator(RootClass = true)]
     [Serializable]
+    [ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
     public class DataCounter : INotifyPropertyChanged
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();

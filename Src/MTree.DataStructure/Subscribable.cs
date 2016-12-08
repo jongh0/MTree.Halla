@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MTree.Configuration;
+using ProtoBuf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +42,15 @@ namespace MTree.DataStructure
                     typeof(ETFConclusion),
                     typeof(CodeMapDbObject))]
     [Serializable]
+    [ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
+    [ProtoInclude(100, typeof(Candle))]
+    [ProtoInclude(101, typeof(BiddingPrice))]
+    [ProtoInclude(102, typeof(CircuitBreak))]
+    [ProtoInclude(103, typeof(Conclusion))]
+    [ProtoInclude(104, typeof(StockMaster))]
+    [ProtoInclude(105, typeof(IndexMaster))]
+    [ProtoInclude(106, typeof(ETFConclusion))]
+    [ProtoInclude(107, typeof(CodeMapDbObject))]
     public class Subscribable
     {
         [BsonId]

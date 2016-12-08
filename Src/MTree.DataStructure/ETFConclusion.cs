@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
+using ProtoBuf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,6 +29,7 @@ namespace MTree.DataStructure
     // char 부호 + long 비율 => double로 통합
 
     [Serializable]
+    [ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
     public class ETFConclusion : Subscribable
     {
         [BsonElement("P")]

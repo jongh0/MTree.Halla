@@ -65,7 +65,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -88,6 +90,10 @@
     <ProjectReference Include="..\MTree.Utility\MTree.Utility.csproj">
       <Project>{d8291168-4d81-4acd-81c4-da122a249102}</Project>
       <Name>MTree.Utility</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\protobuf-net\protobuf-net.csproj">
+      <Project>{8374e4d7-2a91-48f1-9360-09b09cf27c3f}</Project>
+      <Name>protobuf-net</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

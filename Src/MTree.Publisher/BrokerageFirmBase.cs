@@ -13,7 +13,7 @@ using System.Timers;
 
 namespace MTree.Publisher
 {
-    public class BrokerageFirmBase : PublisherBase
+    public class BrokerageFirmBase : RealTimePublisher
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 

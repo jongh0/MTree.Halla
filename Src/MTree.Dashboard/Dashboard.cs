@@ -46,6 +46,13 @@ namespace MTree.Dashboard
                 Consumer.ConsumeCodemapEvent += ConsumeCodemap;
                 Consumer.NotifyMessageEvent += NotifyMessage;
 
+                if (Consumer is RealTimeConsumer)
+                {
+                    var realTimeConsumer = (Consumer as RealTimeConsumer);
+                    realTimeConsumer.ServiceClientOpended += ServiceClient_Opened;
+                    realTimeConsumer.OpenChannel();
+                }
+
                 TaskUtility.Run("Dashboard.CircuitBreakQueue", Consumer.QueueTaskCancelToken, ProcessCircuitBreakQueue);
                 TaskUtility.Run("Dashboard.StockConclusionQueue", Consumer.QueueTaskCancelToken, ProcessStockConclusionQueue);
                 TaskUtility.Run("Dashboard.IndexConclusionQueue", Consumer.QueueTaskCancelToken, ProcessIndexConclusionQueue);
@@ -65,7 +72,30 @@ namespace MTree.Dashboard
                 logger.Error(ex);
             }
         }
-       
+
+        private void ServiceClient_Opened(object sender, EventArgs e)
+        {
+            try
+            {
+                var realTimeConsumer = (Consumer as RealTimeConsumer);
+                realTimeConsumer.RegisterConsumerContract(new SubscribeContract(SubscribeTypes.Chart));
+                realTimeConsumer.RegisterConsumerContract(new SubscribeContract(SubscribeTypes.Mastering));
+                realTimeConsumer.RegisterConsumerContract(new SubscribeContract(SubscribeTypes.CircuitBreak));
+                realTimeConsumer.RegisterConsumerContract(new SubscribeContract(SubscribeTypes.StockConclusion));
+                realTimeConsumer.RegisterConsumerContract(new SubscribeContract(SubscribeTypes.IndexConclusion));
+
+                if (Config.General.VerifyLatency == true && Config.General.SkipBiddingPrice == false)
+                    realTimeConsumer.RegisterConsumerContract(new SubscribeContract(SubscribeTypes.BiddingPrice));
+
+                if (Config.General.SkipETFConclusion == false)
+                    realTimeConsumer.RegisterConsumerContract(new SubscribeContract(SubscribeTypes.ETFConclusion));
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
         private void ProcessBiddingPriceQueue()
         {
             try
