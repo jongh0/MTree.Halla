@@ -87,7 +87,7 @@ namespace MTree.RealTimeProvider
                 }
                 else
                 {
-#if false
+#if true
                     Thread.Sleep(5000);
 
                     ProcessUtility.Start(ProcessTypes.TestConsumer);

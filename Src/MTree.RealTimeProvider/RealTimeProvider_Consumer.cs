@@ -161,7 +161,7 @@ namespace MTree.RealTimeProvider
                         {
                             try
                             {
-                                lock (contract.Value.Callback)
+                                //lock (contract.Value.Callback)
                                     contract.Value.Callback.ConsumeBiddingPrice(biddingPrice);
                             }
                             catch (Exception ex)
@@ -196,7 +196,7 @@ namespace MTree.RealTimeProvider
                         {
                             try
                             {
-                                lock (contract.Value.Callback)
+                                //lock (contract.Value.Callback)
                                     contract.Value.Callback.ConsumeCircuitBreak(circuitBreak);
                             }
                             catch (Exception ex)
@@ -231,7 +231,7 @@ namespace MTree.RealTimeProvider
                         {
                             try
                             {
-                                lock (contract.Value.Callback)
+                                //lock (contract.Value.Callback)
                                     contract.Value.Callback.ConsumeStockConclusion(conclusion);
                             }
                             catch (Exception ex)
@@ -266,7 +266,7 @@ namespace MTree.RealTimeProvider
                         {
                             try
                             {
-                                lock (contract.Value.Callback)
+                                //lock (contract.Value.Callback)
                                     contract.Value.Callback.ConsumeIndexConclusion(conclusion);
                             }
                             catch (Exception ex)
@@ -301,7 +301,7 @@ namespace MTree.RealTimeProvider
                         {
                             try
                             {
-                                lock (contract.Value.Callback)
+                                //lock (contract.Value.Callback)
                                     contract.Value.Callback.ConsumeETFConclusion(conclusion);
                             }
                             catch (Exception ex)

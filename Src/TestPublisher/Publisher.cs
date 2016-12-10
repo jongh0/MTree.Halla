@@ -16,6 +16,8 @@ namespace TestPublisher
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
+        private const int taskInterval = 5;
+
         public void StartPublising()
         {
             Random rand = new Random();
@@ -47,7 +49,7 @@ namespace TestPublisher
                         break;
                     }
 
-                    Thread.Sleep(5000);
+                    Thread.Sleep(taskInterval);
                 }
             }, QueueTaskCancelToken);
 
@@ -79,7 +81,7 @@ namespace TestPublisher
                         break;
                     }
 
-                    Thread.Sleep(5000);
+                    Thread.Sleep(taskInterval);
                 }
             }, QueueTaskCancelToken);
 
@@ -115,7 +117,7 @@ namespace TestPublisher
                         break;
                     }
 
-                    Thread.Sleep(5000);
+                    Thread.Sleep(taskInterval);
                 }
             }, QueueTaskCancelToken);
         }

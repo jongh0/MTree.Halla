@@ -31,7 +31,7 @@ namespace TestConsumer
             StockConclusion conclusion;
             if (StockConclusionQueue.TryDequeue(out conclusion) == true)
             {
-                logger.Info($"StockConclusion <<< {conclusion}");
+                //logger.Info($"StockConclusion <<< {conclusion}");
                 //var interval = (DateTime.Now - conclusion.Time);
                 //tick += interval.TotalMilliseconds;
 
@@ -48,7 +48,7 @@ namespace TestConsumer
                 IndexConclusion conclusion;
                 if (IndexConclusionQueue.TryDequeue(out conclusion) == true)
                 {
-                    logger.Info($"IndexConclusion <<< {conclusion}");
+                    //logger.Info($"IndexConclusion <<< {conclusion}");
                 }
                 else
                     Thread.Sleep(10);
@@ -66,7 +66,7 @@ namespace TestConsumer
                 BiddingPrice biddingPrice;
                 if (BiddingPriceQueue.TryDequeue(out biddingPrice) == true)
                 {
-                    logger.Info($"BiddingPrice <<< {biddingPrice}");
+                    //logger.Info($"BiddingPrice <<< {biddingPrice}");
                 }
                 else
                     Thread.Sleep(10);
