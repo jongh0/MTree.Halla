@@ -132,7 +132,7 @@
     <Compile Include="IndexMastering.cs" />
     <Compile Include="IRealTimeConsumer.cs" />
     <Compile Include="PublisherContract.cs" />
-    <Compile Include="RealTimeBase.cs" />
+    <Compile Include="SubscribingBase.cs" />
     <Compile Include="RealTimeProvider_CodeMap.cs" />
     <Compile Include="RealTimeProvider_Consumer.cs" />
     <Compile Include="RealTimeProvider.cs" />

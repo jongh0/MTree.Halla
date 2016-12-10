@@ -74,7 +74,7 @@
     <Compile Include="HistoryConsumer.cs" />
     <Compile Include="Index.cs" />
     <Compile Include="Stock.cs" />
-    <Compile Include="ConsumerCallback.cs" />
+    <Compile Include="ConsumerBase.cs" />
     <Compile Include="RealTimeConsumer.cs" />
     <Compile Include="IChartable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
