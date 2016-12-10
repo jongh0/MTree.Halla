@@ -1,7 +1,6 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using MTree.Configuration;
-using MTree.DataStructure;
-using MTree.DbProvider;
+using MTree.Consumer;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,42 +14,11 @@ namespace MTree.DataExtractor
 {
     public class MainViewModel : INotifyPropertyChanged
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-
-        private DataLoader dataLoader = new DataLoader();
-        private DataExtractor dataExtractor = new DataExtractor();
-
-        private static readonly string defaultTitle = "DataExtractor";
-
         private readonly string defaultDir = Path.Combine(Environment.CurrentDirectory, "Extract");
         private string fileName;
         private string filePath;
 
-        #region Property
-        private string _TitleStr = defaultTitle;
-        public string TitleStr
-        {
-            get { return _TitleStr; }
-            set
-            {
-                _TitleStr = value;
-                NotifyPropertyChanged(nameof(TitleStr));
-            }
-        }
-
-        private ExtractTypes _ExtractType = ExtractTypes.Stock;
-        public ExtractTypes ExtractType
-        {
-            get { return _ExtractType; }
-            set
-            {
-                _ExtractType = value;
-                NotifyPropertyChanged(nameof(ExtractType));
-                NotifyPropertyChanged(nameof(CanExecuteExtract));
-            }
-        }
-
-        private string _Code = string.Empty;
+        private string _Code;
         public string Code
         {
             get { return _Code; }
@@ -62,47 +30,92 @@ namespace MTree.DataExtractor
             }
         }
 
-        private DateTime _StartDate = DateTime.Now;
-        public DateTime StartDate
+        private DateTime _StartingDate = DateTime.Now;
+        public DateTime StartingDate
         {
-            get { return _StartDate; }
+            get { return _StartingDate; }
             set
             {
-                _StartDate = value;
+                _StartingDate = value;
 
-                if (EndDate < _StartDate)
-                    EndDate = _StartDate;
+                if (EndingDate < _StartingDate)
+                    EndingDate = _StartingDate;
 
-                NotifyPropertyChanged(nameof(StartDate));
+                NotifyPropertyChanged(nameof(StartingDate));
             }
         }
 
-        private DateTime _EndDate = DateTime.Now;
-        public DateTime EndDate
+        private DateTime _EndingDate = DateTime.Now;
+        public DateTime EndingDate
         {
-            get { return _EndDate; }
+            get { return _EndingDate; }
             set
             {
-                _EndDate = value;
+                _EndingDate = value;
 
-                if (_EndDate < StartDate)
-                    StartDate = _EndDate;
+                if (_EndingDate < StartingDate)
+                    StartingDate = _EndingDate;
 
-                NotifyPropertyChanged(nameof(EndDate));
+                NotifyPropertyChanged(nameof(EndingDate));
             }
         }
-        #endregion
+
+        private bool _IsExtracting = false;
+        public bool IsExtracting
+        {
+            get { return _IsExtracting; }
+            set
+            {
+                _IsExtracting = value;
+                NotifyPropertyChanged(nameof(IsExtracting));
+                NotifyPropertyChanged(nameof(CanExecuteExtract));
+            }
+        }
+
+        private bool _IncludeTAValues = true;
+        public bool IncludeTAValues
+        {
+            get { return _IncludeTAValues; }
+            set
+            {
+                _IncludeTAValues = value;
+                NotifyPropertyChanged(nameof(IncludeTAValues));
+            }
+        }
 
         #region Command
-        RelayCommand _ExtractCommand;
-        public ICommand ExtractCommand
+        private RelayCommand _StartExtractCommand;
+        public ICommand StartExtractCommand
         {
             get
             {
-                if (_ExtractCommand == null)
-                    _ExtractCommand = new RelayCommand(() => Task.Run(() => ExecuteExtract()));
+                if (_StartExtractCommand == null)
+                    _StartExtractCommand = new RelayCommand(() => Task.Run(() =>
+                    {
+                        IsExtracting = true;
 
-                return _ExtractCommand;
+                        string[] codes = { Code };
+
+                        fileName = $"{Code}_{StartingDate.ToString(Config.General.DateFormat)}~{EndingDate.ToString(Config.General.DateFormat)}.csv";
+                        filePath = Path.Combine(defaultDir, fileName);
+
+                        if (Directory.Exists(defaultDir) == false)
+                            Directory.CreateDirectory(defaultDir);
+
+                        extractor.IncludeTAValues = IncludeTAValues;
+
+                        extractor.StartExtract(filePath);
+
+                        for (DateTime targetDate = StartingDate; targetDate <= EndingDate; targetDate = targetDate.AddDays(1))
+                        {
+                            if (consumer.StartSimulation(codes, targetDate) == true)
+                                extractor.WaitSubscribingDone();
+                        }
+
+                        IsExtracting = false;
+                    }));
+
+                return _StartExtractCommand;
             }
         }
 
@@ -111,10 +124,7 @@ namespace MTree.DataExtractor
         {
             get
             {
-                if (ExtractType == ExtractTypes.Stock)
-                    return _CanExecuteExtract && Code?.Length >= 6;
-                else
-                    return _CanExecuteExtract && Code?.Length >= 3;
+                return _CanExecuteExtract && Code?.Length >= 6 && IsExtracting == false;
             }
             set
             {
@@ -122,49 +132,15 @@ namespace MTree.DataExtractor
                 NotifyPropertyChanged(nameof(CanExecuteExtract));
             }
         }
-
-        public void ExecuteExtract()
-        {
-            CanExecuteExtract = false;
-
-            try
-            {
-                fileName = $"{ExtractType.ToString()}_{Code}_{StartDate.ToString(Config.General.DateFormat)}~{EndDate.ToString(Config.General.DateFormat)}.csv";
-                filePath = Path.Combine(defaultDir, fileName);
-
-                if (Directory.Exists(defaultDir) == false)
-                    Directory.CreateDirectory(defaultDir);
-
-                if (ExtractType == ExtractTypes.Stock)
-                {
-                    TitleStr = $"{defaultTitle} - Loading";
-                    var conclusionList = dataLoader.Load<StockConclusion>(Code, StartDate, EndDate);
-                    var masterList = dataLoader.Load<StockMaster>(Code, StartDate, EndDate);
-
-                    TitleStr = $"{defaultTitle} - Extracting";
-                    dataExtractor.Extract(conclusionList, masterList, filePath);
-                }
-                else
-                {
-                    TitleStr = $"{defaultTitle} - Loading";
-                    var conclusionList = dataLoader.Load<IndexConclusion>(Code, StartDate, EndDate);
-                    var masterList = dataLoader.Load<IndexMaster>(Code, StartDate, EndDate);
-
-                    TitleStr = $"{defaultTitle} - Extracting";
-                    dataExtractor.Extract(conclusionList, masterList, filePath);
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-            }
-            finally
-            {
-                TitleStr = defaultTitle;
-                CanExecuteExtract = true;
-            }
-        }
         #endregion
+
+        private ISimulation consumer { get; set; }
+        private DataExtractor extractor { get; set; }
+        public MainViewModel()
+        {
+            consumer = new HistoryConsumer();
+            extractor = new DataExtractor((ConsumerBase)consumer);
+        }
 
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
