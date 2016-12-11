@@ -10,7 +10,6 @@ namespace MTree.Configuration
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         public GeneralConfiguration general { get; set; } = new GeneralConfiguration();
-        public PushConfiguration push { get; set; } = new PushConfiguration();
         public DatabaseConfiguration database { get; set; } = new DatabaseConfiguration();
         public DaishinConfiguration daishin { get; set; } = new DaishinConfiguration();
         public EbestConfiguration ebest { get; set; } = new EbestConfiguration();
@@ -20,7 +19,6 @@ namespace MTree.Configuration
         public ResourceMonitorConfiguration resourceMonitor { get; set; } = new ResourceMonitorConfiguration();
 
         public static GeneralConfiguration General { get { return Instance.general; } }
-        public static PushConfiguration Push { get { return Instance.push; } }
         public static DatabaseConfiguration Database { get { return Instance.database; } }
         public static DaishinConfiguration Daishin { get { return Instance.daishin; } }
         public static EbestConfiguration Ebest { get { return Instance.ebest; } }

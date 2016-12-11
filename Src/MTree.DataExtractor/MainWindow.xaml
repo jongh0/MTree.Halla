@@ -4,52 +4,29 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MTree.DataExtractor"
-        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="{Binding Path=TitleStr}" Height="200" Width="390">
+        Title="Data Extractor" SizeToContent="WidthAndHeight">
     <Window.DataContext>
         <local:MainViewModel/>
     </Window.DataContext>
-    <Grid Margin="5,5,5,5">
-        <Grid.Resources>
-            <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="ExtractTypesEnum">
-                <ObjectDataProvider.MethodParameters>
-                    <x:Type TypeName="local:ExtractTypes" />
-                </ObjectDataProvider.MethodParameters>
-            </ObjectDataProvider>
-            
-            <Style TargetType="{x:Type Button}">
-                <Setter Property="Height" Value="25"/>
-            </Style>
-            <Style TargetType="{x:Type DatePickerTextBox}">
-                <Setter Property="Control.Template">
-                    <Setter.Value>
-                        <ControlTemplate>
-                            <TextBox x:Name="PART_TextBox" VerticalContentAlignment="Center" VerticalAlignment="Stretch" BorderThickness="0"
-                                Text="{Binding Path=SelectedDate, StringFormat='yyyy-MM-dd', RelativeSource={RelativeSource AncestorType={x:Type DatePicker}}}" />
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-        </Grid.Resources>
-        <StackPanel Orientation="Vertical">
-            <ComboBox ItemsSource="{Binding Source={StaticResource ExtractTypesEnum}}" SelectedItem="{Binding Path=ExtractType}" IsSynchronizedWithCurrentItem="true" Margin="5,0,0,0"/>
 
-            <StackPanel Orientation="Horizontal"  HorizontalAlignment="Left" Margin="0,10,0,0">
-                <Label Content="Code" Margin="5,0,0,0" />
-                <TextBox Margin="5,0,5,0" Width="50" Text="{Binding Code, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" MaxLength="6" TextAlignment="Center"/>
-            </StackPanel>
-
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,10,0,0">
-                <Label Content="Range" Margin="5,0,0,0" VerticalAlignment="Center"/>
-                <DatePicker SelectedDate="{Binding Path=StartDate, Mode=TwoWay}"/>
-                <Label Content="~" Margin="5,0,5,0" VerticalAlignment="Center"/>
-                <DatePicker SelectedDate="{Binding Path=EndDate, Mode=TwoWay}"/>
-            </StackPanel>
-
-            <StackPanel Orientation="Horizontal"  HorizontalAlignment="Left" Margin="0,10,0,0">
-                <Button Content=" Extract " Command="{Binding ExtractCommand}" IsEnabled="{Binding Path=CanExecuteExtract}" Margin="10,0,5,0"/>
-            </StackPanel>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" Margin="20,20,20,0" Grid.Row="0">
+            <Label Content="Code" VerticalAlignment="Center"/>
+            <TextBox Margin="5,0,5,0" Width="50" Text="{Binding Code, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" MaxLength="6" TextAlignment="Center"/>
+            <DatePicker SelectedDate="{Binding Path=StartingDate, Mode=TwoWay}"/>
+            <Label Content="~" Margin="5,0,5,0" VerticalAlignment="Center"/>
+            <DatePicker SelectedDate="{Binding Path=EndingDate, Mode=TwoWay}"/> 
+            <Label Margin="5,0,5,0" VerticalAlignment="Center"/>
+            <Button Grid.Row="0" Content="Start Extract" Command="{Binding StartExtractCommand}" IsEnabled="{Binding Path=CanExecuteExtract}"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="20,0,20,20" Grid.Row="1">
+            <CheckBox Content="Include TA Values" IsChecked="{Binding IncludeTAValues}" />
         </StackPanel>
     </Grid>
 </Window>
