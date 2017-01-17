@@ -76,5 +76,11 @@ namespace MTree.Configuration
         public bool UseShutdown { get; set; } = false;
 
         public int ShutdownHour { get; set; } = 24;
+
+        // 0보다 큰 값일 때만 동작한다.
+        public int LogFolderKeepDays { get; set; } = 2;
+
+        // 0보다 큰 값일 때만 동작한다.
+        public int LogZipFileKeepDays { get; set; } = 15;
     }
 }

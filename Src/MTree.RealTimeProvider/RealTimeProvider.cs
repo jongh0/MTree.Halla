@@ -316,6 +316,9 @@ namespace MTree.RealTimeProvider
                         // 당일 수집된 로그를 Zip해서 Email로 전송함
                         LogUtility.SendLog();
 
+                        // 오래된 로그 폴더/파일을 삭제한다
+                        LogUtility.DeleteOldLog();
+
                         // 20초후 프로그램 종료
                         RealTimeState = "RealTimeProvider will be closed after 20sec";
                         logger.Info(RealTimeState);

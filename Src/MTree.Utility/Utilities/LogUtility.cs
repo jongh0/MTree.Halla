@@ -59,5 +59,48 @@ namespace MTree.Utility
                 logger.Error(ex);
             }
         }
+
+        public static void DeleteOldLog()
+        {
+            try
+            {
+                var logDir = Path.Combine(Environment.CurrentDirectory, "Logs");
+
+                if (Config.General.LogFolderKeepDays > 0)
+                {
+                    var dirs = Directory.GetDirectories(logDir, "*", SearchOption.TopDirectoryOnly);
+                    foreach (var dir in dirs)
+                    {
+                        var strs = Path.GetFileName(dir).Split('-');
+                        if (strs.Length == 3)
+                        {
+                            var logDate = new DateTime(int.Parse(strs[0]), int.Parse(strs[1]), int.Parse(strs[2]));
+                            if ((DateTime.Now - logDate).TotalDays > Config.General.LogFolderKeepDays)
+                                Directory.Delete(dir, true);
+                        }
+                    }
+                }
+
+                if (Config.General.LogZipFileKeepDays > 0)
+                {
+                    var files = Directory.GetFiles(logDir, "*.zip", SearchOption.TopDirectoryOnly);
+                    foreach (var file in files)
+                    {
+                        var date = Path.GetFileNameWithoutExtension(file).Replace("MTree.Log.", "");
+                        var strs = date.Split('-');
+                        if (strs.Length == 3)
+                        {
+                            var logDate = new DateTime(int.Parse(strs[0]), int.Parse(strs[1]), int.Parse(strs[2]));
+                            if ((DateTime.Now - logDate).TotalDays > Config.General.LogZipFileKeepDays)
+                                File.Delete(file);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
     }
 }
