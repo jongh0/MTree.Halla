@@ -94,14 +94,27 @@ namespace MTree.Configuration
         {
             try
             {
-                using (StreamWriter stream = File.CreateText(filePath))
+                using (var stream = File.Open(filePath, FileMode.Create, FileAccess.Write))
+                using (var writer = new StreamWriter(stream))
                 {
                     JsonSerializer serializer = new JsonSerializer();
                     serializer.NullValueHandling = NullValueHandling.Ignore;
                     serializer.Formatting = Formatting.Indented;
-                    serializer.Serialize(stream, config);
+                    serializer.Serialize(writer, config);
+                    writer.Flush();
+                    stream.Flush(true);
+
                     logger.Info($"{Path.GetFileName(filePath)} saved");
                 }
+
+                //using (StreamWriter stream = File.CreateText(filePath))
+                //{
+                //    JsonSerializer serializer = new JsonSerializer();
+                //    serializer.NullValueHandling = NullValueHandling.Ignore;
+                //    serializer.Formatting = Formatting.Indented;
+                //    serializer.Serialize(stream, config);
+                //    logger.Info($"{Path.GetFileName(filePath)} saved");
+                //}
             }
             catch (Exception ex)
             {
