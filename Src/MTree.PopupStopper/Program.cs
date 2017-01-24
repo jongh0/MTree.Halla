@@ -40,6 +40,7 @@ namespace MTree.PopupStopper
                         //popupClosed |= ChecknProtectPopup();
                         popupClosed |= CheckRegularCheckupPopup();
                         popupClosed |= CheckNoticePopup();
+                        popupClosed |= CheckCertiExpiredPopup();
                     }
                     catch (OperationCanceledException)
                     {
@@ -218,6 +219,34 @@ namespace MTree.PopupStopper
                 if (windowH != IntPtr.Zero)
                 {
                     logger.Trace($"Notice popup found");
+
+                    IntPtr buttonH = WindowsAPI.findWindowEx(windowH, "Button", "확인");
+                    if (buttonH != IntPtr.Zero)
+                    {
+                        logger.Trace($"Confirm button clicked");
+                        WindowsAPI.sendMessage(buttonH, WindowsAPI.BM_CLICK, 0, 0);
+
+                        return true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+
+            return false;
+        }
+
+        private static bool CheckCertiExpiredPopup()
+        {
+            try
+            {
+                IntPtr windowH = WindowsAPI.findWindow("인증서 만료공지", interval: 10, setForeground: false);
+
+                if (windowH != IntPtr.Zero)
+                {
+                    logger.Trace($"Certi expired popup found");
 
                     IntPtr buttonH = WindowsAPI.findWindowEx(windowH, "Button", "확인");
                     if (buttonH != IntPtr.Zero)
