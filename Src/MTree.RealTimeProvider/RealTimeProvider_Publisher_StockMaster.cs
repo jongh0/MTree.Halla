@@ -65,15 +65,15 @@ namespace MTree.RealTimeProvider
                 if (masteringRet == true)
                 {
                     RealTimeState = "Stock mastering success";
-                    logger.Info($"{RealTimeState}, Elapsed time: {sw.Elapsed.ToString()}");
-
-                    Task.Run(() => StartStockMasterPublishing()).ContinueWith((x) => MasteringDone = true);
+                    logger.Info($"{RealTimeState}, Elapsed time: {sw.Elapsed.ToString()}");    
                 }
                 else
                 {
                     RealTimeState = "Stock mastering failed";
                     logger.Info(RealTimeState);
                 }
+
+                Task.Run(() => StartStockMasterPublishing()).ContinueWith((x) => MasteringDone = true);
             }
         }
 
