@@ -29,7 +29,9 @@ namespace MTree.KiwoomSessionManager
                 }
 
                 // Find Kiwoom Starter
-                var khministarterHandle = WindowsAPI.findWindow("번개 Login", retryCount: 10);
+                //
+                //var khministarterHandle = WindowsAPI.findWindow("번개 Login", retryCount: 10);
+                var khministarterHandle = WindowsAPI.findWindow("Open API Login", retryCount: 10);
                 if (khministarterHandle == IntPtr.Zero)
                 {
                     logger.Error("Kiwoom Starter not found");
@@ -80,7 +82,7 @@ namespace MTree.KiwoomSessionManager
                 {
                     foreach (var c in userPw.ToCharArray())
                     {
-                        WindowsAPI.sendMessage(pwH, WindowsAPI.WM_CHAR, c, 0);
+                        WindowsAPI.postMessage(pwH, WindowsAPI.WM_CHAR, c, 0);
                     }
                     logger.Info("User Password Entered");
                 }
@@ -104,7 +106,7 @@ namespace MTree.KiwoomSessionManager
                 {
                     foreach (var c in certPw.ToCharArray())
                     {
-                        WindowsAPI.sendMessage(certPwH, WindowsAPI.WM_CHAR, c, 0);
+                        WindowsAPI.postMessage(certPwH, WindowsAPI.WM_CHAR, c, 0);
                     }
                     logger.Info("Certi Password Entered");
                 }
