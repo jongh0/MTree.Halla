@@ -30,13 +30,18 @@ namespace MTree.KiwoomSessionManager
 
                 // Find Kiwoom Starter
                 //
-                //var khministarterHandle = WindowsAPI.findWindow("번개 Login", retryCount: 10);
-                var khministarterHandle = WindowsAPI.findWindow("Open API Login", retryCount: 10);
+                var khministarterHandle = WindowsAPI.findWindow("번개 Login", retryCount: 10);
                 if (khministarterHandle == IntPtr.Zero)
                 {
-                    logger.Error("Kiwoom Starter not found");
-                    return;
+                    khministarterHandle = WindowsAPI.findWindow("Open API Login", retryCount: 10);
+                    if (khministarterHandle == IntPtr.Zero)
+                    {
+                        logger.Error("Kiwoom Starter not found");
+                        return;
+                    }
                 }
+
+
                 logger.Info("Kiwoom Starter found");
 
                 // UserPw, CertPw 핸들 찾기
