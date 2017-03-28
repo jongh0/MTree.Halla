@@ -45,8 +45,7 @@ namespace MTree.Configuration
         [JsonIgnore]
         public bool ExcludeEbest { get; } = false;
 
-        [JsonIgnore]
-        public bool ExcludeKiwoom { get; } = false;
+        public bool ExcludeKiwoom { get; set; } = true;
 
         [JsonConverter(typeof(StringEnumConverter))]
         public TraderTypes TraderType { get; set; } = TraderTypes.Ebest;
