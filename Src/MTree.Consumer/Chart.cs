@@ -21,7 +21,6 @@ namespace MTree.Consumer
         Year,
     }
 
-    [Serializable]
     public class Chart
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();

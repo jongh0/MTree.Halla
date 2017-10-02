@@ -2,22 +2,28 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace MTree.RealTimeProvider
 {
-    [Serializable]
+    [DataContract]
     public class PublisherContract
     {
+        [DataMember]
         public static int IdNumbering { get; set; } = 0;
 
+        [DataMember]
         public int Id { get; set; } = -1;
 
+        [DataMember]
         public ProcessTypes Type { get; set; }
 
+        [DataMember]
         public IRealTimePublisherCallback Callback { get; set; } = null;
 
+        [DataMember]
         public bool IsOperating { get; set; } = false;
 
         public override string ToString()

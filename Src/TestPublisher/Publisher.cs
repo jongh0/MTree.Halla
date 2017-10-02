@@ -28,7 +28,8 @@ namespace TestPublisher
                     subscribable.Code = "000020";
                     subscribable.Price = rand.Next(100, 200);
                     subscribable.Time = DateTime.Now;
-                    
+                    subscribable.ConclusionType = ConclusionTypes.Sell;
+
                     ServiceClient.PublishStockConclusion(subscribable);
 
                     Thread.Sleep(2);
@@ -47,6 +48,7 @@ namespace TestPublisher
                     subscribable.Code = "000030";
                     subscribable.Price = rand.Next(100, 200);
                     subscribable.Time = DateTime.Now;
+                    subscribable.MarketCapitalization = 1000;
 
                     ServiceClient.PublishIndexConclusion(subscribable);
 

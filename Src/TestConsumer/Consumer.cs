@@ -19,34 +19,59 @@ namespace TestConsumer
         //int count = 0;
         double tick = 0;
 
-        private void ProcessStockConclusionQueue()
-        {
-            StockConclusion conclusion;
-            if (StockConclusionQueue.TryDequeue(out conclusion) == true)
-            {
-                var interval = (DateTime.Now - conclusion.Time);
-                tick += interval.TotalMilliseconds;
-
-                Console.WriteLine($"{interval.ToString()}, {conclusion.Price}, {conclusion.Code} consumed");
-
-                //if (count++ > 10000)
-                //    Debugger.Break();
-                //Thread.Sleep(100);
-            }
-            else
-                Thread.Sleep(10);
-        }
-        
         public void StartConsume()
         {
             TaskUtility.Run("Consumer.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
+            TaskUtility.Run("Consumer.IndexConclusionQueue", QueueTaskCancelToken, ProcessIndexConclusionQueue);
+            TaskUtility.Run("Consumer.BiddingPriceQueue", QueueTaskCancelToken, ProcessBiddingPriceQueue);
             ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.StockConclusion));
+            ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.IndexConclusion));
+            ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.BiddingPrice));
         }
 
         public void StopConsume()
         {
             StopQueueTask();
             CloseChannel();
+        }
+
+        private void ProcessStockConclusionQueue()
+        {
+            if (StockConclusionQueue.TryDequeue(out var conclusion) == true)
+            {
+                var interval = (DateTime.Now - conclusion.Time);
+                tick += interval.TotalMilliseconds;
+
+                //Console.WriteLine($"{interval.ToString()}, {conclusion.Price}, {conclusion.Code} consumed");
+            }
+            else
+                Thread.Sleep(10);
+        }
+
+        private void ProcessIndexConclusionQueue()
+        {
+            if (IndexConclusionQueue.TryDequeue(out var conclusion) == true)
+            {
+                var interval = (DateTime.Now - conclusion.Time);
+                tick += interval.TotalMilliseconds;
+
+                //Console.WriteLine($"{interval.ToString()}, {conclusion.Price}, {conclusion.Code} consumed");
+            }
+            else
+                Thread.Sleep(10);
+        }
+
+        private void ProcessBiddingPriceQueue()
+        {
+            if (BiddingPriceQueue.TryDequeue(out var biddingPrice) == true)
+            {
+                var interval = (DateTime.Now - biddingPrice.Time);
+                tick += interval.TotalMilliseconds;
+
+                //Console.WriteLine($"{interval.ToString()}, {biddingPrice.Code} consumed");
+            }
+            else
+                Thread.Sleep(10);
         }
     }
 }

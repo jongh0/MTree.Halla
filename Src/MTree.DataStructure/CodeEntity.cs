@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace MTree.DataStructure
 {
-    [Serializable]
     public class CodeEntity
     {
         public string Code { get; set; }

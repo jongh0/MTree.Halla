@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,13 +16,15 @@ namespace MTree.DataStructure
         string Name { get; set; }
     }
 
-    [Serializable]
+    [DataContract]
     public class CodeMapHead : ICodeMap
     {
-        [BsonElement("CL")]
+        [BsonElement("CML")]
+        [DataMember(Name = "CML")]
         public List<ICodeMap> CodeMapList { get; set; }
 
         [BsonElement("N")]
+        [DataMember(Name = "N")]
         public string Name { get; set; }
 
         public CodeMapHead(string name = "")

@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace MTree.Trader
 {
-    [Serializable]
     public class HoldingStock
     {
         public int Amount { get; set; }

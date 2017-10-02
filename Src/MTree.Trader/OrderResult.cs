@@ -16,7 +16,6 @@ namespace MTree.Trader
         Rejected,
     }
 
-    [Serializable]
     public class OrderResult
     {
         public string OrderNumber { get; set; }

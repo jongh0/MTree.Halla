@@ -34,7 +34,6 @@ namespace MTree.DataStructure
     }
 
     [BsonDiscriminator(RootClass = true)]
-    [Serializable]
     public class DataCounter : INotifyPropertyChanged
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();

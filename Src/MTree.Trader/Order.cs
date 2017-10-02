@@ -25,7 +25,6 @@ namespace MTree.Trader
         // 26:최유리FOK, 61:장개시전시간외, 62:시간외단일가매매, 81:시간외종가
     }
 
-    [Serializable]
     public class Order
     {
         public string AccountNumber { get; set; }
