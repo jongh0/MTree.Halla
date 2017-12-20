@@ -36,7 +36,6 @@ namespace MTree.EbestPublisher
         OverheatNoticed = 8,        // 단기과열지정예고
     }
 
-    [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
     public partial class EbestPublisher : BrokerageFirmBase, INotifyPropertyChanged
     {
         private NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();

@@ -20,7 +20,6 @@ using System.ComponentModel;
 
 namespace MTree.Dashboard
 {
-    [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false, ValidateMustUnderstand = false)]
     public class Dashboard
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();

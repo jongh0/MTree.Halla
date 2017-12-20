@@ -12,7 +12,6 @@ using MTree.Configuration;
 
 namespace MTree.KiwoomPublisher
 {
-    [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
     public partial class KiwoomPublisher : BrokerageFirmBase
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();

@@ -18,7 +18,6 @@ using MongoDB.Bson;
 
 namespace MTree.HistorySaver
 {
-    [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false, ValidateMustUnderstand = false)]
     public class HistorySaver : RealTimeConsumer, INotifyPropertyChanged
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();

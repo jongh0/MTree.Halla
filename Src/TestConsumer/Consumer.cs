@@ -13,7 +13,6 @@ using System.Diagnostics;
 
 namespace TestConsumer
 {
-    [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
     public class TestConsumer : RealTimeConsumer
     {
         //int count = 0;

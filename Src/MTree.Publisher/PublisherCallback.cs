@@ -6,9 +6,11 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using MTree.DataStructure;
+using System.ServiceModel;
 
 namespace MTree.Publisher
 {
+    [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
     public class PublisherCallback : SubscribingBase, IRealTimePublisherCallback
     {
         public virtual void NotifyMessage(MessageTypes type, string message)

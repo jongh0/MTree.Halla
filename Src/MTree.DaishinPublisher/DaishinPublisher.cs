@@ -16,7 +16,6 @@ using MTree.Utility;
 
 namespace MTree.DaishinPublisher
 {
-    [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
     public partial class DaishinPublisher : BrokerageFirmBase, INotifyPropertyChanged
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();

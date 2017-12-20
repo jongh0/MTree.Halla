@@ -13,7 +13,6 @@ using System.Threading.Tasks;
 
 namespace MTree.StrategyManager
 {
-    [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false, ValidateMustUnderstand = false)]
     public class StrategyManager : RealTimeConsumer
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
