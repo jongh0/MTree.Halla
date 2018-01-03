@@ -31,7 +31,7 @@ namespace TestConsole
             //TestDbAgent();
             //TestEmail();
             //TestDaishinInstanceLimit();
-
+            //TestDbCollection();
 
             Console.WriteLine("Press any key..");
             Console.ReadLine();
@@ -97,6 +97,12 @@ namespace TestConsole
         private static void TestCreateIndex()
         {
             DbAgent.Instance.CreateIndex();
+        }
+
+        private static void TestDbCollection()
+        {
+            var collections = DbAgent.Instance.GetCollectionList(DbTypes.StockConclusion);
+            Trace.WriteLine(string.Join(", ", collections));
         }
 
         private static void TestDbAgent()
