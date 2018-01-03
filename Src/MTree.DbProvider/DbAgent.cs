@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver;
+﻿using MongoDB.Bson;
+using MongoDB.Driver;
 using MTree.Configuration;
 using MTree.DataStructure;
 using MTree.Utility;
@@ -76,6 +77,8 @@ namespace MTree.DbProvider
         
         private DbAgent(string connectionString = null)
         {
+            MongoDefaults.GuidRepresentation = GuidRepresentation.Standard;
+
             InitDatabase(connectionString);
         }
 
