@@ -423,7 +423,7 @@ namespace RealTimeProvider
 
                     if (source.Code != dest.Code)
                     {
-                        _logger.Error($"Daishin stock mastering, Code not matched, {source.Code} != {dest.Code}");
+                        _logger.Warn($"Daishin stock mastering, Code not matched, {source.Code} != {dest.Code}");
                         return;
                     }
 
@@ -473,7 +473,7 @@ namespace RealTimeProvider
 
                     if (source.Code != dest.Code)
                     {
-                        _logger.Error($"Ebest stock mastering, Code not matched, {source.Code} != {dest.Code}");
+                        _logger.Warn($"Ebest stock mastering, Code not matched, {source.Code} != {dest.Code}");
                         return;
                     }
 
@@ -522,7 +522,7 @@ namespace RealTimeProvider
 
                     if (source.Code != dest.Code)
                     {
-                        _logger.Error($"Kiwoom stock mastering, Code not matched, {source.Code} != {dest.Code}");
+                        _logger.Warn($"Kiwoom stock mastering, Code not matched, {source.Code} != {dest.Code}");
                         return;
                     }
 

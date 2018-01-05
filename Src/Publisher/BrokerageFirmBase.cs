@@ -170,11 +170,12 @@ namespace Publisher
                 _logger.Error(ex);
             }
         }
+
         protected bool WaitQuoting()
         {
             if (WaitQuotingEvent.WaitOne(WaitQuotingTimeout) == false)
             {
-                _logger.Error($"{GetType().Name} wait quoting timeout");
+                _logger.Warn($"{GetType().Name} wait quoting timeout");
                 return false;
             }
 
