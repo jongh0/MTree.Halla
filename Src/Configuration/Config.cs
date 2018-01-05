@@ -55,7 +55,7 @@ namespace Configuration
         }
 
         #region Load / Save
-        private static readonly string FileName = "Config.json";
+        private static readonly string FileName = "Configuration.json";
 
         private static void LoadConfiguration<T>(ref T config, string filePath)
         {
