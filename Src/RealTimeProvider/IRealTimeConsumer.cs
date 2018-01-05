@@ -52,16 +52,16 @@ namespace RealTimeProvider
         [OperationContract(IsOneWay = true)]
         void ConsumeETFConclusion(ETFConclusion conclusion);
 
-        [OperationContract]
+        [OperationContract(IsOneWay = true)]
         void ConsumeStockMaster(List<StockMaster> stockMaster);
 
-        [OperationContract]
+        [OperationContract(IsOneWay = true)]
         void ConsumeIndexMaster(List<IndexMaster> indexMaster);
 
-        [OperationContract]
+        [OperationContract(IsOneWay = true)]
         void ConsumeCodemap(Dictionary<string, object> codeMap);
 
-        [OperationContract]
+        [OperationContract(IsOneWay = true)]
         void ConsumeChart(List<Candle> candles);
     }
 }
