@@ -16,11 +16,11 @@ namespace MTree.EbestTrader
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Single, ValidateMustUnderstand = false)]
     public partial class EbestTrader : ITrader, INotifyPropertyChanged
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         private ConcurrentDictionary<Guid, TraderContract> TraderContracts { get; set; } = new ConcurrentDictionary<Guid, TraderContract>();
 
-        private readonly string resFilePath = "\\Res";
+        private const string ResFilePath = "\\Res";
 
         public LoginInfo LoginInstance { get; } = new LoginInfo();
 
@@ -69,50 +69,50 @@ namespace MTree.EbestTrader
 
                 #region XAQuery
                 stockQuotingObj = new XAQueryClass();
-                stockQuotingObj.ResFileName = resFilePath + "\\t1102.res";
+                stockQuotingObj.ResFileName = ResFilePath + "\\t1102.res";
                 stockQuotingObj.ReceiveData += StockQuotingObj_ReceiveData;
                 stockQuotingObj.ReceiveMessage += queryObj_ReceiveMessage;
 
                 newOrderObj = new XAQueryClass();
-                newOrderObj.ResFileName = resFilePath + "\\CSPAT00600.res";
+                newOrderObj.ResFileName = ResFilePath + "\\CSPAT00600.res";
                 newOrderObj.ReceiveData += NewOrderObj_ReceiveData;
                 newOrderObj.ReceiveMessage += queryObj_ReceiveMessage;
 
                 modifyOrderObj = new XAQueryClass();
-                modifyOrderObj.ResFileName = resFilePath + "\\CSPAT00700.res";
+                modifyOrderObj.ResFileName = ResFilePath + "\\CSPAT00700.res";
                 modifyOrderObj.ReceiveData += ModifyOrderObj_ReceiveData;
                 modifyOrderObj.ReceiveMessage += queryObj_ReceiveMessage;
 
                 cancelOrderObj = new XAQueryClass();
-                cancelOrderObj.ResFileName = resFilePath + "\\CSPAT00800.res";
+                cancelOrderObj.ResFileName = ResFilePath + "\\CSPAT00800.res";
                 cancelOrderObj.ReceiveData += CancelOrderObj_ReceiveData;
                 cancelOrderObj.ReceiveMessage += queryObj_ReceiveMessage;
 
                 accDepositObj = new XAQueryClass();
-                accDepositObj.ResFileName = resFilePath + "\\t0424.res";
+                accDepositObj.ResFileName = ResFilePath + "\\t0424.res";
                 accDepositObj.ReceiveData += AccDepositObj_ReceiveData;
                 accDepositObj.ReceiveMessage += queryObj_ReceiveMessage;
                 #endregion
 
                 #region XAReal
                 orderSubmittedObj = new XARealClass();
-                orderSubmittedObj.ResFileName = resFilePath + "\\SC0.res";
+                orderSubmittedObj.ResFileName = ResFilePath + "\\SC0.res";
                 orderSubmittedObj.ReceiveRealData += OrderSubmittedObj_ReceiveRealData;
 
                 orderConcludedObj = new XARealClass();
-                orderConcludedObj.ResFileName = resFilePath + "\\SC1.res";
+                orderConcludedObj.ResFileName = ResFilePath + "\\SC1.res";
                 orderConcludedObj.ReceiveRealData += OrderConcludedObj_ReceiveRealData;
 
                 orderModifiedObj = new XARealClass();
-                orderModifiedObj.ResFileName = resFilePath + "\\SC2.res";
+                orderModifiedObj.ResFileName = ResFilePath + "\\SC2.res";
                 orderModifiedObj.ReceiveRealData += OrderModifiedObj_ReceiveRealData;
 
                 orderCanceledObj = new XARealClass();
-                orderCanceledObj.ResFileName = resFilePath + "\\SC3.res";
+                orderCanceledObj.ResFileName = ResFilePath + "\\SC3.res";
                 orderCanceledObj.ReceiveRealData += OrderCanceledObj_ReceiveRealData;
 
                 orderRejectedObj = new XARealClass();
-                orderRejectedObj.ResFileName = resFilePath + "\\SC4.res";
+                orderRejectedObj.ResFileName = ResFilePath + "\\SC4.res";
                 orderRejectedObj.ReceiveRealData += OrderRejectedObj_ReceiveRealData;
                 #endregion
 
@@ -141,14 +141,14 @@ namespace MTree.EbestTrader
                 }
                 else
                 {
-                    logger.Error("Check Ebest configuration");
+                    _logger.Error("Check Ebest configuration");
                     return;
                 }
                 #endregion
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -164,16 +164,16 @@ namespace MTree.EbestTrader
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
         private void queryObj_ReceiveMessage(bool bIsSystemError, string nMessageCode, string szMessage)
         {
             if (bIsSystemError == true)
-                logger.Error($"{nameof(nMessageCode)}: {nMessageCode}, {nameof(szMessage)}: {szMessage}");
+                _logger.Error($"{nameof(nMessageCode)}: {nMessageCode}, {nameof(szMessage)}: {szMessage}");
             else
-                logger.Info($"{nameof(nMessageCode)}: {nMessageCode}, {nameof(szMessage)}: {szMessage}");
+                _logger.Info($"{nameof(nMessageCode)}: {nMessageCode}, {nameof(szMessage)}: {szMessage}");
         }
 
         #region XASession
@@ -181,7 +181,7 @@ namespace MTree.EbestTrader
         {
             CommTimer.Stop();
             LoginInstance.State = LoginStates.LoggedOut;
-            logger.Info(LoginInstance.ToString());
+            _logger.Info(LoginInstance.ToString());
         }
 
         private void SessionObj_Event_Login(string szCode, string szMsg)
@@ -189,14 +189,14 @@ namespace MTree.EbestTrader
             if (szCode == "0000")
             {
                 LoginInstance.State = LoginStates.LoggedIn;
-                logger.Info($"Login success, {LoginInstance.ToString()}");
+                _logger.Info($"Login success, {LoginInstance.ToString()}");
                 SetLogin();
 
                 AdviseRealData();
             }
             else
             {
-                logger.Error($"Login fail, szCode: {szCode}, szMsg: {szMsg}");
+                _logger.Error($"Login fail, szCode: {szCode}, szMsg: {szMsg}");
             }
         }
 
@@ -204,7 +204,7 @@ namespace MTree.EbestTrader
         {
             CommTimer.Stop();
             LoginInstance.State = LoginStates.Disconnect;
-            logger.Error(LoginInstance.ToString());
+            _logger.Error(LoginInstance.ToString());
         }
         #endregion
 
@@ -214,7 +214,7 @@ namespace MTree.EbestTrader
         {
             if (WaitLoginEvent.WaitOne(WaitLoginTimeout) == false)
             {
-                logger.Error($"{GetType().Name} wait login timeout");
+                _logger.Error($"{GetType().Name} wait login timeout");
                 return false;
             }
 
@@ -225,7 +225,7 @@ namespace MTree.EbestTrader
         {
             Thread.Sleep(1000 * 3); // 로그인후 대기
 
-            logger.Info($"{GetType().Name} set login");
+            _logger.Info($"{GetType().Name} set login");
             WaitLoginEvent.Set();
         }
 
@@ -235,15 +235,15 @@ namespace MTree.EbestTrader
             {
                 if (sessionObj.ConnectServer(LoginInstance.ServerAddress, LoginInstance.ServerPort) == false)
                 {
-                    logger.Error($"Server connection fail, {GetLastErrorMessage()}");
+                    _logger.Error($"Server connection fail, {GetLastErrorMessage()}");
                     return false;
                 }
 
-                logger.Info($"Try login, Id: {LoginInstance.UserId}");
+                _logger.Info($"Try login, Id: {LoginInstance.UserId}");
 
                 if (sessionObj.Login(LoginInstance.UserId, LoginInstance.UserPw, LoginInstance.CertPw, 0, true) == false)
                 {
-                    logger.Error($"Login error, {GetLastErrorMessage()}");
+                    _logger.Error($"Login error, {GetLastErrorMessage()}");
                     return false;
                 }
 
@@ -252,7 +252,7 @@ namespace MTree.EbestTrader
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return false;
@@ -266,12 +266,12 @@ namespace MTree.EbestTrader
                 sessionObj.DisconnectServer();
                 LoginInstance.State = LoginStates.Disconnect;
 
-                logger.Info("Logout success");
+                _logger.Info("Logout success");
                 return true;
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return false;
@@ -292,7 +292,7 @@ namespace MTree.EbestTrader
             if ((Environment.TickCount - LastCommTick) > MaxCommInterval)
             {
                 LastCommTick = Environment.TickCount;
-                logger.Info($"Ebest keep alive");
+                _logger.Info($"Ebest keep alive");
                 KeepAlive();
             }
         }
@@ -304,18 +304,18 @@ namespace MTree.EbestTrader
                 stockQuotingObj.SetFieldData("t1102InBlock", "shcode", 0, "000020");
                 var ret = stockQuotingObj.Request(false);
                 if (ret < 0)
-                    logger.Error($"Keep alive error, {GetLastErrorMessage(ret)}");
+                    _logger.Error($"Keep alive error, {GetLastErrorMessage(ret)}");
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
         private void StockQuotingObj_ReceiveData(string szTrCode)
         {
             LastCommTick = Environment.TickCount;
-            logger.Trace($"szTrCode: {szTrCode}");
+            _logger.Trace($"szTrCode: {szTrCode}");
         }
 
         public void NotifyMessage(MessageTypes type, string message)
@@ -326,7 +326,7 @@ namespace MTree.EbestTrader
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -336,7 +336,7 @@ namespace MTree.EbestTrader
             {
                 if (TraderContracts.ContainsKey(clientId) == true)
                 {
-                    logger.Error($"Contract exist {clientId}");
+                    _logger.Error($"Contract exist {clientId}");
                 }
                 else
                 {
@@ -346,7 +346,7 @@ namespace MTree.EbestTrader
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -359,16 +359,16 @@ namespace MTree.EbestTrader
                     TraderContract temp;
                     TraderContracts.TryRemove(clientId, out temp);
 
-                    logger.Info($"{clientId} contract unregistered");
+                    _logger.Info($"{clientId} contract unregistered");
                 }
                 else
                 {
-                    logger.Warn($"{clientId} contract not exist");
+                    _logger.Warn($"{clientId} contract not exist");
                 }
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 

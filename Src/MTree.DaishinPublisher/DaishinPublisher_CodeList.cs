@@ -32,7 +32,7 @@ namespace MTree.DaishinPublisher
                     if (codeList.ContainsKey(codeEntity.Code) == false)
                         codeList.Add(codeEntity.Code, codeEntity);
                     else
-                        logger.Error($"{codeEntity.Code} code already exists");
+                        _logger.Error($"{codeEntity.Code} code already exists");
                 }
 
                 foreach (string fullCode in (object[])codeMgrObj.GetKosdaqIndustry1List())
@@ -45,7 +45,7 @@ namespace MTree.DaishinPublisher
                     if (codeList.ContainsKey(codeEntity.Code) == false)
                         codeList.Add(codeEntity.Code, codeEntity);
                     else
-                        logger.Error($"{codeEntity.Code} code already exists");
+                        _logger.Error($"{codeEntity.Code} code already exists");
                 }
 
                 foreach (string fullCode in (object[])codeMgrObj.GetKosdaqIndustry2List())
@@ -58,7 +58,7 @@ namespace MTree.DaishinPublisher
                     if (codeList.ContainsKey(codeEntity.Code) == false)
                         codeList.Add(codeEntity.Code, codeEntity);
                     else
-                        logger.Error($"{codeEntity.Code} code already exists");
+                        _logger.Error($"{codeEntity.Code} code already exists");
                 }
                 #endregion
 
@@ -79,7 +79,7 @@ namespace MTree.DaishinPublisher
                     if (codeList.ContainsKey(codeEntity.Code) == false)
                         codeList.Add(codeEntity.Code, codeEntity);
                     else
-                        logger.Error($"{codeEntity.Code} code already exists");
+                        _logger.Error($"{codeEntity.Code} code already exists");
                 }
                 #endregion
 
@@ -94,7 +94,7 @@ namespace MTree.DaishinPublisher
                     if (codeList.ContainsKey(codeEntity.Code) == false)
                         codeList.Add(codeEntity.Code, codeEntity);
                     else
-                        logger.Error($"{codeEntity.Code} code already exists");
+                        _logger.Error($"{codeEntity.Code} code already exists");
                 }
                 #endregion
 
@@ -109,7 +109,7 @@ namespace MTree.DaishinPublisher
                     if (codeList.ContainsKey(codeEntity.Code) == false)
                         codeList.Add(codeEntity.Code, codeEntity);
                     else
-                        logger.Error($"{codeEntity.Code} code already exists");
+                        _logger.Error($"{codeEntity.Code} code already exists");
                 }
                 #endregion
 
@@ -124,7 +124,7 @@ namespace MTree.DaishinPublisher
                     if (codeList.ContainsKey(codeEntity.Code) == false)
                         codeList.Add(codeEntity.Code, codeEntity);
                     else
-                        logger.Error($"{codeEntity.Code} code already exists");
+                        _logger.Error($"{codeEntity.Code} code already exists");
                 }
                 #endregion
 
@@ -146,16 +146,16 @@ namespace MTree.DaishinPublisher
                     if (codeList.ContainsKey(codeEntity.Code) == false)
                         codeList.Add(codeEntity.Code, codeEntity);
                     else
-                        logger.Error($"{codeEntity.Code} code already exists");
+                        _logger.Error($"{codeEntity.Code} code already exists");
                 }
 #endif
                 #endregion
 
-                logger.Info($"Code list query done, Count: {codeList.Count}");
+                _logger.Info($"Code list query done, Count: {codeList.Count}");
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return codeList;
@@ -181,7 +181,7 @@ namespace MTree.DaishinPublisher
 
             try
             {
-                logger.Info($"Theme list query start");
+                _logger.Info($"Theme list query start");
 
                 short ret = themeListObj.BlockRequest();
                 if (ret == 0)
@@ -207,16 +207,16 @@ namespace MTree.DaishinPublisher
                             }
                         }
                     }
-                    logger.Info($"Theme list query done, theme list count : {listCount}");
+                    _logger.Info($"Theme list query done, theme list count : {listCount}");
                 }
                 else
                 {
-                    logger.Error($"Theme list query fail");
+                    _logger.Error($"Theme list query fail");
                 }
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return themeList;

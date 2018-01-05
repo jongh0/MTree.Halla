@@ -22,7 +22,7 @@ namespace MTree.Dashboard
 {
     public class Dashboard
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         public ObservableConcurrentDictionary<string, DashboardItem> StockItems { get; set; } = new ObservableConcurrentDictionary<string, DashboardItem>();
         public ObservableConcurrentDictionary<string, DashboardItem> IndexItems { get; set; } = new ObservableConcurrentDictionary<string, DashboardItem>();
@@ -61,7 +61,7 @@ namespace MTree.Dashboard
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
        
@@ -80,7 +80,7 @@ namespace MTree.Dashboard
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -97,7 +97,7 @@ namespace MTree.Dashboard
                     if (StockItems.ContainsKey(circuitBreak.Code) == true)
                         StockItems[circuitBreak.Code].CircuitBreakType = circuitBreak.CircuitBreakType;
                     else
-                        logger.Warn($"Circuit break code not in mastering data: {circuitBreak.Code}");
+                        _logger.Warn($"Circuit break code not in mastering data: {circuitBreak.Code}");
                 }
                 else
                 {
@@ -106,7 +106,7 @@ namespace MTree.Dashboard
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -123,7 +123,7 @@ namespace MTree.Dashboard
                     if (StockItems.ContainsKey(conclusion.Code) == false)
                     {
                         StockItems.Add(conclusion.Code, new DashboardItem(conclusion.Code));
-                        logger.Warn($"Stock code not in mastering data: {conclusion.Code}");
+                        _logger.Warn($"Stock code not in mastering data: {conclusion.Code}");
                     }
 
                     var item = StockItems[conclusion.Code];
@@ -147,7 +147,7 @@ namespace MTree.Dashboard
                         {
                             var prevId = VerifyOrderingList[code];
                             if (prevId >= newId)
-                                logger.Error($"Conclusion ordering fail, code: {code}, prevId: {prevId}, newId: {newId}");
+                                _logger.Error($"Conclusion ordering fail, code: {code}, prevId: {prevId}, newId: {newId}");
 
                             prevId = newId;
                         }
@@ -160,7 +160,7 @@ namespace MTree.Dashboard
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -177,7 +177,7 @@ namespace MTree.Dashboard
                     if (IndexItems.ContainsKey(conclusion.Code) == false)
                     {
                         IndexItems.Add(conclusion.Code, new DashboardItem(conclusion.Code));
-                        logger.Warn($"Index code not in mastering data: {conclusion.Code}");
+                        _logger.Warn($"Index code not in mastering data: {conclusion.Code}");
                     }
 
                     var item = IndexItems[conclusion.Code];
@@ -195,7 +195,7 @@ namespace MTree.Dashboard
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -221,7 +221,7 @@ namespace MTree.Dashboard
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -246,7 +246,7 @@ namespace MTree.Dashboard
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -281,11 +281,11 @@ namespace MTree.Dashboard
                     fs.Flush(true);
                 }
 
-                logger.Info($"Save Dashboard done, {fileName}");
+                _logger.Info($"Save Dashboard done, {fileName}");
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -303,7 +303,7 @@ namespace MTree.Dashboard
                         if (message.Equals(ExitProgramTypes.Normal.ToString()) == false ||
                             Config.General.KeepAliveDashboardAfterMarketEnd == false)
                         {
-                            logger.Info("Process will be closed");
+                            _logger.Info("Process will be closed");
                             Thread.Sleep(1000 * 5);
 
                             Environment.Exit(0);
@@ -313,7 +313,7 @@ namespace MTree.Dashboard
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
     }

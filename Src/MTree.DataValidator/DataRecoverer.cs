@@ -15,7 +15,7 @@ namespace MTree.DataValidator
 {
     public class DataRecoverer
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
         
         public DbAgent From { get; set; } = DbAgent.Instance;
 
@@ -45,29 +45,29 @@ namespace MTree.DataValidator
 
         private void RecoverIndexMaster(DateTime targetDate, string code)
         {
-            //logger.Info($"Index Master Recovery for {code} Started");
+            //_logger.Info($"Index Master Recovery for {code} Started");
             var filter = FilterFactory.Instance.BuildIndexMasterFilter(targetDate);
 
             IndexMaster master = To.Find(code, filter).FirstOrDefault();
             To.Delete(code, filter);
             To.Insert(From.Find(code, filter)?.FirstOrDefault());
-            logger.Info($"Index Master Recovery for {code} of {targetDate.ToString("yyyy-MM-dd")} Done");
+            _logger.Info($"Index Master Recovery for {code} of {targetDate.ToString("yyyy-MM-dd")} Done");
         }
 
         private void RecoverStockMaster(DateTime targetDate, string code)
         {
-            //logger.Info($"Stock Master Recovery for {code} Started");
+            //_logger.Info($"Stock Master Recovery for {code} Started");
             var filter = FilterFactory.Instance.BuildStockMasterFilter(targetDate);
 
             StockMaster master = To.Find(code, filter).FirstOrDefault();
             To.Delete(code, filter);
             To.Insert(From.Find(code, filter)?.FirstOrDefault());
-            logger.Info($"Stock Master Recovery for {code} of {targetDate.ToString("yyyy-MM-dd")} Done");
+            _logger.Info($"Stock Master Recovery for {code} of {targetDate.ToString("yyyy-MM-dd")} Done");
         }
 
         public void RecoverMasters(DateTime targetDate)
         {
-            logger.Info($"Index Masters Recovery Started");
+            _logger.Info($"Index Masters Recovery Started");
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
@@ -75,7 +75,7 @@ namespace MTree.DataValidator
             RecoverStockMasters(targetDate);
 
             sw.Stop();
-            logger.Info($"Stock Masters Recovery Done. Elapsed:{sw.Elapsed}");
+            _logger.Info($"Stock Masters Recovery Done. Elapsed:{sw.Elapsed}");
         }
 
         private void RecoverIndexMasters(DateTime targetDate)
@@ -91,7 +91,7 @@ namespace MTree.DataValidator
                 IndexMaster master = To.Find(code, filter).FirstOrDefault();
                 To.Delete(code, filter);
                 To.Insert(From.Find(code, filter).FirstOrDefault());
-                logger.Info($"Stock Master Recovery for {code} of {targetDate.ToString("yyyy-MM-dd")} Done. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
+                _logger.Info($"Stock Master Recovery for {code} of {targetDate.ToString("yyyy-MM-dd")} Done. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
             });
         }
 
@@ -107,13 +107,13 @@ namespace MTree.DataValidator
             {
                 To.Delete(code, filter);
                 To.Insert(From.Find(code, filter).FirstOrDefault());
-                logger.Info($"Stock Master Recovery for {code} Done. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
+                _logger.Info($"Stock Master Recovery for {code} Done. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
             });
         }
 
         public void RecoverStockConclusion(DateTime targetDate, string code)
         {
-            //logger.Info($"Stock Conclusion Recovery for {code} Started");
+            //_logger.Info($"Stock Conclusion Recovery for {code} Started");
             var filter = FilterFactory.Instance.BuildStockConclusionFilter(targetDate);
             List<StockConclusion> conclusions = To.Find(code, filter).ToList();
             To.Delete(code, filter);
@@ -123,12 +123,12 @@ namespace MTree.DataValidator
                 To.Insert(conclusion);
             }
             
-            logger.Info($"Stock Conclusion Recovery for {code} of {targetDate.ToString("yyyy-MM-dd")} Done");
+            _logger.Info($"Stock Conclusion Recovery for {code} of {targetDate.ToString("yyyy-MM-dd")} Done");
         }
 
         public void RecoverStockConclusions(DateTime targetDate)
         {
-            logger.Info($"Stock Conclusion Recovery Started");
+            _logger.Info($"Stock Conclusion Recovery Started");
             int cnt = 0;
             List<string> codeList = new List<string>();
             codeList.AddRange(From.GetCollectionList(DbTypes.StockMaster).OrderBy(s => s));
@@ -142,15 +142,15 @@ namespace MTree.DataValidator
                 {
                     To.Insert(conclusion);
                 }
-                logger.Info($"Stock Conclusion Recovery for {code} Done. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
+                _logger.Info($"Stock Conclusion Recovery for {code} Done. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
             });
-            logger.Info($"Stock Conclusion Recovery Done");
+            _logger.Info($"Stock Conclusion Recovery Done");
         }
 
 
         public void RecoverIndexConclusion(DateTime targetDate, string code)
         {
-            //logger.Info($"Index Conclusion Recovery for {code} Started");
+            //_logger.Info($"Index Conclusion Recovery for {code} Started");
             var filter = FilterFactory.Instance.BuildIndexConclusionFilter(targetDate);
             List<IndexConclusion> conclusions = To.Find(code, filter).ToList();
             To.Delete(code, filter);
@@ -159,12 +159,12 @@ namespace MTree.DataValidator
             {
                 To.Insert(conclusion);
             }
-            logger.Info($"Index Conclusion Recovery for {code} of {targetDate.ToString("yyyy-MM-dd")} Done");
+            _logger.Info($"Index Conclusion Recovery for {code} of {targetDate.ToString("yyyy-MM-dd")} Done");
         }
 
         public void RecoverIndexConclusions(DateTime targetDate)
         {
-            logger.Info($"Index Conclusion Recovery Started");
+            _logger.Info($"Index Conclusion Recovery Started");
             int cnt = 0;
             List<string> codeList = new List<string>();
             codeList.AddRange(From.GetCollectionList(DbTypes.IndexMaster).OrderBy(s => s));
@@ -178,14 +178,14 @@ namespace MTree.DataValidator
                 {
                     To.Insert(conclusion);
                 }
-                logger.Info($"Index Conclusion Recovery for {code} Done. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
+                _logger.Info($"Index Conclusion Recovery for {code} Done. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
             });
-            logger.Info($"Index Conclusion Recovery Done");
+            _logger.Info($"Index Conclusion Recovery Done");
         }
         
         public void RecoverCircuitBreak(DateTime targetDate, string code)
         {
-            logger.Info($"Circuit Break Recovery for {code} Started");
+            _logger.Info($"Circuit Break Recovery for {code} Started");
             var filter = FilterFactory.Instance.BuildCircuitBreakFilter(targetDate);
             List<CircuitBreak> cbs = To.Find(code, filter).ToList();
             To.Delete(code, filter);
@@ -194,12 +194,12 @@ namespace MTree.DataValidator
             {
                 To.Insert(cb);
             }
-            logger.Info($"Circuit Break Recovery for {code} Done");
+            _logger.Info($"Circuit Break Recovery for {code} Done");
         }
 
         public void RecoverCircuitBreaks(DateTime targetDate)
         {
-            logger.Info($"Circuit Break Recovery Started");
+            _logger.Info($"Circuit Break Recovery Started");
             int cnt = 0;
             List<string> codeList = new List<string>();
             codeList.AddRange(From.GetCollectionList(DbTypes.StockMaster).OrderBy(s => s));
@@ -213,9 +213,9 @@ namespace MTree.DataValidator
                 {
                     To.Insert(cb);
                 }
-                logger.Info($"Circuit Break Recovery for {code} Done. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
+                _logger.Info($"Circuit Break Recovery for {code} Done. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
             });
-            logger.Info($"Circuit Break Recovery Done");
+            _logger.Info($"Circuit Break Recovery Done");
         }
     }
 }

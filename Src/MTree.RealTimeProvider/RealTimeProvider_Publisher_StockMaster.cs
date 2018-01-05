@@ -23,7 +23,7 @@ namespace MTree.RealTimeProvider
         private void StartStockMastering()
         {
             RealTimeState = "Stock mastering started";
-            logger.Info(RealTimeState);
+            _logger.Info(RealTimeState);
 
             bool masteringRet = false;
 
@@ -56,7 +56,7 @@ namespace MTree.RealTimeProvider
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
@@ -65,12 +65,12 @@ namespace MTree.RealTimeProvider
                 if (masteringRet == true)
                 {
                     RealTimeState = "Stock mastering success";
-                    logger.Info($"{RealTimeState}, Elapsed time: {sw.Elapsed.ToString()}");    
+                    _logger.Info($"{RealTimeState}, Elapsed time: {sw.Elapsed.ToString()}");    
                 }
                 else
                 {
                     RealTimeState = "Stock mastering failed";
-                    logger.Info(RealTimeState);
+                    _logger.Info(RealTimeState);
                 }
 
                 Task.Run(() => StartStockMasterPublishing()).ContinueWith((x) => MasteringDone = true);
@@ -80,7 +80,7 @@ namespace MTree.RealTimeProvider
         private void StartStockMasterPublishing()
         {
             RealTimeState = "Stock master publishing started";
-            logger.Info(RealTimeState);
+            _logger.Info(RealTimeState);
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -104,13 +104,13 @@ namespace MTree.RealTimeProvider
                     }
                     catch (Exception ex)
                     {
-                        logger.Error(ex);
+                        _logger.Error(ex);
                     }
                 }
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
@@ -120,13 +120,13 @@ namespace MTree.RealTimeProvider
                 sw.Stop();
 
                 RealTimeState = "Stock master publishing done";
-                logger.Info($"{RealTimeState}, Elapsed time: {sw.Elapsed.ToString()}");
+                _logger.Info($"{RealTimeState}, Elapsed time: {sw.Elapsed.ToString()}");
             }
         }
         private void StartCodeMapPublishing(Dictionary<string, object> codemap)
         {
             RealTimeState = "Codemap publishing started";
-            logger.Info(RealTimeState);
+            _logger.Info(RealTimeState);
             try
             {
                 foreach (var contract in MasteringContracts)
@@ -137,24 +137,24 @@ namespace MTree.RealTimeProvider
                     }
                     catch (Exception ex)
                     {
-                        logger.Error(ex);
+                        _logger.Error(ex);
                     }
                 }
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
                 RealTimeState = "Codemap publishing done";
-                logger.Info(RealTimeState);
+                _logger.Info(RealTimeState);
             }
         }
         private void StartDaishinStockMastering()
         {
             RealTimeState = "Daishin stock mastering started";
-            logger.Info(RealTimeState);
+            _logger.Info(RealTimeState);
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -211,21 +211,21 @@ namespace MTree.RealTimeProvider
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
                 sw.Stop();
 
                 RealTimeState = "Daishin stock mastering done";
-                logger.Info($"{RealTimeState}, Elapsed time: {sw.Elapsed.ToString()}");
+                _logger.Info($"{RealTimeState}, Elapsed time: {sw.Elapsed.ToString()}");
             }
         }
 
         private void StartEbestStockMatering()
         {
             RealTimeState = "Ebest stock mastering started";
-            logger.Info(RealTimeState);
+            _logger.Info(RealTimeState);
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -282,21 +282,21 @@ namespace MTree.RealTimeProvider
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
                 sw.Stop();
 
                 RealTimeState = "Ebest stock mastering done";
-                logger.Info($"{RealTimeState}, Elapsed time: {sw.Elapsed.ToString()}");
+                _logger.Info($"{RealTimeState}, Elapsed time: {sw.Elapsed.ToString()}");
             }
         }
 
         private void StartKiwoomStockMastering()
         {
             RealTimeState = "Kiwoom stock mastering started";
-            logger.Info(RealTimeState);
+            _logger.Info(RealTimeState);
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -353,14 +353,14 @@ namespace MTree.RealTimeProvider
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
                 sw.Stop();
 
                 RealTimeState = "Kiwoom stock mastering done";
-                logger.Info($"{RealTimeState}, Elapsed time: {sw.Elapsed.ToString()}");
+                _logger.Info($"{RealTimeState}, Elapsed time: {sw.Elapsed.ToString()}");
             }
         }
 
@@ -373,7 +373,7 @@ namespace MTree.RealTimeProvider
 
                 if (contract.Type == ProcessTypes.DaishinPublisher)
                     code = CodeEntity.ConvertToDaishinCode(codeEntity);
-
+                
                 StockMaster master = contract.Callback.GetStockMaster(code);
 
                 if (contract.Type == ProcessTypes.DaishinPublisher)
@@ -383,12 +383,12 @@ namespace MTree.RealTimeProvider
                 else if (contract.Type == ProcessTypes.KiwoomPublisher)
                     CopyStockMasterFromKiwoom(mastering, master);
                 else
-                    logger.Warn("Wrong contract type for stock mastering");
+                    _logger.Warn("Wrong contract type for stock mastering");
             }
             catch (Exception ex)
             {
-                logger.Error($"Stock mastering error, {contract.ToString()}");
-                logger.Error(ex);
+                _logger.Error($"Stock mastering error, {contract.ToString()}");
+                _logger.Error(ex);
             }
             finally
             {
@@ -422,7 +422,7 @@ namespace MTree.RealTimeProvider
 
                     if (source.Code != dest.Code)
                     {
-                        logger.Error($"Daishin stock mastering, Code not matched, {source.Code} != {dest.Code}");
+                        _logger.Error($"Daishin stock mastering, Code not matched, {source.Code} != {dest.Code}");
                         return;
                     }
 
@@ -451,7 +451,7 @@ namespace MTree.RealTimeProvider
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
@@ -472,7 +472,7 @@ namespace MTree.RealTimeProvider
 
                     if (source.Code != dest.Code)
                     {
-                        logger.Error($"Ebest stock mastering, Code not matched, {source.Code} != {dest.Code}");
+                        _logger.Error($"Ebest stock mastering, Code not matched, {source.Code} != {dest.Code}");
                         return;
                     }
 
@@ -500,7 +500,7 @@ namespace MTree.RealTimeProvider
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
@@ -521,7 +521,7 @@ namespace MTree.RealTimeProvider
 
                     if (source.Code != dest.Code)
                     {
-                        logger.Error($"Kiwoom stock mastering, Code not matched, {source.Code} != {dest.Code}");
+                        _logger.Error($"Kiwoom stock mastering, Code not matched, {source.Code} != {dest.Code}");
                         return;
                     }
 
@@ -543,7 +543,7 @@ namespace MTree.RealTimeProvider
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {

@@ -16,14 +16,14 @@ namespace MTree.KiwoomTrader
         {
             try
             {
-                if (kiwoomObj.GetConnectState() == 0)
+                if (_kiwoomObj.GetConnectState() == 0)
                 {
-                    logger.Error("Account list query, session not connected");
+                    _logger.Error("Account list query, session not connected");
                     return null;
                 }
 
                 List<string> accList = new List<string>();
-                foreach (string acc in kiwoomObj.GetLoginInfo("ACCNO").Split(';'))
+                foreach (string acc in _kiwoomObj.GetLoginInfo("ACCNO").Split(';'))
                 {
                     if (string.IsNullOrEmpty(acc) == false)
                         accList.Add(acc);
@@ -33,7 +33,7 @@ namespace MTree.KiwoomTrader
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return null;
@@ -43,15 +43,15 @@ namespace MTree.KiwoomTrader
         {
             try
             {
-                if (kiwoomObj.GetConnectState() == 0)
+                if (_kiwoomObj.GetConnectState() == 0)
                 {
-                    logger.Error("Deposit query, session not connected");
+                    _logger.Error("Deposit query, session not connected");
                     return 0;
                 }
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return 0;
@@ -61,15 +61,15 @@ namespace MTree.KiwoomTrader
         {
             try
             {
-                if (kiwoomObj.GetConnectState() == 0)
+                if (_kiwoomObj.GetConnectState() == 0)
                 {
-                    logger.Error("Make order, session not connected");
+                    _logger.Error("Make order, session not connected");
                     return false;
                 }
 
                 var hoga = (order.PriceType == PriceTypes.LimitPrice) ? "00" : "03";
 
-                var ret = kiwoomObj.SendOrder(
+                var ret = _kiwoomObj.SendOrder(
                     "주식주문",
                     KiwoomScreen.GetScreenNum(), 
                     order.AccountNumber, 
@@ -82,16 +82,16 @@ namespace MTree.KiwoomTrader
 
                 if (ret == 0)
                 {
-                    logger.Info($"Order success, {order.ToString()}");
+                    _logger.Info($"Order success, {order.ToString()}");
                     return true;
                 }
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
-            logger.Error($"Order fail, {order.ToString()}");
+            _logger.Error($"Order fail, {order.ToString()}");
             return false;
         }
 
@@ -99,15 +99,15 @@ namespace MTree.KiwoomTrader
         {
             try
             {
-                if (kiwoomObj.GetConnectState() == 0)
+                if (_kiwoomObj.GetConnectState() == 0)
                 {
-                    logger.Error("Holding list query, session not connected");
+                    _logger.Error("Holding list query, session not connected");
                     return null;
                 }
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return null;
@@ -120,7 +120,7 @@ namespace MTree.KiwoomTrader
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -131,7 +131,7 @@ namespace MTree.KiwoomTrader
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -142,7 +142,7 @@ namespace MTree.KiwoomTrader
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
     }

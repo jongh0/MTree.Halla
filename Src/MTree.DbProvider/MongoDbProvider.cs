@@ -11,7 +11,7 @@ namespace MTree.DbProvider
 {
     public class MongoDbProvider
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         private readonly string chartDbString = "MTree_Chart";
         private readonly string biddingPriceDbString = "MTree_BiddingPrice";
@@ -39,11 +39,11 @@ namespace MTree.DbProvider
                     ServiceUtility.StartService("MongoDb");
 
                 Client = new MongoClient(connectionString);
-                logger.Info($"MongoDb Connected to {connectionString}");
+                _logger.Info($"MongoDb Connected to {connectionString}");
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -56,7 +56,7 @@ namespace MTree.DbProvider
             }
             catch (TimeoutException)
             {
-                logger.Warn($"MongoDb Server is not accessable");
+                _logger.Warn($"MongoDb Server is not accessable");
             }
             return null;
         }

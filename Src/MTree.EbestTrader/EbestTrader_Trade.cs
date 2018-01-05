@@ -26,13 +26,13 @@ namespace MTree.EbestTrader
             {
                 if (WaitLogin() == false)
                 {
-                    logger.Error("Login timeout");
+                    _logger.Error("Login timeout");
                     return null;
                 }
                 
                 if (sessionObj.IsConnected() == false)
                 {
-                    logger.Error("Account list query, session not connected");
+                    _logger.Error("Account list query, session not connected");
                     return null;
                 }
                 
@@ -45,7 +45,7 @@ namespace MTree.EbestTrader
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return accList;
@@ -57,7 +57,7 @@ namespace MTree.EbestTrader
             {
                 if (sessionObj.IsConnected() == false)
                 {
-                    logger.Error("Deposit query, session not connected");
+                    _logger.Error("Deposit query, session not connected");
                     return 0;
                 }
 
@@ -67,13 +67,13 @@ namespace MTree.EbestTrader
                 var ret = accDepositObj.Request(false);
                 if (ret < 0)
                 {
-                    logger.Error($"Deposit query error, {GetLastErrorMessage(ret)}");
+                    _logger.Error($"Deposit query error, {GetLastErrorMessage(ret)}");
                     return 0;
                 }
 
                 if (WaitDepositEvent.WaitOne(WaitTimeout) == false)
                 {
-                    logger.Error($"Deposit checking timeout");
+                    _logger.Error($"Deposit checking timeout");
                     return 0;
                 }
 
@@ -81,7 +81,7 @@ namespace MTree.EbestTrader
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return 0;
@@ -93,13 +93,13 @@ namespace MTree.EbestTrader
             {
                 if (sessionObj.IsConnected() == false)
                 {
-                    logger.Error("Holding list query, session not connected");
+                    _logger.Error("Holding list query, session not connected");
                     return null;
                 }
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return null;
@@ -109,13 +109,13 @@ namespace MTree.EbestTrader
         {
             if (sessionObj.IsConnected() == false)
             {
-                logger.Error("Make order, session not connected");
+                _logger.Error("Make order, session not connected");
                 return false;
             }
 
             if (Monitor.TryEnter(OrderLock, OrderLockTimeout) == false)
             {
-                logger.Error("Making order failed, Can't obtaion lock object");
+                _logger.Error("Making order failed, Can't obtaion lock object");
                 return false;
             }
 
@@ -143,20 +143,20 @@ namespace MTree.EbestTrader
 
                 if (ret == true)
                 {
-                    logger.Info($"Order success, {order.ToString()}");
+                    _logger.Info($"Order success, {order.ToString()}");
                     return true;
                 }
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
                 Monitor.Exit(OrderLock);
             }
 
-            logger.Error($"Order fail, {order.ToString()}");
+            _logger.Error($"Order fail, {order.ToString()}");
             return false;
         }
 
@@ -212,16 +212,16 @@ namespace MTree.EbestTrader
                 var ret = newOrderObj.Request(false);
                 if (ret < 0)
                 {
-                    logger.Error($"New order error, {order.ToString()}, {GetLastErrorMessage(ret)}");
+                    _logger.Error($"New order error, {order.ToString()}, {GetLastErrorMessage(ret)}");
                     return false;
                 }
 
-                logger.Info($"New order success, {order.ToString()}");
+                _logger.Info($"New order success, {order.ToString()}");
                 return true;
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return false;
@@ -256,16 +256,16 @@ namespace MTree.EbestTrader
                 var ret = modifyOrderObj.Request(false);
                 if (ret < 0)
                 {
-                    logger.Error($"Modify order error , {order.ToString()}, {GetLastErrorMessage(ret)}");
+                    _logger.Error($"Modify order error , {order.ToString()}, {GetLastErrorMessage(ret)}");
                     return false;
                 }
 
-                logger.Info($"Modify order success, {order.ToString()}");
+                _logger.Info($"Modify order success, {order.ToString()}");
                 return true;
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return false;
@@ -291,16 +291,16 @@ namespace MTree.EbestTrader
                 var ret = cancelOrderObj.Request(false);
                 if (ret < 0)
                 {
-                    logger.Error($"Cancel order error, {order.ToString()}, {GetLastErrorMessage(ret)}");
+                    _logger.Error($"Cancel order error, {order.ToString()}, {GetLastErrorMessage(ret)}");
                     return false;
                 }
 
-                logger.Info($"Cancel order success, {order.ToString()}");
+                _logger.Info($"Cancel order success, {order.ToString()}");
                 return true;
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return false;
@@ -311,13 +311,13 @@ namespace MTree.EbestTrader
             try
             {
                 LastCommTick = Environment.TickCount;
-                logger.Trace($"szTrCode: {szTrCode}");
+                _logger.Trace($"szTrCode: {szTrCode}");
 
                 CurrDeposit = long.Parse(accDepositObj.GetFieldData("t0424OutBlock", "sunamt", 0));
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
@@ -330,11 +330,11 @@ namespace MTree.EbestTrader
             try
             {
                 LastCommTick = Environment.TickCount;
-                logger.Trace($"szTrCode: {szTrCode}");
+                _logger.Trace($"szTrCode: {szTrCode}");
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -343,11 +343,11 @@ namespace MTree.EbestTrader
             try
             {
                 LastCommTick = Environment.TickCount;
-                logger.Trace($"szTrCode: {szTrCode}");
+                _logger.Trace($"szTrCode: {szTrCode}");
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -356,11 +356,11 @@ namespace MTree.EbestTrader
             try
             {
                 LastCommTick = Environment.TickCount;
-                logger.Trace($"szTrCode: {szTrCode}");
+                _logger.Trace($"szTrCode: {szTrCode}");
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -438,7 +438,7 @@ namespace MTree.EbestTrader
                 var ordordcancelqty = orderObj.GetFieldData("OutBlock", "ordordcancelqty");
                 sb.AppendLine($"{nameof(ordordcancelqty)}: {ordordcancelqty}");
 
-                logger.Info($"Order result field\n{sb.ToString()}"); 
+                _logger.Info($"Order result field\n{sb.ToString()}"); 
                 #endregion
 
                 result.AccountNumber = accno;
@@ -453,7 +453,7 @@ namespace MTree.EbestTrader
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return result;
@@ -463,7 +463,7 @@ namespace MTree.EbestTrader
         {
             if (szTrCode != "SC0")
             {
-                logger.Error($"Wrong tr code. Received: {szTrCode}. Expected: SC0");
+                _logger.Error($"Wrong tr code. Received: {szTrCode}. Expected: SC0");
                 return;
             }
 
@@ -475,7 +475,7 @@ namespace MTree.EbestTrader
         {
             if (szTrCode != "SC1")
             {
-                logger.Error($"Wrong tr code. Received: {szTrCode}. Expected: SC1");
+                _logger.Error($"Wrong tr code. Received: {szTrCode}. Expected: SC1");
                 return;
             }
 
@@ -487,7 +487,7 @@ namespace MTree.EbestTrader
         {
             if (szTrCode != "SC2")
             {
-                logger.Error($"Wrong tr code. Received: {szTrCode}. Expected: SC2");
+                _logger.Error($"Wrong tr code. Received: {szTrCode}. Expected: SC2");
                 return;
             }
 
@@ -499,7 +499,7 @@ namespace MTree.EbestTrader
         {
             if (szTrCode != "SC3")
             {
-                logger.Error($"Wrong tr code. Received: {szTrCode}. Expected: SC3");
+                _logger.Error($"Wrong tr code. Received: {szTrCode}. Expected: SC3");
                 return;
             }
 
@@ -511,7 +511,7 @@ namespace MTree.EbestTrader
         {
             if (szTrCode != "SC4")
             {
-                logger.Error($"Wrong tr code. Received: {szTrCode}. Expected: SC4");
+                _logger.Error($"Wrong tr code. Received: {szTrCode}. Expected: SC4");
                 return;
             }
 
@@ -521,7 +521,7 @@ namespace MTree.EbestTrader
 
         private void NotifyOrderResult(OrderResult result)
         {
-            logger.Info($"NotifyOrderResult, {result}");
+            _logger.Info($"NotifyOrderResult, {result}");
 
             if (result.ResultType == OrderResultTypes.Unknown)
                 return;

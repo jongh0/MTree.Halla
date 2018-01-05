@@ -9,7 +9,7 @@ namespace MTree.VirtualTrader
 {
     public class VirtualAccount
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         public int Deposit { get; private set; } = 0;
 
@@ -28,7 +28,7 @@ namespace MTree.VirtualTrader
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return false;

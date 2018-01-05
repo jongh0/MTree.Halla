@@ -11,7 +11,7 @@ namespace MTree.RealTimeProvider
 {
     public class CodeMapBuilder
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         private Dictionary<string, object> codeMapHead;
 
@@ -39,7 +39,7 @@ namespace MTree.RealTimeProvider
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -51,7 +51,7 @@ namespace MTree.RealTimeProvider
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -63,7 +63,7 @@ namespace MTree.RealTimeProvider
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -75,7 +75,7 @@ namespace MTree.RealTimeProvider
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -88,7 +88,7 @@ namespace MTree.RealTimeProvider
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -112,7 +112,7 @@ namespace MTree.RealTimeProvider
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             return ret;
         }

@@ -17,61 +17,58 @@ namespace MTree.AutoLauncher
 {
     public class ViewModel : INotifyPropertyChanged
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         public Shutdowner Shutdowner { get; set; } = new Shutdowner();
 
-        private List<Launcher> _Launchers;
+        private List<Launcher> _launchers;
         public List<Launcher> Launchers
         {
-            get
-            {
-                return _Launchers;
-            }
+            get => _launchers;
             set
             {
-                _Launchers = value;
+                _launchers = value;
                 NotifyPropertyChanged(nameof(Launchers));
             }
         }
 
         public List<ProcessTypes> KillProcesses { get; set; } = new List<ProcessTypes>();
 
-        RelayCommand _KillAllCommand;
+        RelayCommand _killAllCommand;
         public ICommand KillAllCommand
         {
             get
             {
-                if (_KillAllCommand == null)
-                    _KillAllCommand = new RelayCommand(() => ExecuteKillAll());
+                if (_killAllCommand == null)
+                    _killAllCommand = new RelayCommand(() => ExecuteKillAll());
 
-                return _KillAllCommand;
+                return _killAllCommand;
             }
         }
 
         public void ExecuteKillAll()
         {
-            logger.Info("Execute kill all");
+            _logger.Info("Execute kill all");
 
             if (MessageBox.Show("Kill all process?", "", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
                 ProcessUtility.Start(ProcessTypes.KillAll);
         }
 
-        RelayCommand _ShutdownCommand;
+        RelayCommand _shutdownCommand;
         public ICommand ShutdownCommand
         {
             get
             {
-                if (_ShutdownCommand == null)
-                    _ShutdownCommand = new RelayCommand(() => ExecuteShutdown());
+                if (_shutdownCommand == null)
+                    _shutdownCommand = new RelayCommand(() => ExecuteShutdown());
 
-                return _ShutdownCommand;
+                return _shutdownCommand;
             }
         }
 
         public void ExecuteShutdown()
         {
-            logger.Info("Execute shutdown");
+            _logger.Info("Execute shutdown");
 
             if (MessageBox.Show("Shutdown?", "", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
                 WindowsCommand.Shutdown();
@@ -88,7 +85,7 @@ namespace MTree.AutoLauncher
                     {
                         Task.Run(() =>
                         {
-                            logger.Info("Not working day, shutdown after 5 mins");
+                            _logger.Info("Not working day, shutdown after 5 mins");
 
                             Thread.Sleep(1000 * 60 * 5);
                             WindowsCommand.Shutdown();
@@ -119,7 +116,7 @@ namespace MTree.AutoLauncher
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 

@@ -10,7 +10,7 @@ namespace MTree.Consumer
 {
     public class CodeMapConverter
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         public static ICodeMap JsonStringToCodeMap(string headName, string jsonString)
         {
@@ -18,7 +18,7 @@ namespace MTree.Consumer
             {
                 Error = (sender, args) =>
                 {
-                    logger.Error($"Configuration deserialize error, {args.ErrorContext.Error.Message}");
+                    _logger.Error($"Configuration deserialize error, {args.ErrorContext.Error.Message}");
                     args.ErrorContext.Handled = true;
                 }
             });
@@ -53,7 +53,7 @@ namespace MTree.Consumer
                             if (s.Name != deserialized[key].ToString())
                             {
                                 // TODO : Select correct stock name
-                                logger.Error($"Stock instance has diffrent name, {s.Name} vs. {deserialized[key].ToString()}");
+                                _logger.Error($"Stock instance has diffrent name, {s.Name} vs. {deserialized[key].ToString()}");
                             }
                         }
                         ret.Add(s);
@@ -64,7 +64,7 @@ namespace MTree.Consumer
                         {
                             Error = (sender, args) =>
                             {
-                                logger.Error($"Configuration deserialize error, {args.ErrorContext.Error.Message}");
+                                _logger.Error($"Configuration deserialize error, {args.ErrorContext.Error.Message}");
                                 args.ErrorContext.Handled = true;
                             }
                         });
@@ -76,7 +76,7 @@ namespace MTree.Consumer
                 }
                 catch (Exception ex)
                 {
-                    logger.Error(ex);
+                    _logger.Error(ex);
                 }
             }
             return ret;
@@ -135,7 +135,7 @@ namespace MTree.Consumer
                             if (s.Name != dic[key].ToString())
                             {
                                 // TODO : Select correct stock name
-                                logger.Warn($"Stock instance has diffrent name, {s.Name} vs. {dic[key].ToString()}");
+                                _logger.Warn($"Stock instance has diffrent name, {s.Name} vs. {dic[key].ToString()}");
                             }
                         }
                         ret.Add(s);
@@ -147,7 +147,7 @@ namespace MTree.Consumer
                 }
                 catch (Exception ex)
                 {
-                    logger.Error(ex);
+                    _logger.Error(ex);
                 }
             }
             return ret;

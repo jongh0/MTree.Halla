@@ -132,13 +132,13 @@ namespace MTree.DataValidator
                 
                 if (_FromSourceToDestination == true)
                 {
-                    Recoverer.From = DbAgent.Instance;
-                    Recoverer.To = DbAgent.RemoteInstance;
+                    _recoverer.From = DbAgent.Instance;
+                    _recoverer.To = DbAgent.RemoteInstance;
                 }
                 else
                 {
-                    Recoverer.From = DbAgent.RemoteInstance;
-                    Recoverer.To = DbAgent.Instance;
+                    _recoverer.From = DbAgent.RemoteInstance;
+                    _recoverer.To = DbAgent.Instance;
                 }
                 //NotifyPropertyChanged(nameof(FromSourceToDestination));
             }
@@ -190,9 +190,9 @@ namespace MTree.DataValidator
                 int cnt = 0;
                 Parallel.ForEach(codeList, new ParallelOptions { MaxDegreeOfParallelism = Config.Validator.ThreadLimit }, code =>
                 {
-                    if (Validator.ValidateMaster(targetDate, code, true) == false)
+                    if (_validator.ValidateMaster(targetDate, code, true) == false)
                     {
-                        logger.Error($"Master Validation for {code} of {targetDate.ToString("yyyy-MM-dd")} Fail. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
+                        _logger.Error($"Master Validation for {code} of {targetDate.ToString("yyyy-MM-dd")} Fail. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
                         if (ValidateOnly == false)
                         {
                             DialogResult needRecovery = DialogResult.None;
@@ -206,18 +206,18 @@ namespace MTree.DataValidator
                             }
 
                             if (needRecovery == DialogResult.OK)
-                                Recoverer.RecoverMaster(targetDate, code);
+                                _recoverer.RecoverMaster(targetDate, code);
                         }
                     }
                     else
                     {
-                        logger.Info($"Master Validation for {code} of {targetDate.ToString("yyyy-MM-dd")} success. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
+                        _logger.Info($"Master Validation for {code} of {targetDate.ToString("yyyy-MM-dd")} success. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
                     }
                 });
                 ApplyForAll = false;
             }
 
-            logger.Info("Master Recovery Done.");
+            _logger.Info("Master Recovery Done.");
         }
 
         private RelayCommand _RecoverMasterCommand;
@@ -231,9 +231,9 @@ namespace MTree.DataValidator
                     {
                         for (DateTime targetDate = StartingDate; targetDate <= EndingDate; targetDate = targetDate.AddDays(1))
                         {
-                            if (Validator.ValidateMaster(targetDate, Code, true) == false)
+                            if (_validator.ValidateMaster(targetDate, Code, true) == false)
                             {
-                                logger.Error($"Master Validation for {Code} of {targetDate.ToString("yyyy-MM-dd")} Fail.");
+                                _logger.Error($"Master Validation for {Code} of {targetDate.ToString("yyyy-MM-dd")} Fail.");
                                 if (ValidateOnly == false)
                                 {
                                     DialogResult needRecovery = DialogResult.None;
@@ -246,13 +246,13 @@ namespace MTree.DataValidator
                                     }
                                     if (needRecovery == DialogResult.OK)
                                     {
-                                        Recoverer.RecoverMaster(targetDate, Code);
+                                        _recoverer.RecoverMaster(targetDate, Code);
                                     }
                                 }
                             }
                             else
                             {
-                                logger.Info($"Master Validation for {Code} of {targetDate.ToString("yyyy-MM-dd")} success.");
+                                _logger.Info($"Master Validation for {Code} of {targetDate.ToString("yyyy-MM-dd")} success.");
                             }
                         }
                     }));
@@ -283,9 +283,9 @@ namespace MTree.DataValidator
                 int cnt = 0;
                 Parallel.ForEach(codeList, new ParallelOptions { MaxDegreeOfParallelism = Config.Validator.ThreadLimit }, code =>
                 {
-                    if (Validator.ValidateStockConclusion(targetDate, code, true) == false)
+                    if (_validator.ValidateStockConclusion(targetDate, code, true) == false)
                     {
-                        logger.Error($"Stock Conclusion Validation for {code} of {targetDate.ToString("yyyy-MM-dd")} Fail. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
+                        _logger.Error($"Stock Conclusion Validation for {code} of {targetDate.ToString("yyyy-MM-dd")} Fail. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
 
                         if (ValidateOnly == false)
                         {
@@ -299,19 +299,19 @@ namespace MTree.DataValidator
                             }
 
                             if (needRecovery == DialogResult.OK)
-                                Recoverer.RecoverStockConclusion(targetDate, code);
+                                _recoverer.RecoverStockConclusion(targetDate, code);
                         }
                     }
                     else
                     {
-                        logger.Info($"Stock Conclusion Validation for {code} of {targetDate.ToString("yyyy-MM-dd")} success. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
+                        _logger.Info($"Stock Conclusion Validation for {code} of {targetDate.ToString("yyyy-MM-dd")} success. {Interlocked.Increment(ref cnt)}/{codeList.Count}");
                     }
                 });
 
                 ApplyForAll = false;
             }
 
-            logger.Info("Stock Conclusion Recovery Done.");
+            _logger.Info("Stock Conclusion Recovery Done.");
         }
 
         private RelayCommand _RecoverStockConclusionCommand;
@@ -325,9 +325,9 @@ namespace MTree.DataValidator
                     {
                         for (DateTime targetDate = StartingDate; targetDate <= EndingDate; targetDate = targetDate.AddDays(1))
                         {
-                            if (Validator.ValidateStockConclusion(targetDate, Code, true) == false)
+                            if (_validator.ValidateStockConclusion(targetDate, Code, true) == false)
                             {
-                                logger.Error($"Stock Conclusion  Validation for {Code} of {targetDate.ToString("yyyy-MM-dd")} Fail.");
+                                _logger.Error($"Stock Conclusion  Validation for {Code} of {targetDate.ToString("yyyy-MM-dd")} Fail.");
                                 if (ValidateOnly == false)
                                 {
                                     DialogResult needRecovery = DialogResult.None;
@@ -338,16 +338,16 @@ namespace MTree.DataValidator
                                     }
 
                                     if (needRecovery == DialogResult.OK)
-                                        Recoverer.RecoverStockConclusion(targetDate, Code);
+                                        _recoverer.RecoverStockConclusion(targetDate, Code);
                                 }
                             }
                             else
                             {
-                                logger.Info($"Stock Conclusion Validation for {Code} of {targetDate.ToString("yyyy-MM-dd")} success.");
+                                _logger.Info($"Stock Conclusion Validation for {Code} of {targetDate.ToString("yyyy-MM-dd")} success.");
                             }
                         }
                         ApplyForAll = false;
-                        logger.Info("Stock Conclusion Recovery Done.");
+                        _logger.Info("Stock Conclusion Recovery Done.");
                     }));
 
                 return _RecoverStockConclusionCommand;
@@ -375,7 +375,7 @@ namespace MTree.DataValidator
             {
                 Parallel.ForEach(codeList, new ParallelOptions { MaxDegreeOfParallelism = Config.Validator.ThreadLimit }, code =>
                 {
-                    if (Validator.ValidateIndexConclusion(targetDate, code, true) == false)
+                    if (_validator.ValidateIndexConclusion(targetDate, code, true) == false)
                     {
                         if (ValidateOnly == false)
                         {
@@ -384,7 +384,7 @@ namespace MTree.DataValidator
                             lock (popupWindowLockObject)
                             {
                                 if (File.Exists(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, indexConclusionCompareResultPath, code + ".html")) == false)
-                                    logger.Error($"{Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, indexConclusionCompareResultPath, code + ".html")} is not exist.");
+                                    _logger.Error($"{Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, indexConclusionCompareResultPath, code + ".html")} is not exist.");
 
                                 if (ApplyForAll == false)
                                     needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, indexConclusionCompareResultPath, code + ".html"));
@@ -393,7 +393,7 @@ namespace MTree.DataValidator
                             }
 
                             if (needRecovery == DialogResult.OK)
-                                Recoverer.RecoverIndexConclusion(targetDate, code);
+                                _recoverer.RecoverIndexConclusion(targetDate, code);
                         }
                     }
                 });
@@ -401,7 +401,7 @@ namespace MTree.DataValidator
                 ApplyForAll = false;
             }
 
-            logger.Info("Index Conclusion Recovery Done.");
+            _logger.Info("Index Conclusion Recovery Done.");
         }
 
         private RelayCommand _RecoverIndexConclusionCommand;
@@ -415,9 +415,9 @@ namespace MTree.DataValidator
                     {
                         for (DateTime targetDate = StartingDate; targetDate <= EndingDate; targetDate = targetDate.AddDays(1))
                         {
-                            if (Validator.ValidateIndexConclusion(targetDate, Code, true) == false)
+                            if (_validator.ValidateIndexConclusion(targetDate, Code, true) == false)
                             {
-                                logger.Error($"Index Conclusion Validation for {Code} of {targetDate.ToString("yyyy-MM-dd")} Fail.");
+                                _logger.Error($"Index Conclusion Validation for {Code} of {targetDate.ToString("yyyy-MM-dd")} Fail.");
                                 if (ValidateOnly == false)
                                 {
                                     DialogResult needRecovery = DialogResult.None;
@@ -428,15 +428,15 @@ namespace MTree.DataValidator
                                     }
 
                                     if (needRecovery == DialogResult.OK)
-                                        Recoverer.RecoverIndexConclusion(targetDate, Code);
+                                        _recoverer.RecoverIndexConclusion(targetDate, Code);
                                 }
                             }
                             else
                             {
-                                logger.Info($"Index Conclusion Validation for {Code} of {targetDate.ToString("yyyy-MM-dd")} success.");
+                                _logger.Info($"Index Conclusion Validation for {Code} of {targetDate.ToString("yyyy-MM-dd")} success.");
                             }
                         }
-                        logger.Info("Index Conclusion Recovery Done.");
+                        _logger.Info("Index Conclusion Recovery Done.");
                     }));
 
                 return _RecoverIndexConclusionCommand;
@@ -464,9 +464,9 @@ namespace MTree.DataValidator
                 int cnt = 0;
                 Parallel.ForEach(codeList, new ParallelOptions { MaxDegreeOfParallelism = Config.Validator.ThreadLimit }, code =>
                 {
-                    if (Validator.ValidateCircuitBreak(targetDate, code, true) == false)
+                    if (_validator.ValidateCircuitBreak(targetDate, code, true) == false)
                     {
-                        logger.Error($"Circuit Break Validation for {code} of {targetDate.ToString("yyyy-MM-dd")} Fail.");
+                        _logger.Error($"Circuit Break Validation for {code} of {targetDate.ToString("yyyy-MM-dd")} Fail.");
                         if (ValidateOnly == false)
                         {
                             DialogResult needRecovery = DialogResult.None;
@@ -480,18 +480,18 @@ namespace MTree.DataValidator
                             }
 
                             if (needRecovery == DialogResult.OK)
-                                Recoverer.RecoverCircuitBreak(targetDate, code);
+                                _recoverer.RecoverCircuitBreak(targetDate, code);
                         }
                     }
                     else
                     {
-                        logger.Info($"Circuit Break Validation for {code} of {targetDate.ToString("yyyy-MM-dd")} success.{Interlocked.Increment(ref cnt)}/{codeList.Count}");
+                        _logger.Info($"Circuit Break Validation for {code} of {targetDate.ToString("yyyy-MM-dd")} success.{Interlocked.Increment(ref cnt)}/{codeList.Count}");
                     }
                 });
                 ApplyForAll = false;
             }
 
-            logger.Info("Circuit Break Recovery Done.");
+            _logger.Info("Circuit Break Recovery Done.");
         }
 
 
@@ -506,9 +506,9 @@ namespace MTree.DataValidator
                     {
                         for (DateTime targetDate = StartingDate; targetDate <= EndingDate; targetDate = targetDate.AddDays(1))
                         {
-                            if (Validator.ValidateCircuitBreak(targetDate, Code, true) == false)
+                            if (_validator.ValidateCircuitBreak(targetDate, Code, true) == false)
                             {
-                                logger.Error($"Circuit Break Validation for {Code} of {targetDate.ToString("yyyy-MM-dd")} Fail.");
+                                _logger.Error($"Circuit Break Validation for {Code} of {targetDate.ToString("yyyy-MM-dd")} Fail.");
                                 if (ValidateOnly == false)
                                 {
                                     DialogResult needRecovery = DialogResult.None;
@@ -519,12 +519,12 @@ namespace MTree.DataValidator
                                     }
 
                                     if (needRecovery == DialogResult.OK)
-                                        Recoverer.RecoverCircuitBreak(targetDate, Code);
+                                        _recoverer.RecoverCircuitBreak(targetDate, Code);
                                 }
                             }
                             else
                             {
-                                logger.Info($"Circuit Break Validation for {Code} of {targetDate.ToString("yyyy-MM-dd")} success.");
+                                _logger.Info($"Circuit Break Validation for {Code} of {targetDate.ToString("yyyy-MM-dd")} success.");
                             }
                         }
                     }));

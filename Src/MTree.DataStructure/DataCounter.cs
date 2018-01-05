@@ -15,7 +15,7 @@ namespace MTree.DataStructure
     [BsonDiscriminator(RootClass = true)]
     public class DataCounter : INotifyPropertyChanged
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         [BsonId]
         public ObjectId Id { get; set; }
@@ -270,11 +270,11 @@ namespace MTree.DataStructure
                     fs.Flush(true);
                 }
 
-                logger.Info($"Save {Type.ToString()} done, {fileName}{Environment.NewLine}{ToString()}");
+                _logger.Info($"Save {Type.ToString()} done, {fileName}{Environment.NewLine}{ToString()}");
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -296,7 +296,7 @@ namespace MTree.DataStructure
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return sb.ToString();

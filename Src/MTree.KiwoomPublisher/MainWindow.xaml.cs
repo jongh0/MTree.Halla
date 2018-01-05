@@ -24,7 +24,7 @@ namespace MTree.KiwoomPublisher
     /// </summary>
     public partial class MainWindow : Window
     {
-        private NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         KiwoomPublisher Publisher { get; set; }
 
@@ -45,7 +45,7 @@ namespace MTree.KiwoomPublisher
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
     }

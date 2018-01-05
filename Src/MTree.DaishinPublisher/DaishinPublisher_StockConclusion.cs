@@ -24,7 +24,7 @@ namespace MTree.DaishinPublisher
         {
             if (GetSubscribableCount() < 2)
             {
-                logger.Error("Not enough subscribable count");
+                _logger.Error("Not enough subscribable count");
                 return false;
             }
 
@@ -58,18 +58,18 @@ namespace MTree.DaishinPublisher
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
                 if (status == 0)
                 {
-                    logger.Trace($"Subscribe StockConclusion success, Code: {code}");
+                    _logger.Trace($"Subscribe StockConclusion success, Code: {code}");
                     StockSubscribeCount += 2;
                 }
                 else
                 {
-                    logger.Error($"Subscribe StockConclusion fail, Code: {code}, Status: {status}, Msg: {stockCurObj.GetDibMsg1()}");
+                    _logger.Error($"Subscribe StockConclusion fail, Code: {code}, Status: {status}, Msg: {stockCurObj.GetDibMsg1()}");
                 }
             }
 
@@ -108,18 +108,18 @@ namespace MTree.DaishinPublisher
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
                 if (status == 0)
                 {
-                    logger.Trace($"Unsubscribe StockConclusion success, Code: {code}");
+                    _logger.Trace($"Unsubscribe StockConclusion success, Code: {code}");
                     StockSubscribeCount -= 2;
                 }
                 else
                 {
-                    logger.Error($"Unsubscribe StockConclusion fail, Code: {code}, Status: {status}, Msg: {stockCurObj.GetDibMsg1()}");
+                    _logger.Error($"Unsubscribe StockConclusion fail, Code: {code}, Status: {status}, Msg: {stockCurObj.GetDibMsg1()}");
                 }
             }
 
@@ -149,7 +149,7 @@ namespace MTree.DaishinPublisher
                 // 5 - (long) 현재가
                 conclusion.Price = Convert.ToSingle(stockOutCurObj.GetHeaderValue(5));
                 if (conclusion.Price <= 0)
-                    logger.Error($"Stock conclusion price error, {conclusion.Price}");
+                    _logger.Error($"Stock conclusion price error, {conclusion.Price}");
 
                 // 9 - (char)  체결매수매도플래그
                 char conclusionType = Convert.ToChar(stockOutCurObj.GetHeaderValue(9));
@@ -165,7 +165,7 @@ namespace MTree.DaishinPublisher
 
                     default:
                         conclusion.ConclusionType = ConclusionTypes.Unknown;
-                        logger.Error($"Stock conclusion type error, {conclusionType}");
+                        _logger.Error($"Stock conclusion type error, {conclusionType}");
                         break;
                 }
 
@@ -179,7 +179,7 @@ namespace MTree.DaishinPublisher
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
@@ -187,7 +187,7 @@ namespace MTree.DaishinPublisher
                 {
                     var latency = Environment.TickCount - startTick;
                     if (latency > 10)
-                        logger.Error($"Stock conclusion latency error, {latency}");
+                        _logger.Error($"Stock conclusion latency error, {latency}");
                 }
             }
         }
@@ -211,7 +211,7 @@ namespace MTree.DaishinPublisher
                 // 13 - (long) 현재가
                 conclusion.Price = Convert.ToSingle(stockCurObj.GetHeaderValue(13));
                 if (conclusion.Price <= 0)
-                    logger.Error($"Stock conclusion price error, {conclusion.Price}");
+                    _logger.Error($"Stock conclusion price error, {conclusion.Price}");
 
                 // 14 - (char)체결 상태
                 char conclusionType = Convert.ToChar(stockCurObj.GetHeaderValue(14));
@@ -227,7 +227,7 @@ namespace MTree.DaishinPublisher
 
                     default:
                         conclusion.ConclusionType = ConclusionTypes.Unknown;
-                        logger.Error($"Stock conclusion type error, {conclusionType}");
+                        _logger.Error($"Stock conclusion type error, {conclusionType}");
                         break;
                 }
 
@@ -264,7 +264,7 @@ namespace MTree.DaishinPublisher
 
                     default:
                         conclusion.MarketTimeType = MarketTimeTypes.Unknown;
-                        logger.Error($"Stock conclusion market time type error, {marketTimeType}");
+                        _logger.Error($"Stock conclusion market time type error, {marketTimeType}");
                         break;
                 }
 
@@ -275,7 +275,7 @@ namespace MTree.DaishinPublisher
                     if (expected == '1')
                     {
                         conclusion.MarketTimeType = MarketTimeTypes.NormalExpect;
-                        logger.Trace($"Received expected price for {conclusion.Code}, price:{conclusion.Amount}");
+                        _logger.Trace($"Received expected price for {conclusion.Code}, price:{conclusion.Amount}");
                     }
                 }
 
@@ -283,7 +283,7 @@ namespace MTree.DaishinPublisher
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
@@ -291,7 +291,7 @@ namespace MTree.DaishinPublisher
                 {
                     var latency = Environment.TickCount - startTick;
                     if (latency > 10)
-                        logger.Error($"Stock conclusion latency error, {latency}");
+                        _logger.Error($"Stock conclusion latency error, {latency}");
                 }
             }
         }

@@ -26,7 +26,8 @@ namespace MTree.DataValidator
     /// </summary>
     public partial class MainWindow : Window
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
+
         public MainWindow()
         {
             InitializeComponent();

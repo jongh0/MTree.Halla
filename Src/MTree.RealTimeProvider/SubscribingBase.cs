@@ -11,7 +11,7 @@ namespace MTree.RealTimeProvider
 {
     public class SubscribingBase
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         #region Queue
         public ConcurrentQueue<BiddingPrice> BiddingPriceQueue { get; } = new ConcurrentQueue<BiddingPrice>();
@@ -44,12 +44,12 @@ namespace MTree.RealTimeProvider
         protected void StopQueueTask()
         {
             QueueTaskCancelSource.Cancel();
-            logger.Info($"[{GetType().Name}] Queue task stopped");
+            _logger.Info($"[{GetType().Name}] Queue task stopped");
         }
 
         protected void WaitQueueTask()
         {
-            logger.Info($"[{GetType().Name}] Wait queue task done");
+            _logger.Info($"[{GetType().Name}] Wait queue task done");
 
             while (BiddingPriceQueue.Count > 0 ||
                    CircuitBreakQueue.Count > 0 ||
@@ -59,7 +59,7 @@ namespace MTree.RealTimeProvider
                 Thread.Sleep(100);
             }
 
-            logger.Info($"[{GetType().Name}] Queue task done");
+            _logger.Info($"[{GetType().Name}] Queue task done");
         }
 
         public void StartRefreshTimer()

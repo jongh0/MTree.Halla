@@ -12,7 +12,7 @@ namespace MTree.VirtualTrader
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Single, ValidateMustUnderstand = false)]
     public partial class VirtualTrader : ITrader
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         public void NotifyMessage(MessageTypes type, string message)
         {

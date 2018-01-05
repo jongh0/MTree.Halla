@@ -28,13 +28,13 @@ namespace MTree.DaishinPublisher
         {
             if (sessionObj.IsConnect != 1)
             {
-                logger.Error("Quoting failed, session not connected");
+                _logger.Error("Quoting failed, session not connected");
                 return false;
             }
 
             if (Monitor.TryEnter(QuoteLock, QuoteLockTimeout) == false)
             {
-                logger.Error($"Quoting failed, Code: {code}, Can't obtaion lock object");
+                _logger.Error($"Quoting failed, Code: {code}, Can't obtaion lock object");
                 return false;
             }
 
@@ -44,7 +44,7 @@ namespace MTree.DaishinPublisher
             {
                 WaitQuoteInterval();
 
-                logger.Info($"Start quoting, Code: {code}");
+                _logger.Info($"Start quoting, Code: {code}");
                 QuotingStockMaster = stockMaster;
 
                 stockMstObj.SetInputValue(0, code);
@@ -54,20 +54,20 @@ namespace MTree.DaishinPublisher
                 {
                     if (QuotingStockMaster.Code != string.Empty)
                     {
-                        logger.Info($"Quoting done, Code: {code}");
+                        _logger.Info($"Quoting done, Code: {code}");
                         return true;
                     }
 
-                    logger.Error($"Quoting fail, Code: {code}");
+                    _logger.Error($"Quoting fail, Code: {code}");
                 }
                 else
                 {
-                    logger.Error($"Quoting request fail, Code: {code}, result: {ret}");
+                    _logger.Error($"Quoting request fail, Code: {code}, result: {ret}");
                 }
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
@@ -165,7 +165,7 @@ namespace MTree.DaishinPublisher
             catch (Exception ex)
             {
                 QuotingStockMaster.Code = string.Empty;
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
     }

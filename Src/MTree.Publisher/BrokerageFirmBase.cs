@@ -15,7 +15,7 @@ namespace MTree.Publisher
 {
     public class BrokerageFirmBase : PublisherBase
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         // Login
         public LoginInfo LoginInstance { get; } = new LoginInfo();
@@ -84,7 +84,7 @@ namespace MTree.Publisher
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -105,7 +105,7 @@ namespace MTree.Publisher
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -126,7 +126,7 @@ namespace MTree.Publisher
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -147,7 +147,7 @@ namespace MTree.Publisher
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
         private void ProcessETFConclusionQueue()
@@ -167,14 +167,14 @@ namespace MTree.Publisher
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
         protected bool WaitQuoting()
         {
             if (WaitQuotingEvent.WaitOne(WaitQuotingTimeout) == false)
             {
-                logger.Error($"{GetType().Name} wait quoting timeout");
+                _logger.Error($"{GetType().Name} wait quoting timeout");
                 return false;
             }
 
@@ -190,7 +190,7 @@ namespace MTree.Publisher
         {
             if (WaitLoginEvent.WaitOne(WaitLoginTimeout) == false)
             {
-                logger.Error($"{GetType().Name} wait login timeout");
+                _logger.Error($"{GetType().Name} wait login timeout");
                 return false;
             }
 
@@ -201,7 +201,7 @@ namespace MTree.Publisher
         {
             Thread.Sleep(1000 * 3); // 로그인후 대기
 
-            logger.Info($"{GetType().Name} set login");
+            _logger.Info($"{GetType().Name} set login");
             WaitLoginEvent.Set();
         }
 

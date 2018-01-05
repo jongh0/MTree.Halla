@@ -14,9 +14,9 @@ namespace MTree.KiwoomPublisher
 {
     public partial class KiwoomPublisher : BrokerageFirmBase
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private AxKHOpenAPILib.AxKHOpenAPI kiwoomObj;
+        private AxKHOpenAPILib.AxKHOpenAPI _kiwoomObj;
 
         public KiwoomPublisher(AxKHOpenAPILib.AxKHOpenAPI axKHOpenAPI)
         {
@@ -24,15 +24,15 @@ namespace MTree.KiwoomPublisher
             {
                 QuoteInterval = 1000 / 5;
 
-                kiwoomObj = axKHOpenAPI;
-                kiwoomObj.OnEventConnect += OnEventConnect;
-                kiwoomObj.OnReceiveTrData += OnReceiveTrData;
+                _kiwoomObj = axKHOpenAPI;
+                _kiwoomObj.OnEventConnect += OnEventConnect;
+                _kiwoomObj.OnReceiveTrData += OnReceiveTrData;
 
                 Login();
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -41,9 +41,9 @@ namespace MTree.KiwoomPublisher
         {
             try
             {
-                if (kiwoomObj.CommConnect() == 0)
+                if (_kiwoomObj.CommConnect() == 0)
                 {
-                    logger.Info("Login window open success");
+                    _logger.Info("Login window open success");
 
                     if (Config.Kiwoom.UseSessionManager == true)
                     {
@@ -57,11 +57,11 @@ namespace MTree.KiwoomPublisher
                     return true;
                 }
 
-                logger.Error("Login window open fail");
+                _logger.Error("Login window open fail");
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return false;
@@ -71,14 +71,14 @@ namespace MTree.KiwoomPublisher
         {
             try
             {
-                kiwoomObj.CommTerminate();
+                _kiwoomObj.CommTerminate();
                 LoginInstance.State = LoginStates.LoggedOut;
-                logger.Info("Logout success");
+                _logger.Info("Logout success");
                 return true;
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return false;
@@ -90,19 +90,19 @@ namespace MTree.KiwoomPublisher
             {
                 if (e.nErrCode == 0)
                 {
-                    logger.Info("Login sucess");
+                    _logger.Info("Login sucess");
                     LoginInstance.State = LoginStates.LoggedIn;
                     GetCodeMap(CodeMapTypes.Theme);
                     SetLogin();
                 }
                 else
                 {
-                    logger.Error($"Login fail, {KiwoomError.GetErrorMessage(e.nErrCode)}");
+                    _logger.Error($"Login fail, {KiwoomError.GetErrorMessage(e.nErrCode)}");
                 }
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
@@ -118,12 +118,12 @@ namespace MTree.KiwoomPublisher
 
                 if (windowH != IntPtr.Zero)
                 {
-                    logger.Info($"khopenapi popup found");
+                    _logger.Info($"khopenapi popup found");
 
                     IntPtr buttonH = WindowsAPI.findWindowEx(windowH, "Button", "확인");
                     if (buttonH != IntPtr.Zero)
                     {
-                        logger.Info($"확인 button clicked");
+                        _logger.Info($"확인 button clicked");
                         WindowsAPI.sendMessage(buttonH, WindowsAPI.BM_CLICK, 0, 0);
                         return true;
                     }
@@ -131,7 +131,7 @@ namespace MTree.KiwoomPublisher
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return false;
@@ -161,38 +161,38 @@ namespace MTree.KiwoomPublisher
             var codeDictionary = new Dictionary<string, object>();
             try
             {
-                logger.Info($"Theme list query start");
+                _logger.Info($"Theme list query start");
 
-                var themeList = kiwoomObj.GetThemeGroupList(0).Split(';');
+                var themeList = _kiwoomObj.GetThemeGroupList(0).Split(';');
                 foreach (var theme in themeList)
                 {
                     var themeGroup = new Dictionary<string, object>();
                     var themeCode = theme.Split('|')[0];
                     var themeName = theme.Split('|')[1];
-                    var codes = kiwoomObj.GetThemeGroupCode(themeCode).Split(';');
+                    var codes = _kiwoomObj.GetThemeGroupCode(themeCode).Split(';');
                     foreach (var code in codes)
                     {
                         var shortCode = code.Substring(1);
                         if (themeGroup.ContainsKey(shortCode) == true)
                         {
-                            logger.Warn($"{shortCode} is already exist in {themeCode}.");
+                            _logger.Warn($"{shortCode} is already exist in {themeCode}.");
                             continue;
                         }
-                        themeGroup.Add(shortCode, kiwoomObj.GetMasterCodeName(shortCode));
+                        themeGroup.Add(shortCode, _kiwoomObj.GetMasterCodeName(shortCode));
                     }
 
                     if (codeDictionary.ContainsKey(themeName) == true)
                     {
-                        logger.Error($"{themeName} is already exist.");
+                        _logger.Error($"{themeName} is already exist.");
                         continue;
                     }
                     codeDictionary.Add(themeName, themeGroup);
                 }
-                logger.Info($"Theme list query done");
+                _logger.Info($"Theme list query done");
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return codeDictionary;
@@ -205,33 +205,33 @@ namespace MTree.KiwoomPublisher
             try
             {
                 #region ETF(belongs to KOSPI)
-                string[] etfList = kiwoomObj.GetCodeListByMarket("8").Split(';');
+                string[] etfList = _kiwoomObj.GetCodeListByMarket("8").Split(';');
                 foreach (string code in etfList)
                 {
                     if (code != string.Empty)
                     {
                         var codeEntity = new CodeEntity();
                         codeEntity.Code = code;
-                        codeEntity.Name = kiwoomObj.GetMasterCodeName(code);
+                        codeEntity.Name = _kiwoomObj.GetMasterCodeName(code);
                         codeEntity.MarketType = MarketTypes.ETF;
 
                         if (!codeDictionary.ContainsKey(code))
                             codeDictionary.Add(codeEntity.Code, codeEntity);
                         else
-                            logger.Trace("Code is already in the list");
+                            _logger.Trace("Code is already in the list");
                     }
                 }
                 #endregion
 
                 #region KOSPI & ETN
-                string[] kospiList = kiwoomObj.GetCodeListByMarket("0").Split(';');
+                string[] kospiList = _kiwoomObj.GetCodeListByMarket("0").Split(';');
                 foreach (string code in kospiList)
                 {
                     if (code != string.Empty)
                     {
                         var codeEntity = new CodeEntity();
                         codeEntity.Code = code;
-                        codeEntity.Name = kiwoomObj.GetMasterCodeName(code);
+                        codeEntity.Name = _kiwoomObj.GetMasterCodeName(code);
 
                         if (code[0] == '5')
                             codeEntity.MarketType = MarketTypes.ETN;
@@ -245,93 +245,93 @@ namespace MTree.KiwoomPublisher
                         else
                         {
                             if (codeDictionary[code].MarketType != MarketTypes.ETF)
-                                logger.Trace("Code is already in the list");
+                                _logger.Trace("Code is already in the list");
                         }
                     }
                 }
                 #endregion
 
                 #region ELW
-                string[] elwList = kiwoomObj.GetCodeListByMarket("3").Split(';');
+                string[] elwList = _kiwoomObj.GetCodeListByMarket("3").Split(';');
                 foreach (string code in elwList)
                 {
                     if (code != string.Empty)
                     {
                         var codeEntity = new CodeEntity();
                         codeEntity.Code = code;
-                        codeEntity.Name = kiwoomObj.GetMasterCodeName(code);
+                        codeEntity.Name = _kiwoomObj.GetMasterCodeName(code);
                         codeEntity.MarketType = MarketTypes.ELW;
 
                         if (!codeDictionary.ContainsKey(code))
                             codeDictionary.Add(codeEntity.Code, codeEntity);
                         else
-                            logger.Trace("Code is already in the list");
+                            _logger.Trace("Code is already in the list");
                     }
 
                 }
                 #endregion
 
                 #region KOSDAQ
-                string[] kosdaqList = kiwoomObj.GetCodeListByMarket("10").Split(';');
+                string[] kosdaqList = _kiwoomObj.GetCodeListByMarket("10").Split(';');
                 foreach (string code in kosdaqList)
                 {
                     if (code != string.Empty)
                     {
                         var codeEntity = new CodeEntity();
                         codeEntity.Code = code;
-                        codeEntity.Name = kiwoomObj.GetMasterCodeName(code);
+                        codeEntity.Name = _kiwoomObj.GetMasterCodeName(code);
                         codeEntity.MarketType = MarketTypes.KOSDAQ;
                         if (!codeDictionary.ContainsKey(code))
                             codeDictionary.Add(codeEntity.Code, codeEntity);
                         else
-                            logger.Trace("Code is already in the list");
+                            _logger.Trace("Code is already in the list");
                     }
                 }
                 #endregion
                 
                 #region KONEX
-                string[] konexList = kiwoomObj.GetCodeListByMarket("50").Split(';');
+                string[] konexList = _kiwoomObj.GetCodeListByMarket("50").Split(';');
                 foreach (string code in konexList)
                 {
                     if (code != string.Empty)
                     {
                         var codeEntity = new CodeEntity();
                         codeEntity.Code = code;
-                        codeEntity.Name = kiwoomObj.GetMasterCodeName(code);
+                        codeEntity.Name = _kiwoomObj.GetMasterCodeName(code);
                         codeEntity.MarketType = MarketTypes.KONEX;
                         if (!codeDictionary.ContainsKey(code))
                             codeDictionary.Add(codeEntity.Code, codeEntity);
                         else
-                            logger.Trace("Code is already in the list");
+                            _logger.Trace("Code is already in the list");
                     }
                 }
                 #endregion
                 
                 #region Freeboard (K-OTC)
-                string[] freeboard = kiwoomObj.GetCodeListByMarket("30").Split(';');
+                string[] freeboard = _kiwoomObj.GetCodeListByMarket("30").Split(';');
                 foreach (string code in freeboard)
                 {
                     if (code != string.Empty)
                     {
                         var codeEntity = new CodeEntity();
                         codeEntity.Code = code;
-                        codeEntity.Name = kiwoomObj.GetMasterCodeName(code);
+                        codeEntity.Name = _kiwoomObj.GetMasterCodeName(code);
                         codeEntity.MarketType = MarketTypes.FREEBOARD;
                         if (!codeDictionary.ContainsKey(code))
                             codeDictionary.Add(codeEntity.Code, codeEntity);
                         else
-                            logger.Trace("Code is already in the list");
+                            _logger.Trace("Code is already in the list");
                     }
 
                 }
                 #endregion  
 
 
-                logger.Info($"Stock code list query done, Count: {codeDictionary.Count}");
+                _logger.Info($"Stock code list query done, Count: {codeDictionary.Count}");
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return codeDictionary;
@@ -349,10 +349,10 @@ namespace MTree.KiwoomPublisher
                     RegisterPublishContract();
                 else
                 {
-                    logger.Error("Login Fail");
+                    _logger.Error("Login Fail");
 
                     ProcessUtility.Kill("khministarter");
-                    logger.Error("Restart Kiwoom Publisher");
+                    _logger.Error("Restart Kiwoom Publisher");
                     Process.Start(System.Windows.Forms.Application.ExecutablePath);
                     Environment.Exit(-1);
                 }
@@ -367,7 +367,7 @@ namespace MTree.KiwoomPublisher
 
                 Task.Run(() =>
                 {
-                    logger.Info("Process will be closed");
+                    _logger.Info("Process will be closed");
                     Thread.Sleep(1000 * 5);
 
                     Environment.Exit(0);

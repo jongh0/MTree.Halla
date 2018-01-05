@@ -27,7 +27,7 @@ namespace MTree.DaishinPublisher
         {
             if (GetSubscribableCount() < 1)
             {
-                logger.Error("Not enough subscribable count");
+                _logger.Error("Not enough subscribable count");
                 return false;
             }
 
@@ -49,18 +49,18 @@ namespace MTree.DaishinPublisher
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
                 if (status == 0)
                 {
-                    logger.Trace($"Subscribe ETFConclusion success, Code: {code}");
+                    _logger.Trace($"Subscribe ETFConclusion success, Code: {code}");
                     ETFSubscribeCount++;
                 }
                 else
                 {
-                    logger.Error($"Subscribe ETFConclusion fail, Code: {code}, Status: {status}, Msg: {etfCurObj.GetDibMsg1()}");
+                    _logger.Error($"Subscribe ETFConclusion fail, Code: {code}, Status: {status}, Msg: {etfCurObj.GetDibMsg1()}");
                 }
             }
 
@@ -87,18 +87,18 @@ namespace MTree.DaishinPublisher
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
                 if (status == 0)
                 {
-                    logger.Trace($"Unsubscribe ETFConclusion success, Code: {code}");
+                    _logger.Trace($"Unsubscribe ETFConclusion success, Code: {code}");
                     ETFSubscribeCount--;
                 }
                 else
                 {
-                    logger.Error($"Unsubscribe ETFConclusion fail, Code: {code}, Status: {status}, Msg: {etfCurObj.GetDibMsg1()}");
+                    _logger.Error($"Unsubscribe ETFConclusion fail, Code: {code}, Status: {status}, Msg: {etfCurObj.GetDibMsg1()}");
                 }
             }
 
@@ -128,7 +128,7 @@ namespace MTree.DaishinPublisher
                 // 2 - (long) 현재가
                 conclusion.Price = Convert.ToSingle(etfCurObj.GetHeaderValue(2));
                 if (conclusion.Price <= 0)
-                    logger.Error($"ETF conclusion price error, {conclusion.Price}");
+                    _logger.Error($"ETF conclusion price error, {conclusion.Price}");
 
                 // 3 - (char)대비부호
                 var sign = Convert.ToChar(etfCurObj.GetHeaderValue(3));
@@ -183,7 +183,7 @@ namespace MTree.DaishinPublisher
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
@@ -191,7 +191,7 @@ namespace MTree.DaishinPublisher
                 {
                     var latency = Environment.TickCount - startTick;
                     if (latency > 10)
-                        logger.Error($"ETF conclusion latency error, {latency}");
+                        _logger.Error($"ETF conclusion latency error, {latency}");
                 }
             }
         }

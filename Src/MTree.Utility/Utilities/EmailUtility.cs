@@ -17,7 +17,7 @@ namespace MTree.Utility
     /// </summary>
     public class EmailUtility
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         public static void SendEmail(string subject, string body, string attachFilePath = null)
         {
@@ -60,13 +60,13 @@ namespace MTree.Utility
                         }
 
                         client.Send(message);
-                        logger.Info($"Email sent, <{message.Subject}> {message.Body}");
+                        _logger.Info($"Email sent, <{message.Subject}> {message.Body}");
                     }
                 }
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
     }

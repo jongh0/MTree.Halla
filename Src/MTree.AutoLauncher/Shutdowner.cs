@@ -11,7 +11,7 @@ namespace MTree.AutoLauncher
 {
     public class Shutdowner
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         private System.Timers.Timer ShutdownTimer { get; set; }
 
@@ -48,7 +48,7 @@ namespace MTree.AutoLauncher
 
         private void ShutdownTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            logger.Info($"Shutdown timer elapsed");
+            _logger.Info($"Shutdown timer elapsed");
             WindowsCommand.Shutdown();
         }
     }

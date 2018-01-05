@@ -8,7 +8,7 @@ namespace MTree.Strategy
 {
     public class StrategyComposite : IStrategy
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         public string Name { get; set; } = "StrategyComposite";
 
@@ -33,12 +33,12 @@ namespace MTree.Strategy
 
                     if (ret == false && Logic == LogicTypes.AND)
                     {
-                        logger.Info($"[{Name}/{Logic}] CanBuy: false");
+                        _logger.Info($"[{Name}/{Logic}] CanBuy: false");
                         return false;
                     }
                     else if (ret == true && Logic == LogicTypes.OR)
                     {
-                        logger.Info($"[{Name}/{Logic}] CanBuy: true");
+                        _logger.Info($"[{Name}/{Logic}] CanBuy: true");
                         return true;
                     }
                 }
@@ -47,11 +47,11 @@ namespace MTree.Strategy
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
                 ret = false;
             }
 
-            logger.Info($"[{Name}/{Logic}] CanBuy: {ret}");
+            _logger.Info($"[{Name}/{Logic}] CanBuy: {ret}");
             return ret;
         }
 
@@ -67,12 +67,12 @@ namespace MTree.Strategy
 
                     if (ret == false && Logic == LogicTypes.AND)
                     {
-                        logger.Info($"[{Name}/{Logic}] CanSell: false");
+                        _logger.Info($"[{Name}/{Logic}] CanSell: false");
                         return false;
                     }
                     else if (ret == true && Logic == LogicTypes.OR)
                     {
-                        logger.Info($"[{Name}/{Logic}] CanSell: true");
+                        _logger.Info($"[{Name}/{Logic}] CanSell: true");
                         return true;
                     }
                 }
@@ -81,11 +81,11 @@ namespace MTree.Strategy
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
                 ret = false;
             }
 
-            logger.Info($"[{Name}/{Logic}] CanSell: {ret}");
+            _logger.Info($"[{Name}/{Logic}] CanSell: {ret}");
             return ret;
         }
     }

@@ -14,7 +14,7 @@ namespace MTree.AutoLauncher
 {
     public class Launcher : INotifyPropertyChanged
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         public bool KillIfExists { get; set; } = false;
         
@@ -46,7 +46,7 @@ namespace MTree.AutoLauncher
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -56,7 +56,7 @@ namespace MTree.AutoLauncher
             {
                 if (Time == null)
                 {
-                    logger.Error($"{LaunchProcess} time not set");
+                    _logger.Error($"{LaunchProcess} time not set");
                     return;
                 }
 
@@ -74,7 +74,7 @@ namespace MTree.AutoLauncher
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -83,7 +83,7 @@ namespace MTree.AutoLauncher
             if (LaunchTimer?.Enabled == true)
             {
                 LaunchTimer.Stop();
-                logger.Info($"{LaunchProcess} launcher stopped");
+                _logger.Info($"{LaunchProcess} launcher stopped");
             }
         }
 
@@ -95,14 +95,14 @@ namespace MTree.AutoLauncher
                 {
                     if (KillIfExists == true)
                     {
-                        logger.Info($"{LaunchProcess} exists and will be killed");
+                        _logger.Info($"{LaunchProcess} exists and will be killed");
 
                         ProcessUtility.Kill(LaunchProcess);
                         Thread.Sleep(1000 * 5);
                     }
                     else
                     {
-                        logger.Error($"{LaunchProcess} already exists, launcher stopped");
+                        _logger.Error($"{LaunchProcess} already exists, launcher stopped");
                         return;
                     }
                 }
@@ -121,11 +121,11 @@ namespace MTree.AutoLauncher
                     ProcessUtility.Start(LaunchProcess, LaunchArguments);
                 }
 
-                logger.Info($"{LaunchProcess} launched");
+                _logger.Info($"{LaunchProcess} launched");
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
         
@@ -133,12 +133,12 @@ namespace MTree.AutoLauncher
         {
             try
             {
-                logger.Info($"{LaunchProcess} launcher timer elapsed");
+                _logger.Info($"{LaunchProcess} launcher timer elapsed");
                 Launch();
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
@@ -161,7 +161,7 @@ namespace MTree.AutoLauncher
 
         public void ExecuteLaunchNow()
         {
-            logger.Info("Execute launch now");
+            _logger.Info("Execute launch now");
             Launch();
         }
         #endregion

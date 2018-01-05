@@ -9,7 +9,7 @@ namespace MTree.VirtualTrader
 {
     public class VirtualAccountManager
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         private Dictionary<string, VirtualAccount> AccountList { get; set; } = new Dictionary<string, VirtualAccount>();
 
@@ -26,7 +26,7 @@ namespace MTree.VirtualTrader
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return list;
@@ -50,7 +50,7 @@ namespace MTree.VirtualTrader
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return false;

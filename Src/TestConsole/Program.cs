@@ -16,7 +16,7 @@ namespace TestConsole
 {
     class Program
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         static void Main(string[] args)
         {
@@ -81,12 +81,12 @@ namespace TestConsole
 
         private static void TestLogging()
         {
-            logger.Info("log test Info");
-            logger.Trace("log test Trace");
-            logger.Debug("log test Debug");
-            logger.Warn("log test Warn");
-            logger.Error("log test Error");
-            logger.Fatal("log test Fatal");
+            _logger.Info("log test Info");
+            _logger.Trace("log test Trace");
+            _logger.Debug("log test Debug");
+            _logger.Warn("log test Warn");
+            _logger.Error("log test Error");
+            _logger.Fatal("log test Fatal");
         }
 
         private static void TestConfig()

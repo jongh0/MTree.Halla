@@ -11,7 +11,7 @@ namespace MTree.Publisher
 {
     public class PublisherBase : PublisherCallback
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         protected Guid ClientId { get; } = Guid.NewGuid();
 
@@ -27,7 +27,7 @@ namespace MTree.Publisher
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -35,7 +35,7 @@ namespace MTree.Publisher
         {
             try
             {
-                logger.Info($"[{GetType().Name}] Open channel");
+                _logger.Info($"[{GetType().Name}] Open channel");
 
                 ServiceClient = new PublisherClient(CallbackInstance, "RealTimePublisherConfig");
                 ServiceClient.InnerChannel.Opened += ServiceClient_Opened;
@@ -44,7 +44,7 @@ namespace MTree.Publisher
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -54,7 +54,7 @@ namespace MTree.Publisher
             {
                 if (ServiceClient != null)
                 {
-                    logger.Info($"[{GetType().Name}] Close channel");
+                    _logger.Info($"[{GetType().Name}] Close channel");
 
                     ServiceClient.UnregisterContract(ClientId);
                     ServiceClient.Close();
@@ -62,18 +62,18 @@ namespace MTree.Publisher
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
         protected virtual void ServiceClient_Opened(object sender, EventArgs e)
         {
-            logger.Info($"[{GetType().Name}] Channel opened");
+            _logger.Info($"[{GetType().Name}] Channel opened");
         }
 
         protected virtual void ServiceClient_Closed(object sender, EventArgs e)
         {
-            logger.Info($"[{GetType().Name}] Channel closed");
+            _logger.Info($"[{GetType().Name}] Channel closed");
         }
 
         public void RegisterPublishContract()
@@ -83,7 +83,7 @@ namespace MTree.Publisher
                 var args = Environment.GetCommandLineArgs();
                 if (args?.Length > 1)
                 {
-                    logger.Info($"Argument: {string.Join(" ", args)}");
+                    _logger.Info($"Argument: {string.Join(" ", args)}");
 
                     var contract = new PublisherContract();
                     contract.Type = PublisherContract.ConvertToType(args[1]);
@@ -92,18 +92,18 @@ namespace MTree.Publisher
                 }
                 else
                 {
-                    logger.Error($"[{GetType().Name}] Wrong argument");
+                    _logger.Error($"[{GetType().Name}] Wrong argument");
                 }
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
         public override void NotifyMessage(MessageTypes type, string message)
         {
-            logger.Info($"[{GetType().Name}] NotifyMessage, type: {type.ToString()}, message: {message}");
+            _logger.Info($"[{GetType().Name}] NotifyMessage, type: {type.ToString()}, message: {message}");
 
             try
             {
@@ -115,7 +115,7 @@ namespace MTree.Publisher
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
     }

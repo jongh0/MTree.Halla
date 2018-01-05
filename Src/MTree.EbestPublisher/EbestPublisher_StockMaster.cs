@@ -22,7 +22,7 @@ namespace MTree.EbestPublisher
         {
             if (Monitor.TryEnter(QuoteLock, QuoteLockTimeout) == false)
             {
-                logger.Error($"Quoting failed, Code: {code}, Can't obtaion lock object");
+                _logger.Error($"Quoting failed, Code: {code}, Can't obtaion lock object");
                 return false;
             }
 
@@ -31,7 +31,7 @@ namespace MTree.EbestPublisher
                 QuoteInterval = 1000 / stockQuotingObj.GetTRCountPerSec("t1102");
                 WaitQuoteInterval();
 
-                logger.Info($"Start quoting, Code: {code}");
+                _logger.Info($"Start quoting, Code: {code}");
                 QuotingStockMaster = stockMaster;
                 QuotingStockMaster.Code = code;
 
@@ -39,7 +39,7 @@ namespace MTree.EbestPublisher
                 var ret = stockQuotingObj.Request(false);
                 if (ret < 0)
                 {
-                    logger.Error($"Quoting request error, {GetLastErrorMessage(ret)}");
+                    _logger.Error($"Quoting request error, {GetLastErrorMessage(ret)}");
                     return false;
                 }
 
@@ -48,13 +48,13 @@ namespace MTree.EbestPublisher
 
                 if (QuotingStockMaster.Code != string.Empty)
                 {
-                    logger.Info($"Quoting done, Code: {code}");
+                    _logger.Info($"Quoting done, Code: {code}");
                     return true;
                 }
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
@@ -62,7 +62,7 @@ namespace MTree.EbestPublisher
                 Monitor.Exit(QuoteLock);
             }
 
-            logger.Error($"Quoting fail, Code: {code}");
+            _logger.Error($"Quoting fail, Code: {code}");
             return false;
         }
 
@@ -71,7 +71,7 @@ namespace MTree.EbestPublisher
             try
             {
                 LastCommTick = Environment.TickCount;
-                logger.Trace($"szTrCode: {szTrCode}");
+                _logger.Trace($"szTrCode: {szTrCode}");
 
                 if (QuotingStockMaster == null)
                     return;
@@ -79,7 +79,7 @@ namespace MTree.EbestPublisher
                 string cvStr = stockQuotingObj.GetFieldData("t1102OutBlock", "abscnt", 0);
                 long cv = 0;
                 if (long.TryParse(cvStr, out cv) == false)
-                    logger.Error($"Stock master circulating volume error, {cvStr}");
+                    _logger.Error($"Stock master circulating volume error, {cvStr}");
 
                 //유통주식수
                 QuotingStockMaster.CirculatingVolume = cv * 1000;  
@@ -154,7 +154,7 @@ namespace MTree.EbestPublisher
             catch (Exception ex)
             {
                 QuotingStockMaster.Code = string.Empty;
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {

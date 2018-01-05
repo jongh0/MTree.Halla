@@ -20,7 +20,7 @@ namespace MTree.HistorySaver
 {
     public class HistorySaver : RealTimeConsumer, INotifyPropertyChanged
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         public DataCounter Counter { get; set; } = new DataCounter(DataTypes.HistorySaver);
 
@@ -44,7 +44,7 @@ namespace MTree.HistorySaver
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -63,7 +63,7 @@ namespace MTree.HistorySaver
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -82,7 +82,7 @@ namespace MTree.HistorySaver
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -101,7 +101,7 @@ namespace MTree.HistorySaver
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -120,7 +120,7 @@ namespace MTree.HistorySaver
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -139,7 +139,7 @@ namespace MTree.HistorySaver
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -155,7 +155,7 @@ namespace MTree.HistorySaver
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -171,7 +171,7 @@ namespace MTree.HistorySaver
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -206,7 +206,7 @@ namespace MTree.HistorySaver
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -229,7 +229,7 @@ namespace MTree.HistorySaver
                             DbAgent.Instance.SaveStatisticLog();
                         }
 
-                        logger.Info("Process will be closed");
+                        _logger.Info("Process will be closed");
                         Thread.Sleep(1000 * 5);
 
                         Environment.Exit(0);
@@ -238,7 +238,7 @@ namespace MTree.HistorySaver
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             base.NotifyMessage(type, message);

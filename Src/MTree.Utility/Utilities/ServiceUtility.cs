@@ -11,7 +11,7 @@ namespace MTree.Utility
 {
     public class ServiceUtility
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         public static bool IsServiceRunning(string serviceName)
         {
@@ -23,19 +23,19 @@ namespace MTree.Utility
         {
             try
             {
-                logger.Info($"Starting {serviceName} Service");
+                _logger.Info($"Starting {serviceName} Service");
 
                 ServiceController controller = new ServiceController(serviceName);
                 controller.Start();
                 controller.WaitForStatus(ServiceControllerStatus.Running, new TimeSpan(waitSec * 1000 * 1000));
 
-                logger.Info($"Starting {serviceName} Service done. Service Status: {controller.Status}");
+                _logger.Info($"Starting {serviceName} Service done. Service Status: {controller.Status}");
 
                 return controller.Status == ServiceControllerStatus.Running;
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return false;
@@ -45,19 +45,19 @@ namespace MTree.Utility
         {
             try
             {
-                logger.Info($"Stopping {serviceName} Service");
+                _logger.Info($"Stopping {serviceName} Service");
 
                 ServiceController controller = new ServiceController(serviceName);
                 controller.Stop();
                 controller.WaitForStatus(ServiceControllerStatus.Stopped, new TimeSpan(waitSec * 1000 * 1000));
 
-                logger.Info($"Stopping {serviceName} Service done. Service Status: {controller.Status}");
+                _logger.Info($"Stopping {serviceName} Service done. Service Status: {controller.Status}");
 
                 return controller.Status == ServiceControllerStatus.Stopped;
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return false;

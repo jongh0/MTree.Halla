@@ -7,7 +7,7 @@ namespace MTree.Configuration
 {
     public class Config
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         public GeneralConfiguration general { get; set; } = new GeneralConfiguration();
         public DatabaseConfiguration database { get; set; } = new DatabaseConfiguration();
@@ -28,7 +28,7 @@ namespace MTree.Configuration
         public static ResourceMonitorConfiguration ResourceMonitor { get { return Instance.resourceMonitor; } }
 
         #region Instance
-        private static object lockObject = new object();
+        private static object _lockObject = new object();
 
         private static Config _Instance;
         private static Config Instance
@@ -37,7 +37,7 @@ namespace MTree.Configuration
             {
                 if (_Instance == null)
                 {
-                    lock (lockObject)
+                    lock (_lockObject)
                     {
                         if (_Instance == null)
                             LoadConfiguration(ref _Instance, FileName);
@@ -69,12 +69,12 @@ namespace MTree.Configuration
                     {
                         Error = (sender, args) =>
                         {
-                            logger.Error($"Configuration deserialize error, {args.ErrorContext.Error.Message}");
+                            _logger.Error($"Configuration deserialize error, {args.ErrorContext.Error.Message}");
                             args.ErrorContext.Handled = true;
                         }
                     });
 
-                    logger.Info($"{Path.GetFileName(filePath)} loaded");
+                    _logger.Info($"{Path.GetFileName(filePath)} loaded");
                 }
                 else
                 {
@@ -86,7 +86,7 @@ namespace MTree.Configuration
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -104,7 +104,7 @@ namespace MTree.Configuration
                     writer.Flush();
                     stream.Flush(true);
 
-                    logger.Info($"{Path.GetFileName(filePath)} saved");
+                    _logger.Info($"{Path.GetFileName(filePath)} saved");
                 }
 
                 //using (StreamWriter stream = File.CreateText(filePath))
@@ -113,12 +113,12 @@ namespace MTree.Configuration
                 //    serializer.NullValueHandling = NullValueHandling.Ignore;
                 //    serializer.Formatting = Formatting.Indented;
                 //    serializer.Serialize(stream, config);
-                //    logger.Info($"{Path.GetFileName(filePath)} saved");
+                //    _logger.Info($"{Path.GetFileName(filePath)} saved");
                 //}
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
         #endregion

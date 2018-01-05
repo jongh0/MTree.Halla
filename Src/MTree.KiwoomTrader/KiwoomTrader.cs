@@ -18,11 +18,11 @@ namespace MTree.KiwoomTrader
 	[ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Single, ValidateMustUnderstand = false)]
     public partial class KiwoomTrader : ITrader, INotifyPropertyChanged
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         private ConcurrentDictionary<Guid, TraderContract> TraderContracts { get; set; } = new ConcurrentDictionary<Guid, TraderContract>();
 
-        private AxKHOpenAPILib.AxKHOpenAPI kiwoomObj;
+        private AxKHOpenAPILib.AxKHOpenAPI _kiwoomObj;
 
         public LoginInfo LoginInstance { get; } = new LoginInfo();
 
@@ -30,16 +30,16 @@ namespace MTree.KiwoomTrader
         {
             try
             {
-                kiwoomObj = axKHOpenAPI;
-                kiwoomObj.OnEventConnect += OnEventConnect;
-                kiwoomObj.OnReceiveTrData += OnReceiveTrData;
-                kiwoomObj.OnReceiveChejanData += OnReceiveChejanData;
+                _kiwoomObj = axKHOpenAPI;
+                _kiwoomObj.OnEventConnect += OnEventConnect;
+                _kiwoomObj.OnReceiveTrData += OnReceiveTrData;
+                _kiwoomObj.OnReceiveChejanData += OnReceiveChejanData;
 
                 Login();
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -48,9 +48,9 @@ namespace MTree.KiwoomTrader
         {
             try
             {
-                if (kiwoomObj.CommConnect() == 0)
+                if (_kiwoomObj.CommConnect() == 0)
                 {
-                    logger.Info("Login window open success");
+                    _logger.Info("Login window open success");
 
                     if (Config.Kiwoom.UseSessionManager == true)
                     {
@@ -64,11 +64,11 @@ namespace MTree.KiwoomTrader
                     return true;
                 }
 
-                logger.Error("Login window open fail");
+                _logger.Error("Login window open fail");
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return false;
@@ -78,14 +78,14 @@ namespace MTree.KiwoomTrader
         {
             try
             {
-                kiwoomObj.CommTerminate();
+                _kiwoomObj.CommTerminate();
                 LoginInstance.State = LoginStates.LoggedOut;
-                logger.Info("Logout success");
+                _logger.Info("Logout success");
                 return true;
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return false;
@@ -97,17 +97,17 @@ namespace MTree.KiwoomTrader
             {
                 if (e.nErrCode == 0)
                 {
-                    logger.Info("Login sucess");
+                    _logger.Info("Login sucess");
                     LoginInstance.State = LoginStates.LoggedIn;
                 }
                 else
                 {
-                    logger.Error($"Login fail, {KiwoomError.GetErrorMessage(e.nErrCode)}");
+                    _logger.Error($"Login fail, {KiwoomError.GetErrorMessage(e.nErrCode)}");
                 }
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
@@ -123,12 +123,12 @@ namespace MTree.KiwoomTrader
 
                 if (windowH != IntPtr.Zero)
                 {
-                    logger.Info($"khopenapi popup found");
+                    _logger.Info($"khopenapi popup found");
 
                     IntPtr buttonH = WindowsAPI.findWindowEx(windowH, "Button", "확인");
                     if (buttonH != IntPtr.Zero)
                     {
-                        logger.Info($"확인 button clicked");
+                        _logger.Info($"확인 button clicked");
                         WindowsAPI.sendMessage(buttonH, WindowsAPI.BM_CLICK, 0, 0);
                         return true;
                     }
@@ -136,7 +136,7 @@ namespace MTree.KiwoomTrader
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return false;

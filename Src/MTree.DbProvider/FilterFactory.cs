@@ -10,7 +10,7 @@ namespace MTree.DbProvider
 {
     public class FilterFactory
     {
-        private static object lockObject = new object();
+        private static readonly object _lockObject = new object();
         private static volatile FilterFactory _Instance;
         public static FilterFactory Instance
         {
@@ -18,7 +18,7 @@ namespace MTree.DbProvider
             {
                 if (_Instance == null)
                 {
-                    lock (lockObject)
+                    lock (_lockObject)
                     {
                         if (_Instance == null)
                             _Instance = new FilterFactory();

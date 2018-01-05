@@ -12,13 +12,13 @@ namespace MTree.Utility
 {
     public class LogUtility
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         public static void SendLog()
         {
             try
             {
-                logger.Info("Send log");
+                _logger.Info("Send log");
 
                 var date = Config.General.DateNow;
                 var logFolder = Path.Combine(Environment.CurrentDirectory, "Logs", date);
@@ -49,14 +49,14 @@ namespace MTree.Utility
                     }
                 }
 
-                logger.Info($"{targetFileName} file created");
+                _logger.Info($"{targetFileName} file created");
 
                 // 압축한 로그 파일을 Email로 전송
                 EmailUtility.SendEmail($"[{Environment.MachineName}] MTree log {date}", "Log attached", targetFilePath);
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -99,7 +99,7 @@ namespace MTree.Utility
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
     }

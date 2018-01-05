@@ -12,7 +12,7 @@ namespace MTree.DataValidator
 {
     public class BeyondCompare
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         public string ResultOutput { get; set; }
 
@@ -63,13 +63,13 @@ namespace MTree.DataValidator
         {
             if (src == null && dest == null)
             {
-                logger.Info("Source and Destination data is null. result is true");
+                _logger.Info("Source and Destination data is null. result is true");
                 return true;
             }
 
             if (src == null || dest == null)
             {
-                logger.Info("Source or Destination data is null. result is false");
+                _logger.Info("Source or Destination data is null. result is false");
                 return false;
             }
 
@@ -80,7 +80,7 @@ namespace MTree.DataValidator
         {
             if (File.Exists(beyondComparePath) == false)
             {
-                logger.Error("Beyond compare path is wrong");
+                _logger.Error("Beyond compare path is wrong");
                 return false;
             }
 
@@ -124,26 +124,26 @@ namespace MTree.DataValidator
                         if (compareProcess.WaitForExit(100 * 1000) == false)
                         {
                             compareProcess.Kill();
-                            //logger.Error($"Beyond Compare Timeout. Retry Count:{retCnt} ExitCode:{exitCode}");
+                            //_logger.Error($"Beyond Compare Timeout. Retry Count:{retCnt} ExitCode:{exitCode}");
                         }
                         exitCode = compareProcess.ExitCode;
                     }
 
                     if (retCnt > 3)
                     {
-                        logger.Error($"Beyond Compare Fail");
+                        _logger.Error($"Beyond Compare Fail");
                         return false;
                     }
                     retCnt++;
                 } while (exitCode == 100 || exitCode < 0);
 
                 //if (exitCode != 0 && exitCode != 1 && exitCode != 2)
-                //    logger.Error($"ExitCode:{exitCode}");
+                //    _logger.Error($"ExitCode:{exitCode}");
                 return exitCode == 1;
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
                 throw new Exception();
             }
             finally
@@ -279,7 +279,7 @@ namespace MTree.DataValidator
         {
             if (File.Exists(beyondComparePath) == false)
             {
-                logger.Error("Beyond compare path is wrong");
+                _logger.Error("Beyond compare path is wrong");
                 return;
             }
 
@@ -319,28 +319,28 @@ namespace MTree.DataValidator
                         if (compareProcess.WaitForExit(100 * 1000) == false)
                         {
                             compareProcess.Kill();
-                            //logger.Error($"Beyond Compare Timeout. Retry Count:{retCnt} ExitCode:{exitCode}");
+                            //_logger.Error($"Beyond Compare Timeout. Retry Count:{retCnt} ExitCode:{exitCode}");
                         }
                         exitCode = compareProcess.ExitCode;
                     }
 
                     if (retCnt > 3)
                     {
-                        logger.Error($"Beyond Compare Fail");
+                        _logger.Error($"Beyond Compare Fail");
                         return;
                     }
                     retCnt++;
                 } while (exitCode == 100 || exitCode < 0);
 
                 //if (exitCode != 0 && exitCode != 1 && exitCode != 2)
-                //    logger.Error($"ExitCode:{exitCode}");
-                //logger.Info($"Compare result report created at {reportPath}");
+                //    _logger.Error($"ExitCode:{exitCode}");
+                //_logger.Info($"Compare result report created at {reportPath}");
 
                 return;
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {

@@ -17,19 +17,19 @@ namespace MTree.DaishinPublisher
         {
             if (sessionObj.IsConnect != 1)
             {
-                logger.Error("Get chart, session not connected");
+                _logger.Error("Get chart, session not connected");
                 return null;
             }
 
             if (string.IsNullOrEmpty(fullCode) == true)
             {
-                logger.Error("Get chart, Code error");
+                _logger.Error("Get chart, Code error");
                 return null;
             }
 
             if (startDate == null || endDate == null || startDate > endDate)
             {
-                logger.Error("Get chart, DateTime error");
+                _logger.Error("Get chart, DateTime error");
                 return null;
             }
 
@@ -54,7 +54,7 @@ namespace MTree.DaishinPublisher
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
@@ -143,7 +143,7 @@ namespace MTree.DaishinPublisher
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
     }

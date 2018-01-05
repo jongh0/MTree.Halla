@@ -12,7 +12,7 @@ namespace MTree.Consumer
 {
     public class RealTimeConsumer : ConsumerBase
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         protected Guid ClientId { get; } = Guid.NewGuid();
 
@@ -30,7 +30,7 @@ namespace MTree.Consumer
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
         
@@ -38,7 +38,7 @@ namespace MTree.Consumer
         {
             try
             {
-                logger.Info($"[{GetType().Name}] Open channel");
+                _logger.Info($"[{GetType().Name}] Open channel");
 
                 ServiceClient = new ConsumerClient(CallbackInstance, "RealTimeConsumerConfig");
                 ServiceClient.InnerChannel.Opened += ServiceClient_Opened;
@@ -48,7 +48,7 @@ namespace MTree.Consumer
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -58,7 +58,7 @@ namespace MTree.Consumer
             {
                 if (ServiceClient != null)
                 {
-                    logger.Info($"[{GetType().Name}] Close channel");
+                    _logger.Info($"[{GetType().Name}] Close channel");
 
                     ServiceClient.UnregisterContractAll(ClientId);
                     ServiceClient.Close();
@@ -66,13 +66,13 @@ namespace MTree.Consumer
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
         protected virtual void ServiceClient_Opened(object sender, EventArgs e)
         {
-            logger.Info($"[{GetType().Name}] Channel opened");
+            _logger.Info($"[{GetType().Name}] Channel opened");
 
             try
             {
@@ -90,23 +90,23 @@ namespace MTree.Consumer
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
         protected virtual void ServiceClient_Closed(object sender, EventArgs e)
         {
-            logger.Info($"[{GetType().Name}] Channel closed");
+            _logger.Info($"[{GetType().Name}] Channel closed");
         }
 
         protected virtual void ServiceClient_Faulted(object sender, EventArgs e)
         {
-            logger.Error($"[{GetType().Name}] Channel faulted");
+            _logger.Error($"[{GetType().Name}] Channel faulted");
         }
 
         public void HandleNotifyMessage(MessageTypes type, string message)
         {
-            logger.Info($"[{GetType().Name}] NotifyMessage, type: {type.ToString()}, message: {message}");
+            _logger.Info($"[{GetType().Name}] NotifyMessage, type: {type.ToString()}, message: {message}");
             
             try
             {
@@ -118,7 +118,7 @@ namespace MTree.Consumer
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -130,7 +130,7 @@ namespace MTree.Consumer
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
     }

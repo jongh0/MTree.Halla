@@ -13,19 +13,19 @@ namespace MTree.DaishinSessionManager
 {
     class Program
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         static void Main(string[] args)
         {
             try
             {
-                logger.Info("Application Started");
+                _logger.Info("Application Started");
 
                 if (string.IsNullOrEmpty(Config.Daishin.UserId) == true ||
                     string.IsNullOrEmpty(Config.Daishin.UserPw) == true ||
                     string.IsNullOrEmpty(Config.Daishin.CertPw) == true)
                 {
-                    logger.Error("Check Daishin configuration");
+                    _logger.Error("Check Daishin configuration");
                     return;
                 }
 
@@ -51,7 +51,7 @@ namespace MTree.DaishinSessionManager
                 var cybosStarterH = WindowsAPI.findWindow("CYBOS Starter", retryCount: 100);
                 if (cybosStarterH == IntPtr.Zero)
                 {
-                    logger.Error("CYBOS Starter not found");
+                    _logger.Error("CYBOS Starter not found");
                     return;
                 }
 
@@ -76,7 +76,7 @@ namespace MTree.DaishinSessionManager
                     if (dibServer != null)
                     {
                         dibServer.PriorityClass = ProcessPriorityClass.RealTime;
-                        logger.Info("Set DibServer Priority to Realtime");
+                        _logger.Info("Set DibServer Priority to Realtime");
                         break;
                     }
                     Thread.Sleep(1000);
@@ -84,12 +84,12 @@ namespace MTree.DaishinSessionManager
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
                 Thread.Sleep(1000 * 20); // Login 완료까지 여유시간
-                logger.Info("Application finished");
+                _logger.Info("Application finished");
             }
         }
 
@@ -103,12 +103,12 @@ namespace MTree.DaishinSessionManager
                     WindowsAPI.setForegroundWindow(cybosStarterH);
                     WindowsAPI.sendMessage(plusButtonH, WindowsAPI.BM_CLICK, 0, 0);
 
-                    logger.Info("CYBOS plus button clicked");
+                    _logger.Info("CYBOS plus button clicked");
                 }
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -126,12 +126,12 @@ namespace MTree.DaishinSessionManager
                 }
                 else
                 {
-                    logger.Error("User password empty");
+                    _logger.Error("User password empty");
                 }
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -149,12 +149,12 @@ namespace MTree.DaishinSessionManager
                 }
                 else
                 {
-                    logger.Error("Certification password empty");
+                    _logger.Error("Certification password empty");
                 }
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -168,12 +168,12 @@ namespace MTree.DaishinSessionManager
                     WindowsAPI.setForegroundWindow(cybosStarterH);
                     WindowsAPI.sendMessage(buttonH, WindowsAPI.BM_CLICK, 0, 0);
 
-                    logger.Info("Login button clicked");
+                    _logger.Info("Login button clicked");
                 }
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
         
@@ -184,7 +184,7 @@ namespace MTree.DaishinSessionManager
                 var popupH = WindowsAPI.findWindow(title, retryCount: 100);
                 if (popupH != IntPtr.Zero)
                 {
-                    logger.Info($"{title} popup handle found");
+                    _logger.Info($"{title} popup handle found");
 
                     var buttonH = WindowsAPI.findWindowEx(popupH, "Button", buttonName, retryCount: 100);
                     if (buttonH != IntPtr.Zero)
@@ -192,14 +192,14 @@ namespace MTree.DaishinSessionManager
                         WindowsAPI.setForegroundWindow(popupH);
                         WindowsAPI.sendMessage(buttonH, WindowsAPI.BM_CLICK, 0, 0);
 
-                        logger.Info($"{buttonName} info popup closed");
+                        _logger.Info($"{buttonName} info popup closed");
                         return true;
                     }
                 }
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             return false;
         }

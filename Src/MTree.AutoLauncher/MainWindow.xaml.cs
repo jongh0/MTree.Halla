@@ -9,7 +9,7 @@ namespace MTree.AutoLauncher
     /// </summary>
     public partial class MainWindow : Window
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         public MainWindow()
         {
@@ -17,7 +17,7 @@ namespace MTree.AutoLauncher
             
             var buildTime = new FileInfo(Assembly.GetEntryAssembly().Location).LastWriteTime;
             Title += $" Built at {buildTime}";
-            logger.Info($"Build Time : {buildTime}");
+            _logger.Info($"Build Time : {buildTime}");
         }
     }
 }

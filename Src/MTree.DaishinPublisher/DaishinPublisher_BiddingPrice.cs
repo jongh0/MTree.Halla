@@ -27,7 +27,7 @@ namespace MTree.DaishinPublisher
         {
             if (GetSubscribableCount() < 1)
             {
-                logger.Error("Not enough subscribable count");
+                _logger.Error("Not enough subscribable count");
                 return false;
             }
 
@@ -49,18 +49,18 @@ namespace MTree.DaishinPublisher
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
                 if (status == 0)
                 {
-                    logger.Trace($"Subscribe BiddingPrice success, Code: {code}");
+                    _logger.Trace($"Subscribe BiddingPrice success, Code: {code}");
                     BiddingSubscribeCount++;
                 }
                 else
                 {
-                    logger.Error($"Subscribe BiddingPrice fail, Code: {code}, Status: {status}, Msg: {stockJpbidObj.GetDibMsg1()}");
+                    _logger.Error($"Subscribe BiddingPrice fail, Code: {code}, Status: {status}, Msg: {stockJpbidObj.GetDibMsg1()}");
                 }
             }
 
@@ -87,18 +87,18 @@ namespace MTree.DaishinPublisher
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
                 if (status == 0)
                 {
-                    logger.Trace($"Unsubscribe BiddingPrice success, Code: {code}");
+                    _logger.Trace($"Unsubscribe BiddingPrice success, Code: {code}");
                     BiddingSubscribeCount--;
                 }
                 else
                 {
-                    logger.Error($"Unsubscribe BiddingPrice fail, Code: {code}, Status: {status}, Msg: {stockJpbidObj.GetDibMsg1()}");
+                    _logger.Error($"Unsubscribe BiddingPrice fail, Code: {code}, Status: {status}, Msg: {stockJpbidObj.GetDibMsg1()}");
                 }
             }
 
@@ -143,7 +143,7 @@ namespace MTree.DaishinPublisher
             }
             catch (Exception ex)
             {
-                logger.Error(ex.Message);
+                _logger.Error(ex.Message);
             }
             finally
             {
@@ -151,7 +151,7 @@ namespace MTree.DaishinPublisher
                 {
                     var latency = Environment.TickCount - startTick;
                     if (latency > 10)
-                        logger.Error($"Bidding latency error, {latency}");
+                        _logger.Error($"Bidding latency error, {latency}");
                 }
             }
         }

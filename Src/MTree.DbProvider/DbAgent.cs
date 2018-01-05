@@ -16,8 +16,8 @@ namespace MTree.DbProvider
     public class DbAgent
     {
         #region Static variable
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-        private static object lockObject = new object();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly object _lockObject = new object();
 
         private static volatile DbAgent _Instance;
         public static DbAgent Instance
@@ -26,7 +26,7 @@ namespace MTree.DbProvider
             {
                 if (_Instance == null)
                 {
-                    lock (lockObject)
+                    lock (_lockObject)
                     {
                         if (_Instance == null)
                             _Instance = new DbAgent(Config.Database.ConnectionString);
@@ -44,14 +44,14 @@ namespace MTree.DbProvider
             {
                 if (_RemoteInstance == null)
                 {
-                    lock (lockObject)
+                    lock (_lockObject)
                     {
                         if (_RemoteInstance == null)
                         {
                             if (string.IsNullOrEmpty(Config.Database.RemoteConnectionString) == false)
                                 _RemoteInstance = new DbAgent(Config.Database.RemoteConnectionString);
                             else
-                                logger.Error("Connection string for remote DB is empty");
+                                _logger.Error("Connection string for remote DB is empty");
                         }
                     }
                 }
@@ -115,7 +115,7 @@ namespace MTree.DbProvider
             }
             catch(TimeoutException ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
                 return false;
             }
         }
@@ -138,7 +138,7 @@ namespace MTree.DbProvider
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return collectionList;
@@ -169,11 +169,11 @@ namespace MTree.DbProvider
                 else if (typeof(T) == typeof(CodeMapDbObject))
                     return (IMongoCollection<T>)CommonDb.GetCollection<CodeMapDbObject>(collectionName);
                 else
-                    logger.Error($"Can not find collection, type: {typeof(T)}");
+                    _logger.Error($"Can not find collection, type: {typeof(T)}");
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return null;
@@ -186,7 +186,7 @@ namespace MTree.DbProvider
                 var collectionName = GetCollectionName(item);
                 if (collectionName == null)
                 {
-                    logger.Error("Collection name is null");
+                    _logger.Error("Collection name is null");
                     return null;
                 }
 
@@ -211,11 +211,11 @@ namespace MTree.DbProvider
                 else if (item is CodeMapDbObject)
                     return (IMongoCollection<T>)CommonDb.GetCollection<CodeMapDbObject>(collectionName);
                 else
-                    logger.Error($"Can not find collection, item: {item}");
+                    _logger.Error($"Can not find collection, item: {item}");
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return null;
@@ -230,11 +230,11 @@ namespace MTree.DbProvider
                 else if (item is DataCounter)
                     return nameof(DataCounter);
                 else
-                    logger.Error($"Can not find collection name, item: {item}");
+                    _logger.Error($"Can not find collection name, item: {item}");
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return null;
@@ -249,7 +249,7 @@ namespace MTree.DbProvider
         {
             if (item == null)
             {
-                logger.Error("item is null");
+                _logger.Error("item is null");
                 return;
             }
 
@@ -260,11 +260,11 @@ namespace MTree.DbProvider
                 if (collection != null)
                     collection.InsertOne(item);
                 else
-                    logger.Error($"Insert error, {item}");
+                    _logger.Error($"Insert error, {item}");
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -279,11 +279,11 @@ namespace MTree.DbProvider
                 if (collection != null)
                     collection.DeleteMany(filter);
                 else
-                    logger.Error($"Delete error, {collectionName}");
+                    _logger.Error($"Delete error, {collectionName}");
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -308,12 +308,12 @@ namespace MTree.DbProvider
                 }
                 else
                 {
-                    logger.Error($"Find error, {collectionName}");
+                    _logger.Error($"Find error, {collectionName}");
                 }
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return null;
@@ -330,7 +330,7 @@ namespace MTree.DbProvider
 
             try
             {
-                logger.Info($"Create database index, recreate: {recreate}");
+                _logger.Info($"Create database index, recreate: {recreate}");
 
                 #region Chart
                 foreach (var collectionName in GetCollectionList(DbTypes.Chart))
@@ -428,16 +428,16 @@ namespace MTree.DbProvider
                 } 
                 #endregion
 
-                logger.Info("Database indexing done");
+                _logger.Info("Database indexing done");
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
                 sw.Stop();
-                logger.Info($"Database indexing Elapsed time: {sw.Elapsed.ToString()}");
+                _logger.Info($"Database indexing Elapsed time: {sw.Elapsed.ToString()}");
             }
         }
 
@@ -451,7 +451,7 @@ namespace MTree.DbProvider
 
             try
             {
-                logger.Info("Save database statictic");
+                _logger.Info("Save database statictic");
 
                 var startDate = DateTimeUtility.StartDateTime(DateTime.Now);
                 var endDate = DateTimeUtility.EndDateTime(DateTime.Now);
@@ -546,12 +546,12 @@ namespace MTree.DbProvider
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
                 sw.Stop();
-                logger.Info($"Database statistics Elapsed time: {sw.Elapsed.ToString()}");
+                _logger.Info($"Database statistics Elapsed time: {sw.Elapsed.ToString()}");
             }
         }
     }

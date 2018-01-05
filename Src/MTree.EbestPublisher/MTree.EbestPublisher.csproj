@@ -107,6 +107,7 @@
     <Compile Include="EbestPublisher_CircuitBreak.cs" />
     <Compile Include="EbestPublisher_IndexMaster.cs" />
     <Compile Include="EbestPublisher_StockMaster.cs" />
+    <Compile Include="EnumType.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

@@ -11,7 +11,7 @@ namespace MTree.Consumer
 {
     public static class ChartConverter
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         private static void UpdateCandlePrice(ref Candle targetCandle, Candle newCandle)
         {
@@ -34,7 +34,7 @@ namespace MTree.Consumer
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -52,7 +52,7 @@ namespace MTree.Consumer
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             return candle;
         }
@@ -68,7 +68,7 @@ namespace MTree.Consumer
                 {
                     if (original.Values[candleIndex].CandleType > CandleTypes.Tick)
                     {
-                        logger.Error("Converting chart scope should be greater than orignal");
+                        _logger.Error("Converting chart scope should be greater than orignal");
                         return null;
                     }
 
@@ -91,7 +91,7 @@ namespace MTree.Consumer
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return retCandles;
@@ -107,7 +107,7 @@ namespace MTree.Consumer
                 {
                     if (original.Values[candleIndex].CandleType > CandleTypes.Min)
                     {
-                        logger.Error("Converting chart scope should be greater than orignal");
+                        _logger.Error("Converting chart scope should be greater than orignal");
                         return null;
                     }
                     Candle candle = new Candle();
@@ -133,7 +133,7 @@ namespace MTree.Consumer
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             return retCandles;
         }
@@ -148,7 +148,7 @@ namespace MTree.Consumer
                 {
                     if (original.Values[candleIndex].CandleType > CandleTypes.Day)
                     {
-                        logger.Error("Converting chart scope should be greater than orignal");
+                        _logger.Error("Converting chart scope should be greater than orignal");
                         return null;
                     }
                     Candle candle = new Candle();
@@ -168,7 +168,7 @@ namespace MTree.Consumer
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             return retCandles;
         }
@@ -187,7 +187,7 @@ namespace MTree.Consumer
                 {
                     if (original.Values[candleIndex].CandleType > CandleTypes.Week)
                     {
-                        logger.Error("Converting chart scope should be greater than orignal");
+                        _logger.Error("Converting chart scope should be greater than orignal");
                         return null;
                     }
                     Candle candle = new Candle();
@@ -208,7 +208,7 @@ namespace MTree.Consumer
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             return retCandles;
         }
@@ -223,7 +223,7 @@ namespace MTree.Consumer
                 {
                     if (original.Values[candleIndex].CandleType > CandleTypes.Month)
                     {
-                        logger.Error("Converting chart scope should be greater than orignal");
+                        _logger.Error("Converting chart scope should be greater than orignal");
                         return null;
                     }
                     Candle candle = new Candle();
@@ -244,7 +244,7 @@ namespace MTree.Consumer
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             return retCandles;
         }
@@ -259,7 +259,7 @@ namespace MTree.Consumer
                 {
                     if (original.Values[candleIndex].CandleType > CandleTypes.Month)
                     {
-                        logger.Error("Converting chart scope should be greater than orignal");
+                        _logger.Error("Converting chart scope should be greater than orignal");
                         return null;
                     }
 
@@ -281,7 +281,7 @@ namespace MTree.Consumer
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             return retCandles;
         }

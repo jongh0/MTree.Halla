@@ -12,19 +12,19 @@ namespace MTree.KiwoomSessionManager
 {
     class Program
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         static void Main(string[] args)
         {
             try
             {
-                logger.Info($"Application Started. Args:{string.Join(",", args)}");
+                _logger.Info($"Application Started. Args:{string.Join(",", args)}");
 
                 if (string.IsNullOrEmpty(Config.Kiwoom.UserId) == true ||
                     string.IsNullOrEmpty(Config.Kiwoom.UserPw) == true ||
                     string.IsNullOrEmpty(Config.Kiwoom.CertPw) == true)
                 {
-                    logger.Error("Check Kiwoom configuration");
+                    _logger.Error("Check Kiwoom configuration");
                     return;
                 }
 
@@ -36,13 +36,13 @@ namespace MTree.KiwoomSessionManager
                     khministarterHandle = WindowsAPI.findWindow("Open API Login", retryCount: 10);
                     if (khministarterHandle == IntPtr.Zero)
                     {
-                        logger.Error("Kiwoom Starter not found");
+                        _logger.Error("Kiwoom Starter not found");
                         return;
                     }
                 }
 
 
-                logger.Info("Kiwoom Starter found");
+                _logger.Info("Kiwoom Starter found");
 
                 // UserPw, CertPw 핸들 찾기
                 IntPtr idH = WindowsAPI.getWindow(khministarterHandle, WindowsAPI.GW_CHILD);
@@ -57,7 +57,7 @@ namespace MTree.KiwoomSessionManager
                 WindowsAPI.postMessage(khministarterHandle, WindowsAPI.WM_KEYDOWN, WindowsAPI.VK_ENTER, 0);
                 WindowsAPI.postMessage(khministarterHandle, WindowsAPI.WM_KEYDOWN, WindowsAPI.VK_ENTER, 0);
                 ClickButton(loginBtnH);
-                logger.Info("Login button clicked");
+                _logger.Info("Login button clicked");
 
                 // Popup Handling
                 while (WindowsAPI.isWindow(khministarterHandle) == true)
@@ -66,15 +66,15 @@ namespace MTree.KiwoomSessionManager
                     HandleAdditionalPopupFail();
                     HandleUpdateNotiPopup();
                 }
-                logger.Info("Kiwoom Starter Closed");
+                _logger.Info("Kiwoom Starter Closed");
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
-                logger.Info("Application finished");
+                _logger.Info("Application finished");
             }
         }
 
@@ -89,16 +89,16 @@ namespace MTree.KiwoomSessionManager
                     {
                         WindowsAPI.postMessage(pwH, WindowsAPI.WM_CHAR, c, 0);
                     }
-                    logger.Info("User Password Entered");
+                    _logger.Info("User Password Entered");
                 }
                 else
                 {
-                    logger.Error("User password empty");
+                    _logger.Error("User password empty");
                 }
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -113,16 +113,16 @@ namespace MTree.KiwoomSessionManager
                     {
                         WindowsAPI.postMessage(certPwH, WindowsAPI.WM_CHAR, c, 0);
                     }
-                    logger.Info("Certi Password Entered");
+                    _logger.Info("Certi Password Entered");
                 }
                 else
                 {
-                    logger.Error("Certification password empty");
+                    _logger.Error("Certification password empty");
                 }
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -133,12 +133,12 @@ namespace MTree.KiwoomSessionManager
                 if (loginBtnH != IntPtr.Zero)
                 {
                     WindowsAPI.postMessage(loginBtnH, WindowsAPI.BM_CLICK, 0, 0);
-                    logger.Info("Button clicked");
+                    _logger.Info("Button clicked");
                 }
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -148,7 +148,7 @@ namespace MTree.KiwoomSessionManager
             var verUpdateHandle = WindowsAPI.findWindow("khministarter", retryCount: 10);
             if (verUpdateHandle != IntPtr.Zero)
             {
-                logger.Info("Version update popup window found");
+                _logger.Info("Version update popup window found");
                 int lauchingProcessId = Convert.ToInt32(Environment.GetCommandLineArgs()[1]);
                 if (Process.GetProcessById(lauchingProcessId) != null)
                     ProcessUtility.Kill(lauchingProcessId);
@@ -164,7 +164,7 @@ namespace MTree.KiwoomSessionManager
                     var updateCompleteHandle = WindowsAPI.findWindow("khministarter", retryCount: 10);
                     if (updateCompleteHandle != IntPtr.Zero)
                     {
-                        logger.Info("Update complete.");
+                        _logger.Info("Update complete.");
                         okBtnHandle = WindowsAPI.getWindow(updateCompleteHandle, WindowsAPI.GW_CHILD);
                         ClickButton(okBtnHandle);
                         ProcessUtility.Start(ProcessTypes.KiwoomPublisher);
@@ -182,7 +182,7 @@ namespace MTree.KiwoomSessionManager
             {
                 IntPtr okBtnHandle = WindowsAPI.getWindow(popupHandle, WindowsAPI.GW_CHILD);
                 string buttonCaption = WindowsAPI.getWindowCaption(okBtnHandle);
-                logger.Info($"{buttonCaption} popup window found");
+                _logger.Info($"{buttonCaption} popup window found");
 
                 ClickButton(okBtnHandle);
                 
@@ -191,7 +191,7 @@ namespace MTree.KiwoomSessionManager
 
                 if (buttonCaption.Contains("확인"))
                 {
-                    logger.Info("Server connection fail popup window found");
+                    _logger.Info("Server connection fail popup window found");
 
                     var failWindowHandle = WindowsAPI.findWindow("khministarter", retryCount: 10);
                     var confirmButtonHandle = WindowsAPI.getWindow(failWindowHandle, WindowsAPI.GW_CHILD);
@@ -212,7 +212,7 @@ namespace MTree.KiwoomSessionManager
             {
                 IntPtr okBtnHandle = WindowsAPI.getWindow(popupHandle, WindowsAPI.GW_CHILD);
                 string buttonCaption = WindowsAPI.getWindowCaption(okBtnHandle);
-                logger.Info($"{buttonCaption} popup window found");
+                _logger.Info($"{buttonCaption} popup window found");
 
                 ClickButton(okBtnHandle);
 

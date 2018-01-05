@@ -13,14 +13,14 @@ namespace MTree.PopupStopper
 {
     class Program
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private static CancellationTokenSource cancelSource = new CancellationTokenSource();
-        private static CancellationToken cancelToken = cancelSource.Token;
+        private static CancellationTokenSource _cancelSource = new CancellationTokenSource();
+        private static CancellationToken _cancelToken = _cancelSource.Token;
 
         static void Main(string[] args)
         {
-            logger.Info("Popup stopper started");
+            _logger.Info("Popup stopper started");
 
             Console.CancelKeyPress += Console_CancelKeyPress;
 
@@ -32,7 +32,7 @@ namespace MTree.PopupStopper
 
                     try
                     {
-                        cancelToken.ThrowIfCancellationRequested();
+                        _cancelToken.ThrowIfCancellationRequested();
 
                         popupClosed |= CheckDibPopup();
                         popupClosed |= CheckInvestorInfoPopup();
@@ -44,21 +44,21 @@ namespace MTree.PopupStopper
                     }
                     catch (OperationCanceledException)
                     {
-                        logger.Trace("Operation canceled");
+                        _logger.Trace("Operation canceled");
                         break;
                     }
                     catch (Exception ex)
                     {
-                        logger.Error(ex);
+                        _logger.Error(ex);
                     }
 
                     if (popupClosed == false)
                         Thread.Sleep(100);
                 }
-            }, cancelToken);
+            }, _cancelToken);
 
             task.Wait();
-            logger.Info("Popup stopper finished");
+            _logger.Info("Popup stopper finished");
         }
 
         private static bool ChecknProtectPopup()
@@ -69,12 +69,12 @@ namespace MTree.PopupStopper
 
                 if (windowH != IntPtr.Zero)
                 {
-                    logger.Trace($"nProtect popup found");
+                    _logger.Trace($"nProtect popup found");
 
                     IntPtr buttonH = WindowsAPI.findWindowEx(windowH, "Button", "확인");
                     if (buttonH != IntPtr.Zero)
                     {
-                        logger.Trace($"Confirm button clicked");
+                        _logger.Trace($"Confirm button clicked");
                         WindowsAPI.sendMessage(buttonH, WindowsAPI.BM_CLICK, 0, 0);
 
                         return true;
@@ -83,7 +83,7 @@ namespace MTree.PopupStopper
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return false;
@@ -97,12 +97,12 @@ namespace MTree.PopupStopper
 
                 if (windowH != IntPtr.Zero)
                 {
-                    logger.Trace($"Runtime error popup found");
+                    _logger.Trace($"Runtime error popup found");
 
                     IntPtr buttonH = WindowsAPI.findWindowEx(windowH, "Button", "확인");
                     if (buttonH != IntPtr.Zero)
                     {
-                        logger.Trace($"Confirm button clicked");
+                        _logger.Trace($"Confirm button clicked");
                         WindowsAPI.sendMessage(buttonH, WindowsAPI.BM_CLICK, 0, 0);
 
                         return true;
@@ -111,7 +111,7 @@ namespace MTree.PopupStopper
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return false;
@@ -127,12 +127,12 @@ namespace MTree.PopupStopper
 
                 if (windowH != IntPtr.Zero)
                 {
-                    logger.Trace($"CPDIB/CPSYSDIB popup found");
+                    _logger.Trace($"CPDIB/CPSYSDIB popup found");
 
                     IntPtr buttonH = WindowsAPI.findWindowEx(windowH, "Button", "확인");
                     if (buttonH != IntPtr.Zero)
                     {
-                        logger.Trace($"Confirm button clicked");
+                        _logger.Trace($"Confirm button clicked");
                         WindowsAPI.sendMessage(buttonH, WindowsAPI.BM_CLICK, 0, 0);
 
                         return true;
@@ -141,7 +141,7 @@ namespace MTree.PopupStopper
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return false;
@@ -155,19 +155,19 @@ namespace MTree.PopupStopper
 
                 if (windowH != IntPtr.Zero)
                 {
-                    logger.Trace($"투자자정보 popup found");
+                    _logger.Trace($"투자자정보 popup found");
 
                     IntPtr buttonH = WindowsAPI.findWindowEx(windowH, "Button", "오늘은 더 묻지 않음");
                     if (buttonH != IntPtr.Zero)
                     {
-                        logger.Trace($"Checkbox clicked");
+                        _logger.Trace($"Checkbox clicked");
                         WindowsAPI.sendMessage(buttonH, WindowsAPI.BM_CLICK, 0, 0);
                     }
 
                     buttonH = WindowsAPI.findWindowEx(windowH, "Button", "아니오(&N)");
                     if (buttonH != IntPtr.Zero)
                     {
-                        logger.Trace($"No button clicked");
+                        _logger.Trace($"No button clicked");
                         WindowsAPI.sendMessage(buttonH, WindowsAPI.BM_CLICK, 0, 0);
 
                         return true;
@@ -176,7 +176,7 @@ namespace MTree.PopupStopper
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return false;
@@ -190,12 +190,12 @@ namespace MTree.PopupStopper
 
                 if (windowH != IntPtr.Zero)
                 {
-                    logger.Trace($"Regular check-up popup found");
+                    _logger.Trace($"Regular check-up popup found");
 
                     IntPtr buttonH = WindowsAPI.findWindowEx(windowH, "Button", "확인");
                     if (buttonH != IntPtr.Zero)
                     {
-                        logger.Trace($"Confirm button clicked");
+                        _logger.Trace($"Confirm button clicked");
                         WindowsAPI.sendMessage(buttonH, WindowsAPI.BM_CLICK, 0, 0);
 
                         return true;
@@ -204,7 +204,7 @@ namespace MTree.PopupStopper
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return false;
@@ -218,12 +218,12 @@ namespace MTree.PopupStopper
 
                 if (windowH != IntPtr.Zero)
                 {
-                    logger.Trace($"Notice popup found");
+                    _logger.Trace($"Notice popup found");
 
                     IntPtr buttonH = WindowsAPI.findWindowEx(windowH, "Button", "확인");
                     if (buttonH != IntPtr.Zero)
                     {
-                        logger.Trace($"Confirm button clicked");
+                        _logger.Trace($"Confirm button clicked");
                         WindowsAPI.sendMessage(buttonH, WindowsAPI.BM_CLICK, 0, 0);
 
                         return true;
@@ -232,7 +232,7 @@ namespace MTree.PopupStopper
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return false;
@@ -246,12 +246,12 @@ namespace MTree.PopupStopper
 
                 if (windowH != IntPtr.Zero)
                 {
-                    logger.Trace($"Certi expired popup found");
+                    _logger.Trace($"Certi expired popup found");
 
                     IntPtr buttonH = WindowsAPI.findWindowEx(windowH, "Button", "확인");
                     if (buttonH != IntPtr.Zero)
                     {
-                        logger.Trace($"Confirm button clicked");
+                        _logger.Trace($"Confirm button clicked");
                         WindowsAPI.sendMessage(buttonH, WindowsAPI.BM_CLICK, 0, 0);
 
                         return true;
@@ -260,7 +260,7 @@ namespace MTree.PopupStopper
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return false;
@@ -268,9 +268,9 @@ namespace MTree.PopupStopper
 
         private static void Console_CancelKeyPress(object sender, ConsoleCancelEventArgs e)
         {
-            logger.Info("Cancel key pressed");
+            _logger.Info("Cancel key pressed");
             e.Cancel = true;
-            cancelSource.Cancel();
+            _cancelSource.Cancel();
         }
     }
 }

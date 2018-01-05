@@ -11,78 +11,78 @@ namespace MTree.ResourceMonitor
 {
     public class ResourceMonitor
     {
-        private NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private const string logBasePath = "Logs";
-        private string counterListFile = "CounterList.txt";
-        private string counterName = "MtreeMon";
+        private const string LogBasePath = "Logs";
+        private const string CounterListFile = "CounterList.txt";
+        private const string CounterName = "MtreeMon";
 
         public int QueryMonitor()
         {
             var process = new Process();
-            logger.Info("Start Logman Query.");
-            process.StartInfo = new ProcessStartInfo("logman", $"query {counterName}")
+            _logger.Info("Start Logman Query.");
+            process.StartInfo = new ProcessStartInfo("logman", $"query {CounterName}")
             {
                 UseShellExecute = false,
                 Verb = "runas"
             };
             process.Start();
             process.WaitForExit();
-            logger.Info($"Start Logman Query Done. Result:{process.ExitCode}");
+            _logger.Info($"Start Logman Query Done. Result:{process.ExitCode}");
             return process.ExitCode;
         }
 
         public int CreateMonitor()
         {
             var process = new Process();
-            logger.Info($"Start Logman Create.");
-            string outputFile = Path.Combine(logBasePath, Config.General.DateNow, DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".blg");
-            process.StartInfo = new ProcessStartInfo("logman", $"create counter {counterName} -o {outputFile} -cf {counterListFile} -si {Config.ResourceMonitor.SamplingFrequence}")
+            _logger.Info($"Start Logman Create.");
+            string outputFile = Path.Combine(LogBasePath, Config.General.DateNow, DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".blg");
+            process.StartInfo = new ProcessStartInfo("logman", $"create counter {CounterName} -o {outputFile} -cf {CounterListFile} -si {Config.ResourceMonitor.SamplingFrequence}")
             {
                 UseShellExecute = false,
                 Verb = "runas"
             };
             process.Start();
             process.WaitForExit();
-            logger.Info($"Start Logman Create Done. Result:{process.ExitCode}");
+            _logger.Info($"Start Logman Create Done. Result:{process.ExitCode}");
             return process.ExitCode;
         }
 
         public int StartMonitor()
         {
             var process = new Process();
-            logger.Info($"Start Logman Start.");
-            process.StartInfo = new ProcessStartInfo("logman", $"start {counterName}")
+            _logger.Info($"Start Logman Start.");
+            process.StartInfo = new ProcessStartInfo("logman", $"start {CounterName}")
             {
                 UseShellExecute = false,
                 Verb = "runas"
             };
             process.Start();
             process.WaitForExit();
-            logger.Info($"Start Logman Start Done. Result:{process.ExitCode}");
+            _logger.Info($"Start Logman Start Done. Result:{process.ExitCode}");
             return process.ExitCode;
         }
 
         public int StopMonitor()
         {
             var process = new Process();
-            logger.Info($"Start Logman Stop Done.");
-            process.StartInfo = new ProcessStartInfo("logman", $"stop {counterName}")
+            _logger.Info($"Start Logman Stop Done.");
+            process.StartInfo = new ProcessStartInfo("logman", $"stop {CounterName}")
             {
                 UseShellExecute = false,
                 Verb = "runas"
             };
             process.Start();
             process.WaitForExit();
-            logger.Info($"Start Logman Stop Done. Result:{process.ExitCode}");
+            _logger.Info($"Start Logman Stop Done. Result:{process.ExitCode}");
             return process.ExitCode;
         }
 
         public int DeleteMonitor()
         {
             var process = new Process();
-            logger.Info($"Start Logman Delete Done.");
-            process.StartInfo = new ProcessStartInfo("logman", $"delete {counterName}")
+            _logger.Info($"Start Logman Delete Done.");
+            process.StartInfo = new ProcessStartInfo("logman", $"delete {CounterName}")
             {
                 UseShellExecute = false,
                 Verb = "runas"
@@ -90,7 +90,7 @@ namespace MTree.ResourceMonitor
             process.Start();
             process.WaitForExit();
 
-            logger.Info($"Start Logman Delete Done. Result:{process.ExitCode}");
+            _logger.Info($"Start Logman Delete Done. Result:{process.ExitCode}");
             return process.ExitCode;
         }
     }

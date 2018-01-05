@@ -72,7 +72,7 @@ namespace MTree.RealTimeProvider
             try
             {
                 RealTimeState = "Launch client process";
-                logger.Info(RealTimeState);
+                _logger.Info(RealTimeState);
 
                 // HistorySaver
                 if (Config.General.LaunchHistorySaver == true)
@@ -109,7 +109,7 @@ namespace MTree.RealTimeProvider
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -119,7 +119,7 @@ namespace MTree.RealTimeProvider
             {
                 if (PublisherContracts.ContainsKey(clientId) == true)
                 {
-                    logger.Error($"{contract.ToString()} publisher contract exist / {clientId}");
+                    _logger.Error($"{contract.ToString()} publisher contract exist / {clientId}");
                 }
                 else
                 {
@@ -129,7 +129,7 @@ namespace MTree.RealTimeProvider
                     if (contract.Type == ProcessTypes.Unknown)
                     {
                         PublisherContracts.TryAdd(clientId, contract);
-                        logger.Warn($"{contract.ToString()} publisher contract type is not set / {clientId}");
+                        _logger.Warn($"{contract.ToString()} publisher contract type is not set / {clientId}");
                     }
                     else
                     {
@@ -137,7 +137,7 @@ namespace MTree.RealTimeProvider
                         if (contract.Type == ProcessTypes.DaishinPublisherMaster) contract.Type = ProcessTypes.DaishinPublisher;
 
                         PublisherContracts.TryAdd(clientId, contract);
-                        logger.Info($"{contract.ToString()} publisher contract registered / {clientId}");
+                        _logger.Info($"{contract.ToString()} publisher contract registered / {clientId}");
 
                         if (isMasterContract == true)
                         {
@@ -146,7 +146,7 @@ namespace MTree.RealTimeProvider
                                 // 휴장. Closing Process
                                 var task = Task.Run(() =>
                                 {
-                                    logger.Info("RealTimeProvider will be closed after 5sec");
+                                    _logger.Info("RealTimeProvider will be closed after 5sec");
 
                                     Thread.Sleep(1000 * 5);
                                     ExitProgram(ExitProgramTypes.Force);
@@ -161,7 +161,7 @@ namespace MTree.RealTimeProvider
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
@@ -179,7 +179,7 @@ namespace MTree.RealTimeProvider
             try
             {
                 RealTimeState = "Process master contract";
-                logger.Info(RealTimeState);
+                _logger.Info(RealTimeState);
                 
                 CheckMarketTime(contract);
                 CheckCodeList(contract);
@@ -189,7 +189,7 @@ namespace MTree.RealTimeProvider
                 Task.Run(() =>
                 {
                     RealTimeState = "Wait 20sec for client process launch";
-                    logger.Info(RealTimeState);
+                    _logger.Info(RealTimeState);
 
                     Thread.Sleep(1000 * 20);
                     
@@ -219,7 +219,7 @@ namespace MTree.RealTimeProvider
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
@@ -232,7 +232,7 @@ namespace MTree.RealTimeProvider
             try
             {
                 RealTimeState = "Check code list";
-                logger.Info(RealTimeState);
+                _logger.Info(RealTimeState);
 
                 var codeList = contract.Callback.GetCodeList();
 
@@ -249,12 +249,12 @@ namespace MTree.RealTimeProvider
                     }
                 }
 
-                logger.Info($"Stock code list count: {StockCodeList.Count}");
-                logger.Info($"Index code list count: {IndexCodeList.Count}");
+                _logger.Info($"Stock code list count: {StockCodeList.Count}");
+                _logger.Info($"Index code list count: {IndexCodeList.Count}");
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -269,10 +269,10 @@ namespace MTree.RealTimeProvider
             try
             {
                 RealTimeState = "Check market work date";
-                logger.Info(RealTimeState);
+                _logger.Info(RealTimeState);
 
                 var workDate = contract.Callback.GetMarketInfo(MarketInfoTypes.WorkDate);
-                logger.Info($"Market work date: {workDate}");
+                _logger.Info($"Market work date: {workDate}");
 
                 int workDateTime = 0;
                 if (int.TryParse(workDate, out workDateTime) == true)
@@ -284,20 +284,20 @@ namespace MTree.RealTimeProvider
                     var now = DateTime.Now;
                     if (now.Year == year && now.Month == month && now.Day == day)
                     {
-                        logger.Info("Market opened");
+                        _logger.Info("Market opened");
                         return true;
                     }
                 }
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
 #if DEBUG
             return true;
 #else
-            logger.Info("Market closed");
+            _logger.Info("Market closed");
             return false;
 #endif
         }
@@ -307,7 +307,7 @@ namespace MTree.RealTimeProvider
             try
             {
                 RealTimeState = "Check market time";
-                logger.Info(RealTimeState);
+                _logger.Info(RealTimeState);
 
                 var now = DateTime.Now;
 
@@ -321,11 +321,11 @@ namespace MTree.RealTimeProvider
                 }
                 else
                 {
-                    logger.Error("Market start time parsing error");
+                    _logger.Error("Market start time parsing error");
                     MarketStartTime = new DateTime(now.Year, now.Month, now.Day, 9, 0, 0);
                 }
 
-                logger.Info($"Market start time: {MarketStartTime.ToString(Config.General.TimeFormat)}");
+                _logger.Info($"Market start time: {MarketStartTime.ToString(Config.General.TimeFormat)}");
 
                 // Market end time
                 var endTimeStr = contract.Callback.GetMarketInfo(MarketInfoTypes.EndTime);
@@ -337,11 +337,11 @@ namespace MTree.RealTimeProvider
                 }
                 else
                 {
-                    logger.Error("Market end time parsing error");
+                    _logger.Error("Market end time parsing error");
                     MarketEndTime = new DateTime(now.Year, now.Month, now.Day, 15, 30, 0).Add(new TimeSpan(2, 30, 00)); // 시간외 2시간 30분 추가
                 }
 
-                logger.Info($"Market end time: {MarketEndTime.ToString(Config.General.TimeFormat)}");
+                _logger.Info($"Market end time: {MarketEndTime.ToString(Config.General.TimeFormat)}");
 
                 if (MarketEndTime > now)
                 {
@@ -353,12 +353,12 @@ namespace MTree.RealTimeProvider
                     MarketEndTimer.AutoReset = false;
                     MarketEndTimer.Start();
 
-                    logger.Info($"Market end timer will be triggered after {interval.Hours}:{interval.Minutes}:{interval.Seconds}");
+                    _logger.Info($"Market end timer will be triggered after {interval.Hours}:{interval.Minutes}:{interval.Seconds}");
                 }
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -371,23 +371,23 @@ namespace MTree.RealTimeProvider
                     PublisherContract temp;
                     PublisherContracts.TryRemove(clientId, out temp);
 
-                    logger.Info($"{clientId} / {temp.Type} contract unregistered");
+                    _logger.Info($"{clientId} / {temp.Type} contract unregistered");
                 }
                 else
                 {
-                    logger.Warn($"{clientId} contract not exist");
+                    _logger.Warn($"{clientId} contract not exist");
                 }
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
         private void StartCodeDistributing()
         {
             RealTimeState = "Start code distributing";
-            logger.Info(RealTimeState);
+            _logger.Info(RealTimeState);
 
 
 #if EVENLY_DISTRIBUTION
@@ -407,7 +407,7 @@ namespace MTree.RealTimeProvider
             try
             {
                 RealTimeState = "Conclusion and Bidding code distribution, Start";
-                logger.Info(RealTimeState);
+                _logger.Info(RealTimeState);
 
                 for (int i = 0; i < StockCodeList.Count; i++)
                 {
@@ -416,19 +416,19 @@ namespace MTree.RealTimeProvider
                     var contract = DaishinContracts[i % DaishinContracts.Count];
 
                     if (contract.Callback.SubscribeStock(code) == false)
-                        logger.Error($"Stock conclusioin code distribution fail. code: {code}");
+                        _logger.Error($"Stock conclusioin code distribution fail. code: {code}");
 
                     if (Config.General.SkipETFConclusion == false &&
                         codeEntiry.MarketType == MarketTypes.ETF)
                     {
                         if (contract.Callback.SubscribeETF(code) == false)
-                            logger.Error($"ETF conclusion code distribution fail. code: {code}");
+                            _logger.Error($"ETF conclusion code distribution fail. code: {code}");
                     }
 
                     if (Config.General.SkipBiddingPrice == false)
                     {
                         if (contract.Callback.SubscribeBidding(code) == false)
-                            logger.Error($"Bidding code distribution fail. code: {code}");
+                            _logger.Error($"Bidding code distribution fail. code: {code}");
                     }
                 }
 
@@ -439,22 +439,22 @@ namespace MTree.RealTimeProvider
                     var contract = DaishinContracts[i % DaishinContracts.Count];
 
                     if (contract.Callback.SubscribeIndex(code) == false)
-                        logger.Error($"Index conclusioin code distribution fail. code: {code}");
+                        _logger.Error($"Index conclusioin code distribution fail. code: {code}");
                 }
 
                 RealTimeState = "Conclusion and Bidding code distribution, Done";
-                logger.Info(RealTimeState);
+                _logger.Info(RealTimeState);
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 #else
         private void DistributeBiddingSubscribingCode()
         {
             RealTimeState = "Bidding code distribution, Start";
-            logger.Info(RealTimeState);
+            _logger.Info(RealTimeState);
 
             int index = 0;
 
@@ -483,7 +483,7 @@ namespace MTree.RealTimeProvider
                     }
                     catch (Exception ex)
                     {
-                        logger.Error(ex);
+                        _logger.Error(ex);
                         break;
                     }
                 }
@@ -492,19 +492,19 @@ namespace MTree.RealTimeProvider
             if (StockCodeList.Count == index)
             {
                 RealTimeState = "Bidding code distribution, Done";
-                logger.Info(RealTimeState);
+                _logger.Info(RealTimeState);
             }
             else
             {
                 RealTimeState = "Bidding code distribution, Fail";
-                logger.Error(RealTimeState);
+                _logger.Error(RealTimeState);
             }
         }
 
         private void DistributeStockConclusionSubscribingCode()
         {
             RealTimeState = "Stock conclusion code distribution, Start";
-            logger.Info(RealTimeState);
+            _logger.Info(RealTimeState);
 
             int index = 0;
 
@@ -533,7 +533,7 @@ namespace MTree.RealTimeProvider
                     }
                     catch (Exception ex)
                     {
-                        logger.Error(ex);
+                        _logger.Error(ex);
                         break;
                     }
                 }
@@ -542,19 +542,19 @@ namespace MTree.RealTimeProvider
             if (StockCodeList.Count == index)
             {
                 RealTimeState = "Stock code distribution, Done";
-                logger.Info(RealTimeState);
+                _logger.Info(RealTimeState);
             }
             else
             {
                 RealTimeState = "Stock code distribution, Fail";
-                logger.Error(RealTimeState);
+                _logger.Error(RealTimeState);
             }
         }
 
         private void DistributeIndexConclusionSubscribingCode()
         {
             RealTimeState = "Index conclusion code distribution, Start";
-            logger.Info(RealTimeState);
+            _logger.Info(RealTimeState);
 
             int index = 0;
 
@@ -583,7 +583,7 @@ namespace MTree.RealTimeProvider
                     }
                     catch (Exception ex)
                     {
-                        logger.Error(ex);
+                        _logger.Error(ex);
                         break;
                     }
                 }
@@ -592,12 +592,12 @@ namespace MTree.RealTimeProvider
             if (IndexCodeList.Count == index)
             {
                 RealTimeState = "Index code distribution, Done";
-                logger.Info(RealTimeState);
+                _logger.Info(RealTimeState);
             }
             else
             {
                 RealTimeState = "Index code distribution, Fail";
-                logger.Error(RealTimeState);
+                _logger.Error(RealTimeState);
             }
         } 
 #endif
@@ -605,7 +605,7 @@ namespace MTree.RealTimeProvider
         private void DistributeCircuitBreakSubscribingCode()
         {
             RealTimeState = "Circuite break code distribution, Start";
-            logger.Info(RealTimeState);
+            _logger.Info(RealTimeState);
 
             int errorCnt = 0;
 
@@ -620,7 +620,7 @@ namespace MTree.RealTimeProvider
 
                 if (contract.Callback.SubscribeCircuitBreak(code) == false)
                 {
-                    logger.Error($"Circuite break code distribution fail. code: {code}");
+                    _logger.Error($"Circuite break code distribution fail. code: {code}");
                     i--;
 
                     errorCnt++;
@@ -632,12 +632,12 @@ namespace MTree.RealTimeProvider
             if (errorCnt > 10)
             {
                 RealTimeState = $"Circuite break code distribution, Fail. error count: {errorCnt}";
-                logger.Error(RealTimeState);
+                _logger.Error(RealTimeState);
             }
             else
             {
                 RealTimeState = "Circuite break code distribution, Done";
-                logger.Info(RealTimeState);
+                _logger.Info(RealTimeState);
             }
         }
 

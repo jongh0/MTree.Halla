@@ -22,7 +22,7 @@ namespace MTree.DataValidator
     /// </summary>
     public partial class RecoveryPopup : Window
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
         public DialogResult Result { get; set; }
         
         public RecoveryPopup()
@@ -33,7 +33,7 @@ namespace MTree.DataValidator
         public void SetUri(string path)
         {
             if (File.Exists(path) == false)
-                logger.Error($"{path} is not exist.");
+                _logger.Error($"{path} is not exist.");
 
             if (path != null)
                 CompareViewer.Navigate(Path.Combine(Environment.CurrentDirectory, path));

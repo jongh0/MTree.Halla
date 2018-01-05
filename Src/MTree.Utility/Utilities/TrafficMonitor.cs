@@ -10,7 +10,7 @@ namespace MTree.Utility
 {
     public class TrafficMonitor : INotifyPropertyChanged
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         private DataCounter PrevCounter;
         private DataCounter Counter;
@@ -45,7 +45,7 @@ namespace MTree.Utility
             Latency = DateTime.Now - subscribable.ReceivedTime;
 
             if (Latency.TotalMilliseconds > 1000)
-                logger.Debug($"[{GetType().Name}] {subscribable.GetType().Name} data transfer delayed. Latency: {Latency.TotalMilliseconds}");
+                _logger.Debug($"[{GetType().Name}] {subscribable.GetType().Name} data transfer delayed. Latency: {Latency.TotalMilliseconds}");
 
             if (this.Counter != null)
                 LatencyList.Add(Latency);
@@ -78,7 +78,7 @@ namespace MTree.Utility
             //NotifyPropertyChanged(nameof(StockConclusionThroughput));
             //NotifyPropertyChanged(nameof(BiddingPriceThroughput));
 
-            logger.Debug($"[{GetType().Name}] AverageLatency: {AverageLatency}, StockConclusionThroughput: {StockConclusionThroughput}, BiddingPriceThroughput: {BiddingPriceThroughput}");
+            _logger.Debug($"[{GetType().Name}] AverageLatency: {AverageLatency}, StockConclusionThroughput: {StockConclusionThroughput}, BiddingPriceThroughput: {BiddingPriceThroughput}");
         }
 
         #region INotifyPropertyChanged

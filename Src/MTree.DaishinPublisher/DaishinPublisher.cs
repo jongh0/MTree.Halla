@@ -18,7 +18,7 @@ namespace MTree.DaishinPublisher
 {
     public partial class DaishinPublisher : BrokerageFirmBase, INotifyPropertyChanged
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         private bool IsMasterProcess { get; set; } = false;
         
@@ -81,11 +81,11 @@ namespace MTree.DaishinPublisher
 
                 if (sessionObj.IsConnect != 1)
                 {
-                    logger.Error("Session not connected");
+                    _logger.Error("Session not connected");
                     return;
                 }
 
-                logger.Info($"Server type: {sessionObj.ServerType}");
+                _logger.Info($"Server type: {sessionObj.ServerType}");
 
                 StartBiddingPriceQueueTask();
                 StartStockConclusionQueueTask();
@@ -97,7 +97,7 @@ namespace MTree.DaishinPublisher
 
 #if false // Chart test code
                 var chart = GetChart("A000020", new DateTime(2015, 3, 4), new DateTime(2015, 3, 4), ChartTypes.Min);
-                logger.Info($"Candle count: {chart.Count}");
+                _logger.Info($"Candle count: {chart.Count}");
                 Debugger.Break();
 #endif
 #if false // Member Subscribing test
@@ -111,7 +111,7 @@ namespace MTree.DaishinPublisher
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -122,13 +122,13 @@ namespace MTree.DaishinPublisher
             string str = $"Time: {memberTrendObj.GetHeaderValue(0)}, Member: {memberTrendObj.GetHeaderValue(1)}, Code: {memberTrendObj.GetHeaderValue(2)}, Name: {memberTrendObj.GetHeaderValue(3)}, Sell/Buy: {memberTrendObj.GetHeaderValue(4)}, Amount: { memberTrendObj.GetHeaderValue(5)}, Accum Amount: { memberTrendObj.GetHeaderValue(6)}, Sign: { memberTrendObj.GetHeaderValue(7)}, Forien: { memberTrendObj.GetHeaderValue(8)}";
             if (cnt % 100 == 0)
             {
-                logger.Info(str);
+                _logger.Info(str);
             }
         }
         
         private void sessionObj_OnDisconnect()
         {
-            logger.Error("Disconnected");
+            _logger.Error("Disconnected");
 
             if (IsMasterProcess == true)
                 ServiceClient.NotifyMessage(MessageTypes.DaishinSessionDisconnected, string.Empty);
@@ -162,7 +162,7 @@ namespace MTree.DaishinPublisher
             {
                 Task.Run(() =>
                 {
-                    logger.Info("Process will be closed");
+                    _logger.Info("Process will be closed");
                     Thread.Sleep(1000 * 5);
 
                     Environment.Exit(0);
@@ -194,7 +194,7 @@ namespace MTree.DaishinPublisher
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return base.GetMarketInfo(type);

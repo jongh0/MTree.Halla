@@ -11,7 +11,7 @@ namespace MTree.Utility
 {
     public class ProcessUtility
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         private static Dictionary<ProcessTypes, string> ProcessList { get; set; }
 
@@ -71,12 +71,12 @@ namespace MTree.Utility
                 process.StartInfo.WindowStyle = windowStyle;
                 process.Start();
 
-                logger.Info($"{Path.GetFileName(filePath)} {arguments} process started");
+                _logger.Info($"{Path.GetFileName(filePath)} {arguments} process started");
                 return process;
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return null;
@@ -101,12 +101,12 @@ namespace MTree.Utility
                     if (p.Id != excludeId)
                     {
                         p.Kill();
-                        logger.Info($"{p.ProcessName}, {p.Id} process killed");
+                        _logger.Info($"{p.ProcessName}, {p.Id} process killed");
                     }
                 }
                 catch (Exception ex)
                 {
-                    logger.Error(ex);
+                    _logger.Error(ex);
                 }
             }
         }
@@ -115,12 +115,12 @@ namespace MTree.Utility
             var process = Process.GetProcessById(excludeId);
             if (process == null)
             {
-                logger.Info($"Process({process.Id}) is not found");
+                _logger.Info($"Process({process.Id}) is not found");
                 return;
             }
 
             process.Kill();
-            logger.Info($"{process.ProcessName}, {process.Id} process killed");
+            _logger.Info($"{process.ProcessName}, {process.Id} process killed");
         }
 
         public static void Close(int excludeId)
@@ -128,12 +128,12 @@ namespace MTree.Utility
             var process = Process.GetProcessById(excludeId);
             if (process == null)
             {
-                logger.Info($"Process({process.Id}) is not found");
+                _logger.Info($"Process({process.Id}) is not found");
                 return;
             }
 
             process.Close();
-            logger.Info($"{process.ProcessName}, {process.Id} process closed");
+            _logger.Info($"{process.ProcessName}, {process.Id} process closed");
         }
 
         public static bool Exists(ProcessTypes type)

@@ -8,7 +8,7 @@ namespace MTree.Strategy
 {
     public class StrategySample : IStrategy
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         public string Name { get; set; } = "StrategySample";
 
@@ -17,14 +17,14 @@ namespace MTree.Strategy
             try
             {
 
-                logger.Info($"[{Name}] CanBuy: true");
+                _logger.Info($"[{Name}] CanBuy: true");
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
-            logger.Info($"[{Name}] CanBuy: false");
+            _logger.Info($"[{Name}] CanBuy: false");
             return false;
         }
 
@@ -32,14 +32,14 @@ namespace MTree.Strategy
         {
             try
             {
-                logger.Info($"[{Name}] CanSell: true");
+                _logger.Info($"[{Name}] CanSell: true");
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
-            logger.Info($"[{Name}] CanSell: false");
+            _logger.Info($"[{Name}] CanSell: false");
             return false;
         }
     }

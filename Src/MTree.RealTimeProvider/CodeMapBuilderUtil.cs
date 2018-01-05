@@ -10,7 +10,7 @@ namespace MTree.RealTimeProvider
 {
     public static class CodeMapBuilderUtil
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         public static Dictionary<string, object> BuildNode(Dictionary<string, object> parent, string name, object child = null)
         {
@@ -80,7 +80,7 @@ namespace MTree.RealTimeProvider
             {
                 Error = (sender, args) =>
                 {
-                    logger.Error($"Configuration deserialize error, {args.ErrorContext.Error.Message}");
+                    _logger.Error($"Configuration deserialize error, {args.ErrorContext.Error.Message}");
                     args.ErrorContext.Handled = true;
                 }
             });
@@ -103,7 +103,7 @@ namespace MTree.RealTimeProvider
                     {
                         Error = (sender, args) =>
                         {
-                            logger.Error($"Configuration deserialize error, {args.ErrorContext.Error.Message}");
+                            _logger.Error($"Configuration deserialize error, {args.ErrorContext.Error.Message}");
                             args.ErrorContext.Handled = true;
                         }
                     });
@@ -120,7 +120,7 @@ namespace MTree.RealTimeProvider
                 }
                 catch (Exception ex)
                 {
-                    logger.Error(ex);
+                    _logger.Error(ex);
                 }
             }
             return ret;

@@ -9,7 +9,7 @@ namespace MTree.Utility
 {
     public class TaskUtility
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         public static Task Run(string taskName, CancellationToken cancelToken, Action action)
         {
@@ -19,7 +19,7 @@ namespace MTree.Utility
 
             return Task.Run(() =>
             {
-                logger.Info($"{_taskName} task started");
+                _logger.Info($"{_taskName} task started");
 
                 while (true)
                 {
@@ -34,11 +34,11 @@ namespace MTree.Utility
                     }
                     catch (Exception ex)
                     {
-                        logger.Error(ex);
+                        _logger.Error(ex);
                     }
                 }
 
-                logger.Info($"{_taskName} task stopped");
+                _logger.Info($"{_taskName} task stopped");
             }, _cancelToken);
         }
     }

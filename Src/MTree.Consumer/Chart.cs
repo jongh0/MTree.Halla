@@ -13,7 +13,7 @@ namespace MTree.Consumer
 {
     public class Chart
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         public string Code { get; private set; }
 
@@ -59,7 +59,7 @@ namespace MTree.Consumer
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -130,7 +130,7 @@ namespace MTree.Consumer
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
@@ -166,17 +166,17 @@ namespace MTree.Consumer
                     if (Candles.ContainsKey(candle.Time) == false)
                         Candles.Add(candle.Time, candle);
                     else
-                        logger.Warn($"Already exists in candle list, {candle.Code}/{candle.Time.ToString(Config.General.DateTimeFormat)}");
+                        _logger.Warn($"Already exists in candle list, {candle.Code}/{candle.Time.ToString(Config.General.DateTimeFormat)}");
                 }
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
                 var duration = Environment.TickCount - startTick;
-                logger.Info($"Candle list filled, Tick: {duration}, {this.ToString()}");
+                _logger.Info($"Candle list filled, Tick: {duration}, {this.ToString()}");
             }
         }
 
@@ -210,11 +210,11 @@ namespace MTree.Consumer
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
-                logger.Info($"Candle list filled, {this.ToString()}");
+                _logger.Info($"Candle list filled, {this.ToString()}");
             }
         }
 
@@ -243,16 +243,16 @@ namespace MTree.Consumer
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
                 var duration = Environment.TickCount - startTick;
                 if (duration > 100)
-                    logger.Error($"Candle search take long time, {Code}/{ChartType}/{dateTime.ToString(Config.General.DateTimeFormat)}");
+                    _logger.Error($"Candle search take long time, {Code}/{ChartType}/{dateTime.ToString(Config.General.DateTimeFormat)}");
             }
 
-            logger.Warn($"Can not find candle at {Code}/{dateTime.ToString(Config.General.DateTimeFormat)}");
+            _logger.Warn($"Can not find candle at {Code}/{dateTime.ToString(Config.General.DateTimeFormat)}");
             return null;
         }
 
@@ -269,10 +269,10 @@ namespace MTree.Consumer
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
-            logger.Warn($"Can not find candle next {baseCandle.Code}/{baseCandle.Time.ToString(Config.General.DateTimeFormat)}");
+            _logger.Warn($"Can not find candle next {baseCandle.Code}/{baseCandle.Time.ToString(Config.General.DateTimeFormat)}");
             return null;
         }
 
@@ -289,10 +289,10 @@ namespace MTree.Consumer
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
-            logger.Warn($"Can not find candle prev {baseCandle.Code}/{baseCandle.Time.ToString(Config.General.DateTimeFormat)}");
+            _logger.Warn($"Can not find candle prev {baseCandle.Code}/{baseCandle.Time.ToString(Config.General.DateTimeFormat)}");
             return null;
         }
 

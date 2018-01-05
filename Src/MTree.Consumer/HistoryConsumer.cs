@@ -19,7 +19,7 @@ namespace MTree.Consumer
 
     public class HistoryConsumer: ConsumerBase, ISimulation
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         private DataLoader dataLoader = new DataLoader();
         
@@ -45,7 +45,7 @@ namespace MTree.Consumer
             List<StockConclusion> conclusions = new List<StockConclusion>();
             
             Stopwatch sw = new Stopwatch();
-            logger.Info("Start to load history from db");
+            _logger.Info("Start to load history from db");
             sw.Start();
 
             Parallel.ForEach(codes, code =>
@@ -59,9 +59,9 @@ namespace MTree.Consumer
             });
 
             sw.Stop();
-            logger.Info($"Loading done. Elapsed:{sw.Elapsed}");
+            _logger.Info($"Loading done. Elapsed:{sw.Elapsed}");
             
-            logger.Info("Start consuming");
+            _logger.Info("Start consuming");
             sw.Start();
 
             foreach (StockConclusion conclusion in conclusions)
@@ -72,7 +72,7 @@ namespace MTree.Consumer
             NotifyMessage(RealTimeProvider.MessageTypes.SubscribingDone, null);
 
             sw.Stop();
-            logger.Info($"Consuming done. Elapsed:{sw.Elapsed}");
+            _logger.Info($"Consuming done. Elapsed:{sw.Elapsed}");
 
             return true;
         }

@@ -21,7 +21,7 @@ namespace MTree.RealTimeProvider
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false, ValidateMustUnderstand = false)]
     public partial class RealTimeProvider : SubscribingBase, IRealTimePublisher, IRealTimeConsumer, INotifyPropertyChanged
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         public DateTime MarketStartTime { get; set; }
         public DateTime MarketEndTime { get; set; }
@@ -57,7 +57,7 @@ namespace MTree.RealTimeProvider
             
             if (args.Contains("SkipMastering") == true)
             {
-                logger.Info("Command args, SkipMastering");
+                _logger.Info("Command args, SkipMastering");
                 SkipMastering = true;
             }
             else if (Config.General.SkipMastering == true)
@@ -67,7 +67,7 @@ namespace MTree.RealTimeProvider
 
             if (args.Contains("SkipCodeBuilding") == true)
             {
-                logger.Info("Command args, SkipCodeBuilding");
+                _logger.Info("Command args, SkipCodeBuilding");
                 SkipCodeBuilding = true;
             }
             else if (Config.General.SkipCodeBuilding == true)
@@ -96,14 +96,14 @@ namespace MTree.RealTimeProvider
                 if (type == MessageTypes.DaishinSessionDisconnected)
                 {
                     RealTimeState = "Daishin session disconnected";
-                    logger.Info(RealTimeState);
+                    _logger.Info(RealTimeState);
 
                     ExitProgram(ExitProgramTypes.Restart);
                 }
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -117,7 +117,7 @@ namespace MTree.RealTimeProvider
                 }
                 catch (Exception ex)
                 {
-                    logger.Error(ex);
+                    _logger.Error(ex);
                 }
             }
         }
@@ -132,7 +132,7 @@ namespace MTree.RealTimeProvider
                 }
                 catch (Exception ex)
                 {
-                    logger.Error(ex);
+                    _logger.Error(ex);
                 }
             }
         } 
@@ -140,7 +140,7 @@ namespace MTree.RealTimeProvider
 
         private void MarketEndTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            logger.Info("Market end timer elapsed");
+            _logger.Info("Market end timer elapsed");
 
             // Popup stopper 실행
             ProcessUtility.Start(ProcessTypes.PopupStopper, ProcessWindowStyle.Minimized);
@@ -153,17 +153,17 @@ namespace MTree.RealTimeProvider
                 if (string.IsNullOrEmpty(Config.Database.RemoteConnectionString) == false &&
                     Config.Database.ConnectionString != Config.Database.RemoteConnectionString)
                 {
-                    logger.Info("Launch Data validator");
+                    _logger.Info("Launch Data validator");
 
                     if (ProcessUtility.Start(ProcessTypes.DataValidatorRegularCheck, ProcessWindowStyle.Minimized).WaitForExit((int)TimeSpan.FromMinutes(60).TotalMilliseconds) == false)
                     {
-                        logger.Error("Data validator time out");
+                        _logger.Error("Data validator time out");
                         ProcessUtility.Kill(ProcessTypes.DataValidatorRegularCheck);
                     }
                 }
                 else
                 {
-                    logger.Error("Remote connection string not valid");
+                    _logger.Error("Remote connection string not valid");
                 }
             }
 
@@ -178,7 +178,7 @@ namespace MTree.RealTimeProvider
             try
             {
                 RealTimeState = "Save chart started";
-                logger.Info(RealTimeState);
+                _logger.Info(RealTimeState);
 
                 var daishinContracts = DaishinContracts;
                 var daishinContractCount = daishinContracts.Count;
@@ -200,7 +200,7 @@ namespace MTree.RealTimeProvider
                     var candleList = daishinContracts[i % daishinContractCount].Callback.GetChart(fullCode, startDate, endDate, CandleTypes.Day);
                     if (candleList == null || candleList.Count == 0)
                     {
-                        logger.Info($"{msg}, chart not exists");
+                        _logger.Info($"{msg}, chart not exists");
                         continue;
                     }
 
@@ -216,7 +216,7 @@ namespace MTree.RealTimeProvider
 
                     int consumerTick = Environment.TickCount - startTick;
 
-                    logger.Info($"{msg}, candleCount: {candleList.Count}, publisherTick: {publisherTick}, consumerTick: {consumerTick}");
+                    _logger.Info($"{msg}, candleCount: {candleList.Count}, publisherTick: {publisherTick}, consumerTick: {consumerTick}");
 
                     candleList.Clear();
                 }
@@ -239,7 +239,7 @@ namespace MTree.RealTimeProvider
                     var candleList = daishinContracts[i % daishinContractCount].Callback.GetChart(fullCode, startDate, endDate, CandleTypes.Day);
                     if (candleList == null || candleList.Count == 0)
                     {
-                        logger.Info($"{msg}, chart not exists");
+                        _logger.Info($"{msg}, chart not exists");
                         continue;
                     }
 
@@ -255,23 +255,23 @@ namespace MTree.RealTimeProvider
 
                     int consumerTick = Environment.TickCount - startTick;
 
-                    logger.Info($"{msg}, candleCount: {candleList.Count}, publisherTick: {publisherTick}, consumerTick: {consumerTick}");
+                    _logger.Info($"{msg}, candleCount: {candleList.Count}, publisherTick: {publisherTick}, consumerTick: {consumerTick}");
 
                     candleList.Clear();
                 }
                 #endregion
 
                 RealTimeState = "Save chart done";
-                logger.Info(RealTimeState);
+                _logger.Info(RealTimeState);
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
                 sw.Stop();
-                logger.Info($"Save chart Elapsed time: {sw.Elapsed.ToString()}");
+                _logger.Info($"Save chart Elapsed time: {sw.Elapsed.ToString()}");
             }
         }
 
@@ -282,7 +282,7 @@ namespace MTree.RealTimeProvider
                 CanExitProgram = false;
 
                 RealTimeState = $"Exit program, {exitType.ToString()}";
-                logger.Info(RealTimeState);
+                _logger.Info(RealTimeState);
 
                 // Publisher 종료
                 NotifyMessageToPubliser(MessageTypes.CloseClient, exitType.ToString());
@@ -314,7 +314,7 @@ namespace MTree.RealTimeProvider
 
                         // 20초후 프로그램 종료
                         RealTimeState = "RealTimeProvider will be closed after 20sec";
-                        logger.Info(RealTimeState);
+                        _logger.Info(RealTimeState);
                     }
 
                     Thread.Sleep(1000 * 20);
@@ -325,7 +325,7 @@ namespace MTree.RealTimeProvider
                     if (exitType == ExitProgramTypes.Restart)
                     {
                         RealTimeState = "RealTimeProvider will be restarted";
-                        logger.Info(RealTimeState);
+                        _logger.Info(RealTimeState);
 
                         //Application.Restart();
                         if (MasteringDone == true)
@@ -339,7 +339,7 @@ namespace MTree.RealTimeProvider
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
         
@@ -368,7 +368,7 @@ namespace MTree.RealTimeProvider
         public void ExecuteSendLog()
         {
             RealTimeState = "Execute send log";
-            logger.Info(RealTimeState);
+            _logger.Info(RealTimeState);
 
             Task.Run(() =>
             {
@@ -404,7 +404,7 @@ namespace MTree.RealTimeProvider
         public void ExecuteExitProgram()
         {
             RealTimeState = "Execute exit program";
-            logger.Info(RealTimeState);
+            _logger.Info(RealTimeState);
 
             Task.Run(() =>
             {

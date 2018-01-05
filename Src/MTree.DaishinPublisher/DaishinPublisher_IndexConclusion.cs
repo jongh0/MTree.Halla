@@ -28,7 +28,7 @@ namespace MTree.DaishinPublisher
         {
             if (GetSubscribableCount() < 1)
             {
-                logger.Error("Not enough subscribable count");
+                _logger.Error("Not enough subscribable count");
                 return false;
             }
 
@@ -50,18 +50,18 @@ namespace MTree.DaishinPublisher
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
                 if (status == 0)
                 {
-                    logger.Trace($"Subscribe IndexConclusion success, Code: {code}");
+                    _logger.Trace($"Subscribe IndexConclusion success, Code: {code}");
                     IndexSubscribeCount++;
                 }
                 else
                 {
-                    logger.Error($"Subscribe IndexConclusion fail, Code: {code}, Status: {status}, Msg: {indexCurObj.GetDibMsg1()}");
+                    _logger.Error($"Subscribe IndexConclusion fail, Code: {code}, Status: {status}, Msg: {indexCurObj.GetDibMsg1()}");
                 }
             }
 
@@ -88,18 +88,18 @@ namespace MTree.DaishinPublisher
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
                 if (status == 0)
                 {
-                    logger.Trace($"Unsubscribe IndexConclusion success, Code: {code}");
+                    _logger.Trace($"Unsubscribe IndexConclusion success, Code: {code}");
                     IndexSubscribeCount--;
                 }
                 else
                 {
-                    logger.Error($"Unsubscribe IndexConclusion fail, Code: {code}, Status: {status}, Msg: {indexCurObj.GetDibMsg1()}");
+                    _logger.Error($"Unsubscribe IndexConclusion fail, Code: {code}, Status: {status}, Msg: {indexCurObj.GetDibMsg1()}");
                 }
             }
 
@@ -151,7 +151,7 @@ namespace MTree.DaishinPublisher
                 // 13 - (long) 현재가
                 conclusion.Price = Convert.ToSingle(indexCurObj.GetHeaderValue(13)) / 100;
                 if (conclusion.Price <= 0)
-                    logger.Error($"Index conclusion price error, Price: {conclusion.Price}");
+                    _logger.Error($"Index conclusion price error, Price: {conclusion.Price}");
 
                 // 18 - (long) 시간 (초)
                 long time = Convert.ToInt64(indexCurObj.GetHeaderValue(18));
@@ -169,7 +169,7 @@ namespace MTree.DaishinPublisher
                 catch (ArgumentOutOfRangeException)
                 {
                     conclusion.Time = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0); // ignore second
-                    logger.Warn($"Index conclusion time error, time: {time}, code: {conclusion.Code}");
+                    _logger.Warn($"Index conclusion time error, time: {time}, code: {conclusion.Code}");
                 }
 
                 // 20 - (char) 장 구분 플래그
@@ -198,7 +198,7 @@ namespace MTree.DaishinPublisher
 
                     default:
                         conclusion.MarketTimeType = MarketTimeTypes.Unknown;
-                        logger.Error($"Index conclusion market time type error, {marketTimeType}");
+                        _logger.Error($"Index conclusion market time type error, {marketTimeType}");
                         break;
                 }
 
@@ -206,7 +206,7 @@ namespace MTree.DaishinPublisher
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
@@ -214,7 +214,7 @@ namespace MTree.DaishinPublisher
                 {
                     var latency = Environment.TickCount - startTick;
                     if (latency > 10)
-                        logger.Error($"Index conclusion latency error, {latency}");
+                        _logger.Error($"Index conclusion latency error, {latency}");
                 }
             }
         }

@@ -14,7 +14,7 @@ namespace MTree.RealTimeProvider
     /// </summary>
     public partial class MainWindow : Window
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         ServiceHost Host { get; set; }
 
@@ -47,23 +47,23 @@ namespace MTree.RealTimeProvider
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
         private void Host_Faulted(object sender, EventArgs e)
         {
-            logger.Error("Host faulted");
+            _logger.Error("Host faulted");
         }
 
         private void Host_Closed(object sender, EventArgs e)
         {
-            logger.Info("Host closed");
+            _logger.Info("Host closed");
         }
 
         private void Host_Opened(object sender, EventArgs e)
         {
-            logger.Info("Host opened");
+            _logger.Info("Host opened");
 
             Task.Run(() =>
             {
@@ -78,7 +78,7 @@ namespace MTree.RealTimeProvider
                     // Daishin CybosPlus 실행
                     if (ProcessUtility.Exists(ProcessTypes.CybosStarter) == false)
                     {
-                        logger.Info("Daishin starter not exists, run CybosStarter");
+                        _logger.Info("Daishin starter not exists, run CybosStarter");
                         ProcessUtility.Start(ProcessTypes.DaishinSessionManager, ProcessWindowStyle.Minimized)?.WaitForExit();
                     }
 

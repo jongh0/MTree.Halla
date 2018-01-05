@@ -17,7 +17,7 @@ namespace MTree.RealTimeProvider
         private void StartIndexMastering()
         {
             RealTimeState = "Index mastering started";
-            logger.Info(RealTimeState);
+            _logger.Info(RealTimeState);
 
             bool masteringRet = false;
 
@@ -45,7 +45,7 @@ namespace MTree.RealTimeProvider
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
@@ -54,14 +54,14 @@ namespace MTree.RealTimeProvider
                 if (masteringRet == true)
                 {
                     RealTimeState = "Index mastering success";
-                    logger.Info($"{RealTimeState}, Elapsed time: {sw.Elapsed.ToString()}");
+                    _logger.Info($"{RealTimeState}, Elapsed time: {sw.Elapsed.ToString()}");
 
                     Task.Run(() => StartIndexMasterPublishing());
                 }
                 else
                 {
                     RealTimeState = "Index mastering failed";
-                    logger.Info(RealTimeState);
+                    _logger.Info(RealTimeState);
                 }
             }
         }
@@ -69,7 +69,7 @@ namespace MTree.RealTimeProvider
         private void StartIndexMasterPublishing()
         {
             RealTimeState = "Index master publishing started";
-            logger.Info(RealTimeState);
+            _logger.Info(RealTimeState);
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -93,13 +93,13 @@ namespace MTree.RealTimeProvider
                     }
                     catch (Exception ex)
                     {
-                        logger.Error(ex);
+                        _logger.Error(ex);
                     }
                 }
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
@@ -109,14 +109,14 @@ namespace MTree.RealTimeProvider
                 sw.Stop();
 
                 RealTimeState = "Index master publishing done";
-                logger.Info($"{RealTimeState}, Elapsed time: {sw.Elapsed.ToString()}");
+                _logger.Info($"{RealTimeState}, Elapsed time: {sw.Elapsed.ToString()}");
             }
         }
 
         private void StartDaishinIndexMastering()
         {
             RealTimeState = "Daishin index mastering started";
-            logger.Info(RealTimeState);
+            _logger.Info(RealTimeState);
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -173,14 +173,14 @@ namespace MTree.RealTimeProvider
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
                 sw.Stop();
 
                 RealTimeState = "Daishin index mastering done";
-                logger.Info($"{RealTimeState}, Elapsed time: {sw.Elapsed.ToString()}");
+                _logger.Info($"{RealTimeState}, Elapsed time: {sw.Elapsed.ToString()}");
             }
         }
 
@@ -199,12 +199,12 @@ namespace MTree.RealTimeProvider
                 if (contract.Type == ProcessTypes.DaishinPublisher)
                     CopyIndexMasterFromDaishin(mastering, master);
                 else
-                    logger.Warn("Wrong contract type for index mastering");
+                    _logger.Warn("Wrong contract type for index mastering");
             }
             catch (Exception ex)
             {
-                logger.Error($"Index mastering error, {contract.ToString()}");
-                logger.Error(ex);
+                _logger.Error($"Index mastering error, {contract.ToString()}");
+                _logger.Error(ex);
             }
             finally
             {
@@ -228,7 +228,7 @@ namespace MTree.RealTimeProvider
 
                     if (source.Code != dest.Code)
                     {
-                        logger.Error($"Daishin index mastering, Code not matched, {source.Code} != {dest.Code}");
+                        _logger.Error($"Daishin index mastering, Code not matched, {source.Code} != {dest.Code}");
                         return;
                     }
 
@@ -240,7 +240,7 @@ namespace MTree.RealTimeProvider
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {

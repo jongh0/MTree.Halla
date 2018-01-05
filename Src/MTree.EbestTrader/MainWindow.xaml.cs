@@ -23,11 +23,11 @@ namespace MTree.EbestTrader
     /// </summary>
     public partial class MainWindow : Window
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         ServiceHost Host { get; set; }
 
-        TraderViewModel traderViewModel { get; set; }
+        TraderViewModel TraderVM { get; set; }
 
         public MainWindow()
         {
@@ -40,24 +40,24 @@ namespace MTree.EbestTrader
             Host.Faulted += Host_Faulted;
             Host.Open();
 
-            traderViewModel = new TraderViewModel(instance);
+            TraderVM = new TraderViewModel(instance);
 
-            this.DataContext = traderViewModel;
+            this.DataContext = TraderVM;
         }
 
         private void Host_Faulted(object sender, EventArgs e)
         {
-            logger.Error("Host faulted");
+            _logger.Error("Host faulted");
         }
 
         private void Host_Closed(object sender, EventArgs e)
         {
-            logger.Info("Host closed");
+            _logger.Info("Host closed");
         }
 
         private void Host_Opened(object sender, EventArgs e)
         {
-            logger.Info("Host opened");
+            _logger.Info("Host opened");
         }
     }
 }

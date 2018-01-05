@@ -11,7 +11,7 @@ namespace MTree.Consumer
 {
     public class Stock : IChartable, ICodeMap
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         public static ConcurrentDictionary<string, Stock> Stocks { get; set; } = new ConcurrentDictionary<string, Stock>();
 
@@ -54,7 +54,7 @@ namespace MTree.Consumer
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return null;
@@ -75,7 +75,7 @@ namespace MTree.Consumer
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return null;

@@ -35,7 +35,7 @@ namespace MTree.DataExtractor
     
     public class DataExtractor
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         private readonly string delimeter = ",";
 
@@ -81,7 +81,7 @@ namespace MTree.DataExtractor
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
         public bool WaitSubscribingDone(int timeout = Timeout.Infinite)
@@ -107,7 +107,7 @@ namespace MTree.DataExtractor
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             TaskUtility.Run("Dashboard.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
@@ -134,7 +134,7 @@ namespace MTree.DataExtractor
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -159,7 +159,7 @@ namespace MTree.DataExtractor
         {
             try
             {
-                logger.Info("New stock master received");
+                _logger.Info("New stock master received");
                 isSubscribingDone = false;
                 WaitSubscribingEvent.Reset();
 
@@ -174,13 +174,13 @@ namespace MTree.DataExtractor
                 }
                 else
                 {
-                    logger.Error(new NotImplementedException());
+                    _logger.Error(new NotImplementedException());
                 }
 
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -213,14 +213,14 @@ namespace MTree.DataExtractor
                         isSubscribingDone = false;
                         WaitSubscribingEvent.Set();
 
-                        logger.Info("Subscribing completed");
+                        _logger.Info("Subscribing completed");
                     }
                     Thread.Sleep(10);
                 }
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -303,7 +303,7 @@ namespace MTree.DataExtractor
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
@@ -751,7 +751,7 @@ namespace MTree.DataExtractor
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {

@@ -16,29 +16,9 @@ using MTree.Utility;
 
 namespace MTree.EbestPublisher
 {
-    enum WarningTypes1
-    {
-        AdministrativeIssue = 1,    // 관리
-        UnfairAnnouncement = 2,     // 불성실공시
-        InvestAttention = 3,        // 투자유의
-        CallingAttention = 4,       // 투자환기
-    }
-
-    enum WarningTypes2
-    { 
-        InvestWarning = 1,          // 경고
-        TradingHalt = 2,            // 매매정지
-        CleaningTrade = 3,          // 정리매매
-        InvestCaution = 4,          // 주의
-        InvestRisk =5 ,             // 위험
-        InvestRiskNoticed = 6,      // 위험예고
-        Overheated = 7,             // 단기과열
-        OverheatNoticed = 8,        // 단기과열지정예고
-    }
-
     public partial class EbestPublisher : BrokerageFirmBase, INotifyPropertyChanged
     {
-        private NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         private readonly string resFilePath = "\\Res";
 
@@ -175,7 +155,7 @@ namespace MTree.EbestPublisher
                 }
                 else
                 {
-                    logger.Error("Check Ebest configuration");
+                    _logger.Error("Check Ebest configuration");
                     return;
                 }
                 #endregion
@@ -184,7 +164,7 @@ namespace MTree.EbestPublisher
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -194,13 +174,13 @@ namespace MTree.EbestPublisher
             LastCommTick = Environment.TickCount;
 
             if (bIsSystemError == true)
-                logger.Error($"bIsSystemError: {bIsSystemError}, nMessageCode: {nMessageCode}, szMessage: {szMessage}");
+                _logger.Error($"bIsSystemError: {bIsSystemError}, nMessageCode: {nMessageCode}, szMessage: {szMessage}");
         }
 
         private void QueryObj_ReceiveChartRealData(string szTrCode)
         {
             LastCommTick = Environment.TickCount;
-            logger.Trace($"szTrCode: {szTrCode}");
+            _logger.Trace($"szTrCode: {szTrCode}");
         }
         #endregion
 
@@ -209,7 +189,7 @@ namespace MTree.EbestPublisher
         {
             CommTimer.Stop();
             LoginInstance.State = LoginStates.LoggedOut;
-            logger.Info(LoginInstance.ToString());
+            _logger.Info(LoginInstance.ToString());
         }
 
         private void SessionObj_Event_Login(string szCode, string szMsg)
@@ -217,12 +197,12 @@ namespace MTree.EbestPublisher
             if (szCode == "0000")
             {
                 LoginInstance.State = LoginStates.LoggedIn;
-                logger.Info($"Login success, {LoginInstance.ToString()}");
+                _logger.Info($"Login success, {LoginInstance.ToString()}");
                 SetLogin();
             }
             else
             {
-                logger.Error($"Login fail, szCode: {szCode}, szMsg: {szMsg}");
+                _logger.Error($"Login fail, szCode: {szCode}, szMsg: {szMsg}");
             }
         }
 
@@ -230,7 +210,7 @@ namespace MTree.EbestPublisher
         {
             CommTimer.Stop();
             LoginInstance.State = LoginStates.Disconnect;
-            logger.Error(LoginInstance.ToString());
+            _logger.Error(LoginInstance.ToString());
         }
         #endregion
 
@@ -241,15 +221,15 @@ namespace MTree.EbestPublisher
             {
                 if (sessionObj.ConnectServer(LoginInstance.ServerAddress, LoginInstance.ServerPort) == false)
                 {
-                    logger.Error($"Server connection fail, {GetLastErrorMessage()}");
+                    _logger.Error($"Server connection fail, {GetLastErrorMessage()}");
                     return false;
                 }
 
-                logger.Info($"Try login, Id: {LoginInstance.UserId}");
+                _logger.Info($"Try login, Id: {LoginInstance.UserId}");
 
                 if (sessionObj.Login(LoginInstance.UserId, LoginInstance.UserPw, LoginInstance.CertPw, 0, true) == false)
                 {
-                    logger.Error($"Login error, {GetLastErrorMessage()}");
+                    _logger.Error($"Login error, {GetLastErrorMessage()}");
                     return false;
                 }
 
@@ -258,7 +238,7 @@ namespace MTree.EbestPublisher
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             
             return false;
@@ -272,12 +252,12 @@ namespace MTree.EbestPublisher
                 sessionObj.DisconnectServer();
                 LoginInstance.State = LoginStates.Disconnect;
 
-                logger.Info("Logout success");
+                _logger.Info("Logout success");
                 return true;
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return false;
@@ -300,7 +280,7 @@ namespace MTree.EbestPublisher
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -309,7 +289,7 @@ namespace MTree.EbestPublisher
             var themeList = new Dictionary<string, object>();
             try
             {
-                logger.Info($"Theme code list query start");
+                _logger.Info($"Theme code list query start");
 
                 QuoteInterval = 1000 / stockQuotingObj.GetTRCountPerSec("t8425");
                 WaitQuoteInterval();
@@ -317,40 +297,40 @@ namespace MTree.EbestPublisher
                 var ret = themeCodeObj.Request(false);
                 if (ret < 0)
                 {
-                    logger.Error($"Theme code request error, {GetLastErrorMessage(ret)}");
+                    _logger.Error($"Theme code request error, {GetLastErrorMessage(ret)}");
                     return;
                 }
 
                 if (WaitQuoting() == false)
                     return;
-                logger.Info($"Theme code list query done");
+                _logger.Info($"Theme code list query done");
 
                 QuoteInterval = 1000 / stockQuotingObj.GetTRCountPerSec("t1537") + 100;
                 foreach (KeyValuePair<string, string> theme in ThemeCodeList)
                 {
                     WaitQuoteInterval();
-                    //logger.Info($"Theme codes for {theme.Value} query start");
+                    //_logger.Info($"Theme codes for {theme.Value} query start");
                     themeListObj.SetFieldData("t1537InBlock", "tmcode", 0, theme.Key);
                     ret = themeListObj.Request(false);
                     if (ret < 0)
                     {
-                        logger.Error($"Theme list request error, {GetLastErrorMessage(ret)}");
+                        _logger.Error($"Theme list request error, {GetLastErrorMessage(ret)}");
                         return;
                     }
                     if (WaitQuoting() == false)
                     {
-                        logger.Error($"Theme code request error, Quoting timeout");
+                        _logger.Error($"Theme code request error, Quoting timeout");
                         return;
                     }
-                    //logger.Info($"Theme codes for {theme.Value} query done");
+                    //_logger.Info($"Theme codes for {theme.Value} query done");
                     themeList.Add(theme.Value, ThemeList);
                 }
                 ThemeList = themeList;
-                logger.Info("Quoting theme list success");
+                _logger.Info("Quoting theme list success");
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             return;
         }
@@ -365,18 +345,18 @@ namespace MTree.EbestPublisher
                 var ret = indexListObj.Request(false);
                 if (ret < 0)
                 {
-                    logger.Error($"Index code request error, {GetLastErrorMessage(ret)}");
+                    _logger.Error($"Index code request error, {GetLastErrorMessage(ret)}");
                     return null;
                 }
 
                 if (WaitQuoting() == false)
                     return null;
 
-                logger.Info("Quoting industry list success");
+                _logger.Info("Quoting industry list success");
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return IndexCodeList;
@@ -392,18 +372,18 @@ namespace MTree.EbestPublisher
                 var ret = stockListObj.Request(false);
                 if (ret < 0)
                 {
-                    logger.Error($"Stock code request error, {GetLastErrorMessage(ret)}");
+                    _logger.Error($"Stock code request error, {GetLastErrorMessage(ret)}");
                     return null;
                 }
 
                 if (WaitQuoting() == false)
                     return null;
 
-                logger.Info("Quoting stock list success");
+                _logger.Info("Quoting stock list success");
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return StockCodeList;
@@ -424,7 +404,7 @@ namespace MTree.EbestPublisher
                     if (codeList.ContainsKey(codeEntity.Code) == false)
                         codeList.Add(codeEntity.Code, codeEntity);
                     else
-                        logger.Error($"{codeEntity.Code} code already exists");
+                        _logger.Error($"{codeEntity.Code} code already exists");
 
                 }
 
@@ -437,14 +417,14 @@ namespace MTree.EbestPublisher
                     if (codeList.ContainsKey(codeEntity.Code) == false)
                         codeList.Add(codeEntity.Code, codeEntity);
                     else
-                        logger.Error($"{codeEntity.Code} code already exists");
+                        _logger.Error($"{codeEntity.Code} code already exists");
                 }
 
-                logger.Info($"Code list query done, Count: {codeList.Count}");
+                _logger.Info($"Code list query done, Count: {codeList.Count}");
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return codeList;
@@ -468,7 +448,7 @@ namespace MTree.EbestPublisher
             try
             {
                 LastCommTick = Environment.TickCount;
-                logger.Trace($"szTrCode: {szTrCode}");
+                _logger.Trace($"szTrCode: {szTrCode}");
 
                 int cnt = indexListObj.GetBlockCount("t8424OutBlock");
                 for (int i = 0; i < cnt; i++)
@@ -478,7 +458,7 @@ namespace MTree.EbestPublisher
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
@@ -491,7 +471,7 @@ namespace MTree.EbestPublisher
             try
             {
                 LastCommTick = Environment.TickCount;
-                logger.Trace($"szTrCode: {szTrCode}");
+                _logger.Trace($"szTrCode: {szTrCode}");
 
                 int cnt = stockListObj.GetBlockCount("t8430OutBlock");
 
@@ -502,7 +482,7 @@ namespace MTree.EbestPublisher
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
@@ -514,7 +494,7 @@ namespace MTree.EbestPublisher
         {
             if (Monitor.TryEnter(QuoteLock, QuoteLockTimeout) == false)
             {
-                logger.Error($"Updating {warningType.ToString()} list fail. Can't obtaion lock object");
+                _logger.Error($"Updating {warningType.ToString()} list fail. Can't obtaion lock object");
                 return false;
             }
 
@@ -533,18 +513,18 @@ namespace MTree.EbestPublisher
                 var ret = warningObj1.Request(false);
                 if (ret < 0)
                 {
-                    logger.Error($"Warning1 list request error");
+                    _logger.Error($"Warning1 list request error");
                     return false;
                 }
 
                 if (WaitQuoting() == false)
                     return false;
 
-                logger.Info($"Updating {warningType.ToString()} list done. count: {WarningList[warningType.ToString()].Count}");
+                _logger.Info($"Updating {warningType.ToString()} list done. count: {WarningList[warningType.ToString()].Count}");
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
@@ -559,7 +539,7 @@ namespace MTree.EbestPublisher
         {
             if (Monitor.TryEnter(QuoteLock, QuoteLockTimeout) == false)
             {
-                logger.Error($"Updating {warningType.ToString()} list fail. Can't obtaion lock object");
+                _logger.Error($"Updating {warningType.ToString()} list fail. Can't obtaion lock object");
                 return false;
             }
 
@@ -578,18 +558,18 @@ namespace MTree.EbestPublisher
                 var ret = warningObj2.Request(false);
                 if (ret < 0)
                 {
-                    logger.Error($"Warning2 list request error");
+                    _logger.Error($"Warning2 list request error");
                     return false;
                 }
 
                 if (WaitQuoting() == false)
                     return false;
 
-                logger.Info($"Updating {warningType.ToString()} list done. count: {WarningList[warningType.ToString()].Count}");
+                _logger.Info($"Updating {warningType.ToString()} list done. count: {WarningList[warningType.ToString()].Count}");
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
@@ -605,7 +585,7 @@ namespace MTree.EbestPublisher
             try
             {
                 LastCommTick = Environment.TickCount;
-                logger.Trace($"szTrCode: {szTrCode}");
+                _logger.Trace($"szTrCode: {szTrCode}");
 
                 int cnt = warningObj1.GetBlockCount("t1404OutBlock1");
                 for (int i = 0; i < cnt; i++)
@@ -626,7 +606,7 @@ namespace MTree.EbestPublisher
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -635,7 +615,7 @@ namespace MTree.EbestPublisher
             try
             {
                 LastCommTick = Environment.TickCount;
-                logger.Trace($"szTrCode: {szTrCode}");
+                _logger.Trace($"szTrCode: {szTrCode}");
 
                 int cnt = warningObj2.GetBlockCount("t1405OutBlock1");
                 for (int i = 0; i < cnt; i++)
@@ -656,7 +636,7 @@ namespace MTree.EbestPublisher
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -665,7 +645,7 @@ namespace MTree.EbestPublisher
             try
             {
                 LastCommTick = Environment.TickCount;
-                logger.Trace($"szTrCode: {szTrCode}");
+                _logger.Trace($"szTrCode: {szTrCode}");
 
                 int cnt = themeCodeObj.GetBlockCount("t8425OutBlock");
                 for (int i = 0; i < cnt; i++)
@@ -677,7 +657,7 @@ namespace MTree.EbestPublisher
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
         private void ThemeList_ReceiveData(string szTrCode)
@@ -685,7 +665,7 @@ namespace MTree.EbestPublisher
             try
             {
                 LastCommTick = Environment.TickCount;
-                logger.Trace($"szTrCode: {szTrCode}");
+                _logger.Trace($"szTrCode: {szTrCode}");
 
                 int cnt = Convert.ToInt32(themeListObj.GetFieldData("t1537OutBlock", "tmcnt", 0));
                 ThemeList = new Dictionary<string, object>();
@@ -698,7 +678,7 @@ namespace MTree.EbestPublisher
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -736,7 +716,7 @@ namespace MTree.EbestPublisher
 
                 Task.Run(() =>
                 {
-                    logger.Info("Process will be closed");
+                    _logger.Info("Process will be closed");
                     Thread.Sleep(1000 * 5);
 
                     Environment.Exit(0);
@@ -751,7 +731,7 @@ namespace MTree.EbestPublisher
             if ((Environment.TickCount - LastCommTick) > MaxCommInterval)
             {
                 LastCommTick = Environment.TickCount;
-                logger.Info($"Ebest keep alive");
+                _logger.Info($"Ebest keep alive");
                 GetStockMaster("000020");
             }
         }

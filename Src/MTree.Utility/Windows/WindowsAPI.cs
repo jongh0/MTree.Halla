@@ -61,7 +61,7 @@ namespace MTree.Utility
         public static readonly uint BM_SETCHECK = 0x00F1;
         #endregion
 
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         public static IntPtr getWindow(IntPtr hWnd, int uCmd, int retryCount = 0, int interval = 100)
         {
@@ -70,7 +70,7 @@ namespace MTree.Utility
                 IntPtr handle = GetWindow(hWnd, uCmd);
                 if (handle != IntPtr.Zero)
                 {
-                    logger.Trace($"getWindow found, {hWnd.ToString("X")}/{uCmd}/{handle.ToString("X")}");
+                    _logger.Trace($"getWindow found, {hWnd.ToString("X")}/{uCmd}/{handle.ToString("X")}");
                     return handle;
                 }
 
@@ -83,13 +83,13 @@ namespace MTree.Utility
 
         public static IntPtr sendMessage(IntPtr hWnd, uint Msg, int wParam, int lParam)
         {
-            logger.Trace($"sendMessage, {hWnd.ToString("X")}/{Msg}/{wParam}/{lParam}");
+            _logger.Trace($"sendMessage, {hWnd.ToString("X")}/{Msg}/{wParam}/{lParam}");
             return SendMessage(hWnd, Msg, wParam, lParam);
         }
 
         public static IntPtr postMessage(IntPtr hWnd, uint Msg, int wParam, int lParam)
         {
-            logger.Trace($"postMessage, {hWnd.ToString("X")}/{Msg}/{wParam}/{lParam}");
+            _logger.Trace($"postMessage, {hWnd.ToString("X")}/{Msg}/{wParam}/{lParam}");
             return PostMessage(hWnd, Msg, wParam, lParam);
         }
 
@@ -102,7 +102,7 @@ namespace MTree.Utility
                     IntPtr handle = FindWindow(null, windowName);
                     if (handle != IntPtr.Zero)
                     {
-                        logger.Trace($"findWindow found, {windowName}/{handle.ToString("X")}");
+                        _logger.Trace($"findWindow found, {windowName}/{handle.ToString("X")}");
 
                         if (setForeground)
                         {
@@ -119,7 +119,7 @@ namespace MTree.Utility
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return IntPtr.Zero;
@@ -134,7 +134,7 @@ namespace MTree.Utility
                     IntPtr handle = FindWindowEx(window, IntPtr.Zero, className, caption);
                     if (handle != IntPtr.Zero)
                     {
-                        logger.Trace($"findWindowEx found, {window.ToString("X")}/{className}/{caption}/{handle.ToString("X")}");
+                        _logger.Trace($"findWindowEx found, {window.ToString("X")}/{className}/{caption}/{handle.ToString("X")}");
                         return handle;
                     }
 
@@ -144,7 +144,7 @@ namespace MTree.Utility
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             return IntPtr.Zero;

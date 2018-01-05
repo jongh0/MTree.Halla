@@ -11,7 +11,7 @@ namespace MTree.StrategyManager
 {
     public class DbHandler : INotifyPropertyChanged
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;

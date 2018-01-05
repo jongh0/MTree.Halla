@@ -15,7 +15,7 @@ namespace MTree.StrategyManager
 {
     public class StrategyManager : RealTimeConsumer
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         public List<string> ConcernCodeList { get; set; } = new List<string>();
 
@@ -66,7 +66,7 @@ namespace MTree.StrategyManager
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -83,7 +83,7 @@ namespace MTree.StrategyManager
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -100,7 +100,7 @@ namespace MTree.StrategyManager
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -117,7 +117,7 @@ namespace MTree.StrategyManager
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
         }
 
@@ -133,7 +133,7 @@ namespace MTree.StrategyManager
                         {
                         }
 
-                        logger.Info("Process will be closed");
+                        _logger.Info("Process will be closed");
                         Thread.Sleep(1000 * 5);
 
                         Environment.Exit(0);
@@ -142,7 +142,7 @@ namespace MTree.StrategyManager
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
 
             base.NotifyMessage(type, message);

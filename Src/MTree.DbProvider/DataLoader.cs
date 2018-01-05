@@ -12,7 +12,7 @@ namespace MTree.DbProvider
 {
     public class DataLoader
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         public List<T> Load<T>(string code, DateTime startDate, DateTime endDate)
         {
@@ -30,12 +30,12 @@ namespace MTree.DbProvider
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                _logger.Error(ex);
             }
             finally
             {
                 var duration = Environment.TickCount - startTick;
-                logger.Info($"Load, {nameof(code)}: {code}, {nameof(startDate)}: {startDate}, {nameof(endDate)}: {endDate}, {nameof(duration)}: {duration}");
+                _logger.Info($"Load, {nameof(code)}: {code}, {nameof(startDate)}: {startDate}, {nameof(endDate)}: {endDate}, {nameof(duration)}: {duration}");
             }
 
             return new List<T>();
