@@ -127,6 +127,7 @@ namespace MTree.RealTimeProvider
         {
             RealTimeState = "Codemap publishing started";
             _logger.Info(RealTimeState);
+
             try
             {
                 foreach (var contract in MasteringContracts)
@@ -163,7 +164,7 @@ namespace MTree.RealTimeProvider
             {
                 while (true)
                 {
-                    lock (masteringLock)
+                    lock (daishinMasteringLock)
                     {
                         var totalCount = StockMasteringList.Count;
                         var notFinishedCount = StockMasteringList.Count(m => m.DaishinState != MasteringStates.Finished);
@@ -175,7 +176,7 @@ namespace MTree.RealTimeProvider
 
                     StockMastering mastering = null;
 
-                    lock (masteringLock)
+                    lock (daishinMasteringLock)
                     {
                         mastering = StockMasteringList.FirstOrDefault(m => m.DaishinState == MasteringStates.Ready);
                         if (mastering != null)
@@ -234,7 +235,7 @@ namespace MTree.RealTimeProvider
             {
                 while (true)
                 {
-                    lock (masteringLock)
+                    lock (ebestMasteringLock)
                     {
                         var totalCount = StockMasteringList.Count;
                         var notFinishedCount = StockMasteringList.Count(m => m.EbestState != MasteringStates.Finished);
@@ -246,7 +247,7 @@ namespace MTree.RealTimeProvider
 
                     StockMastering mastering = null;
 
-                    lock (masteringLock)
+                    lock (ebestMasteringLock)
                     {
                         mastering = StockMasteringList.FirstOrDefault(m => m.EbestState == MasteringStates.Ready);
                         if (mastering != null)
@@ -305,7 +306,7 @@ namespace MTree.RealTimeProvider
             {
                 while (true)
                 {
-                    lock (masteringLock)
+                    lock (kiwoomMasteringLock)
                     {
                         var totalCount = StockMasteringList.Count;
                         var notFinishedCount = StockMasteringList.Count(m => m.KiwoomState != MasteringStates.Finished);
@@ -317,7 +318,7 @@ namespace MTree.RealTimeProvider
 
                     StockMastering mastering = null;
 
-                    lock (masteringLock)
+                    lock (kiwoomMasteringLock)
                     {
                         mastering = StockMasteringList.FirstOrDefault(m => m.KiwoomState == MasteringStates.Ready);
                         if (mastering != null)
@@ -455,7 +456,7 @@ namespace MTree.RealTimeProvider
             }
             finally
             {
-                lock (masteringLock)
+                lock (daishinMasteringLock)
                     mastering.DaishinState = state;
             }
         }
@@ -504,7 +505,7 @@ namespace MTree.RealTimeProvider
             }
             finally
             {
-                lock (masteringLock)
+                lock (ebestMasteringLock)
                     mastering.EbestState = state;
             }
         }
@@ -547,7 +548,7 @@ namespace MTree.RealTimeProvider
             }
             finally
             {
-                lock (masteringLock)
+                lock (kiwoomMasteringLock)
                     mastering.KiwoomState = state;
             }
         }
