@@ -3,12 +3,6 @@ using Newtonsoft.Json.Converters;
 
 namespace MTree.Configuration
 {
-    public enum ServerTypes
-    {
-        Real,
-        Simul,
-    }
-
     public class EbestConfiguration
     {
         public string UserId { get; set; } = string.Empty;

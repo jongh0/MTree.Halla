@@ -4,15 +4,6 @@ using System;
 
 namespace MTree.Configuration
 {
-    public enum TraderTypes
-    {
-        Virtual,
-        Ebest,
-        EbestSimul,
-        Kiwoom,
-        KiwoomSimul,
-    }
-
     public class GeneralConfiguration
     {
         [JsonIgnore]

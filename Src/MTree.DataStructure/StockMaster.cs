@@ -8,21 +8,6 @@ using System.Threading.Tasks;
 
 namespace MTree.DataStructure
 {
-    #region enum
-    public enum ValueAlteredTypes
-    {
-        None,
-        ExRightDividend,    // 권배락
-        ExRight,            // 권리락
-        ExDividend,         // 배당락
-        SplitFaceValue,     // 액면분할
-        MergeFaceValue,     // 액면병합
-        Consolidation,      // 주식병합
-        Divestiture,        // 기업분할
-        CapitalReduction,   // 감자
-    }
-    #endregion
-
     [DataContract]
     public class StockMaster : Subscribable
     {

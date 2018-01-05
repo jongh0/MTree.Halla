@@ -77,6 +77,7 @@
     <Compile Include="CodeMapDbObject.cs" />
     <Compile Include="Conclusion.cs" />
     <Compile Include="DataCounter.cs" />
+    <Compile Include="EnumType.cs" />
     <Compile Include="ETFConclusion.cs" />
     <Compile Include="IndexConclusion.cs" />
     <Compile Include="IndexMaster.cs" />
@@ -87,7 +88,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="ClassDiagram.cd" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

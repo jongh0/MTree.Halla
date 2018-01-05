@@ -66,13 +66,13 @@
   <ItemGroup>
     <Compile Include="DataLoader.cs" />
     <Compile Include="DbAgent.cs" />
+    <Compile Include="EnumType.cs" />
     <Compile Include="FilterFactory.cs" />
     <Compile Include="MongoDbProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="ClassDiagram.cd" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

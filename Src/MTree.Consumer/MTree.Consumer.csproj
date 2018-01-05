@@ -72,6 +72,7 @@
     <Compile Include="Chart.cs" />
     <Compile Include="ChartConverter.cs" />
     <Compile Include="CodeMapConverter.cs" />
+    <Compile Include="EnumType.cs" />
     <Compile Include="HistoryConsumer.cs" />
     <Compile Include="Index.cs" />
     <Compile Include="Stock.cs" />
@@ -83,7 +84,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="ClassDiagram.cd" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

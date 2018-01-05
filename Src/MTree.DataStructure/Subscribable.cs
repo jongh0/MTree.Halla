@@ -11,26 +11,6 @@ using System.Threading.Tasks;
 
 namespace MTree.DataStructure
 {
-    public enum MasteringStates
-    {
-        Ready,
-        Running,
-        Finished,
-    }
-
-    public enum MarketTypes
-    {
-        Unknown,
-        INDEX,
-        KOSPI,
-        KOSDAQ,
-        KONEX,
-        ETF,
-        ETN,
-        ELW,
-        FREEBOARD
-    }
-
     [BsonDiscriminator(RootClass = true)]
     [BsonKnownTypes(typeof(Candle), 
                     typeof(BiddingPrice), 

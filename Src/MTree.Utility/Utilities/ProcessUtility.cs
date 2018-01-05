@@ -9,35 +9,6 @@ using System.Threading.Tasks;
 
 namespace MTree.Utility
 {
-    public enum ProcessTypes
-    {
-        Unknown,
-        CybosStarter,
-        Dashboard,
-        HistorySaver,
-        StrategyManager,
-        TestConsumer,
-        RealTimeProvider,
-        DaishinPublisher,
-        DaishinPublisherMaster,
-        EbestPublisher,
-        KiwoomPublisher,
-        KiwoomSessionManager,
-        TestPublisher,
-        EbestTrader,
-        KiwoomTrader,
-        VirtualTrader,
-        KillAll,
-        AutoLauncher,
-        DaishinSessionManager,
-        DataValidator,
-        DataValidatorRegularCheck,
-        ResourceMonitor,
-        PopupStopper,
-        SendLog,
-        TestConsole,
-    }
-
     public class ProcessUtility
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();

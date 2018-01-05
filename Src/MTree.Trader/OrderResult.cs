@@ -6,16 +6,6 @@ using System.Threading.Tasks;
 
 namespace MTree.Trader
 {
-    public enum OrderResultTypes
-    {
-        Unknown,
-        Submitted,
-        Concluded,
-        Modified,
-        Canceled,
-        Rejected,
-    }
-
     public class OrderResult
     {
         public string OrderNumber { get; set; }

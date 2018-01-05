@@ -9,20 +9,6 @@ using System.Collections.Generic;
 
 namespace MTree.DbProvider
 {
-    public enum DbTypes
-    {
-        Chart,
-        BiddingPrice,
-        StockMaster,
-        IndexMaster,
-        StockConclusion,
-        IndexConclusion,
-        ETFConclusion,
-        CircuitBreak,
-        Common,
-        Test,
-    }
-
     public class MongoDbProvider
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();

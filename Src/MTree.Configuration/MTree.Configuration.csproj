@@ -57,6 +57,7 @@
     <Compile Include="Configurations\EmailConfiguration.cs" />
     <Compile Include="Configurations\GeneralConfiguration.cs" />
     <Compile Include="Configurations\KiwoomConfiguration.cs" />
+    <Compile Include="EnumType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -8,19 +8,6 @@ using System.Threading.Tasks;
 
 namespace MTree.DataStructure
 {
-    #region enum
-    public enum MarketTimeTypes
-    {
-        Unknown,
-        Normal,
-        NormalExpect,
-        BeforeOffTheClock,
-        BeforeExpect,
-        AfterOffTheClock,
-        AfterExpect,
-    }
-    #endregion
-
     [DataContract]
     public class Conclusion : Subscribable
     {

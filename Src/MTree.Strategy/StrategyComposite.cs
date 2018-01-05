@@ -6,12 +6,6 @@ using System.Threading.Tasks;
 
 namespace MTree.Strategy
 {
-    public enum LogicTypes
-    {
-        AND,
-        OR,
-    }
-
     public class StrategyComposite : IStrategy
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();

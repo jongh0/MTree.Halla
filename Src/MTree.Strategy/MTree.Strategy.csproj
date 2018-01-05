@@ -45,13 +45,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EnumType.cs" />
     <Compile Include="IStrategy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StrategyComposite.cs" />
     <Compile Include="StrategySample.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram.cd" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

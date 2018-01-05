@@ -7,23 +7,6 @@ using System.Threading.Tasks;
 
 namespace MTree.RealTimeProvider
 {
-    public enum SubscribeTypes
-    {
-        Chart,
-        Mastering,
-        BiddingPrice,
-        CircuitBreak,
-        StockConclusion,
-        IndexConclusion,
-        ETFConclusion,
-    }
-
-    public enum SubscribeScopes
-    {
-        All,
-        Partial,
-    }
-
     [DataContract]
     public class SubscribeContract
     {

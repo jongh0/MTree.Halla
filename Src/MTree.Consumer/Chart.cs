@@ -11,16 +11,6 @@ using System.Threading.Tasks;
 
 namespace MTree.Consumer
 {
-    public enum ChartTypes
-    {
-        Tick,
-        Min,
-        Day,
-        Week,
-        Month,
-        Year,
-    }
-
     public class Chart
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();

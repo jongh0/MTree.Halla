@@ -126,6 +126,7 @@
     </ApplicationDefinition>
     <Compile Include="CodeMapBuilder.cs" />
     <Compile Include="CodeMapBuilderUtil.cs" />
+    <Compile Include="EnumType.cs" />
     <Compile Include="IndexMastering.cs" />
     <Compile Include="IRealTimeConsumer.cs" />
     <Compile Include="PublisherContract.cs" />
@@ -171,7 +172,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="app.manifest" />
-    <None Include="ClassDiagram.cd" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

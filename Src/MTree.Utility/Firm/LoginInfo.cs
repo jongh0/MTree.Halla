@@ -8,20 +8,6 @@ using System.Threading.Tasks;
 
 namespace MTree.Utility
 {
-    public enum LoginStates
-    {
-        Disconnect,
-        LoggedIn,
-        LoggedOut,
-    }
-
-    public enum FirmTypes
-    {
-        Daishin,
-        Ebest,
-        Kiwoom,
-    }
-
     public class LoginInfo : INotifyPropertyChanged
     {
         public Guid Id { get; set; } = Guid.NewGuid();

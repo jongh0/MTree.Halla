@@ -12,27 +12,6 @@ using System.Threading.Tasks;
 
 namespace MTree.DataStructure
 {
-    public enum CounterTypes
-    {
-        Chart,
-        BiddingPrice,
-        CircuitBreak,
-        StockMaster,
-        IndexMaster,
-        StockConclusion,
-        IndexConclusion,
-        ETFConclusion,
-    }
-
-    public enum DataTypes
-    {
-        DaishinPublisher,
-        RealTimeProvider,
-        HistorySaver,
-        Database,
-        Dashboard,
-    }
-
     [BsonDiscriminator(RootClass = true)]
     public class DataCounter : INotifyPropertyChanged
     {

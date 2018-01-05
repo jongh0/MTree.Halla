@@ -18,13 +18,6 @@ using System.Windows.Forms;
 
 namespace MTree.RealTimeProvider
 {
-    public enum ExitProgramTypes
-    {
-        Normal,
-        Force,
-        Restart,
-    }
-
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false, ValidateMustUnderstand = false)]
     public partial class RealTimeProvider : SubscribingBase, IRealTimePublisher, IRealTimeConsumer, INotifyPropertyChanged
     {

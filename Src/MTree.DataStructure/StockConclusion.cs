@@ -9,15 +9,6 @@ using System.Threading.Tasks;
 
 namespace MTree.DataStructure
 {
-    #region enum
-    public enum ConclusionTypes
-    {
-        Unknown,
-        Sell,
-        Buy,
-    }
-    #endregion
-
     [DataContract]
     public class StockConclusion : Conclusion
     {

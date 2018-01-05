@@ -8,16 +8,6 @@ using System.Threading.Tasks;
 
 namespace MTree.DataStructure
 {
-    #region enum
-    public enum CircuitBreakTypes
-    {
-        Clear,
-        StaticInvoke,
-        DynamicInvoke,
-        StaticAndDynamicInvoke,
-    } 
-    #endregion
-
     [DataContract]
     public class CircuitBreak : Subscribable
     {

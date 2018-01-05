@@ -9,30 +9,6 @@ using System.Threading.Tasks;
 
 namespace MTree.RealTimeProvider
 {
-    public enum MessageTypes
-    {
-        KeepAlive,
-        CloseClient,
-        MasteringDone,
-        SubscribingDone,
-        DaishinSessionDisconnected,
-    }
-
-    public enum MarketInfoTypes
-    {
-        WorkDate,
-        StartTime,
-        EndTime,
-    }
-
-    public enum CodeMapTypes
-    {
-        Theme,
-        BizType,
-        CapitalScale,
-        Group
-    }
-
     public class SubscribingBase
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();

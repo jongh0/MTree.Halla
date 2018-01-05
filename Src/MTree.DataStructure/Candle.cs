@@ -9,16 +9,6 @@ using System.Threading.Tasks;
 
 namespace MTree.DataStructure
 {
-    public enum CandleTypes
-    {
-        Tick,
-        Min,
-        Day,
-        Week,
-        Month,
-        Year,
-    }
-
     [DataContract]
     public class Candle : Subscribable
     {
