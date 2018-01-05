@@ -30,11 +30,11 @@ namespace MTree.Publisher
         protected int QuoteInterval { get; set; } = 0;
 
         // Quote lock
-        protected int QuoteLockTimeout { get; } = 1000 * 10;
+        protected int QuoteLockTimeout { get; } = 1000 * 15;
         protected object QuoteLock { get; } = new object();
 
         // Quoting timeout
-        private int WaitQuotingTimeout { get; } = 1000 * 10;
+        private int WaitQuotingTimeout { get; } = 1000 * 15;
         private AutoResetEvent WaitQuotingEvent { get; } = new AutoResetEvent(false);
 
         // Quoting instance
