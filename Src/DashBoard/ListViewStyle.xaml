@@ -1,0 +1,133 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:commonLib="clr-namespace:CommonLib;assembly=CommonLib"
+                    xmlns:local="clr-namespace:Dashboard">
+    <commonLib:NumberToCurrencyConverter x:Key="NumberToCurrencyConverter"/>
+    <commonLib:NumberToPercentConverter x:Key="NumberToPercentConverter"/>
+    <commonLib:EnumToStringConverter x:Key="EnumToStringConverter"/>
+
+    <Style x:Key="BaseTextBlock" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="Black"/>
+    </Style>
+
+    <Style x:Key="StringTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+        <Setter Property="TextAlignment" Value="Center"/>
+    </Style>
+
+    <Style x:Key="CurrencyTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+        <Setter Property="TextAlignment" Value="Right"/>
+    </Style>
+
+    <Style x:Key="BaseListViewItem" TargetType="ListViewItem">
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+    </Style>
+
+    <Style x:Key="GridViewItemStyle" TargetType="ListViewItem" x:Shared="False" BasedOn="{StaticResource BaseListViewItem}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding CircuitBreakType}" Value="StaticInvoke">
+                <Setter Property="Background" Value="Yellow"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding CircuitBreakType}" Value="DynamicInvoke">
+                <Setter Property="Background" Value="Yellow"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding CircuitBreakType}" Value="StaticAndDynamicInvoke">
+                <Setter Property="Background" Value="Yellow"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="GridViewStyle" TargetType="ListView" x:Shared="False">
+        <Setter Property="VirtualizingStackPanel.IsVirtualizing" Value="True"/>
+        <Setter Property="IsSynchronizedWithCurrentItem" Value="True"/>
+        <Setter Property="View">
+            <Setter.Value>
+                <GridView>
+                    <!--Time-->
+                    <GridViewColumn Header="Time" Width="80" commonLib:GridViewSort.PropertyName="Time">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=Time}" Style="{StaticResource StringTextBlock}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <!--Code-->
+                    <GridViewColumn Header="Code" Width="80" commonLib:GridViewSort.PropertyName="Code">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=Code}" Style="{StaticResource StringTextBlock}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <!--Name-->
+                    <GridViewColumn Header="Name" Width="130" commonLib:GridViewSort.PropertyName="Name">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=Name}" Style="{StaticResource StringTextBlock}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <!--Price-->
+                    <GridViewColumn Header="Price" Width="100" commonLib:GridViewSort.PropertyName="Price">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <DataTemplate.Triggers>
+                                    <EventTrigger RoutedEvent="Binding.TargetUpdated">
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="PriceTextBlock" Storyboard.TargetProperty="(TextBlock.FontWeight)">
+                                                    <DiscreteObjectKeyFrame KeyTime="00:00:00.0" Value="{x:Static FontWeights.Bold}"/>
+                                                    <DiscreteObjectKeyFrame KeyTime="00:00:00.1" Value="{x:Static FontWeights.Normal}"/>
+                                                </ObjectAnimationUsingKeyFrames>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </EventTrigger>
+                                </DataTemplate.Triggers>
+                                <TextBlock x:Name="PriceTextBlock" Text="{Binding Path=Price, Converter={StaticResource NumberToCurrencyConverter}, NotifyOnTargetUpdated=True}" Foreground="{Binding Path=PriceColor}" Style="{StaticResource CurrencyTextBlock}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <!--PricePercent-->
+                    <GridViewColumn Header="Price Percent" Width="80" commonLib:GridViewSort.PropertyName="PricePercent">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=PricePercent, Converter={StaticResource NumberToPercentConverter}}" Foreground="{Binding Path=PriceColor}" Style="{StaticResource CurrencyTextBlock}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <!--BasisPrice-->
+                    <GridViewColumn Header="Basis Price" Width="100" commonLib:GridViewSort.PropertyName="BasisPrice">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=BasisPrice, Converter={StaticResource NumberToCurrencyConverter}}" Style="{StaticResource CurrencyTextBlock}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <!--Volume-->
+                    <GridViewColumn Header="Volume" Width="100" commonLib:GridViewSort.PropertyName="Volume">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=Volume, Converter={StaticResource NumberToCurrencyConverter}}" Style="{StaticResource CurrencyTextBlock}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <!--PreviousVolume-->
+                    <GridViewColumn Header="Prev Volume" Width="100" commonLib:GridViewSort.PropertyName="PreviousVolume">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=PreviousVolume, Converter={StaticResource NumberToCurrencyConverter}}" Style="{StaticResource CurrencyTextBlock}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <!--MarketType-->
+                    <GridViewColumn Header="Market Type" Width="100" commonLib:GridViewSort.PropertyName="MarketType">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=MarketType, Converter={StaticResource EnumToStringConverter}}" Style="{StaticResource StringTextBlock}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

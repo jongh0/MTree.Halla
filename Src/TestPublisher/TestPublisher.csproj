@@ -67,25 +67,25 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MTree.Configuration\MTree.Configuration.csproj">
+    <ProjectReference Include="..\Configuration\Configuration.csproj">
       <Project>{9c52064a-188b-449a-89a1-de3a9dd3f766}</Project>
-      <Name>MTree.Configuration</Name>
+      <Name>Configuration</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MTree.DataStructure\MTree.DataStructure.csproj">
+    <ProjectReference Include="..\DataStructure\DataStructure.csproj">
       <Project>{da1959a9-15fa-47aa-98ac-3844a723fea1}</Project>
-      <Name>MTree.DataStructure</Name>
+      <Name>DataStructure</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MTree.Publisher\MTree.Publisher.csproj">
+    <ProjectReference Include="..\Publisher\Publisher.csproj">
       <Project>{891f9baa-d335-4a1b-8fa3-bb0e4d76410a}</Project>
-      <Name>MTree.Publisher</Name>
+      <Name>Publisher</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MTree.RealTimeProvider\MTree.RealTimeProvider.csproj">
+    <ProjectReference Include="..\RealTimeProvider\RealTimeProvider.csproj">
       <Project>{c9620f6e-d254-45f4-81c1-f33b0855fadc}</Project>
-      <Name>MTree.RealTimeProvider</Name>
+      <Name>RealTimeProvider</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MTree.Utility\MTree.Utility.csproj">
+    <ProjectReference Include="..\CommonLib\CommonLib.csproj">
       <Project>{d8291168-4d81-4acd-81c4-da122a249102}</Project>
-      <Name>MTree.Utility</Name>
+      <Name>CommonLib</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

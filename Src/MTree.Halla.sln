@@ -1,85 +1,85 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.DaishinPublisher", "MTree.DaishinPublisher\MTree.DaishinPublisher.csproj", "{0DE033E7-A072-4450-B357-CA69165B9CA8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DaishinPublisher", "DaishinPublisher\DaishinPublisher.csproj", "{0DE033E7-A072-4450-B357-CA69165B9CA8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.DataStructure", "MTree.DataStructure\MTree.DataStructure.csproj", "{DA1959A9-15FA-47AA-98AC-3844A723FEA1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataStructure", "DataStructure\DataStructure.csproj", "{DA1959A9-15FA-47AA-98AC-3844A723FEA1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.Configuration", "MTree.Configuration\MTree.Configuration.csproj", "{9C52064A-188B-449A-89A1-DE3A9DD3F766}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Configuration", "Configuration\Configuration.csproj", "{9C52064A-188B-449A-89A1-DE3A9DD3F766}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.Consumer", "MTree.Consumer\MTree.Consumer.csproj", "{ED1A77AE-4393-45DB-B89C-DC98F1678578}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Consumer", "Consumer\Consumer.csproj", "{ED1A77AE-4393-45DB-B89C-DC98F1678578}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.DbProvider", "MTree.DbProvider\MTree.DbProvider.csproj", "{57195E80-20A3-4FD0-83C8-92AF91784DDA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbProvider", "DbProvider\DbProvider.csproj", "{57195E80-20A3-4FD0-83C8-92AF91784DDA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.EbestPublisher", "MTree.EbestPublisher\MTree.EbestPublisher.csproj", "{F678E473-5958-4DEA-A26F-3895DAD784B8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EbestPublisher", "EbestPublisher\EbestPublisher.csproj", "{F678E473-5958-4DEA-A26F-3895DAD784B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.HistorySaver", "MTree.HistorySaver\MTree.HistorySaver.csproj", "{1CA59FEC-C68C-48F8-89CF-FF3B17870CAA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HistorySaver", "HistorySaver\HistorySaver.csproj", "{1CA59FEC-C68C-48F8-89CF-FF3B17870CAA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.RealTimeProvider", "MTree.RealTimeProvider\MTree.RealTimeProvider.csproj", "{C9620F6E-D254-45F4-81C1-F33B0855FADC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealTimeProvider", "RealTimeProvider\RealTimeProvider.csproj", "{C9620F6E-D254-45F4-81C1-F33B0855FADC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.Utility", "MTree.Utility\MTree.Utility.csproj", "{D8291168-4D81-4ACD-81C4-DA122A249102}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonLib", "CommonLib\CommonLib.csproj", "{D8291168-4D81-4ACD-81C4-DA122A249102}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestConsole", "TestConsole\TestConsole.csproj", "{32DD5706-34A2-480F-BC53-D8A876CF5673}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Provider", "Provider", "{1D8D58CC-80C5-42F1-B88E-27295B31EF8C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.Publisher", "MTree.Publisher\MTree.Publisher.csproj", "{891F9BAA-D335-4A1B-8FA3-BB0E4D76410A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Publisher", "Publisher\Publisher.csproj", "{891F9BAA-D335-4A1B-8FA3-BB0E4D76410A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.PopupStopper", "MTree.PopupStopper\MTree.PopupStopper.csproj", "{0BD3F8F3-8B8C-4DE2-9934-8849A32CFC9F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PopupStopper", "PopupStopper\PopupStopper.csproj", "{0BD3F8F3-8B8C-4DE2-9934-8849A32CFC9F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utility", "Utility", "{C22A1011-FE40-49F1-AB42-3CBF4921ACBD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.DaishinSessionManager", "MTree.DaishinSessionManager\MTree.DaishinSessionManager.csproj", "{3CDB7297-2D84-44A5-A794-210B83D6098D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DaishinSessionManager", "DaishinSessionManager\DaishinSessionManager.csproj", "{3CDB7297-2D84-44A5-A794-210B83D6098D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Consumer", "Consumer", "{45A22074-BF98-4455-B6DE-D6B8CF4ADF18}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Publisher", "Publisher", "{C10ED646-15B3-409D-93DB-2F958CB8182A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.DaishinPublisherTests", "MTree.DaishinPublisherTests\MTree.DaishinPublisherTests.csproj", "{28EFDCBB-09BC-4BC4-8A7F-B92B0B25E249}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DaishinPublisherTests", "DaishinPublisherTests\DaishinPublisherTests.csproj", "{28EFDCBB-09BC-4BC4-8A7F-B92B0B25E249}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KillAll", "KillAll\KillAll.csproj", "{FCF497F9-45F2-4F00-A190-79FBFF189AA0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.RealTimeProviderTests", "MTree.RealTimeProviderTests\MTree.RealTimeProviderTests.csproj", "{D49C549F-53FE-4F57-9618-5A039F23142C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealTimeProviderTests", "RealTimeProviderTests\RealTimeProviderTests.csproj", "{D49C549F-53FE-4F57-9618-5A039F23142C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.AutoLauncher", "MTree.AutoLauncher\MTree.AutoLauncher.csproj", "{F8DEB19B-AD50-46E8-B89F-890B8033C1D2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoLauncher", "AutoLauncher\AutoLauncher.csproj", "{F8DEB19B-AD50-46E8-B89F-890B8033C1D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.Strategy", "MTree.Strategy\MTree.Strategy.csproj", "{F21CCFA2-C902-4C2E-BE2C-D9353B23965C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Strategy", "Strategy\Strategy.csproj", "{F21CCFA2-C902-4C2E-BE2C-D9353B23965C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestConsumer", "TestConsumer\TestConsumer.csproj", "{FBF6C623-2091-4DD7-8967-5CD6F3FD19B0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestPublisher", "TestPublisher\TestPublisher.csproj", "{772B7682-1D4D-46AD-9E0F-B4579F6185E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.Dashboard", "MTree.Dashboard\MTree.Dashboard.csproj", "{FB13D3B5-8653-4218-9B58-2F715EB02B2B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dashboard", "Dashboard\Dashboard.csproj", "{FB13D3B5-8653-4218-9B58-2F715EB02B2B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.DataValidator", "MTree.DataValidator\MTree.DataValidator.csproj", "{872A62AB-F004-4F03-9905-981017E33BC9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataValidator", "DataValidator\DataValidator.csproj", "{872A62AB-F004-4F03-9905-981017E33BC9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.StrategyManager", "MTree.StrategyManager\MTree.StrategyManager.csproj", "{D4D0E0C1-A6D0-4455-9079-1A4F3633F9E5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StrategyManager", "StrategyManager\StrategyManager.csproj", "{D4D0E0C1-A6D0-4455-9079-1A4F3633F9E5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Trader", "Trader", "{690A9CDC-0205-453F-ABC2-8E4D40845541}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.SendLog", "MTree.SendLog\MTree.SendLog.csproj", "{5D39289A-2353-42F0-9EBA-7408B2588E01}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SendLog", "SendLog\SendLog.csproj", "{5D39289A-2353-42F0-9EBA-7408B2588E01}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.Trader", "MTree.Trader\MTree.Trader.csproj", "{147B0E77-7A22-4EA5-83EA-A0909B456408}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trader", "Trader\Trader.csproj", "{147B0E77-7A22-4EA5-83EA-A0909B456408}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.VirtualTrader", "MTree.VirtualTrader\MTree.VirtualTrader.csproj", "{1606CE51-4CD3-4CE6-A08D-B3AD32E5D183}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualTrader", "VirtualTrader\VirtualTrader.csproj", "{1606CE51-4CD3-4CE6-A08D-B3AD32E5D183}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.EbestTrader", "MTree.EbestTrader\MTree.EbestTrader.csproj", "{8F3E6370-C3A7-47B5-A5E4-CBA24A313560}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EbestTrader", "EbestTrader\EbestTrader.csproj", "{8F3E6370-C3A7-47B5-A5E4-CBA24A313560}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.KiwoomPublisher", "MTree.KiwoomPublisher\MTree.KiwoomPublisher.csproj", "{27B8B35B-D0AA-4E73-BF8B-7C1F7F48348B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KiwoomPublisher", "KiwoomPublisher\KiwoomPublisher.csproj", "{27B8B35B-D0AA-4E73-BF8B-7C1F7F48348B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.KiwoomTrader", "MTree.KiwoomTrader\MTree.KiwoomTrader.csproj", "{A659FD04-AAC4-4428-89F6-EC2F73FC728F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KiwoomTrader", "KiwoomTrader\KiwoomTrader.csproj", "{A659FD04-AAC4-4428-89F6-EC2F73FC728F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NlogViewer", "NlogViewer\NlogViewer.csproj", "{F0A0B5CC-E5B4-4769-AB47-67A1D5B482B4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLogViewer", "NLogViewer\NLogViewer.csproj", "{F0A0B5CC-E5B4-4769-AB47-67A1D5B482B4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.ResourceMonitor", "MTree.ResourceMonitor\MTree.ResourceMonitor.csproj", "{BE13E412-D35A-4C3F-A7D0-2C8FE5905642}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResourceMonitor", "ResourceMonitor\ResourceMonitor.csproj", "{BE13E412-D35A-4C3F-A7D0-2C8FE5905642}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.DataExtractor", "MTree.DataExtractor\MTree.DataExtractor.csproj", "{15082D3E-625D-411E-BCF6-7AE6A3C61B8E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataExtractor", "DataExtractor\DataExtractor.csproj", "{15082D3E-625D-411E-BCF6-7AE6A3C61B8E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.KiwoomSessionManager", "MTree.KiwoomSessionManager\MTree.KiwoomSessionManager.csproj", "{B6C51F64-D22D-4993-8995-59FD093E5475}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KiwoomSessionManager", "KiwoomSessionManager\KiwoomSessionManager.csproj", "{B6C51F64-D22D-4993-8995-59FD093E5475}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTree.ConsumerTests", "MTree.ConsumerTests\MTree.ConsumerTests.csproj", "{BDAFEA23-EF5C-4268-85BB-A630519A8E27}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsumerTests", "ConsumerTests\ConsumerTests.csproj", "{BDAFEA23-EF5C-4268-85BB-A630519A8E27}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -234,7 +234,6 @@ Global
 		{F678E473-5958-4DEA-A26F-3895DAD784B8} = {C10ED646-15B3-409D-93DB-2F958CB8182A}
 		{1CA59FEC-C68C-48F8-89CF-FF3B17870CAA} = {45A22074-BF98-4455-B6DE-D6B8CF4ADF18}
 		{C9620F6E-D254-45F4-81C1-F33B0855FADC} = {1D8D58CC-80C5-42F1-B88E-27295B31EF8C}
-		{D8291168-4D81-4ACD-81C4-DA122A249102} = {C22A1011-FE40-49F1-AB42-3CBF4921ACBD}
 		{891F9BAA-D335-4A1B-8FA3-BB0E4D76410A} = {C10ED646-15B3-409D-93DB-2F958CB8182A}
 		{0BD3F8F3-8B8C-4DE2-9934-8849A32CFC9F} = {C22A1011-FE40-49F1-AB42-3CBF4921ACBD}
 		{3CDB7297-2D84-44A5-A794-210B83D6098D} = {C22A1011-FE40-49F1-AB42-3CBF4921ACBD}
@@ -258,5 +257,8 @@ Global
 		{15082D3E-625D-411E-BCF6-7AE6A3C61B8E} = {45A22074-BF98-4455-B6DE-D6B8CF4ADF18}
 		{B6C51F64-D22D-4993-8995-59FD093E5475} = {C22A1011-FE40-49F1-AB42-3CBF4921ACBD}
 		{BDAFEA23-EF5C-4268-85BB-A630519A8E27} = {45A22074-BF98-4455-B6DE-D6B8CF4ADF18}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7F9DEEBC-3A0F-4BE0-81B2-684E11B3F325}
 	EndGlobalSection
 EndGlobal

@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows.Media;
 using NLog;
 
-namespace NlogViewer
+namespace NLogViewer
 {
     public class LogEventViewModel
     {

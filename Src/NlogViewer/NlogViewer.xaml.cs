@@ -16,12 +16,12 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace NlogViewer
+namespace NLogViewer
 {
     /// <summary>
     /// Interaction logic for NlogViewer.xaml
     /// </summary>
-    public partial class NlogViewer : UserControl
+    public partial class NLogViewer : UserControl
     {
         public ObservableCollection<LogEventViewModel> LogEntries { get; private set; }
         public bool IsTargetConfigured { get; private set; }
@@ -45,7 +45,7 @@ namespace NlogViewer
         public double ExceptionWidth { get; set; }
 
 
-        public NlogViewer()
+        public NLogViewer()
         {
             IsTargetConfigured = false;
             LogEntries = new ObservableCollection<LogEventViewModel>();
@@ -54,7 +54,7 @@ namespace NlogViewer
 
             if (!DesignerProperties.GetIsInDesignMode(this))
             {
-                foreach (NlogViewerTarget target in NLog.LogManager.Configuration.AllTargets.Where(t => t is NlogViewerTarget).Cast<NlogViewerTarget>())
+                foreach (var target in NLog.LogManager.Configuration.AllTargets.Where(t => t is NLogViewerTarget).Cast<NLogViewerTarget>())
                 {
                     IsTargetConfigured = true;
                     target.LogReceived += LogReceived;

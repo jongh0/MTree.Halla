@@ -7,8 +7,8 @@
     <ProjectGuid>{F0A0B5CC-E5B4-4769-AB47-67A1D5B482B4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NlogViewer</RootNamespace>
-    <AssemblyName>NlogViewer</AssemblyName>
+    <RootNamespace>NLogViewer</RootNamespace>
+    <AssemblyName>NLogViewer</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -50,14 +50,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="LogEventViewModel.cs" />
-    <Compile Include="NlogViewer.xaml.cs">
-      <DependentUpon>NlogViewer.xaml</DependentUpon>
+    <Compile Include="NLogViewer.xaml.cs">
+      <DependentUpon>NLogViewer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="NlogViewerTarget.cs" />
+    <Compile Include="NLogViewerTarget.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="NlogViewer.xaml">
+    <Page Include="NLogViewer.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

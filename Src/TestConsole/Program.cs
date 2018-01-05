@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MTree.Configuration;
+using Configuration;
 using System.Threading;
-using MTree.DbProvider;
-using MTree.DataStructure;
-using MTree.Utility;
+using DbProvider;
+using DataStructure;
+using CommonLib;
 using MongoDB.Driver;
 using System.Diagnostics;
 using MongoDB.Bson;
@@ -154,7 +154,7 @@ namespace TestConsole
 
         private static void TestEmail()
         {
-            //EmailUtility.SendEmail("vvvv", "vvvv", @"D:\Documents\GitHub\MTree.Halla\Src\bin\Debug\Logs\MTree.All.2016-03-23.zip");
+            //EmailUtility.SendEmail("vvvv", "vvvv", @"D:\Documents\GitHub\Halla\Src\bin\Debug\Logs\All.2016-03-23.zip");
             EmailUtility.SendEmail("vvv", "vvvvv");
         }
 

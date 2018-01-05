@@ -1,0 +1,151 @@
+﻿using Configuration;
+using Consumer;
+using DataStructure;
+using RealTimeProvider;
+using CommonLib;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.ServiceModel;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace StrategyManager
+{
+    public class StrategyManager_ : RealTimeConsumer
+    {
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
+
+        public List<string> ConcernCodeList { get; set; } = new List<string>();
+
+        public DbHandler DbHandler { get; set; }
+        public TradeHandler TradeHandler { get; set; }
+
+        public StrategyManager_()
+        {
+            ConcernCodeList.Add("005930"); // 삼성전자
+            ConcernCodeList.Add("035420"); // Naver
+
+            DbHandler = new DbHandler();
+
+            switch (Config.General.TraderType)
+            {
+                case TraderTypes.Ebest:
+                case TraderTypes.EbestSimul:
+                    TradeHandler = new TradeHandler("EbestTraderConfig");
+                    break;
+
+                case TraderTypes.Kiwoom:
+                case TraderTypes.KiwoomSimul:
+                    TradeHandler = new TradeHandler("KiwoomTraderConfig");
+                    break;
+
+                default:
+                    TradeHandler = new TradeHandler("VirtualTraderConfig");
+                    break;
+            }
+
+            TaskUtility.Run("StrategyManager.CircuitBreakQueue", QueueTaskCancelToken, ProcessCircuitBreakQueue);
+            TaskUtility.Run($"StrategyManager.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
+            TaskUtility.Run($"StrategyManager.IndexConclusionQueue", QueueTaskCancelToken, ProcessIndexConclusionQueue);
+            if (Config.General.SkipBiddingPrice == false)
+                TaskUtility.Run($"StrategyManager.BiddingPriceQueue", QueueTaskCancelToken, ProcessBiddingPriceQueue);
+        }
+
+        private void ProcessBiddingPriceQueue()
+        {
+            try
+            {
+                BiddingPrice biddingPrice;
+                if (BiddingPriceQueue.TryDequeue(out biddingPrice) == true)
+                {
+                }
+                else
+                    Thread.Sleep(10);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+        }
+
+        private void ProcessCircuitBreakQueue()
+        {
+            try
+            {
+                CircuitBreak circuitBreak;
+                if (CircuitBreakQueue.TryDequeue(out circuitBreak) == true)
+                {
+                }
+                else
+                    Thread.Sleep(10);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+        }
+
+        private void ProcessStockConclusionQueue()
+        {
+            try
+            {
+                StockConclusion conclusion;
+                if (StockConclusionQueue.TryDequeue(out conclusion) == true)
+                {
+                }
+                else
+                    Thread.Sleep(10);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+        }
+
+        private void ProcessIndexConclusionQueue()
+        {
+            try
+            {
+                IndexConclusion conclusion;
+                if (IndexConclusionQueue.TryDequeue(out conclusion) == true)
+                {
+                }
+                else
+                    Thread.Sleep(10);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+        }
+
+        public override void NotifyMessage(MessageTypes type, string message)
+        {
+            try
+            {
+                if (type == MessageTypes.CloseClient)
+                {
+                    Task.Run(() =>
+                    {
+                        if (message.Equals(ExitProgramTypes.Normal.ToString()) == true)
+                        {
+                        }
+
+                        _logger.Info("Process will be closed");
+                        Thread.Sleep(1000 * 5);
+
+                        Environment.Exit(0);
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+
+            base.NotifyMessage(type, message);
+        }
+    }
+}

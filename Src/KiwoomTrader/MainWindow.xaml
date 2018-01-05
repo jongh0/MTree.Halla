@@ -1,0 +1,14 @@
+﻿<Window x:Class="KiwoomTrader.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:KiwoomTrader"
+        xmlns:t="clr-namespace:Trader;assembly=Trader"
+        mc:Ignorable="d"
+        Title="KiwoomTrader" Height="276" Width="279" Loaded="Window_Loaded" ResizeMode="CanMinimize">
+    <Grid>
+        <t:TraderControl/>
+        <WindowsFormsHost Name="formsHost" Margin="500,0,0,0" />
+    </Grid>
+</Window>

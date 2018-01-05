@@ -6,19 +6,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NlogViewer
+namespace NLogViewer
 {
-    [Target("NlogViewer")]
-    public class NlogViewerTarget : Target
+    [Target("NLogViewer")]
+    public class NLogViewerTarget : Target
     {
         public event Action<AsyncLogEventInfo> LogReceived;
 
         protected override void Write(NLog.Common.AsyncLogEventInfo logEvent)
         {
             base.Write(logEvent);
-
-            if (LogReceived != null)
-                LogReceived(logEvent);
+            LogReceived?.Invoke(logEvent);
         }
     }
 }
