@@ -274,8 +274,7 @@ namespace MTree.RealTimeProvider
                 var workDate = contract.Callback.GetMarketInfo(MarketInfoTypes.WorkDate);
                 _logger.Info($"Market work date: {workDate}");
 
-                int workDateTime = 0;
-                if (int.TryParse(workDate, out workDateTime) == true)
+                if (int.TryParse(workDate, out var workDateTime) == true)
                 {
                     int year = workDateTime / 10000;
                     int month = workDateTime % 10000 / 100;
@@ -313,9 +312,8 @@ namespace MTree.RealTimeProvider
 
                 // Market start time
                 var startTimeStr = contract.Callback.GetMarketInfo(MarketInfoTypes.StartTime);
-                int startTime = 0;
 
-                if (int.TryParse(startTimeStr, out startTime) == true)
+                if (int.TryParse(startTimeStr, out var startTime) == true)
                 {
                     MarketStartTime = new DateTime(now.Year, now.Month, now.Day, startTime / 100, startTime % 100, 0);
                 }
@@ -329,9 +327,8 @@ namespace MTree.RealTimeProvider
 
                 // Market end time
                 var endTimeStr = contract.Callback.GetMarketInfo(MarketInfoTypes.EndTime);
-                var endTime = 0;
 
-                if (int.TryParse(endTimeStr, out endTime) == true)
+                if (int.TryParse(endTimeStr, out var endTime) == true)
                 {
                     MarketEndTime = new DateTime(now.Year, now.Month, now.Day, endTime / 100, endTime % 100, 0).Add(new TimeSpan(2, 30, 00)); // 시간외 2시간 30분 추가
                 }
@@ -368,9 +365,7 @@ namespace MTree.RealTimeProvider
             {
                 if (PublisherContracts.ContainsKey(clientId) == true)
                 {
-                    PublisherContract temp;
-                    PublisherContracts.TryRemove(clientId, out temp);
-
+                    PublisherContracts.TryRemove(clientId, out var temp);
                     _logger.Info($"{clientId} / {temp.Type} contract unregistered");
                 }
                 else

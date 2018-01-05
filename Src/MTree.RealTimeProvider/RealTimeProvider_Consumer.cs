@@ -93,8 +93,7 @@ namespace MTree.RealTimeProvider
 
                 if (contractList.ContainsKey(clientId) == true)
                 {
-                    SubscribeContract temp;
-                    if (contractList.TryRemove(clientId, out temp) == true)
+                    if (contractList.TryRemove(clientId, out var temp) == true)
                     {
                         temp.Callback = null;
                         _logger.Info($"{clientId} / {type} contract unregistered");
@@ -113,8 +112,7 @@ namespace MTree.RealTimeProvider
                     IndexConclusionContracts.ContainsKey(clientId) == false &&
                     ETFConclusionContracts.ContainsKey(clientId) == false)
                 {
-                    SubscribeContract temp;
-                    if (ConsumerContracts.TryRemove(clientId, out temp) == true)
+                    if (ConsumerContracts.TryRemove(clientId, out var temp) == true)
                     {
                         temp.Callback = null;
                         _logger.Info($"{clientId} / {type} contract unregistered");

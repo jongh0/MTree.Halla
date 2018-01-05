@@ -33,8 +33,7 @@ namespace MTree.RealTimeProvider
 
         public static ProcessTypes ConvertToType(string value)
         {
-            ProcessTypes type;
-            if (Enum.TryParse(value, out type) == true)
+            if (Enum.TryParse<ProcessTypes>(value, out var type) == true)
                 return type;
             else
                 return ProcessTypes.Unknown;

@@ -77,8 +77,7 @@ namespace MTree.EbestPublisher
                     return;
 
                 string cvStr = stockQuotingObj.GetFieldData("t1102OutBlock", "abscnt", 0);
-                long cv = 0;
-                if (long.TryParse(cvStr, out cv) == false)
+                if (long.TryParse(cvStr, out var cv) == false)
                     _logger.Error($"Stock master circulating volume error, {cvStr}");
 
                 //유통주식수
@@ -86,8 +85,7 @@ namespace MTree.EbestPublisher
 
                 // 상장일
                 string listDateStr = stockQuotingObj.GetFieldData("t1102OutBlock", "listdate", 0); 
-                int listDate = 0;
-                if (int.TryParse(listDateStr, out listDate) == true)
+                if (int.TryParse(listDateStr, out var listDate) == true)
                     QuotingStockMaster.ListedDate = new DateTime(listDate / 10000, listDate / 100 % 100, listDate % 100);
                 else
                     QuotingStockMaster.ListedDate = Config.General.DefaultStartDate;

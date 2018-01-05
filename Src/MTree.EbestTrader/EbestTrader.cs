@@ -356,9 +356,7 @@ namespace MTree.EbestTrader
             {
                 if (TraderContracts.ContainsKey(clientId) == true)
                 {
-                    TraderContract temp;
-                    TraderContracts.TryRemove(clientId, out temp);
-
+                    TraderContracts.TryRemove(clientId, out var temp);
                     _logger.Info($"{clientId} contract unregistered");
                 }
                 else
