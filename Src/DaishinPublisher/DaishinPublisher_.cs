@@ -16,6 +16,7 @@ using CommonLib;
 
 namespace DaishinPublisher
 {
+    [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
     public partial class DaishinPublisher_ : BrokerageFirmBase, INotifyPropertyChanged
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();

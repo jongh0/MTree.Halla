@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.ServiceModel;
 
 namespace Consumer
 {
@@ -17,6 +18,7 @@ namespace Consumer
         void StopSimulation();
     }
 
+    [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
     public class HistoryConsumer: ConsumerBase, ISimulation
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();

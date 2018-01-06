@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace StrategyManager
 {
+    [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
     public class StrategyManager_ : RealTimeConsumer
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();

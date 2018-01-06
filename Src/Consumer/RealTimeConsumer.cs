@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace Consumer
 {
+    [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
     public class RealTimeConsumer : ConsumerBase
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();

@@ -16,6 +16,7 @@ using CommonLib;
 
 namespace EbestPublisher
 {
+    [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
     public partial class EbestPublisher_ : BrokerageFirmBase, INotifyPropertyChanged
     {
         private NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();

@@ -12,6 +12,7 @@ using Configuration;
 
 namespace KiwoomPublisher
 {
+    [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
     public partial class KiwoomPublisher_ : BrokerageFirmBase
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();

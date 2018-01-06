@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace Publisher
 {
+    [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
     public class PublisherBase : PublisherCallback
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();

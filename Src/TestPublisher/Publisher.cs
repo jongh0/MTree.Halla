@@ -8,9 +8,11 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.ServiceModel;
 
 namespace TestPublisher
 {
+    [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
     class Publisher : PublisherBase
     {
         public void StartPublising()

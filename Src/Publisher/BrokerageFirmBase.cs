@@ -13,6 +13,7 @@ using System.Timers;
 
 namespace Publisher
 {
+    [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
     public class BrokerageFirmBase : PublisherBase
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
