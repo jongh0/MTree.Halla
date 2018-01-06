@@ -125,7 +125,7 @@ namespace RealTimeProvider
             {
                 while (true)
                 {
-                    lock (masteringLock)
+                    lock (_masteringLock)
                     {
                         var totalCount = IndexMasteringList.Count;
                         var notFinishedCount = IndexMasteringList.Count(m => m.DaishinState != MasteringStates.Finished);
@@ -137,7 +137,7 @@ namespace RealTimeProvider
 
                     IndexMastering mastering = null;
 
-                    lock (masteringLock)
+                    lock (_masteringLock)
                     {
                         mastering = IndexMasteringList.FirstOrDefault(m => m.DaishinState == MasteringStates.Ready);
                         if (mastering != null)
@@ -150,7 +150,7 @@ namespace RealTimeProvider
 
                         while (true)
                         {
-                            lock (daishinMasteringLock)
+                            lock (_daishinMasteringLock)
                             {
                                 contract = DaishinContractForMastering;
                                 if (contract != null)
@@ -210,7 +210,7 @@ namespace RealTimeProvider
             {
                 if (contract.Type == ProcessTypes.DaishinPublisher)
                 {
-                    lock (daishinMasteringLock)
+                    lock (_daishinMasteringLock)
                         contract.IsOperating = false;
                 }
             }
@@ -244,7 +244,7 @@ namespace RealTimeProvider
             }
             finally
             {
-                lock (masteringLock)
+                lock (_masteringLock)
                     mastering.DaishinState = state;
             }
         }

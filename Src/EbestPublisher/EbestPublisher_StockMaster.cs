@@ -2,6 +2,7 @@
 using System.Threading;
 using DataStructure;
 using Configuration;
+using CommonLib.Firm.Ebest.Query;
 
 namespace EbestPublisher
 {
@@ -76,21 +77,22 @@ namespace EbestPublisher
                 if (QuotingStockMaster == null)
                     return;
 
-                string cvStr = stockQuotingObj.GetFieldData("t1102OutBlock", "abscnt", 0);
-                if (long.TryParse(cvStr, out var cv) == false)
-                    _logger.Error($"Stock master circulating volume error, {cvStr}");
+                if (t1102OutBlock.TryParse(stockQuotingObj, out var block) == false)
+                {
+                    _logger.Error($"Ebest stock master parsing failed");
+                    return;
+                }
 
                 //유통주식수
-                QuotingStockMaster.CirculatingVolume = cv * 1000;  
+                QuotingStockMaster.CirculatingVolume = block.abscnt * 1000;
 
                 // 상장일
-                string listDateStr = stockQuotingObj.GetFieldData("t1102OutBlock", "listdate", 0); 
-                if (int.TryParse(listDateStr, out var listDate) == true)
+                if (int.TryParse(block.listdate, out var listDate) == true)
                     QuotingStockMaster.ListedDate = new DateTime(listDate / 10000, listDate / 100 % 100, listDate % 100);
                 else
                     QuotingStockMaster.ListedDate = Config.General.DefaultStartDate;
 
-                string valueAltered = stockQuotingObj.GetFieldData("t1102OutBlock", "info1", 0);
+                string valueAltered = block.info1;
                 if (valueAltered == "권배락")
                     QuotingStockMaster.ValueAlteredType = ValueAlteredTypes.ExRightDividend;
                 else if (valueAltered == "권리락")
@@ -110,8 +112,7 @@ namespace EbestPublisher
                 else
                     QuotingStockMaster.ValueAlteredType = ValueAlteredTypes.None;
 
-                string suspended = stockQuotingObj.GetFieldData("t1102OutBlock", "info3", 0);
-                QuotingStockMaster.TradingSuspend = (suspended == "suspended");
+                QuotingStockMaster.TradingSuspend = (block.info3 == "suspended");
 
                 // 관리
                 QuotingStockMaster.AdministrativeIssue = WarningList[nameof(WarningTypes1.AdministrativeIssue)].Contains(QuotingStockMaster.Code);

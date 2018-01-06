@@ -10,6 +10,7 @@ using System.Threading;
 using System.Timers;
 using XA_DATASETLib;
 using XA_SESSIONLib;
+using CommonLib.Firm;
 
 namespace EbestTrader
 {

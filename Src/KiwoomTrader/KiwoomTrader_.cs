@@ -12,6 +12,8 @@ using System.ServiceModel;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using CommonLib.Firm;
+using CommonLib.Firm.Kiwoom;
 
 namespace KiwoomTrader
 {

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using XA_DATASETLib;
+using CommonLib.Firm.Ebest.Query;
 
 namespace EbestTrader
 {
@@ -164,50 +165,14 @@ namespace EbestTrader
         {
             try
             {
-                var blockName = "CSPAT00600InBlock1";
+                var block = new CSPAT00600InBlock1();
+                order.CopyTo(block);
 
-                // 계좌번호
-                newOrderObj.SetFieldData(blockName, "AcntNo", 0, order.AccountNumber);
-                // 계좌비밀번호
-                newOrderObj.SetFieldData(blockName, "InptPwd", 0, order.AccountPassword);
-                // 종목번호. 주식: 종목코드 or A+종목코드(모의투자는 A+종목코드), ELW:J+종목코드
-                newOrderObj.SetFieldData(blockName, "IsuNo", 0, 'A' + order.Code);
-                // 주문수량
-                newOrderObj.SetFieldData(blockName, "OrdQty", 0, order.Quantity.ToString());
-                // 매매구분
-                if (order.OrderType == OrderTypes.BuyNew)
-                    newOrderObj.SetFieldData(blockName, "BnsTpCode", 0, "2");
-                else
-                    newOrderObj.SetFieldData(blockName, "BnsTpCode", 0, "1");
-
-                // 00@지정가
-                // 03@시장가
-                // 05@조건부지정가
-                // 06@최유리지정가
-                // 07@최우선지정가
-                // 61@장개시전시간외종가
-                // 81@시간외종가
-                // 82@시간외단일가
-                if (order.PriceType == PriceTypes.LimitPrice)
+                if (newOrderObj.SetFieldData(block) == false)
                 {
-                    // 주문가
-                    newOrderObj.SetFieldData(blockName, "OrdPrc", 0, order.Price.ToString());
-                    // 호가유형코드
-                    newOrderObj.SetFieldData(blockName, "OrdprcPtnCode", 0, "00");
+                    _logger.Error("New order set field error");
+                    return false;
                 }
-                else
-                {
-                    // 주문가
-                    newOrderObj.SetFieldData(blockName, "OrdPrc", 0, "0");
-                    // 호가유형코드
-                    newOrderObj.SetFieldData(blockName, "OrdprcPtnCode", 0, "03");
-                }
-                // 신용거래코드
-                newOrderObj.SetFieldData(blockName, "MgntrnCode", 0, "000");
-                // 대출일
-                newOrderObj.SetFieldData(blockName, "LoanDt", 0, "");
-                // 주문조건구분
-                newOrderObj.SetFieldData(blockName, "OrdCndiTpCode", 0, "0");
 
                 var ret = newOrderObj.Request(false);
                 if (ret < 0)
@@ -231,27 +196,14 @@ namespace EbestTrader
         {
             try
             {
-                var blockName = "CSPAT00700InBlock1";
+                var block = new CSPAT00700InBlock1();
+                order.CopyTo(block);
 
-                // 원주문번호
-                modifyOrderObj.SetFieldData(blockName, "OrgOrdNo", 0, order.OriginOrderNumber);
-                // 계좌번호
-                modifyOrderObj.SetFieldData(blockName, "AcntNo", 0, order.AccountNumber);
-                // 계좌비밀번호
-                modifyOrderObj.SetFieldData(blockName, "InptPwd", 0, order.AccountPassword);
-                // 종목번호
-                modifyOrderObj.SetFieldData(blockName, "IsuNo", 0, order.Code);
-                // 주문수량
-                modifyOrderObj.SetFieldData(blockName, "OrdQty", 0, order.Quantity.ToString());
-                // 호가유형코드
-                if (order.PriceType == PriceTypes.LimitPrice)
-                    modifyOrderObj.SetFieldData(blockName, "OrdprcPtnCode", 0, "00");
-                else
-                    modifyOrderObj.SetFieldData(blockName, "OrdprcPtnCode", 0, "03");
-                // 주문조건구분
-                modifyOrderObj.SetFieldData(blockName, "OrdCndiTpCode", 0, "0");
-                // 주문가
-                modifyOrderObj.SetFieldData(blockName, "OrdPrc", 0, order.Price.ToString());
+                if (newOrderObj.SetFieldData(block) == false)
+                {
+                    _logger.Error("Modify order set field error");
+                    return false;
+                }
 
                 var ret = modifyOrderObj.Request(false);
                 if (ret < 0)
@@ -275,18 +227,14 @@ namespace EbestTrader
         {
             try
             {
-                var blockName = "CSPAT00800InBlock1";
+                var block = new CSPAT00800InBlock1();
+                order.CopyTo(block);
 
-                // 원주문번호
-                cancelOrderObj.SetFieldData(blockName, "OrgOrdNo", 0, order.OriginOrderNumber);
-                // 계좌번호
-                cancelOrderObj.SetFieldData(blockName, "AcntNo", 0, order.AccountNumber);
-                // 계좌비밀번호
-                cancelOrderObj.SetFieldData(blockName, "InptPwd", 0, order.AccountPassword);
-                // 종목번호
-                cancelOrderObj.SetFieldData(blockName, "IsuNo", 0, order.Code);
-                // 주문수량
-                cancelOrderObj.SetFieldData(blockName, "OrdQty", 0, order.Quantity.ToString());
+                if (newOrderObj.SetFieldData(block) == false)
+                {
+                    _logger.Error("Cancel order set field error");
+                    return false;
+                }
 
                 var ret = cancelOrderObj.Request(false);
                 if (ret < 0)
@@ -331,19 +279,15 @@ namespace EbestTrader
             {
                 LastCommTick = Environment.TickCount;
                 _logger.Trace($"szTrCode: {szTrCode}");
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex);
-            }
-        }
 
-        private void CancelOrderObj_ReceiveData(string szTrCode)
-        {
-            try
-            {
-                LastCommTick = Environment.TickCount;
-                _logger.Trace($"szTrCode: {szTrCode}");
+                if (CSPAT00600OutBlock1.TryParse(newOrderObj, out var block) == false)
+                {
+                    _logger.Error("New order parsing failed");
+                    return;
+                }
+
+                _logger.Info($"New order done\n{block.ToString()}");
+
             }
             catch (Exception ex)
             {
@@ -357,6 +301,35 @@ namespace EbestTrader
             {
                 LastCommTick = Environment.TickCount;
                 _logger.Trace($"szTrCode: {szTrCode}");
+
+                if (CSPAT00700OutBlock1.TryParse(newOrderObj, out var block) == false)
+                {
+                    _logger.Error("Modify order parsing failed");
+                    return;
+                }
+
+                _logger.Info($"Modify order done\n{block.ToString()}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+        }
+
+        private void CancelOrderObj_ReceiveData(string szTrCode)
+        {
+            try
+            {
+                LastCommTick = Environment.TickCount;
+                _logger.Trace($"szTrCode: {szTrCode}");
+
+                if (CSPAT00800OutBlock1.TryParse(newOrderObj, out var block) == false)
+                {
+                    _logger.Error("Cancel order parsing failed");
+                    return;
+                }
+
+                _logger.Info($"Cancel order done\n{block.ToString()}");
             }
             catch (Exception ex)
             {

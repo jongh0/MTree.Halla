@@ -15,10 +15,10 @@ namespace RealTimeProvider
 {
     public partial class RealTimeProvider_
     {
-        private object masteringLock = new object();
-        private object daishinMasteringLock = new object();
-        private object ebestMasteringLock = new object();
-        private object kiwoomMasteringLock = new object();
+        private readonly object _masteringLock = new object();
+        private readonly object _daishinMasteringLock = new object();
+        private readonly object _ebestMasteringLock = new object();
+        private readonly object _kiwoomMasteringLock = new object();
 
         private void StartStockMastering()
         {
@@ -164,7 +164,7 @@ namespace RealTimeProvider
             {
                 while (true)
                 {
-                    lock (daishinMasteringLock)
+                    lock (_daishinMasteringLock)
                     {
                         var totalCount = StockMasteringList.Count;
                         var notFinishedCount = StockMasteringList.Count(m => m.DaishinState != MasteringStates.Finished);
@@ -176,7 +176,7 @@ namespace RealTimeProvider
 
                     StockMastering mastering = null;
 
-                    lock (daishinMasteringLock)
+                    lock (_daishinMasteringLock)
                     {
                         mastering = StockMasteringList.FirstOrDefault(m => m.DaishinState == MasteringStates.Ready);
                         if (mastering != null)
@@ -189,7 +189,7 @@ namespace RealTimeProvider
 
                         while (true)
                         {
-                            lock (daishinMasteringLock)
+                            lock (_daishinMasteringLock)
                             {
                                 contract = DaishinContractForMastering;
                                 if (contract != null)
@@ -235,7 +235,7 @@ namespace RealTimeProvider
             {
                 while (true)
                 {
-                    lock (ebestMasteringLock)
+                    lock (_ebestMasteringLock)
                     {
                         var totalCount = StockMasteringList.Count;
                         var notFinishedCount = StockMasteringList.Count(m => m.EbestState != MasteringStates.Finished);
@@ -247,7 +247,7 @@ namespace RealTimeProvider
 
                     StockMastering mastering = null;
 
-                    lock (ebestMasteringLock)
+                    lock (_ebestMasteringLock)
                     {
                         mastering = StockMasteringList.FirstOrDefault(m => m.EbestState == MasteringStates.Ready);
                         if (mastering != null)
@@ -260,7 +260,7 @@ namespace RealTimeProvider
 
                         while (true)
                         {
-                            lock (ebestMasteringLock)
+                            lock (_ebestMasteringLock)
                             {
                                 contract = EbestContractForMastering;
                                 if (contract != null)
@@ -306,7 +306,7 @@ namespace RealTimeProvider
             {
                 while (true)
                 {
-                    lock (kiwoomMasteringLock)
+                    lock (_kiwoomMasteringLock)
                     {
                         var totalCount = StockMasteringList.Count;
                         var notFinishedCount = StockMasteringList.Count(m => m.KiwoomState != MasteringStates.Finished);
@@ -318,7 +318,7 @@ namespace RealTimeProvider
 
                     StockMastering mastering = null;
 
-                    lock (kiwoomMasteringLock)
+                    lock (_kiwoomMasteringLock)
                     {
                         mastering = StockMasteringList.FirstOrDefault(m => m.KiwoomState == MasteringStates.Ready);
                         if (mastering != null)
@@ -331,7 +331,7 @@ namespace RealTimeProvider
 
                         while (true)
                         {
-                            lock (kiwoomMasteringLock)
+                            lock (_kiwoomMasteringLock)
                             {
                                 contract = KiwoomContractForMastering;
                                 if (contract != null)
@@ -395,17 +395,17 @@ namespace RealTimeProvider
             {
                 if (contract.Type == ProcessTypes.DaishinPublisher)
                 {
-                    lock (daishinMasteringLock)
+                    lock (_daishinMasteringLock)
                         contract.IsOperating = false;
                 }
                 else if (contract.Type == ProcessTypes.EbestPublisher)
                 {
-                    lock (ebestMasteringLock)
+                    lock (_ebestMasteringLock)
                         contract.IsOperating = false;
                 }
                 else if (contract.Type == ProcessTypes.KiwoomPublisher)
                 {
-                    lock (kiwoomMasteringLock)
+                    lock (_kiwoomMasteringLock)
                         contract.IsOperating = false;
                 }
             }
@@ -456,7 +456,7 @@ namespace RealTimeProvider
             }
             finally
             {
-                lock (daishinMasteringLock)
+                lock (_daishinMasteringLock)
                     mastering.DaishinState = state;
             }
         }
@@ -505,7 +505,7 @@ namespace RealTimeProvider
             }
             finally
             {
-                lock (ebestMasteringLock)
+                lock (_ebestMasteringLock)
                     mastering.EbestState = state;
             }
         }
@@ -548,7 +548,7 @@ namespace RealTimeProvider
             }
             finally
             {
-                lock (kiwoomMasteringLock)
+                lock (_kiwoomMasteringLock)
                     mastering.KiwoomState = state;
             }
         }

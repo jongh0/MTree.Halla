@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CommonLib
+namespace CommonLib.Firm
 {
     public class LoginInfo : INotifyPropertyChanged
     {

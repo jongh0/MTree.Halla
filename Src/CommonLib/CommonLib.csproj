@@ -35,6 +35,16 @@
     <Reference Include="DotNetZip, Version=1.10.1.0, Culture=neutral, PublicKeyToken=6583c7c814667745, processorArchitecture=MSIL">
       <HintPath>..\packages\DotNetZip.1.10.1\lib\net20\DotNetZip.dll</HintPath>
     </Reference>
+    <Reference Include="Interop.XA_DATASETLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <HintPath>..\packages\Ebest\Interop.XA_DATASETLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Interop.XA_SESSIONLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <HintPath>..\packages\Ebest\Interop.XA_SESSIONLib.dll</HintPath>
+    </Reference>
     <Reference Include="MongoDB.Bson, Version=2.5.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MongoDB.Bson.2.5.0\lib\net45\MongoDB.Bson.dll</HintPath>
     </Reference>
@@ -64,6 +74,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\ParseIgnoreAttribute.cs" />
     <Compile Include="Collections\ObservableCollectionEx.cs" />
     <Compile Include="Converters\BoolInverterConverter.cs" />
     <Compile Include="Converters\NumberToCurrencyConverter.cs" />
@@ -71,8 +82,18 @@
     <Compile Include="Converters\EnumToStringConverter.cs" />
     <Compile Include="Converters\ConvertUtility.cs" />
     <Compile Include="EnumType.cs" />
-    <Compile Include="Firm\KiwoomScreen.cs" />
-    <Compile Include="Firm\KiwoomError.cs" />
+    <Compile Include="Extensions\PropertyExtension.cs" />
+    <Compile Include="Firm\Ebest\Query\CSPAT00600InBlock1.cs" />
+    <Compile Include="Firm\Ebest\Query\CSPAT00600OutBlock1.cs" />
+    <Compile Include="Firm\Ebest\Query\BlockBase.cs" />
+    <Compile Include="Firm\Ebest\Query\CSPAT00700InBlock1.cs" />
+    <Compile Include="Firm\Ebest\Query\CSPAT00700OutBlock1.cs" />
+    <Compile Include="Firm\Ebest\Query\CSPAT00800InBlock1.cs" />
+    <Compile Include="Firm\Ebest\Query\CSPAT00800OutBlock1.cs" />
+    <Compile Include="Firm\Ebest\Query\t1102OutBlock.cs" />
+    <Compile Include="Firm\Ebest\Query\XAQueryClassExtension.cs" />
+    <Compile Include="Firm\Kiwoom\KiwoomScreen.cs" />
+    <Compile Include="Firm\Kiwoom\KiwoomError.cs" />
     <Compile Include="Firm\LoginInfo.cs" />
     <Compile Include="Utilities\ObjectIdUtility.cs" />
     <Compile Include="Utilities\ServiceUtility.cs" />

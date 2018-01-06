@@ -72,15 +72,10 @@ namespace DataStructure
                     {
                         object value = property.GetValue(this);
 
-                        if (value is DateTime)
-                        {
-                            DateTime dateTime = (DateTime)value;
+                        if (value is DateTime dateTime)
                             strList.Add($"{property.Name}: {dateTime.ToString(Config.General.DateTimeFormat)}");
-                        }
                         else
-                        {
                             strList.Add($"{property.Name}: {value}");
-                        }
                     }
                 }
 

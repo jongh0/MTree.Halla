@@ -28,7 +28,7 @@ namespace Configuration
         public static ResourceMonitorConfiguration ResourceMonitor { get { return Instance.resourceMonitor; } }
 
         #region Instance
-        private static object _lockObject = new object();
+        private static readonly object _lockObject = new object();
 
         private static Config _Instance;
         private static Config Instance

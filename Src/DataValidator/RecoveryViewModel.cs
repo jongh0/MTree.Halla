@@ -47,15 +47,15 @@ namespace DataValidator
 
     public partial class MainViewModel
     {        
-        private const string logBasePath = "Logs";
-        private const string compareResultPath = "CompareResult";
-        private const string codeCompareResultFile = "CodeCompare.html";
-        private const string masterCompareResultPath = "Master";
-        private const string stockConclusionCompareResultPath = "StockConclusion";
-        private const string indexConclusionCompareResultPath = "IndexConclusion";
-        private const string circuitbreakCompareResultPath = "CircuitBreak";
+        private const string LogBasePath = "Logs";
+        private const string CompareResultPath = "CompareResult";
+        private const string CodeCompareResultFile = "CodeCompare.html";
+        private const string MasterCompareResultPath = "Master";
+        private const string StockConclusionCompareResultPath = "StockConclusion";
+        private const string IndexConclusionCompareResultPath = "IndexConclusion";
+        private const string CircuitbreakCompareResultPath = "CircuitBreak";
 
-        private object popupWindowLockObject = new object();
+        private readonly object _popupWindowLockObject = new object();
 
         private IWindowFactory RecoveryPopupFactory { get; }
 
@@ -191,10 +191,10 @@ namespace DataValidator
                         {
                             DialogResult needRecovery = DialogResult.None;
 
-                            lock (popupWindowLockObject)
+                            lock (_popupWindowLockObject)
                             {
                                 if (ApplyForAll == false)
-                                    needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, masterCompareResultPath, code + ".html"));
+                                    needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(LogBasePath, Config.General.DateNow, CompareResultPath, MasterCompareResultPath, code + ".html"));
                                 else
                                     needRecovery = DialogResult.OK;
                             }
@@ -230,10 +230,10 @@ namespace DataValidator
                                 if (ValidateOnly == false)
                                 {
                                     DialogResult needRecovery = DialogResult.None;
-                                    lock (popupWindowLockObject)
+                                    lock (_popupWindowLockObject)
                                     {
                                         if (ApplyForAll == false)
-                                            needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, masterCompareResultPath, Code + ".html"));
+                                            needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(LogBasePath, Config.General.DateNow, CompareResultPath, MasterCompareResultPath, Code + ".html"));
                                         else
                                             needRecovery = DialogResult.OK;
                                     }
@@ -275,10 +275,10 @@ namespace DataValidator
                         if (ValidateOnly == false)
                         {
                             DialogResult needRecovery = DialogResult.None;
-                            lock (popupWindowLockObject)
+                            lock (_popupWindowLockObject)
                             {
                                 if (ApplyForAll == false)
-                                    needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, stockConclusionCompareResultPath, code + ".html"));
+                                    needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(LogBasePath, Config.General.DateNow, CompareResultPath, StockConclusionCompareResultPath, code + ".html"));
                                 else
                                     needRecovery = DialogResult.OK;
                             }
@@ -317,9 +317,9 @@ namespace DataValidator
                                 {
                                     DialogResult needRecovery = DialogResult.None;
 
-                                    lock (popupWindowLockObject)
+                                    lock (_popupWindowLockObject)
                                     {
-                                        needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, stockConclusionCompareResultPath, Code + ".html"));
+                                        needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(LogBasePath, Config.General.DateNow, CompareResultPath, StockConclusionCompareResultPath, Code + ".html"));
                                     }
 
                                     if (needRecovery == DialogResult.OK)
@@ -359,13 +359,13 @@ namespace DataValidator
                         {
                             DialogResult needRecovery = DialogResult.None;
 
-                            lock (popupWindowLockObject)
+                            lock (_popupWindowLockObject)
                             {
-                                if (File.Exists(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, indexConclusionCompareResultPath, code + ".html")) == false)
-                                    _logger.Error($"{Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, indexConclusionCompareResultPath, code + ".html")} is not exist.");
+                                if (File.Exists(Path.Combine(LogBasePath, Config.General.DateNow, CompareResultPath, IndexConclusionCompareResultPath, code + ".html")) == false)
+                                    _logger.Error($"{Path.Combine(LogBasePath, Config.General.DateNow, CompareResultPath, IndexConclusionCompareResultPath, code + ".html")} is not exist.");
 
                                 if (ApplyForAll == false)
-                                    needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, indexConclusionCompareResultPath, code + ".html"));
+                                    needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(LogBasePath, Config.General.DateNow, CompareResultPath, IndexConclusionCompareResultPath, code + ".html"));
                                 else
                                     needRecovery = DialogResult.OK;
                             }
@@ -400,9 +400,9 @@ namespace DataValidator
                                 {
                                     DialogResult needRecovery = DialogResult.None;
 
-                                    lock (popupWindowLockObject)
+                                    lock (_popupWindowLockObject)
                                     {
-                                        needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, indexConclusionCompareResultPath, Code + ".html"));
+                                        needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(LogBasePath, Config.General.DateNow, CompareResultPath, IndexConclusionCompareResultPath, Code + ".html"));
                                     }
 
                                     if (needRecovery == DialogResult.OK)
@@ -442,10 +442,10 @@ namespace DataValidator
                         {
                             DialogResult needRecovery = DialogResult.None;
 
-                            lock (popupWindowLockObject)
+                            lock (_popupWindowLockObject)
                             {
                                 if (ApplyForAll == false)
-                                    needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, circuitbreakCompareResultPath, code + ".html"));
+                                    needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(LogBasePath, Config.General.DateNow, CompareResultPath, CircuitbreakCompareResultPath, code + ".html"));
                                 else
                                     needRecovery = DialogResult.OK;
                             }
@@ -484,9 +484,9 @@ namespace DataValidator
                                 {
                                     DialogResult needRecovery = DialogResult.None;
 
-                                    lock (popupWindowLockObject)
+                                    lock (_popupWindowLockObject)
                                     {
-                                        needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(logBasePath, Config.General.DateNow, compareResultPath, circuitbreakCompareResultPath, Code + ".html"));
+                                        needRecovery = RecoveryPopupFactory.CreateNewWindow(Path.Combine(LogBasePath, Config.General.DateNow, CompareResultPath, CircuitbreakCompareResultPath, Code + ".html"));
                                     }
 
                                     if (needRecovery == DialogResult.OK)
