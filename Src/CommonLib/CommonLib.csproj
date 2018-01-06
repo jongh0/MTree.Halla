@@ -74,7 +74,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Attributes\ParseIgnoreAttribute.cs" />
+    <Compile Include="Attributes\PropertyIgnoreAttribute.cs" />
     <Compile Include="Collections\ObservableCollectionEx.cs" />
     <Compile Include="Converters\BoolInverterConverter.cs" />
     <Compile Include="Converters\NumberToCurrencyConverter.cs" />

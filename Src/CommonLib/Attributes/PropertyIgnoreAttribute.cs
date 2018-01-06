@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CommonLib.Attributes
 {
-    public class ParseIgnoreAttribute : Attribute
+    public class PropertyIgnoreAttribute : Attribute
     {
     }
 }
