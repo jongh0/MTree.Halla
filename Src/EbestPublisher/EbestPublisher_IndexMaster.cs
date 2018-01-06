@@ -2,6 +2,7 @@
 using System.Threading;
 using DataStructure;
 using CommonLib;
+using CommonLib.Firm.Ebest.Query;
 
 namespace EbestPublisher
 {
@@ -64,9 +65,13 @@ namespace EbestPublisher
                 if (QuotingIndexMaster == null)
                     return;
 
-                // 현재가
-                var jniljisu = indexQuotingObj.GetFieldData("t1511OutBlock", "jniljisu", 0);
-                QuotingIndexMaster.BasisPrice = ConvertUtility.ToSingle(jniljisu);
+                if (indexQuotingObj.GetFieldData(out t1511OutBlock block) == false)
+                {
+                    _logger.Error($"IndexQuoting GetFieldData error");
+                    return;
+                }
+
+                QuotingIndexMaster.BasisPrice = block.jniljisu;
             }
             catch (Exception ex)
             {

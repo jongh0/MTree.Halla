@@ -38,5 +38,11 @@ namespace CommonLib.Firm.Ebest.Query
 
             return false;
         }
+
+        public static bool GetFieldData<T>(this XAQueryClass query, out T block) where T : BlockBase
+        {
+            block = Activator.CreateInstance<T>();
+            return block?.Parse(query) ?? false;
+        }
     }
 }

@@ -11,7 +11,6 @@ namespace CommonLib.Firm.Ebest.Query
     /// </summary>
     public class CSPAT00700InBlock1 : BlockBase
     {
-        #region Property
         /// <summary>
         /// 원주문번호
         /// </summary>
@@ -51,6 +50,5 @@ namespace CommonLib.Firm.Ebest.Query
         /// 주문조건구분
         /// </summary>
         public string OrdCndiTpCode { get; set; }
-        #endregion
     }
 }

@@ -280,14 +280,13 @@ namespace EbestTrader
                 LastCommTick = Environment.TickCount;
                 _logger.Trace($"szTrCode: {szTrCode}");
 
-                if (CSPAT00600OutBlock1.TryParse(newOrderObj, out var block) == false)
+                if (newOrderObj.GetFieldData(out CSPAT00600OutBlock1 block) == false)
                 {
-                    _logger.Error("New order parsing failed");
+                    _logger.Error("NewOrderObj_ReceiveData.GetFieldData.Error");
                     return;
                 }
 
-                _logger.Info($"New order done\n{block.ToString()}");
-
+                _logger.Info($"NewOrderObj_ReceiveData.Done, {block.ToString()}");
             }
             catch (Exception ex)
             {
@@ -302,13 +301,13 @@ namespace EbestTrader
                 LastCommTick = Environment.TickCount;
                 _logger.Trace($"szTrCode: {szTrCode}");
 
-                if (CSPAT00700OutBlock1.TryParse(newOrderObj, out var block) == false)
+                if (modifyOrderObj.GetFieldData(out CSPAT00700OutBlock1 block) == false)
                 {
-                    _logger.Error("Modify order parsing failed");
+                    _logger.Error("ModifyOrderObj_ReceiveData.GetFieldData.Error");
                     return;
                 }
 
-                _logger.Info($"Modify order done\n{block.ToString()}");
+                _logger.Info($"ModifyOrderObj_ReceiveData.Done, {block.ToString()}");
             }
             catch (Exception ex)
             {
@@ -323,13 +322,13 @@ namespace EbestTrader
                 LastCommTick = Environment.TickCount;
                 _logger.Trace($"szTrCode: {szTrCode}");
 
-                if (CSPAT00800OutBlock1.TryParse(newOrderObj, out var block) == false)
+                if (cancelOrderObj.GetFieldData(out CSPAT00800OutBlock1 block) == false)
                 {
-                    _logger.Error("Cancel order parsing failed");
+                    _logger.Error("CancelOrderObj_ReceiveData.GetFieldData.Error");
                     return;
                 }
 
-                _logger.Info($"Cancel order done\n{block.ToString()}");
+                _logger.Info($"CancelOrderObj_ReceiveData.Done, {block.ToString()}");
             }
             catch (Exception ex)
             {

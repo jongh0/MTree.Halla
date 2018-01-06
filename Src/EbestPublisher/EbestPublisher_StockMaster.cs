@@ -77,9 +77,9 @@ namespace EbestPublisher
                 if (QuotingStockMaster == null)
                     return;
 
-                if (t1102OutBlock.TryParse(stockQuotingObj, out var block) == false)
+                if (stockQuotingObj.GetFieldData(out t1102OutBlock block) == false)
                 {
-                    _logger.Error($"Ebest stock master parsing failed");
+                    _logger.Error($"StockQuoting GetFieldData error");
                     return;
                 }
 

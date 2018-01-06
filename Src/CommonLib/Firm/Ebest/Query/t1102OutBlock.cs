@@ -7,7 +7,11 @@ namespace CommonLib.Firm.Ebest.Query
     /// </summary>
     public class t1102OutBlock : BlockBase
     {
-        #region Property
+        /// <summary>
+        /// 한글명
+        /// </summary>
+        public string hname { get; set; }
+
         /// <summary>
         /// 유동주식수
         /// </summary>
@@ -27,13 +31,5 @@ namespace CommonLib.Firm.Ebest.Query
         /// 정지/연장구분
         /// </summary>
         public string info3 { get; set; }
-        #endregion
-
-
-        public static bool TryParse(XAQueryClass query, out t1102OutBlock block)
-        {
-            block = new t1102OutBlock();
-            return block.Parse(query);
-        }
     }
 }

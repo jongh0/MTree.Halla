@@ -11,6 +11,10 @@ using XA_DATASETLib;
 
 namespace CommonLib.Firm.Ebest.Query
 {
+    /// <summary>
+    /// Ebest Query에 사용하는 Block Class
+    /// SetFieldData, GetFieldData를 편리하게 해준다.
+    /// </summary>
     public abstract class BlockBase
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();

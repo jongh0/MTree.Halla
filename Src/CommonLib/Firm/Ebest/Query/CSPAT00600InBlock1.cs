@@ -11,7 +11,6 @@ namespace CommonLib.Firm.Ebest.Query
     /// </summary>
     public class CSPAT00600InBlock1 : BlockBase
     {
-        #region Property
         /// <summary>
         /// 계좌번호
         /// </summary>
@@ -61,6 +60,5 @@ namespace CommonLib.Firm.Ebest.Query
         /// 주문조건구분
         /// </summary>
         public string OrdCndiTpCode { get; set; }
-        #endregion
     }
 }

@@ -12,7 +12,6 @@ namespace CommonLib.Firm.Ebest.Query
     /// </summary>
     public class CSPAT00700OutBlock1 : BlockBase
     {
-        #region Property
         /// <summary>
         /// 레코드갯수
         /// </summary>
@@ -97,12 +96,5 @@ namespace CommonLib.Firm.Ebest.Query
         /// 아이템번호
         /// </summary>
         public long ItemNo { get; set; }
-        #endregion
-
-        public static bool TryParse(XAQueryClass query, out CSPAT00700OutBlock1 block)
-        {
-            block = new CSPAT00700OutBlock1();
-            return block.Parse(query);
-        }
     }
 }
