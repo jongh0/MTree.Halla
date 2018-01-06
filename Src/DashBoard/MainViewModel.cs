@@ -75,13 +75,14 @@ namespace Dashboard
         }
 
         #region Command
-        private RelayCommand _StartSimulationCommand;
+        private RelayCommand _startSimulationCommand;
         public ICommand StartSimulationCommand
         {
             get
             {
-                if (_StartSimulationCommand == null)
-                    _StartSimulationCommand = new RelayCommand(() => Task.Run(() =>
+                if (_startSimulationCommand == null)
+                {
+                    _startSimulationCommand = new RelayCommand(() => Task.Run(() =>
                     {
                         DataLoader loader = new DataLoader();
                         CodeMapDbObject result = loader.Load<CodeMapDbObject>("CodeMap", StartingDate, EndingDate)[0];
@@ -96,22 +97,14 @@ namespace Dashboard
                             }
                         }
                     }));
+                }
 
-                return _StartSimulationCommand;
+                return _startSimulationCommand;
             }
         }
 
-        private RelayCommand<DashboardItem> _DoubleClickCommand;
-        public ICommand DoubleClickCommand
-        {
-            get
-            {
-                if (_DoubleClickCommand == null)
-                    _DoubleClickCommand = new RelayCommand<DashboardItem>((param) => ExecuteDoubleClick(param));
-
-                return _DoubleClickCommand;
-            }
-        }
+        private RelayCommand<DashboardItem> _doubleClickCommand;
+        public ICommand DoubleClickCommand => _doubleClickCommand ?? (_doubleClickCommand = new RelayCommand<DashboardItem>((param) => ExecuteDoubleClick(param)));
 
         public void ExecuteDoubleClick(DashboardItem item)
         {

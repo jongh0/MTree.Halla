@@ -100,18 +100,9 @@ namespace Trader
             }
         }
 
-        private RelayCommand _OrderCommand;
-        public ICommand OrderCommand
-        {
-            get
-            {
-                if (_OrderCommand == null)
-                    _OrderCommand = new RelayCommand(() => ExecuteOrder());
+        private RelayCommand _orderCommand;
+        public ICommand OrderCommand => _orderCommand ?? (_orderCommand = new RelayCommand(() => ExecuteOrder()));
 
-                return _OrderCommand;
-            }
-        }
-        
         public bool CanOrder
         {
             get
@@ -121,13 +112,14 @@ namespace Trader
                 if (string.IsNullOrEmpty(TargetCode) == true || Quantity == 0)
                     canOrder = false;
 
-                if (OrderType == OrderTypes.BuyModify || 
-                    OrderType == OrderTypes.BuyCancel ||
-                    OrderType == OrderTypes.SellModify || 
-                    OrderType == OrderTypes.SellCancel)
+                switch (OrderType)
                 {
-                    if (string.IsNullOrEmpty(OriginalOrderNumber) == true)
-                        canOrder = false;
+                    case OrderTypes.BuyModify:
+                    case OrderTypes.BuyCancel:
+                    case OrderTypes.SellModify:
+                    case OrderTypes.SellCancel:
+                        canOrder = (string.IsNullOrEmpty(OriginalOrderNumber) == false);
+                        break;
                 }
 
                 return canOrder;
@@ -139,13 +131,21 @@ namespace Trader
             Order newOrder = new Order();
             newOrder.AccountNumber = SelectedAccount;
 
-            if (Config.General.TraderType == TraderTypes.Ebest)
-                newOrder.AccountPassword = Config.Ebest.AccountPw;
-            else if (Config.General.TraderType == TraderTypes.EbestSimul)
-                newOrder.AccountPassword = "0000";
-            else if (Config.General.TraderType == TraderTypes.Kiwoom ||
-                     Config.General.TraderType == TraderTypes.KiwoomSimul)
-                newOrder.AccountPassword = Config.Kiwoom.AccountPw;
+            switch (Config.General.TraderType)
+            {
+                case TraderTypes.Ebest:
+                    newOrder.AccountPassword = Config.Ebest.AccountPw;
+                    break;
+                case TraderTypes.EbestSimul:
+                    newOrder.AccountPassword = "0000";
+                    break;
+                case TraderTypes.Kiwoom:
+                case TraderTypes.KiwoomSimul:
+                    newOrder.AccountPassword = Config.Kiwoom.AccountPw;
+                    break;
+                default:
+                    return;
+            }
 
             newOrder.Code = TargetCode;
             newOrder.OrderType = OrderType;
@@ -164,6 +164,7 @@ namespace Trader
             Task.Run(() =>
             {
                 var accounts = trader.GetAccountList();
+                if (accounts == null) return;
 
                 foreach (string account in accounts)
                 {

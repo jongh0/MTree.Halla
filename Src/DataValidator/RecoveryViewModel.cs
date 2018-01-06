@@ -144,19 +144,20 @@ namespace DataValidator
             }
         }
 
-        private RelayCommand _RecoverAllCommand;
+        private RelayCommand _recoverAllCommand;
         public ICommand RecoverAllCommand
         {
             get
             {
-                if (_RecoverAllCommand == null)
-                    _RecoverAllCommand = new RelayCommand(() =>
-                    Task.Run(() =>
+                if (_recoverAllCommand == null)
+                {
+                    _recoverAllCommand = new RelayCommand(() => Task.Run(() =>
                     {
                         DoRecoverAll();
                     }));
+                }
 
-                return _RecoverAllCommand;
+                return _recoverAllCommand;
             }
         }
 
@@ -168,17 +169,10 @@ namespace DataValidator
             DoRecoverCircuitBreakAll();
         }
 
-        private RelayCommand _RecoverMasterAllCommand;
-        public ICommand RecoverMasterAllCommand
-        {
-            get
-            {
-                if (_RecoverMasterAllCommand == null)
-                    _RecoverMasterAllCommand = new RelayCommand(() => Task.Run(() => DoRecoverMasterAll()));
+        private RelayCommand _recoverMasterAllCommand;
+        public ICommand RecoverMasterAllCommand => _recoverMasterAllCommand ?? (_recoverMasterAllCommand = new RelayCommand(() => Task.Run(() => DoRecoverMasterAll())));
 
-                return _RecoverMasterAllCommand;
-            }
-        }
+
         private void DoRecoverMasterAll()
         {
             List<string> codeList = new List<string>();
@@ -220,14 +214,13 @@ namespace DataValidator
             _logger.Info("Master Recovery Done.");
         }
 
-        private RelayCommand _RecoverMasterCommand;
+        private RelayCommand _recoverMasterCommand;
         public ICommand RecoverMasterCommand
         {
             get
             {
-                if (_RecoverMasterCommand == null)
-                    _RecoverMasterCommand = new RelayCommand(() =>
-                    Task.Run(() =>
+                if (_recoverMasterCommand == null)
+                    _recoverMasterCommand = new RelayCommand(() => Task.Run(() =>
                     {
                         for (DateTime targetDate = StartingDate; targetDate <= EndingDate; targetDate = targetDate.AddDays(1))
                         {
@@ -257,21 +250,13 @@ namespace DataValidator
                         }
                     }));
 
-                return _RecoverMasterCommand;
+                return _recoverMasterCommand;
             }
         }
 
-        private RelayCommand _RecoverStockConclusionAllCommand;
-        public ICommand RecoverStockConclusionAllCommand
-        {
-            get
-            {
-                if (_RecoverStockConclusionAllCommand == null)
-                    _RecoverStockConclusionAllCommand = new RelayCommand(() => Task.Run(() => DoRecoverStockConclusionAll()));
+        private RelayCommand _recoverStockConclusionAllCommand;
+        public ICommand RecoverStockConclusionAllCommand => _recoverStockConclusionAllCommand ?? (_recoverStockConclusionAllCommand = new RelayCommand(() => Task.Run(() => DoRecoverStockConclusionAll())));
 
-                return _RecoverStockConclusionAllCommand;
-            }
-        }
 
         private void DoRecoverStockConclusionAll()
         {
@@ -314,14 +299,14 @@ namespace DataValidator
             _logger.Info("Stock Conclusion Recovery Done.");
         }
 
-        private RelayCommand _RecoverStockConclusionCommand;
+        private RelayCommand _recoverStockConclusionCommand;
         public ICommand RecoverStockConclusionCommand
         {
             get
             {
-                if (_RecoverStockConclusionCommand == null)
-                    _RecoverStockConclusionCommand = new RelayCommand(() =>
-                    Task.Run(() =>
+                if (_recoverStockConclusionCommand == null)
+                {
+                    _recoverStockConclusionCommand = new RelayCommand(() => Task.Run(() =>
                     {
                         for (DateTime targetDate = StartingDate; targetDate <= EndingDate; targetDate = targetDate.AddDays(1))
                         {
@@ -346,25 +331,18 @@ namespace DataValidator
                                 _logger.Info($"Stock Conclusion Validation for {Code} of {targetDate.ToString("yyyy-MM-dd")} success.");
                             }
                         }
+
                         ApplyForAll = false;
                         _logger.Info("Stock Conclusion Recovery Done.");
                     }));
+                }
 
-                return _RecoverStockConclusionCommand;
+                return _recoverStockConclusionCommand;
             }
         }
 
-        private RelayCommand _RecoverIndexConclusionAllCommand;
-        public ICommand RecoverIndexConclusionAllCommand
-        {
-            get
-            {
-                if (_RecoverIndexConclusionAllCommand == null)
-                    _RecoverIndexConclusionAllCommand = new RelayCommand(() => Task.Run(() => DoRecoverIndexConclusionAll()));
-
-                return _RecoverIndexConclusionAllCommand;
-            }
-        }
+        private RelayCommand _recoverIndexConclusionAllCommand;
+        public ICommand RecoverIndexConclusionAllCommand => _recoverIndexConclusionAllCommand ?? (_recoverIndexConclusionAllCommand = new RelayCommand(() => Task.Run(() => DoRecoverIndexConclusionAll())));
 
         private void DoRecoverIndexConclusionAll()
         {
@@ -404,14 +382,14 @@ namespace DataValidator
             _logger.Info("Index Conclusion Recovery Done.");
         }
 
-        private RelayCommand _RecoverIndexConclusionCommand;
+        private RelayCommand _recoverIndexConclusionCommand;
         public ICommand RecoverIndexConclusionCommand
         {
             get
             {
-                if (_RecoverIndexConclusionCommand == null)
-                    _RecoverIndexConclusionCommand = new RelayCommand(() =>
-                    Task.Run(() =>
+                if (_recoverIndexConclusionCommand == null)
+                {
+                    _recoverIndexConclusionCommand = new RelayCommand(() => Task.Run(() =>
                     {
                         for (DateTime targetDate = StartingDate; targetDate <= EndingDate; targetDate = targetDate.AddDays(1))
                         {
@@ -438,22 +416,15 @@ namespace DataValidator
                         }
                         _logger.Info("Index Conclusion Recovery Done.");
                     }));
+                }
 
-                return _RecoverIndexConclusionCommand;
+                return _recoverIndexConclusionCommand;
             }
         }
         
-        private RelayCommand _RecoverCircuitBreakAllCommand;
-        public ICommand RecoverCircuitBreakAllCommand
-        {
-            get
-            {
-                if (_RecoverCircuitBreakAllCommand == null)
-                    _RecoverCircuitBreakAllCommand = new RelayCommand(() => Task.Run(() => DoRecoverCircuitBreakAll()));
+        private RelayCommand _recoverCircuitBreakAllCommand;
+        public ICommand RecoverCircuitBreakAllCommand => _recoverCircuitBreakAllCommand ?? (_recoverCircuitBreakAllCommand = new RelayCommand(() => Task.Run(() => DoRecoverCircuitBreakAll())));
 
-                return _RecoverCircuitBreakAllCommand;
-            }
-        }
         private void DoRecoverCircuitBreakAll()
         {
             List<string> codeList = new List<string>();
@@ -495,14 +466,14 @@ namespace DataValidator
         }
 
 
-        private RelayCommand _RecoverCircuitBreakCommand;
+        private RelayCommand _recoverCircuitBreakCommand;
         public ICommand RecoverCircuitBreakCommand
         {
             get
             {
-                if (_RecoverCircuitBreakCommand == null)
-                    _RecoverCircuitBreakCommand = new RelayCommand(() =>
-                    Task.Run(() =>
+                if (_recoverCircuitBreakCommand == null)
+                {
+                    _recoverCircuitBreakCommand = new RelayCommand(() => Task.Run(() =>
                     {
                         for (DateTime targetDate = StartingDate; targetDate <= EndingDate; targetDate = targetDate.AddDays(1))
                         {
@@ -528,8 +499,9 @@ namespace DataValidator
                             }
                         }
                     }));
+                }
 
-                return _RecoverCircuitBreakCommand;
+                return _recoverCircuitBreakCommand;
             }
         }
     }

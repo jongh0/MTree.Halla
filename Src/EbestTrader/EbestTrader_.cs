@@ -71,27 +71,27 @@ namespace EbestTrader
                 stockQuotingObj = new XAQueryClass();
                 stockQuotingObj.ResFileName = ResFilePath + "\\t1102.res";
                 stockQuotingObj.ReceiveData += StockQuotingObj_ReceiveData;
-                stockQuotingObj.ReceiveMessage += queryObj_ReceiveMessage;
+                stockQuotingObj.ReceiveMessage += QueryObj_ReceiveMessage;
 
                 newOrderObj = new XAQueryClass();
                 newOrderObj.ResFileName = ResFilePath + "\\CSPAT00600.res";
                 newOrderObj.ReceiveData += NewOrderObj_ReceiveData;
-                newOrderObj.ReceiveMessage += queryObj_ReceiveMessage;
+                newOrderObj.ReceiveMessage += QueryObj_ReceiveMessage;
 
                 modifyOrderObj = new XAQueryClass();
                 modifyOrderObj.ResFileName = ResFilePath + "\\CSPAT00700.res";
                 modifyOrderObj.ReceiveData += ModifyOrderObj_ReceiveData;
-                modifyOrderObj.ReceiveMessage += queryObj_ReceiveMessage;
+                modifyOrderObj.ReceiveMessage += QueryObj_ReceiveMessage;
 
                 cancelOrderObj = new XAQueryClass();
                 cancelOrderObj.ResFileName = ResFilePath + "\\CSPAT00800.res";
                 cancelOrderObj.ReceiveData += CancelOrderObj_ReceiveData;
-                cancelOrderObj.ReceiveMessage += queryObj_ReceiveMessage;
+                cancelOrderObj.ReceiveMessage += QueryObj_ReceiveMessage;
 
                 accDepositObj = new XAQueryClass();
                 accDepositObj.ResFileName = ResFilePath + "\\t0424.res";
                 accDepositObj.ReceiveData += AccDepositObj_ReceiveData;
-                accDepositObj.ReceiveMessage += queryObj_ReceiveMessage;
+                accDepositObj.ReceiveMessage += QueryObj_ReceiveMessage;
                 #endregion
 
                 #region XAReal
@@ -168,7 +168,7 @@ namespace EbestTrader
             }
         }
 
-        private void queryObj_ReceiveMessage(bool bIsSystemError, string nMessageCode, string szMessage)
+        private void QueryObj_ReceiveMessage(bool bIsSystemError, string nMessageCode, string szMessage)
         {
             if (bIsSystemError == true)
                 _logger.Error($"{nameof(nMessageCode)}: {nMessageCode}, {nameof(szMessage)}: {szMessage}");

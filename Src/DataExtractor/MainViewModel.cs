@@ -14,132 +14,132 @@ namespace DataExtractor
 {
     public class MainViewModel : INotifyPropertyChanged
     {
-        private readonly string defaultDir = Path.Combine(Environment.CurrentDirectory, "Extract");
-        private string fileName;
-        private string filePath;
+        private readonly string _defaultDir = Path.Combine(Environment.CurrentDirectory, "Extract");
+        private string _fileName;
+        private string _filePath;
 
-        private string _Code;
+        private string _code;
         public string Code
         {
-            get { return _Code; }
+            get => _code;
             set
             {
-                _Code = value.Trim();
+                _code = value.Trim();
                 NotifyPropertyChanged(nameof(Code));
                 NotifyPropertyChanged(nameof(CanExecuteExtract));
             }
         }
 
-        private DateTime _StartingDate = DateTime.Now;
+        private DateTime _startingDate = DateTime.Now;
         public DateTime StartingDate
         {
-            get { return _StartingDate; }
+            get => _startingDate;
             set
             {
-                _StartingDate = value;
+                _startingDate = value;
 
-                if (EndingDate < _StartingDate)
-                    EndingDate = _StartingDate;
+                if (EndingDate < _startingDate)
+                    EndingDate = _startingDate;
 
                 NotifyPropertyChanged(nameof(StartingDate));
             }
         }
 
-        private DateTime _EndingDate = DateTime.Now;
+        private DateTime _endingDate = DateTime.Now;
         public DateTime EndingDate
         {
-            get { return _EndingDate; }
+            get => _endingDate;
             set
             {
-                _EndingDate = value;
+                _endingDate = value;
 
-                if (_EndingDate < StartingDate)
-                    StartingDate = _EndingDate;
+                if (_endingDate < StartingDate)
+                    StartingDate = _endingDate;
 
                 NotifyPropertyChanged(nameof(EndingDate));
             }
         }
 
-        private bool _IsExtracting = false;
+        private bool _isExtracting = false;
         public bool IsExtracting
         {
-            get { return _IsExtracting; }
+            get => _isExtracting;
             set
             {
-                _IsExtracting = value;
+                _isExtracting = value;
                 NotifyPropertyChanged(nameof(IsExtracting));
                 NotifyPropertyChanged(nameof(CanExecuteExtract));
             }
         }
 
-        private bool _IncludeTAValues = true;
+        private bool _includeTAValues = true;
         public bool IncludeTAValues
         {
-            get { return _IncludeTAValues; }
+            get => _includeTAValues;
             set
             {
-                _IncludeTAValues = value;
+                _includeTAValues = value;
                 NotifyPropertyChanged(nameof(IncludeTAValues));
             }
         }
 
         #region Command
-        private RelayCommand _StartExtractCommand;
+        private RelayCommand _startExtractCommand;
         public ICommand StartExtractCommand
         {
             get
             {
-                if (_StartExtractCommand == null)
-                    _StartExtractCommand = new RelayCommand(() => Task.Run(() =>
+                if (_startExtractCommand == null)
+                {
+                    _startExtractCommand = new RelayCommand(() => Task.Run(() =>
                     {
                         IsExtracting = true;
 
                         string[] codes = { Code };
 
-                        fileName = $"{Code}_{StartingDate.ToString(Config.General.DateFormat)}~{EndingDate.ToString(Config.General.DateFormat)}.csv";
-                        filePath = Path.Combine(defaultDir, fileName);
+                        _fileName = $"{Code}_{StartingDate.ToString(Config.General.DateFormat)}~{EndingDate.ToString(Config.General.DateFormat)}.csv";
+                        _filePath = Path.Combine(_defaultDir, _fileName);
 
-                        if (Directory.Exists(defaultDir) == false)
-                            Directory.CreateDirectory(defaultDir);
+                        if (Directory.Exists(_defaultDir) == false)
+                            Directory.CreateDirectory(_defaultDir);
 
-                        extractor.IncludeTAValues = IncludeTAValues;
+                        Extractor.IncludeTAValues = IncludeTAValues;
 
-                        extractor.StartExtract(filePath);
+                        Extractor.StartExtract(_filePath);
 
                         for (DateTime targetDate = StartingDate; targetDate <= EndingDate; targetDate = targetDate.AddDays(1))
                         {
-                            if (consumer.StartSimulation(codes, targetDate) == true)
-                                extractor.WaitSubscribingDone();
+                            if (Consumer.StartSimulation(codes, targetDate) == true)
+                                Extractor.WaitSubscribingDone();
                         }
 
                         IsExtracting = false;
                     }));
+                }
 
-                return _StartExtractCommand;
+                return _startExtractCommand;
             }
         }
 
-        private bool _CanExecuteExtract = true;
+        private bool _canExecuteExtract = true;
         public bool CanExecuteExtract
         {
-            get
-            {
-                return _CanExecuteExtract && Code?.Length >= 6 && IsExtracting == false;
-            }
+            get => _canExecuteExtract && Code?.Length >= 6 && IsExtracting == false;
             set
             {
-                _CanExecuteExtract = value;
+                _canExecuteExtract = value;
                 NotifyPropertyChanged(nameof(CanExecuteExtract));
             }
         }
         #endregion
 
-        private ISimulation consumer { get; set; }
-        private DataExtractor_ extractor { get; set; }
+        private ISimulation Consumer { get; set; }
+        private DataExtractor_ Extractor { get; set; }
+
         public MainViewModel()
         {
-            consumer = new HistoryConsumer();
-            extractor = new DataExtractor_((ConsumerBase)consumer);
+            Consumer = new HistoryConsumer();
+            Extractor = new DataExtractor_((ConsumerBase)Consumer);
         }
 
         #region INotifyPropertyChanged

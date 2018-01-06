@@ -23,45 +23,32 @@ namespace DataValidator
         
         #region Server Config
 
-        private string _SourceAddress;
+        private string _sourceAddress;
         public string SourceAddress
         {
-            get
-            {
-                return _SourceAddress;
-            }
+            get => _sourceAddress;
             set
             {
-                _SourceAddress = value;
+                _sourceAddress = value;
                 NotifyPropertyChanged(nameof(SourceAddress));
             }
         }
 
-        private string _DestinationAddress;
+        private string _destinationAddress;
         public string DestinationAddress
         {
-            get
-            {
-                return _DestinationAddress;
-            }
+            get => _destinationAddress;
             set
             {
-                _DestinationAddress = value;
-                NotifyPropertyChanged(nameof(_DestinationAddress));
+                _destinationAddress = value;
+                NotifyPropertyChanged(nameof(_destinationAddress));
             }
         }
 
-        private RelayCommand _CheckServerCommand;
-        public ICommand CheckServerCommand
-        {
-            get
-            {
-                if (_CheckServerCommand == null)
-                    _CheckServerCommand = new RelayCommand(() => Task.Run(() => CheckServer()));
+        private RelayCommand _checkServerCommand;
+        public ICommand CheckServerCommand => _checkServerCommand ?? (_checkServerCommand = new RelayCommand(() => Task.Run(() => CheckServer())));
 
-                return _CheckServerCommand;
-            }
-        }
+
         private void CheckServer()
         {
             if (DbAgent.Instance.ConnectionTest())
@@ -75,13 +62,14 @@ namespace DataValidator
                 _logger.Warn($"Connection to {DbAgent.RemoteInstance.ConnectionString} fail");
         }
 
-        private RelayCommand _UpdateServerCommand;
+        private RelayCommand _updateServerCommand;
         public ICommand UpdateServerCommand
         {
             get
             {
-                if (_UpdateServerCommand == null)
-                    _UpdateServerCommand = new RelayCommand((Action)(() => Task.Run((Action)(() =>
+                if (_updateServerCommand == null)
+                {
+                    _updateServerCommand = new RelayCommand((Action)(() => Task.Run((Action)(() =>
                     {
                         DbAgent.Instance.ChangeServer(SourceAddress);
                         DbAgent.RemoteInstance.ChangeServer(DestinationAddress);
@@ -91,56 +79,56 @@ namespace DataValidator
 
                         CheckServer();
                     }))));
+                }
 
-                return _UpdateServerCommand;
+                return _updateServerCommand;
             }
         }
         #endregion
 
         #region Validate with Daishin
-        private string _CodeForDaishinValidate;
+        private string _codeForDaishinValidate;
         public string CodeForDaishinValidate
         {
-            get
-            {
-                return _CodeForDaishinValidate;
-            }
+            get => _codeForDaishinValidate;
             set
             {
-                _CodeForDaishinValidate = value;
+                _codeForDaishinValidate = value;
                 NotifyPropertyChanged(nameof(CodeForDaishinValidate));
             }
         }
 
-        private RelayCommand _ValidateSourceConclusionWithDaishinCommand;
+        private RelayCommand _validateSourceConclusionWithDaishinCommand;
         public ICommand ValidateSourceConclusionWithDaishinCommand
         {
             get
             {
-                if (_ValidateSourceConclusionWithDaishinCommand == null)
-                    _ValidateSourceConclusionWithDaishinCommand = new RelayCommand(() =>
-                    Task.Run(() =>
+                if (_validateSourceConclusionWithDaishinCommand == null)
+                {
+                    _validateSourceConclusionWithDaishinCommand = new RelayCommand(() => Task.Run(() =>
                     {
                         _validator.ValidateSourceConclusionWithDaishin(CodeForDaishinValidate);
                     }));
+                }
 
-                return _ValidateSourceConclusionWithDaishinCommand;
+                return _validateSourceConclusionWithDaishinCommand;
             }
         }
 
-        private RelayCommand _ValidateDestinationConclusionWithDaishinCommand;
+        private RelayCommand _validateDestinationConclusionWithDaishinCommand;
         public ICommand ValidateDestinationConclusionWithDaishinCommand
         {
             get
             {
-                if (_ValidateDestinationConclusionWithDaishinCommand == null)
-                    _ValidateDestinationConclusionWithDaishinCommand = new RelayCommand(() =>
-                    Task.Run(() =>
+                if (_validateDestinationConclusionWithDaishinCommand == null)
+                {
+                    _validateDestinationConclusionWithDaishinCommand = new RelayCommand(() => Task.Run(() =>
                     {
                         _validator.ValidateDestinationConclusionWithDaishin(CodeForDaishinValidate);
                     }));
+                }
 
-                return _ValidateDestinationConclusionWithDaishinCommand;
+                return _validateDestinationConclusionWithDaishinCommand;
             }
         } 
         #endregion

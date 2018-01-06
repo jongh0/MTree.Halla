@@ -32,7 +32,6 @@ namespace DataExtractor
     delegate RetCode TADelegate_HLCT_Double(int startIdx, int endIdx, float[] inHigh, float[] inLow, float[] inClose, int optInTimePeriod, out int outBegIdx, out int outNBElement, double[] outReal);
     delegate RetCode TADelegate_HLT_Double(int startIdx, int endIdx, float[] inHigh, float[] inLow, int optInTimePeriod, out int outBegIdx, out int outNBElement, double[] outReal);
     
-    
     public class DataExtractor_
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();

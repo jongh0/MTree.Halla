@@ -353,17 +353,8 @@ namespace RealTimeProvider
         }
 
         #region Command
-        private RelayCommand _SendLogCommand;
-        public ICommand SendLogCommand
-        {
-            get
-            {
-                if (_SendLogCommand == null)
-                    _SendLogCommand = new RelayCommand(() => ExecuteSendLog(), () => CanSendLog);
-
-                return _SendLogCommand;
-            }
-        }
+        private RelayCommand _sendLogCommand;
+        public ICommand SendLogCommand => _sendLogCommand ?? (_sendLogCommand = new RelayCommand(() => ExecuteSendLog(), () => CanSendLog));
 
         public void ExecuteSendLog()
         {
@@ -389,17 +380,8 @@ namespace RealTimeProvider
             }
         }
 
-        private RelayCommand _ExitProgramCommand;
-        public ICommand ExitProgramCommand
-        {
-            get
-            {
-                if (_ExitProgramCommand == null)
-                    _ExitProgramCommand = new RelayCommand(() => ExecuteExitProgram(), () => CanExitProgram);
-
-                return _ExitProgramCommand;
-            }
-        }
+        private RelayCommand _exitProgramCommand;
+        public ICommand ExitProgramCommand => _exitProgramCommand ?? (_exitProgramCommand = new RelayCommand(() => ExecuteExitProgram(), () => CanExitProgram));
 
         public void ExecuteExitProgram()
         {
