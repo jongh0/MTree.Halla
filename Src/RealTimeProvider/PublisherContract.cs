@@ -11,19 +11,15 @@ namespace RealTimeProvider
     [DataContract]
     public class PublisherContract
     {
-        [DataMember]
         public static int IdNumbering { get; set; } = 0;
 
-        [DataMember]
         public int Id { get; set; } = -1;
 
         [DataMember]
         public ProcessTypes Type { get; set; }
 
-        [DataMember]
         public IRealTimePublisherCallback Callback { get; set; } = null;
 
-        [DataMember]
         public bool IsOperating { get; set; } = false;
 
         public override string ToString()
