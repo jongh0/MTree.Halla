@@ -83,7 +83,7 @@ namespace Consumer
                 ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.StockConclusion));
                 ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.IndexConclusion));
 
-                if (Config.General.VerifyLatency == true && Config.General.SkipBiddingPrice == false)
+                if (Config.General.SkipBiddingPrice == false)
                     ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.BiddingPrice));
 
                 if (Config.General.SkipETFConclusion == false)
