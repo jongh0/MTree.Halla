@@ -73,9 +73,8 @@ namespace Publisher
         {
             try
             {
-                BiddingPrice biddingPrice;
                 if (ServiceClient.State == CommunicationState.Opened &&
-                    BiddingPriceQueue.TryDequeue(out biddingPrice) == true)
+                    BiddingPriceQueue.TryDequeue(out var biddingPrice) == true)
                 {
                     ServiceClient.PublishBiddingPrice(biddingPrice);
                 }
@@ -94,9 +93,8 @@ namespace Publisher
         {
             try
             {
-                CircuitBreak circuitBreak;
                 if (ServiceClient.State == CommunicationState.Opened &&
-                    CircuitBreakQueue.TryDequeue(out circuitBreak) == true)
+                    CircuitBreakQueue.TryDequeue(out var circuitBreak) == true)
                 {
                     ServiceClient.PublishCircuitBreak(circuitBreak);
                 }
@@ -115,9 +113,8 @@ namespace Publisher
         {
             try
             {
-                StockConclusion conclusion;
                 if (ServiceClient.State == CommunicationState.Opened &&
-                    StockConclusionQueue.TryDequeue(out conclusion) == true)
+                    StockConclusionQueue.TryDequeue(out var conclusion) == true)
                 {
                     ServiceClient.PublishStockConclusion(conclusion);
                 }
@@ -136,9 +133,8 @@ namespace Publisher
         {
             try
             {
-                IndexConclusion conclusion;
                 if (ServiceClient.State == CommunicationState.Opened &&
-                    IndexConclusionQueue.TryDequeue(out conclusion) == true)
+                    IndexConclusionQueue.TryDequeue(out var conclusion) == true)
                 {
                     ServiceClient.PublishIndexConclusion(conclusion);
                 }
@@ -156,9 +152,8 @@ namespace Publisher
         {
             try
             {
-                ETFConclusion conclusion;
                 if (ServiceClient.State == CommunicationState.Opened &&
-                    ETFConclusionQueue.TryDequeue(out conclusion) == true)
+                    ETFConclusionQueue.TryDequeue(out var conclusion) == true)
                 {
                     ServiceClient.PublishETFConclusion(conclusion);
                 }

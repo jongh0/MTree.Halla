@@ -58,8 +58,7 @@ namespace StrategyManager
         {
             try
             {
-                BiddingPrice biddingPrice;
-                if (BiddingPriceQueue.TryDequeue(out biddingPrice) == true)
+                if (BiddingPriceQueue.TryDequeue(out var biddingPrice) == true)
                 {
                 }
                 else
@@ -75,8 +74,7 @@ namespace StrategyManager
         {
             try
             {
-                CircuitBreak circuitBreak;
-                if (CircuitBreakQueue.TryDequeue(out circuitBreak) == true)
+                if (CircuitBreakQueue.TryDequeue(out var circuitBreak) == true)
                 {
                 }
                 else
@@ -92,8 +90,7 @@ namespace StrategyManager
         {
             try
             {
-                StockConclusion conclusion;
-                if (StockConclusionQueue.TryDequeue(out conclusion) == true)
+                if (StockConclusionQueue.TryDequeue(out var conclusion) == true)
                 {
                 }
                 else
@@ -109,8 +106,7 @@ namespace StrategyManager
         {
             try
             {
-                IndexConclusion conclusion;
-                if (IndexConclusionQueue.TryDequeue(out conclusion) == true)
+                if (IndexConclusionQueue.TryDequeue(out var conclusion) == true)
                 {
                 }
                 else

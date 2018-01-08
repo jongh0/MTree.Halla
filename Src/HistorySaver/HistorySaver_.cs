@@ -53,8 +53,7 @@ namespace HistorySaver
         {
             try
             {
-                BiddingPrice biddingPrice;
-                if (BiddingPriceQueue.TryDequeue(out biddingPrice) == true)
+                if (BiddingPriceQueue.TryDequeue(out var biddingPrice) == true)
                 {
                     DbAgent.Instance.Insert(biddingPrice);
                     Counter.Increment(CounterTypes.BiddingPrice);
@@ -72,8 +71,7 @@ namespace HistorySaver
         {
             try
             {
-                CircuitBreak circuitBreak;
-                if (CircuitBreakQueue.TryDequeue(out circuitBreak) == true)
+                if (CircuitBreakQueue.TryDequeue(out var circuitBreak) == true)
                 {
                     DbAgent.Instance.Insert(circuitBreak);
                     Counter.Increment(CounterTypes.CircuitBreak);
@@ -91,8 +89,7 @@ namespace HistorySaver
         {
             try
             {
-                StockConclusion conclusion;
-                if (StockConclusionQueue.TryDequeue(out conclusion) == true)
+                if (StockConclusionQueue.TryDequeue(out var conclusion) == true)
                 {
                     DbAgent.Instance.Insert(conclusion);
                     Counter.Increment(CounterTypes.StockConclusion);
@@ -110,8 +107,7 @@ namespace HistorySaver
         {
             try
             {
-                IndexConclusion conclusion;
-                if (IndexConclusionQueue.TryDequeue(out conclusion) == true)
+                if (IndexConclusionQueue.TryDequeue(out var conclusion) == true)
                 {
                     DbAgent.Instance.Insert(conclusion);
                     Counter.Increment(CounterTypes.IndexConclusion);
@@ -129,8 +125,7 @@ namespace HistorySaver
         {
             try
             {
-                ETFConclusion conclusion;
-                if (ETFConclusionQueue.TryDequeue(out conclusion) == true)
+                if (ETFConclusionQueue.TryDequeue(out var conclusion) == true)
                 {
                     DbAgent.Instance.Insert(conclusion);
                     Counter.Increment(CounterTypes.ETFConclusion);

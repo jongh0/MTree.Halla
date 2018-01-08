@@ -148,8 +148,7 @@ namespace RealTimeProvider
         {
             try
             {
-                BiddingPrice biddingPrice;
-                if (BiddingPriceQueue.TryDequeue(out biddingPrice) == true)
+                if (BiddingPriceQueue.TryDequeue(out var biddingPrice) == true)
                 {
                     foreach (var contract in BiddingPriceContracts)
                     {
@@ -182,8 +181,7 @@ namespace RealTimeProvider
         {
             try
             {
-                CircuitBreak circuitBreak;
-                if (CircuitBreakQueue.TryDequeue(out circuitBreak) == true)
+                if (CircuitBreakQueue.TryDequeue(out var circuitBreak) == true)
                 {
                     foreach (var contract in CircuitBreakContracts)
                     {
@@ -216,8 +214,7 @@ namespace RealTimeProvider
         {
             try
             {
-                StockConclusion conclusion;
-                if (StockConclusionQueue.TryDequeue(out conclusion) == true)
+                if (StockConclusionQueue.TryDequeue(out var conclusion) == true)
                 {
                     foreach (var contract in StockConclusionContracts)
                     {
@@ -250,8 +247,7 @@ namespace RealTimeProvider
         {
             try
             {
-                IndexConclusion conclusion;
-                if (IndexConclusionQueue.TryDequeue(out conclusion) == true)
+                if (IndexConclusionQueue.TryDequeue(out var conclusion) == true)
                 {
                     foreach (var contract in IndexConclusionContracts)
                     {
@@ -284,8 +280,7 @@ namespace RealTimeProvider
         {
             try
             {
-                ETFConclusion conclusion;
-                if (ETFConclusionQueue.TryDequeue(out conclusion) == true)
+                if (ETFConclusionQueue.TryDequeue(out var conclusion) == true)
                 {
                     foreach (var contract in ETFConclusionContracts)
                     {

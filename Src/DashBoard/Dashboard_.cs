@@ -69,8 +69,7 @@ namespace Dashboard
         {
             try
             {
-                BiddingPrice biddingPrice;
-                if (Consumer.BiddingPriceQueue.TryDequeue(out biddingPrice) == true)
+                if (Consumer.BiddingPriceQueue.TryDequeue(out var biddingPrice) == true)
                 {
                     if (Config.General.VerifyLatency == true)
                         Monitor.CheckLatency(biddingPrice);
@@ -88,8 +87,7 @@ namespace Dashboard
         {
             try
             {
-                CircuitBreak circuitBreak;
-                if (Consumer.CircuitBreakQueue.TryDequeue(out circuitBreak) == true)
+                if (Consumer.CircuitBreakQueue.TryDequeue(out var circuitBreak) == true)
                 {
                     if (Config.General.VerifyLatency == true)
                         Monitor.CheckLatency(circuitBreak);
@@ -114,8 +112,7 @@ namespace Dashboard
         {
             try
             {
-                StockConclusion conclusion;
-                if (Consumer.StockConclusionQueue.TryDequeue(out conclusion) == true)
+                if (Consumer.StockConclusionQueue.TryDequeue(out var conclusion) == true)
                 {
                     if (Config.General.VerifyLatency == true)
                         Monitor.CheckLatency(conclusion);
@@ -168,8 +165,7 @@ namespace Dashboard
         {
             try
             {
-                IndexConclusion conclusion;
-                if (Consumer.IndexConclusionQueue.TryDequeue(out conclusion) == true)
+                if (Consumer.IndexConclusionQueue.TryDequeue(out var conclusion) == true)
                 {
                     if (Config.General.VerifyLatency == true)
                         Monitor.CheckLatency(conclusion);

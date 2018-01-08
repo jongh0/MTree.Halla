@@ -187,8 +187,7 @@ namespace DataExtractor
         {
             try
             {
-                StockConclusion conclusion;
-                if (Consumer.StockConclusionQueue.TryDequeue(out conclusion) == true)
+                if (Consumer.StockConclusionQueue.TryDequeue(out var conclusion) == true)
                 {
                     if (conclusion.MarketTimeType == MarketTimeTypes.Normal)
                     {
