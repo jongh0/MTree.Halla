@@ -19,8 +19,7 @@ namespace RealTimeProvider
         [DataMember]
         public HashSet<string> Codes { get; set; } = new HashSet<string>();
 
-        [DataMember]
-        public IConsumerCallback Callback { get; set; } = null;
+        public IRealTimeConsumerCallback Callback { get; set; } = null;
 
         public SubscribeContract()
         {
