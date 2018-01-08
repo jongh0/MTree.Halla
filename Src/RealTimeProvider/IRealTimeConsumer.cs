@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace RealTimeProvider
 {
-    [ServiceContract(CallbackContract = typeof(IConsumerCallback))]
+    [ServiceContract(CallbackContract = typeof(IRealTimeConsumerCallback))]
     public interface IRealTimeConsumer
     {
         [OperationContract(IsOneWay = true)]
@@ -24,7 +24,7 @@ namespace RealTimeProvider
         List<Candle> GetChart(string code, DateTime startDate, DateTime endDate, CandleTypes candleType);
     }
 
-    public interface IConsumerCallback
+    public interface IRealTimeConsumerCallback
     {
         event Action<List<StockMaster>> ConsumeStockMasterEvent;
 

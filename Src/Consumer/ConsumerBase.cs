@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace Consumer
 {
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
-    public class ConsumerBase : SubscribingBase, IConsumerCallback
+    public class ConsumerBase : SubscribingBase, IRealTimeConsumerCallback
     {
         public event Action<List<StockMaster>> ConsumeStockMasterEvent;
 

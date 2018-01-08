@@ -46,7 +46,7 @@ namespace RealTimeProvider
         {
             try
             {
-                contract.Callback = OperationContext.Current.GetCallbackChannel<IConsumerCallback>();
+                contract.Callback = OperationContext.Current.GetCallbackChannel<IRealTimeConsumerCallback>();
 
                 // 모든 Contract 저장
                 if (ConsumerContracts.ContainsKey(clientId) == false)
