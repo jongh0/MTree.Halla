@@ -74,25 +74,6 @@ namespace Consumer
         protected virtual void ServiceClient_Opened(object sender, EventArgs e)
         {
             _logger.Info($"[{GetType().Name}] Channel opened");
-
-            try
-            {
-                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.Chart));
-                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.Mastering));
-                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.CircuitBreak));
-                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.StockConclusion));
-                ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.IndexConclusion));
-
-                if (Config.General.SkipBiddingPrice == false)
-                    ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.BiddingPrice));
-
-                if (Config.General.SkipETFConclusion == false)
-                    ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.ETFConclusion));
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex);
-            }
         }
 
         protected virtual void ServiceClient_Closed(object sender, EventArgs e)
@@ -123,7 +104,7 @@ namespace Consumer
             }
         }
 
-        public void RegisterConsumerContract(SubscribeContract contract)
+        public void RegisterContract(SubscribeContract contract)
         {
             try
             {

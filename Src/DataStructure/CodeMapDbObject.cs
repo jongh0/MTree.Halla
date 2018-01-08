@@ -8,11 +8,9 @@ using System.Threading.Tasks;
 
 namespace DataStructure
 {
-    [DataContract]
     public class CodeMapDbObject : Subscribable
     {
         [BsonElement("CM")]
-        [DataMember(Name = "CM")]
         public string CodeMap { get; set; }
     }
 }

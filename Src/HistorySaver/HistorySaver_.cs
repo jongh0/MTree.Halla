@@ -49,6 +49,24 @@ namespace HistorySaver
             }
         }
 
+        protected override void ServiceClient_Opened(object sender, EventArgs e)
+        {
+            base.ServiceClient_Opened(sender, e);
+
+            Task.Run(() =>
+            {
+                RegisterContract(new SubscribeContract(SubscribeTypes.CircuitBreak));
+                RegisterContract(new SubscribeContract(SubscribeTypes.StockConclusion));
+                RegisterContract(new SubscribeContract(SubscribeTypes.IndexConclusion));
+
+                if (Config.General.SkipETFConclusion == false)
+                    RegisterContract(new SubscribeContract(SubscribeTypes.ETFConclusion));
+
+                if (Config.General.SkipBiddingPrice == false)
+                    RegisterContract(new SubscribeContract(SubscribeTypes.BiddingPrice));
+            });
+        }
+
         private void ProcessBiddingPriceQueue()
         {
             try

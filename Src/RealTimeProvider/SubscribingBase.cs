@@ -1,4 +1,6 @@
-﻿using DataStructure;
+﻿using CommonLib.Surrogates;
+using DataStructure;
+using MongoDB.Bson;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -39,6 +41,7 @@ namespace RealTimeProvider
         public SubscribingBase()
         {
             QueueTaskCancelToken = QueueTaskCancelSource.Token;
+            ProtoBuf.Meta.RuntimeTypeModel.Default.Add(typeof(ObjectId), true).SetSurrogate(typeof(ObjectIdSurrogate));
         }
 
         protected void StopQueueTask()

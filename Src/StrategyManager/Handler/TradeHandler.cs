@@ -39,14 +39,17 @@ namespace StrategyManager
         {
             base.ServiceClient_Opened(sender, e);
 
-            try
+            Task.Run(() =>
             {
-                ServiceClient.RegisterContract(ClientId, new TraderContract());
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex);
-            }
+                try
+                {
+                    ServiceClient.RegisterContract(ClientId, new TraderContract());
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex);
+                }
+            });
         }
 
         #region INotifyPropertyChanged

@@ -41,6 +41,7 @@ namespace Publisher
                 ServiceClient = new PublisherClient(CallbackInstance, "RealTimePublisherConfig");
                 ServiceClient.InnerChannel.Opened += ServiceClient_Opened;
                 ServiceClient.InnerChannel.Closed += ServiceClient_Closed;
+                ServiceClient.InnerChannel.Faulted += ServiceClient_Faulted;
                 ServiceClient.Open();
             }
             catch (Exception ex)
@@ -77,7 +78,12 @@ namespace Publisher
             _logger.Info($"[{GetType().Name}] Channel closed");
         }
 
-        public void RegisterPublishContract()
+        protected virtual void ServiceClient_Faulted(object sender, EventArgs e)
+        {
+            _logger.Error($"[{GetType().Name}] Channel faulted");
+        }
+
+        public void RegisterContract()
         {
             try
             {

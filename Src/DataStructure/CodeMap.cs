@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using ProtoBuf;
 
 namespace DataStructure
 {
@@ -16,15 +17,12 @@ namespace DataStructure
         string Name { get; set; }
     }
 
-    [DataContract]
     public class CodeMapHead : ICodeMap
     {
         [BsonElement("CML")]
-        [DataMember(Name = "CML")]
         public List<ICodeMap> CodeMapList { get; set; }
 
         [BsonElement("N")]
-        [DataMember(Name = "N")]
         public string Name { get; set; }
 
         public CodeMapHead(string name = "")

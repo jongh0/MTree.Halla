@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
+using ProtoBuf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,42 +30,52 @@ namespace DataStructure
     // char 부호 + long 비율 => double로 통합
 
     [DataContract]
+    [ProtoContract]
     public class ETFConclusion : Subscribable
     {
         [BsonElement("P")]
         [DataMember(Name = "P")]
+        [ProtoMember(1)]
         public float Price { get; set; }
 
         [BsonElement("A")]
         [DataMember(Name = "A")]
+        [ProtoMember(2)]
         public long Amount { get; set; }
 
         [BsonElement("Co")]
         [DataMember(Name = "Co")]
+        [ProtoMember(3)]
         public double Comparision { get; set; }
 
         [BsonElement("NI")]
         [DataMember(Name = "NI")]
+        [ProtoMember(4)]
         public long NAVIndex { get; set; }
 
         [BsonElement("NC")]
         [DataMember(Name = "NC")]
+        [ProtoMember(5)]
         public double NAVComparision { get; set; }
 
         [BsonElement("TER")]
         [DataMember(Name = "TER")]
+        [ProtoMember(6)]
         public double TracingErrorRate { get; set; }
 
         [BsonElement("DR")]
         [DataMember(Name = "DR")]
+        [ProtoMember(7)]
         public double DisparateRatio { get; set; }
 
         [BsonElement("EIC")]
         [DataMember(Name = "EIC")]
+        [ProtoMember(8)]
         public double ReferenceIndexComparision { get; set; }
 
         [BsonElement("EI")]
         [DataMember(Name = "EI")]
+        [ProtoMember(9)]
         public float ReferenceIndex { get; set; }
 
         public override string ToString(params string[] excludeProperties)

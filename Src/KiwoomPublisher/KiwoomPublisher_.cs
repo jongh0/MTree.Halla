@@ -348,7 +348,7 @@ namespace KiwoomPublisher
                 // Login이 완료된 후에 Publisher contract 등록
                 if (WaitLogin() == true)
                     // Contract 등록
-                    RegisterPublishContract();
+                    RegisterContract();
                 else
                 {
                     _logger.Error("Login Fail");

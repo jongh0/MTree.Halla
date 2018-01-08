@@ -705,7 +705,7 @@ namespace EbestPublisher
                 UpdateWarningList();
                 
                 // Contract 등록
-                RegisterPublishContract();
+                RegisterContract();
             });
         }
 

@@ -24,9 +24,18 @@ namespace TestConsumer
             TaskUtility.Run("Consumer.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
             TaskUtility.Run("Consumer.IndexConclusionQueue", QueueTaskCancelToken, ProcessIndexConclusionQueue);
             TaskUtility.Run("Consumer.BiddingPriceQueue", QueueTaskCancelToken, ProcessBiddingPriceQueue);
-            ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.StockConclusion));
-            ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.IndexConclusion));
-            ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.BiddingPrice));
+        }
+
+        protected override void ServiceClient_Opened(object sender, EventArgs e)
+        {
+            base.ServiceClient_Opened(sender, e);
+
+            Task.Run(() =>
+            {
+                RegisterContract(new SubscribeContract(SubscribeTypes.StockConclusion));
+                RegisterContract(new SubscribeContract(SubscribeTypes.IndexConclusion));
+                RegisterContract(new SubscribeContract(SubscribeTypes.BiddingPrice));
+            });
         }
 
         public void StopConsume()

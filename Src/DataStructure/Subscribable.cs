@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using ProtoBuf;
 
 namespace DataStructure
 {
@@ -31,23 +32,36 @@ namespace DataStructure
     [KnownType(typeof(IndexMaster))]
     [KnownType(typeof(ETFConclusion))]
     [KnownType(typeof(CodeMapDbObject))]
+    [ProtoContract]
+    [ProtoInclude(100, typeof(Candle))]
+    [ProtoInclude(101, typeof(BiddingPrice))]
+    [ProtoInclude(102, typeof(CircuitBreak))]
+    [ProtoInclude(103, typeof(Conclusion))]
+    [ProtoInclude(104, typeof(StockMaster))]
+    [ProtoInclude(105, typeof(IndexMaster))]
+    [ProtoInclude(106, typeof(ETFConclusion))]
+    [ProtoInclude(107, typeof(CodeMapDbObject))]
     public class Subscribable
     {
         [BsonId]
         [DataMember]
+        [ProtoMember(1)]
         public ObjectId Id { get; set; }
 
         [BsonElement("C")]
         [DataMember(Name = "C")]
+        [ProtoMember(2)]
         public string Code { get; set; }
 
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         [BsonElement("T")]
         [DataMember(Name = "T")]
+        [ProtoMember(3)]
         public DateTime Time { get; set; }
 
         [BsonIgnore]
         [DataMember(Name = "RT")]
+        [ProtoMember(4)]
         public DateTime ReceivedTime { get; set; }
 
         public override string ToString()
