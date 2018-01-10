@@ -16,26 +16,31 @@ namespace Consumer
 
         public void NotifyMessage(MessageTypes type, string message)
         {
+            if (State != CommunicationState.Opened) return;
             base.Channel.NotifyMessage(type, message);
         }
 
         public void RegisterContract(Guid clientId, SubscribeContract subscription)
         {
+            if (State != CommunicationState.Opened) return;
             base.Channel.RegisterContract(clientId, subscription);
         }
 
         public void UnregisterContractAll(Guid clientId)
         {
+            if (State != CommunicationState.Opened) return;
             base.Channel.UnregisterContractAll(clientId);
         }
 
         public void UnregisterContract(Guid clientId, SubscribeTypes type)
         {
+            if (State != CommunicationState.Opened) return;
             base.Channel.UnregisterContract(clientId, type);
         }
 
         public List<Candle> GetChart(string code, DateTime startDate, DateTime endDate, CandleTypes candleType)
         {
+            if (State != CommunicationState.Opened) return null;
             return base.Channel.GetChart(code, startDate, endDate, candleType);
         }
     }
