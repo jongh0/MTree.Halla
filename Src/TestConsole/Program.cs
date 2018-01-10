@@ -11,6 +11,7 @@ using CommonLib;
 using MongoDB.Driver;
 using System.Diagnostics;
 using MongoDB.Bson;
+using System.Globalization;
 
 namespace TestConsole
 {
@@ -20,6 +21,11 @@ namespace TestConsole
 
         static void Main(string[] args)
         {
+            CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("en-US");
+            CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("en-US");
+
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
             Config.Initialize();
 
             //TestToString();
@@ -35,6 +41,11 @@ namespace TestConsole
 
             Console.WriteLine("Press any key..");
             Console.ReadLine();
+        }
+
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            _logger.Error((Exception)e.ExceptionObject, $"Unhandled exception, IsTerminating: {e.IsTerminating}");
         }
 
         private static void TestToString()
