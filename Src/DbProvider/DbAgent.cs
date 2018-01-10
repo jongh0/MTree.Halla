@@ -268,6 +268,29 @@ namespace DbProvider
             }
         }
 
+        public void InsertMany<T>(IEnumerable<T> items)
+        {
+            if (items == null || items.Count() == 0)
+            {
+                _logger.Error("items is empty");
+                return;
+            }
+
+            try
+            {
+                var collection = GetCollection(items.First());
+
+                if (collection != null)
+                    collection.InsertMany(items, new InsertManyOptions() { IsOrdered = false });
+                else
+                    _logger.Error("InsertMany error");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+        }
+
         public void Delete<T>(string collectionName, FilterDefinition<T> filter)
         {
             if (string.IsNullOrEmpty(collectionName) == true || filter == null) return;
