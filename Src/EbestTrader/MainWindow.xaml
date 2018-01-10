@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:EbestTrader"
         xmlns:t="clr-namespace:Trader;assembly=Trader"
         mc:Ignorable="d"
-        Title="EbestTrader" Height="276" Width="279" ResizeMode="CanMinimize">
+        Title="EbestTrader" Height="300" Width="279" ResizeMode="CanMinimize">
     <Grid>
         <t:TraderControl/>
     </Grid>

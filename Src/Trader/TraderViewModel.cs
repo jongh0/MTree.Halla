@@ -10,93 +10,122 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Threading;
+using CommonLib.Extensions;
 
 namespace Trader
 {
     public class TraderViewModel: INotifyPropertyChanged
     {
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
+
         private ITrader Trader { get; set; }
 
-        private ObservableCollectionEx<string> accountNumbers;
+        private ObservableCollectionEx<string> _accountNumbers;
         public ObservableCollectionEx<string> AccountNumbers
         {
-            get { return accountNumbers; }
+            get { return _accountNumbers; }
             set
             {
-                accountNumbers = value;
+                _accountNumbers = value;
                 NotifyPropertyChanged(nameof(AccountNumbers));
             }
         }
 
-        private string selectedAccount;
+        private string _selectedAccount;
         public string SelectedAccount
         {
-            get { return selectedAccount; }
+            get { return _selectedAccount; }
             set
             {
-                selectedAccount = value;
+                _selectedAccount = value;
                 NotifyPropertyChanged(nameof(SelectedAccount));
             }
         }
 
-        private string originalOrderNumber;
+        private string _originalOrderNumber;
         public string OriginalOrderNumber
         {
-            get { return originalOrderNumber; }
+            get { return _originalOrderNumber; }
             set
             { 
-                originalOrderNumber = value;
+                _originalOrderNumber = value;
                 NotifyPropertyChanged(nameof(OriginalOrderNumber));
             }
         }
 
-        private string targetCode;
+        public bool OriginalOrderNumberEnabled
+        {
+            get
+            {
+                switch (OrderType)
+                {
+                    case OrderTypes.BuyNew:
+                    case OrderTypes.SellNew:
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        }
+
+        private string _targetCode;
         public string TargetCode
         {
-            get { return targetCode; }
+            get { return _targetCode; }
             set
             {
-                targetCode = value;
+                _targetCode = value;
 
                 NotifyPropertyChanged(nameof(TargetCode));
                 NotifyPropertyChanged(nameof(CanOrder));
             }
         }
 
-        private int price;
+        private int _price;
         public int Price
         {
-            get { return price; }
+            get { return _price; }
             set
             {
-                price = value;
+                _price = value;
                 NotifyPropertyChanged(nameof(Price));
                 NotifyPropertyChanged(nameof(CanOrder));
             }
         }
 
-        private int quantity;
+        private int _quantity;
         public int Quantity
         {
-            get { return quantity; }
+            get { return _quantity; }
             set
             {
-                quantity = value;
-                
+                _quantity = value;
                 NotifyPropertyChanged(nameof(Quantity));
                 NotifyPropertyChanged(nameof(CanOrder));
             }
         }
 
-        private OrderTypes orderType = OrderTypes.BuyNew;
+        private OrderTypes _orderType = OrderTypes.BuyNew;
         public OrderTypes OrderType
         {
-            get { return orderType; }
+            get { return _orderType; }
             set
             {
-                orderType = value;
+                _orderType = value;
                 NotifyPropertyChanged(nameof(OrderType));
                 NotifyPropertyChanged(nameof(CanOrder));
+                NotifyPropertyChanged(nameof(OriginalOrderNumberEnabled));
+            }
+        }
+
+        private string _traderStatus;
+        public string TraderState
+        {
+            get { return _traderStatus; }
+            set
+            {
+                _traderStatus = value;
+                NotifyPropertyChanged(nameof(TraderState));
             }
         }
 
@@ -128,51 +157,65 @@ namespace Trader
 
         public void ExecuteOrder()
         {
-            Order newOrder = new Order();
-            newOrder.AccountNumber = SelectedAccount;
+            var order = new Order();
+            order.AccountNumber = SelectedAccount;
 
             switch (Config.General.TraderType)
             {
                 case TraderTypes.Ebest:
-                    newOrder.AccountPassword = Config.Ebest.AccountPw;
+                    order.AccountPassword = Config.Ebest.AccountPw;
                     break;
                 case TraderTypes.EbestSimul:
-                    newOrder.AccountPassword = "0000";
+                    order.AccountPassword = "0000";
                     break;
                 case TraderTypes.Kiwoom:
                 case TraderTypes.KiwoomSimul:
-                    newOrder.AccountPassword = Config.Kiwoom.AccountPw;
+                    order.AccountPassword = Config.Kiwoom.AccountPw;
                     break;
                 default:
                     return;
             }
 
-            newOrder.Code = TargetCode;
-            newOrder.OrderType = OrderType;
-            newOrder.Quantity = Quantity;
-            newOrder.Price = Price;
+            order.Code = TargetCode;
+            order.OrderType = OrderType;
+            order.Quantity = Quantity;
+            order.Price = Price;
 
-            Trader.MakeOrder(newOrder);
+            Trader.MakeOrder(order);
         }
 
         public TraderViewModel(ITrader trader)
         {
-            Trader = trader;
-
-            AccountNumbers = new ObservableCollectionEx<string>();
-
-            Task.Run(() =>
+            try
             {
-                var accounts = trader.GetAccountList();
-                if (accounts == null) return;
+                Trader = trader ?? throw new ArgumentNullException(nameof(trader));
+                Trader.StateNotified += Trader_StateNotified;
 
-                foreach (string account in accounts)
+                AccountNumbers = new ObservableCollectionEx<string>();
+
+                Task.Run(() =>
                 {
-                    AccountNumbers.Add(account);
-                }
+                    var accounts = trader.GetAccountList();
+                    if (accounts == null) return;
 
-                SelectedAccount = AccountNumbers[0];
-            });
+                    foreach (string account in accounts)
+                    {
+                        _logger.Info($"Accout Number: {account}");
+                        AccountNumbers.Add(account);
+                    }
+
+                    SelectedAccount = AccountNumbers[0];
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+        }
+
+        private void Trader_StateNotified(object sender, EventArgs<string> e)
+        {
+            TraderState = e.Param;
         }
 
         #region INotifyPropertyChanged

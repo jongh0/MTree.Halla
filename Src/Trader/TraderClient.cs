@@ -9,7 +9,7 @@ using RealTimeProvider;
 
 namespace Trader
 {
-    public partial class TraderClient : DuplexClientBase<ITrader>, ITrader
+    public partial class TraderClient : DuplexClientBase<IRealTimeTrader>, IRealTimeTrader
     {
         public TraderClient(InstanceContext callbackInstance, string endpointConfigurationName) : base(callbackInstance, endpointConfigurationName) { }
 

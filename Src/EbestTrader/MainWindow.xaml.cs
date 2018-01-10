@@ -34,15 +34,14 @@ namespace EbestTrader
             InitializeComponent();
             
             var instance = new EbestTrader_();
+            TraderVM = new TraderViewModel(instance);
+            this.DataContext = TraderVM;
+
             Host = new ServiceHost(instance);
             Host.Opened += Host_Opened;
             Host.Closed += Host_Closed;
             Host.Faulted += Host_Faulted;
             Host.Open();
-
-            TraderVM = new TraderViewModel(instance);
-
-            this.DataContext = TraderVM;
         }
 
         private void Host_Faulted(object sender, EventArgs e)

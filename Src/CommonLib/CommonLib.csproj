@@ -82,6 +82,7 @@
     <Compile Include="Converters\EnumToStringConverter.cs" />
     <Compile Include="Converters\ConvertUtility.cs" />
     <Compile Include="EnumType.cs" />
+    <Compile Include="Extensions\EventHandlerExtension.cs" />
     <Compile Include="Extensions\PropertyExtension.cs" />
     <Compile Include="Firm\Ebest\Query\CSPAT00600InBlock1.cs" />
     <Compile Include="Firm\Ebest\Query\CSPAT00600OutBlock1.cs" />

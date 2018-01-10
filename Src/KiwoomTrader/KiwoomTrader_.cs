@@ -18,7 +18,7 @@ using CommonLib.Firm.Kiwoom;
 namespace KiwoomTrader
 {
 	[ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Single, ValidateMustUnderstand = false)]
-    public partial class KiwoomTrader_ : ITrader, INotifyPropertyChanged
+    public partial class KiwoomTrader_ : IRealTimeTrader, INotifyPropertyChanged
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 

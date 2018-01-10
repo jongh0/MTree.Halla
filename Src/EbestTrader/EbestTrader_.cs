@@ -11,11 +11,12 @@ using System.Timers;
 using XA_DATASETLib;
 using XA_SESSIONLib;
 using CommonLib.Firm;
+using CommonLib.Extensions;
 
 namespace EbestTrader
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Single, ValidateMustUnderstand = false)]
-    public partial class EbestTrader_ : ITrader, INotifyPropertyChanged
+    public partial class EbestTrader_ : IRealTimeTrader, ITrader, INotifyPropertyChanged
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -30,6 +31,10 @@ namespace EbestTrader
 
         private int WaitLoginTimeout { get; } = 1000 * 15;
         private ManualResetEvent WaitLoginEvent { get; } = new ManualResetEvent(false);
+
+        #region Event
+        public event EventHandler<EventArgs<string>> StateNotified;
+        #endregion
 
         #region Keep session
         private int MaxCommInterval { get; } = 1000 * 60 * 20; // 통신 안한지 20분 넘어가면 Quote 시작
@@ -193,11 +198,13 @@ namespace EbestTrader
                 _logger.Info($"Login success, {LoginInstance.ToString()}");
                 SetLogin();
 
+                NotifyState("Login success");
                 AdviseRealData();
             }
             else
             {
                 _logger.Error($"Login fail, szCode: {szCode}, szMsg: {szMsg}");
+                NotifyState("Login fail");
             }
         }
 
@@ -341,7 +348,7 @@ namespace EbestTrader
                 }
                 else
                 {
-                    contract.Callback = OperationContext.Current.GetCallbackChannel<ITraderCallback>();
+                    contract.Callback = OperationContext.Current.GetCallbackChannel<IRealTimeTraderCallback>();
                     TraderContracts.TryAdd(clientId, contract);
                 }
             }
@@ -369,6 +376,11 @@ namespace EbestTrader
             {
                 _logger.Error(ex);
             }
+        }
+
+        private void NotifyState(string message)
+        {
+            StateNotified?.Invoke(this, StateNotified.CreateArgs(message));
         }
 
         #region INotifyPropertyChanged

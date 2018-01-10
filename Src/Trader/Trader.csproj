@@ -68,6 +68,7 @@
   <ItemGroup>
     <Compile Include="EnumType.cs" />
     <Compile Include="HoldingStock.cs" />
+    <Compile Include="IRealTimeTrader.cs" />
     <Compile Include="ITrader.cs" />
     <Compile Include="Order.cs" />
     <Compile Include="OrderResult.cs" />

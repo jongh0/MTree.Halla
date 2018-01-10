@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace VirtualTrader
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Single, ValidateMustUnderstand = false)]
-    public partial class VirtualTrader_ : ITrader
+    public partial class VirtualTrader_ : IRealTimeTrader
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 

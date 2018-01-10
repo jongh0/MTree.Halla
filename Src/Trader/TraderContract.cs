@@ -8,6 +8,6 @@ namespace Trader
 {
     public class TraderContract
     {
-        public ITraderCallback Callback { get; set; } = null;
+        public IRealTimeTraderCallback Callback { get; set; } = null;
     }
 }

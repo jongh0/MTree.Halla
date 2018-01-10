@@ -10,7 +10,7 @@ using System.ServiceModel;
 namespace Trader
 {
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
-    public class TraderCallback : ITraderCallback
+    public class TraderCallback : IRealTimeTraderCallback
     {
         public virtual void NotifyMessage(MessageTypes type, string message)
         {
