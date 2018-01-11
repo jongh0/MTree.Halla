@@ -20,16 +20,16 @@ namespace Publisher
             base.Channel.NotifyMessage(type, message);
         }
 
-        public void RegisterContract(Guid clientId, PublisherContract contract)
+        public void RegisterPublisherContract(Guid clientId, PublisherContract contract)
         {
             if (State != CommunicationState.Opened) return;
-            base.Channel.RegisterContract(clientId, contract);
+            base.Channel.RegisterPublisherContract(clientId, contract);
         }
 
-        public void UnregisterContract(Guid clientId)
+        public void UnregisterPublisherContract(Guid clientId)
         {
             if (State != CommunicationState.Opened) return;
-            base.Channel.UnregisterContract(clientId);
+            base.Channel.UnregisterPublisherContract(clientId);
         }
 
         public void PublishBiddingPrice(BiddingPrice biddingPrice)

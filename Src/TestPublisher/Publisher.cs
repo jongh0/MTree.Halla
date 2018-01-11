@@ -15,9 +15,12 @@ namespace TestPublisher
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
     class Publisher : PublisherBase
     {
+        private const int delay = 1000;
+
         public void StartPublising()
         {
             Random rand = new Random();
+
             Task.Run(() =>
             {
                 while (true)
@@ -34,7 +37,7 @@ namespace TestPublisher
 
                     ServiceClient.PublishStockConclusion(subscribable);
 
-                    Thread.Sleep(2);
+                    Thread.Sleep(delay);
                 }
             }, QueueTaskCancelToken);
 
@@ -54,7 +57,7 @@ namespace TestPublisher
 
                     ServiceClient.PublishIndexConclusion(subscribable);
 
-                    Thread.Sleep(2);
+                    Thread.Sleep(delay);
                 }
             }, QueueTaskCancelToken);
 
@@ -80,7 +83,7 @@ namespace TestPublisher
 
                     ServiceClient.PublishBiddingPrice(subscribable);
 
-                    Thread.Sleep(2);
+                    Thread.Sleep(delay);
                 }
             }, QueueTaskCancelToken);
         }

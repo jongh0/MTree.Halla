@@ -17,7 +17,7 @@ namespace Dashboard
 {
     public class MainViewModel: INotifyPropertyChanged
     {
-        private ConsumerBase consumer { get; set; }
+        private IConsumer Consumer { get; set; }
 
         private Dashboard_ dashboard;
         public Dashboard_ Dashboard
@@ -37,7 +37,7 @@ namespace Dashboard
         {
             get
             {
-                if (consumer is HistoryConsumer)
+                if (Consumer is HistoryConsumer)
                     return Visibility.Visible;
                 else
                     return Visibility.Collapsed;
@@ -88,12 +88,12 @@ namespace Dashboard
                         CodeMapDbObject result = loader.Load<CodeMapDbObject>("CodeMap", StartingDate, EndingDate)[0];
                         ICodeMap codemap = CodeMapConverter.JsonStringToCodeMap(result.Code, result.CodeMap);
 
-                        if (consumer is ISimulation)
+                        if (Consumer is ISimulation)
                         {
                             string[] codes = DbAgent.Instance.GetCollectionList(DbTypes.StockMaster).OrderBy(s => s).ToArray();
                             for (DateTime targetDate = StartingDate; targetDate <= EndingDate; targetDate = targetDate.AddDays(1))
                             {
-                                ((ISimulation)consumer).StartSimulation(codes, targetDate);
+                                ((ISimulation)Consumer).StartSimulation(codes, targetDate);
                             }
                         }
                     }));
@@ -115,11 +115,11 @@ namespace Dashboard
         public MainViewModel()
         {
             if (Environment.GetCommandLineArgs().Length > 1 && Environment.GetCommandLineArgs()[1] == "/Simul")
-                consumer = new HistoryConsumer();
+                Consumer = new HistoryConsumer();
             else
-                consumer = new RealTimeConsumer();
+                Consumer = new RealTimeConsumer();
 
-            Dashboard = new Dashboard_(consumer);
+            Dashboard = new Dashboard_(Consumer);
 
             //TestData();
         }

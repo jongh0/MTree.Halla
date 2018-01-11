@@ -46,15 +46,23 @@ namespace StrategyManager
                     TradeHandler = new TradeHandler("VirtualTraderConfig");
                     break;
             }
-
-            TaskUtility.Run("StrategyManager.CircuitBreakQueue", QueueTaskCancelToken, ProcessCircuitBreakQueue);
-            TaskUtility.Run($"StrategyManager.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
-            TaskUtility.Run($"StrategyManager.IndexConclusionQueue", QueueTaskCancelToken, ProcessIndexConclusionQueue);
-            if (Config.General.SkipBiddingPrice == false)
-                TaskUtility.Run($"StrategyManager.BiddingPriceQueue", QueueTaskCancelToken, ProcessBiddingPriceQueue);
         }
 
-        private void ProcessBiddingPriceQueue()
+        protected override void ServiceClient_Opened(object sender, EventArgs e)
+        {
+            base.ServiceClient_Opened(sender, e);
+
+            Task.Run(() =>
+            {
+                RegisterContract(new SubscribeContract(SubscribeTypes.CircuitBreak));
+                RegisterContract(new SubscribeContract(SubscribeTypes.StockConclusion));
+                RegisterContract(new SubscribeContract(SubscribeTypes.IndexConclusion));
+                if (Config.General.SkipBiddingPrice == false)
+                    RegisterContract(new SubscribeContract(SubscribeTypes.BiddingPrice));
+            });
+        }
+
+        protected override void ProcessBiddingPriceQueue()
         {
             try
             {
@@ -70,7 +78,7 @@ namespace StrategyManager
             }
         }
 
-        private void ProcessCircuitBreakQueue()
+        protected override void ProcessCircuitBreakQueue()
         {
             try
             {
@@ -86,7 +94,7 @@ namespace StrategyManager
             }
         }
 
-        private void ProcessStockConclusionQueue()
+        protected override void ProcessStockConclusionQueue()
         {
             try
             {
@@ -102,7 +110,7 @@ namespace StrategyManager
             }
         }
 
-        private void ProcessIndexConclusionQueue()
+        protected override void ProcessIndexConclusionQueue()
         {
             try
             {

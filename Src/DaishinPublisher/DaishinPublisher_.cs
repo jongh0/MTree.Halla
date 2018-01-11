@@ -153,7 +153,7 @@ namespace DaishinPublisher
             Task.Run(() =>
             {
                 // Contract 등록
-                RegisterPublishContract();
+                RegisterContract();
             });
         }
 

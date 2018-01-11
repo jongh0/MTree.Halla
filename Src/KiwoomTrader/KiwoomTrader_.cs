@@ -176,11 +176,11 @@ namespace KiwoomTrader
         {
         }
 
-        public void RegisterContract(Guid clientId, TraderContract contract)
+        public void RegisterTraderContract(Guid clientId, TraderContract contract)
         {
         }
 
-        public void UnregisterContract(Guid clientId)
+        public void UnregisterTraderContract(Guid clientId)
         {
         }
 

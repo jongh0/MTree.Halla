@@ -42,11 +42,18 @@ namespace RealTimeProvider
             return null;
         }
 
-        public void RegisterContract(Guid clientId, SubscribeContract contract)
+        public void RegisterConsumerContract(Guid clientId, SubscribeContract contract)
         {
             try
             {
                 contract.Callback = OperationContext.Current.GetCallbackChannel<IRealTimeConsumerCallback>();
+
+                // Channel 오류 시 Callback 사용 중지하기 위해서
+                if (contract.Callback is ICommunicationObject clientChannel)
+                {
+                    clientChannel.Faulted += ClientChannel_Faulted;
+                    clientChannel.Closed += ClientChannel_Closed;
+                }
 
                 // 모든 Contract 저장
                 if (ConsumerContracts.ContainsKey(clientId) == false)
@@ -76,16 +83,20 @@ namespace RealTimeProvider
             }
         }
 
-        public void UnregisterContractAll(Guid clientId)
+        public void UnregisterConsumerContractAll(Guid clientId)
         {
+            if (clientId == Guid.Empty) return;
+
             foreach (SubscribeTypes value in Enum.GetValues(typeof(SubscribeTypes)))
             {
-                UnregisterContract(clientId, value);
+                UnregisterConsumerContract(clientId, value);
             }
         }
 
-        public void UnregisterContract(Guid clientId, SubscribeTypes type)
+        public void UnregisterConsumerContract(Guid clientId, SubscribeTypes type)
         {
+            if (clientId == Guid.Empty) return;
+
             try
             {
                 var contractList = GetSubscriptionList(type);

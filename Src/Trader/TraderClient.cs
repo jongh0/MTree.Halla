@@ -18,14 +18,14 @@ namespace Trader
             base.Channel.NotifyMessage(type, message);
         }
 
-        public void RegisterContract(Guid clientId, TraderContract contract)
+        public void RegisterTraderContract(Guid clientId, TraderContract contract)
         {
-            base.Channel.RegisterContract(clientId, contract);
+            base.Channel.RegisterTraderContract(clientId, contract);
         }
 
-        public void UnregisterContract(Guid clientId)
+        public void UnregisterTraderContract(Guid clientId)
         {
-            base.Channel.UnregisterContract(clientId);
+            base.Channel.UnregisterTraderContract(clientId);
         }
 
         public List<string> GetAccountList()

@@ -88,10 +88,16 @@ namespace RealTimeProvider
                 else
                 {
 #if false
-                    Thread.Sleep(5000);
+                    Thread.Sleep(2000);
 
-                    ProcessUtility.Start(ProcessTypes.TestConsumer);
-                    for (int i = 0; i < 40; i++)
+                    var clientCount = 1;
+
+                    for (int i = 0; i < clientCount; i++)
+                        ProcessUtility.Start(ProcessTypes.TestConsumer, ProcessWindowStyle.Minimized);
+
+                    Thread.Sleep(1000);
+
+                    for (int i = 0; i < clientCount; i++)
                         ProcessUtility.Start(ProcessTypes.TestPublisher, ProcessWindowStyle.Minimized); 
 #endif
                 } 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Trader
@@ -21,7 +22,12 @@ namespace Trader
             try
             {
                 CallbackInstance = new InstanceContext(this);
-                OpenChannel(endpointConfigurationName);
+
+                Task.Run(() =>
+                {
+                    Thread.Sleep(1000);
+                    OpenChannel(endpointConfigurationName);
+                });
             }
             catch (Exception ex)
             {

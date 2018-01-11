@@ -53,5 +53,10 @@ namespace RealTimeProvider
         {
             return Codes.Contains(code);
         }
+
+        public bool IsMatch(IRealTimeConsumerCallback callback)
+        {
+            return Callback == callback;
+        }
     }
 }

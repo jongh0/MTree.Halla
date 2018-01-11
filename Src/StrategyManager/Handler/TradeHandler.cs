@@ -41,7 +41,7 @@ namespace StrategyManager
 
             try
             {
-                ServiceClient.RegisterContract(ClientId, new TraderContract());
+                ServiceClient.RegisterTraderContract(ClientId, new TraderContract());
             }
             catch (Exception ex)
             {

@@ -65,30 +65,42 @@ namespace DataExtractor
         public CancellationToken QueueTaskCancelToken { get; set; }
         #endregion
 
-        private ConsumerBase Consumer { get; set; }
+        private IConsumer Consumer { get; set; }
         private bool isSubscribingDone = false;
         private ManualResetEvent WaitSubscribingEvent { get; set; } = new ManualResetEvent(false);
 
-        public DataExtractor_(ConsumerBase consumer)
+        public DataExtractor_(IConsumer consumer)
         {
             try
             {
                 Consumer = consumer;
 
-                Consumer.ConsumeStockMasterEvent += ConsumeStockMaster;
-                Consumer.NotifyMessageEvent += NotifyMessage;
+                Consumer.StockMasterConsumed += OnStockMasterConsumed;
+                Consumer.StockConclusionConsumed += OnStockConclusionConsumed;
+                Consumer.MessageNotified += OnMessageNotified;
+
+                if (consumer is RealTimeConsumer realTimeConsumer)
+                    realTimeConsumer.ChannelOpened += RealTimeConsumer_ChannelOpened;
             }
             catch (Exception ex)
             {
                 _logger.Error(ex);
             }
         }
+
+        private void RealTimeConsumer_ChannelOpened(RealTimeConsumer consumer)
+        {
+            if (consumer == null) return;
+
+            consumer.RegisterContract(new SubscribeContract(SubscribeTypes.StockConclusion));
+        }
+
         public bool WaitSubscribingDone(int timeout = Timeout.Infinite)
         {
             return WaitSubscribingEvent.WaitOne(timeout);
         }
 
-        private void NotifyMessage(MessageTypes type, string message)
+        private void OnMessageNotified(MessageTypes type, string message)
         {
             isSubscribingDone = true;
         }
@@ -108,8 +120,6 @@ namespace DataExtractor
             {
                 _logger.Error(ex);
             }
-
-            TaskUtility.Run("Dashboard.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
         }
 
         private void SplitCandles(Candle[] candles, ref float[] open, ref float[] high, ref float[] low, ref float[] close, ref float[] volume)
@@ -154,7 +164,8 @@ namespace DataExtractor
             SplitCandles(candles, ref open, ref high, ref low, ref close, ref volume);
         }
 
-        public void ConsumeStockMaster(List<StockMaster> stockMasters)
+
+        public void OnStockMasterConsumed(List<StockMaster> stockMasters)
         {
             try
             {
@@ -183,38 +194,34 @@ namespace DataExtractor
             }
         }
 
-        private void ProcessStockConclusionQueue()
+        private void OnStockConclusionConsumed(StockConclusion conclusion)
         {
             try
             {
-                if (Consumer.StockConclusionQueue.TryDequeue(out var conclusion) == true)
+                if (conclusion.MarketTimeType == MarketTimeTypes.Normal)
                 {
-                    if (conclusion.MarketTimeType == MarketTimeTypes.Normal)
+                    using (var fs = File.Open(extractingPath, FileMode.Append))
+                    using (var sw = new StreamWriter(fs))
                     {
-                        using (var fs = File.Open(extractingPath, FileMode.Append))
-                        using (var sw = new StreamWriter(fs))
-                        {
-                            WriteContent(sw, conclusion, currentMaster);
-                        }
-                        using (var fs = File.Open(extractingPath.Substring(0, extractingPath.Length - 4) + "_range.csv", FileMode.Create))
-                        using (var sw = new StreamWriter(fs))
-                        {
-                            sw.WriteLine(string.Join(delimeter, minLimit));
-                            sw.WriteLine(string.Join(delimeter, maxLimit));
-                        }
+                        WriteContent(sw, conclusion, currentMaster);
+                    }
+                    using (var fs = File.Open(extractingPath.Substring(0, extractingPath.Length - 4) + "_range.csv", FileMode.Create))
+                    using (var sw = new StreamWriter(fs))
+                    {
+                        sw.WriteLine(string.Join(delimeter, minLimit));
+                        sw.WriteLine(string.Join(delimeter, maxLimit));
                     }
                 }
-                else
-                {
-                    if (isSubscribingDone == true)
-                    {
-                        isSubscribingDone = false;
-                        WaitSubscribingEvent.Set();
 
-                        _logger.Info("Subscribing completed");
-                    }
-                    Thread.Sleep(10);
-                }
+#if false // TODO: Dequeue에서 Event로 변경돼서 추가 처리 필요함
+                if (isSubscribingDone == true)
+                {
+                    isSubscribingDone = false;
+                    WaitSubscribingEvent.Set();
+
+                    _logger.Info("Subscribing completed");
+                } 
+#endif
             }
             catch (Exception ex)
             {

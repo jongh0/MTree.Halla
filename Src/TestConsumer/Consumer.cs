@@ -10,6 +10,7 @@ using DataStructure;
 using CommonLib;
 using System.Threading;
 using System.Diagnostics;
+using Configuration;
 
 namespace TestConsumer
 {
@@ -24,15 +25,25 @@ namespace TestConsumer
             TaskUtility.Run("Consumer.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
             TaskUtility.Run("Consumer.IndexConclusionQueue", QueueTaskCancelToken, ProcessIndexConclusionQueue);
             TaskUtility.Run("Consumer.BiddingPriceQueue", QueueTaskCancelToken, ProcessBiddingPriceQueue);
-            ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.StockConclusion));
-            ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.IndexConclusion));
-            ServiceClient.RegisterContract(ClientId, new SubscribeContract(SubscribeTypes.BiddingPrice));
         }
 
         public void StopConsume()
         {
             StopQueueTask();
             CloseChannel();
+        }
+
+        protected override void ServiceClient_Opened(object sender, EventArgs e)
+        {
+            base.ServiceClient_Opened(sender, e);
+
+            Task.Run(() =>
+            {
+                ServiceClient.RegisterConsumerContract(ClientId, new SubscribeContract(SubscribeTypes.StockConclusion));
+                ServiceClient.RegisterConsumerContract(ClientId, new SubscribeContract(SubscribeTypes.IndexConclusion));
+                if (Config.General.SkipBiddingPrice == false)
+                    ServiceClient.RegisterConsumerContract(ClientId, new SubscribeContract(SubscribeTypes.BiddingPrice));
+            });
         }
 
         private void ProcessStockConclusionQueue()

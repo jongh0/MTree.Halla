@@ -24,7 +24,12 @@ namespace Publisher
             try
             {
                 CallbackInstance = new InstanceContext(this);
-                OpenChannel();
+
+                Task.Run(() =>
+                {
+                    Thread.Sleep(1000);
+                    OpenChannel();
+                });
             }
             catch (Exception ex)
             {
@@ -57,7 +62,7 @@ namespace Publisher
                 {
                     _logger.Info($"[{GetType().Name}] Close channel");
 
-                    ServiceClient.UnregisterContract(ClientId);
+                    ServiceClient.UnregisterPublisherContract(ClientId);
                     ServiceClient.Close();
                 }
             }
@@ -77,7 +82,7 @@ namespace Publisher
             _logger.Info($"[{GetType().Name}] Channel closed");
         }
 
-        public void RegisterPublishContract()
+        public void RegisterContract()
         {
             try
             {
@@ -89,7 +94,7 @@ namespace Publisher
                     var contract = new PublisherContract();
                     contract.Type = PublisherContract.ConvertToType(args[1]);
 
-                    ServiceClient.RegisterContract(ClientId, contract);
+                    ServiceClient.RegisterPublisherContract(ClientId, contract);
                 }
                 else
                 {

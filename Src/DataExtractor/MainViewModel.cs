@@ -109,7 +109,7 @@ namespace DataExtractor
 
                         for (DateTime targetDate = StartingDate; targetDate <= EndingDate; targetDate = targetDate.AddDays(1))
                         {
-                            if (Consumer.StartSimulation(codes, targetDate) == true)
+                            if (Consumer is ISimulation simul && simul.StartSimulation(codes, targetDate) == true)
                                 Extractor.WaitSubscribingDone();
                         }
 
@@ -133,13 +133,13 @@ namespace DataExtractor
         }
         #endregion
 
-        private ISimulation Consumer { get; set; }
+        private IConsumer Consumer { get; set; }
         private DataExtractor_ Extractor { get; set; }
 
         public MainViewModel()
         {
             Consumer = new HistoryConsumer();
-            Extractor = new DataExtractor_((ConsumerBase)Consumer);
+            Extractor = new DataExtractor_(Consumer);
         }
 
         #region INotifyPropertyChanged

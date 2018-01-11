@@ -15,10 +15,10 @@ namespace Trader
         void NotifyMessage(MessageTypes type, string message);
 
         [OperationContract(IsOneWay = true)]
-        void RegisterContract(Guid clientId, TraderContract contract);
+        void RegisterTraderContract(Guid clientId, TraderContract contract);
 
         [OperationContract(IsOneWay = true)]
-        void UnregisterContract(Guid clientId);
+        void UnregisterTraderContract(Guid clientId);
 
         [OperationContract]
         List<string> GetAccountList();

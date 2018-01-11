@@ -12,10 +12,10 @@ namespace RealTimeProvider
         void NotifyMessage(MessageTypes type, string message);
 
         [OperationContract(IsOneWay = true)]
-        void RegisterContract(Guid clientId, PublisherContract contract);
+        void RegisterPublisherContract(Guid clientId, PublisherContract contract);
 
         [OperationContract(IsOneWay = true)]
-        void UnregisterContract(Guid clientId);
+        void UnregisterPublisherContract(Guid clientId);
 
         [OperationContract]
         void PublishBiddingPrice(BiddingPrice biddingPrice);

@@ -12,19 +12,10 @@ using System.Threading.Tasks;
 namespace Consumer
 {
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
-    public class ConsumerBase : SubscribingBase, IRealTimeConsumerCallback
+    public class ConsumerCallback : SubscribingBase, IRealTimeConsumerCallback
     {
-        public event Action<List<StockMaster>> ConsumeStockMasterEvent;
-
-        public event Action<List<IndexMaster>> ConsumeIndexMasterEvent;
-
-        public event Action<Dictionary<string, object>> ConsumeCodemapEvent;
-
-        public event Action<MessageTypes, string> NotifyMessageEvent;
-        
         public virtual void NotifyMessage(MessageTypes type, string message)
         {
-            NotifyMessageEvent?.Invoke(type, message);
         }
 
         public virtual void ConsumeBiddingPrice(BiddingPrice biddingPrice)
@@ -54,17 +45,14 @@ namespace Consumer
 
         public virtual void ConsumeStockMaster(List<StockMaster> stockMasters)
         {
-            ConsumeStockMasterEvent?.Invoke(stockMasters);
         }
         
         public virtual void ConsumeIndexMaster(List<IndexMaster> indexMasters)
         {
-            ConsumeIndexMasterEvent?.Invoke(indexMasters);
         }
 
-        public virtual void ConsumeCodemap(Dictionary<string, object> codeMap)
+        public virtual void ConsumeCodeMap(Dictionary<string, object> codeMap)
         {
-            ConsumeCodemapEvent?.Invoke(codeMap);
         }
 
         public virtual void ConsumeChart(List<Candle> candles)

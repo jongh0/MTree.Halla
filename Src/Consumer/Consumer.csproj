@@ -75,8 +75,9 @@
     <Compile Include="EnumType.cs" />
     <Compile Include="HistoryConsumer.cs" />
     <Compile Include="Index.cs" />
+    <Compile Include="IConsumer.cs" />
     <Compile Include="Stock.cs" />
-    <Compile Include="ConsumerBase.cs" />
+    <Compile Include="ConsumerCallback.cs" />
     <Compile Include="RealTimeConsumer.cs" />
     <Compile Include="IChartable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

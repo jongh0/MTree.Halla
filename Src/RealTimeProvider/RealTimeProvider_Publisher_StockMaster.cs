@@ -134,7 +134,7 @@ namespace RealTimeProvider
                 {
                     try
                     {
-                        contract.Value.Callback.ConsumeCodemap(codemap);
+                        contract.Value.Callback.ConsumeCodeMap(codemap);
                     }
                     catch (Exception ex)
                     {

@@ -31,16 +31,6 @@ namespace HistorySaver
         {
             try
             {
-                TaskUtility.Run("HistorySaver.CircuitBreakQueue", QueueTaskCancelToken, ProcessCircuitBreakQueue);
-                TaskUtility.Run($"HistorySaver.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
-                TaskUtility.Run($"HistorySaver.IndexConclusionQueue", QueueTaskCancelToken, ProcessIndexConclusionQueue);
-
-                if (Config.General.SkipETFConclusion == false)
-                    TaskUtility.Run($"HistorySaver.ETFConclusionQueue", QueueTaskCancelToken, ProcessETFConclusionQueue);
-
-                if (Config.General.SkipBiddingPrice == false)
-                    TaskUtility.Run($"HistorySaver.BiddingPriceQueue", QueueTaskCancelToken, ProcessBiddingPriceQueue);
-
                 StartRefreshTimer();
 
                 var instance = DbAgent.Instance;
@@ -51,7 +41,34 @@ namespace HistorySaver
             }
         }
 
-        private void ProcessBiddingPriceQueue()
+        protected override void ServiceClient_Opened(object sender, EventArgs e)
+        {
+            base.ServiceClient_Opened(sender, e);
+
+            Task.Run(() =>
+            {
+                try
+                {
+                    RegisterContract(new SubscribeContract(SubscribeTypes.Chart));
+                    RegisterContract(new SubscribeContract(SubscribeTypes.Mastering));
+                    RegisterContract(new SubscribeContract(SubscribeTypes.CircuitBreak));
+                    RegisterContract(new SubscribeContract(SubscribeTypes.StockConclusion));
+                    RegisterContract(new SubscribeContract(SubscribeTypes.IndexConclusion));
+
+                    if (Config.General.SkipBiddingPrice == false)
+                        RegisterContract(new SubscribeContract(SubscribeTypes.BiddingPrice));
+
+                    if (Config.General.SkipETFConclusion == false)
+                        RegisterContract(new SubscribeContract(SubscribeTypes.ETFConclusion));
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex);
+                }
+            });
+        }
+
+        protected override void ProcessBiddingPriceQueue()
         {
             try
             {
@@ -91,7 +108,7 @@ namespace HistorySaver
             }
         }
 
-        private void ProcessCircuitBreakQueue()
+        protected override void ProcessCircuitBreakQueue()
         {
             try
             {
@@ -109,7 +126,7 @@ namespace HistorySaver
             }
         }
 
-        private void ProcessStockConclusionQueue()
+        protected override void ProcessStockConclusionQueue()
         {
             try
             {
@@ -149,7 +166,7 @@ namespace HistorySaver
             }
         }
 
-        private void ProcessIndexConclusionQueue()
+        protected override void ProcessIndexConclusionQueue()
         {
             try
             {
@@ -189,7 +206,7 @@ namespace HistorySaver
             }
         }
 
-        private void ProcessETFConclusionQueue()
+        protected override void ProcessETFConclusionQueue()
         {
             try
             {
@@ -259,7 +276,7 @@ namespace HistorySaver
             }
         }
 
-        public override void ConsumeCodemap(Dictionary<string, object> jsonDic)
+        public override void ConsumeCodeMap(Dictionary<string, object> jsonDic)
         {
             ICodeMap codeMap = CodeMapConverter.DicToCodeMap(DateTime.Now.ToString(Config.General.DateFormat), jsonDic);
             

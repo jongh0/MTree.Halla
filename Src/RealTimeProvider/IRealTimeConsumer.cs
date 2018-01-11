@@ -12,13 +12,13 @@ namespace RealTimeProvider
         void NotifyMessage(MessageTypes type, string message);
 
         [OperationContract(IsOneWay = true)]
-        void RegisterContract(Guid clientId, SubscribeContract contract);
+        void RegisterConsumerContract(Guid clientId, SubscribeContract contract);
 
         [OperationContract(IsOneWay = true)]
-        void UnregisterContractAll(Guid clientId);
+        void UnregisterConsumerContractAll(Guid clientId);
 
         [OperationContract(IsOneWay = true)]
-        void UnregisterContract(Guid clientId, SubscribeTypes type);
+        void UnregisterConsumerContract(Guid clientId, SubscribeTypes type);
 
         [OperationContract]
         List<Candle> GetChart(string code, DateTime startDate, DateTime endDate, CandleTypes candleType);
@@ -26,14 +26,6 @@ namespace RealTimeProvider
 
     public interface IRealTimeConsumerCallback
     {
-        event Action<List<StockMaster>> ConsumeStockMasterEvent;
-
-        event Action<List<IndexMaster>> ConsumeIndexMasterEvent;
-
-        event Action<Dictionary<string, object>> ConsumeCodemapEvent;
-
-        event Action<MessageTypes, string> NotifyMessageEvent;
-
         [OperationContract(IsOneWay = true)]
         void NotifyMessage(MessageTypes type, string message);
 
@@ -59,7 +51,7 @@ namespace RealTimeProvider
         void ConsumeIndexMaster(List<IndexMaster> indexMaster);
 
         [OperationContract]
-        void ConsumeCodemap(Dictionary<string, object> codeMap);
+        void ConsumeCodeMap(Dictionary<string, object> codeMap);
 
         [OperationContract]
         void ConsumeChart(List<Candle> candles);

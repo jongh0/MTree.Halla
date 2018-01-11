@@ -338,7 +338,7 @@ namespace EbestTrader
             }
         }
 
-        public void RegisterContract(Guid clientId, TraderContract contract)
+        public void RegisterTraderContract(Guid clientId, TraderContract contract)
         {
             try
             {
@@ -358,7 +358,7 @@ namespace EbestTrader
             }
         }
 
-        public void UnregisterContract(Guid clientId)
+        public void UnregisterTraderContract(Guid clientId)
         {
             try
             {

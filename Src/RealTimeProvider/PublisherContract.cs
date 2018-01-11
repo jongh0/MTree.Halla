@@ -34,5 +34,10 @@ namespace RealTimeProvider
             else
                 return ProcessTypes.Unknown;
         }
+
+        public bool IsMatch(IRealTimePublisherCallback callback)
+        {
+            return Callback == callback;
+        }
     }
 }

@@ -20,22 +20,22 @@ namespace Consumer
             base.Channel.NotifyMessage(type, message);
         }
 
-        public void RegisterContract(Guid clientId, SubscribeContract subscription)
+        public void RegisterConsumerContract(Guid clientId, SubscribeContract subscription)
         {
             if (State != CommunicationState.Opened) return;
-            base.Channel.RegisterContract(clientId, subscription);
+            base.Channel.RegisterConsumerContract(clientId, subscription);
         }
 
-        public void UnregisterContractAll(Guid clientId)
+        public void UnregisterConsumerContractAll(Guid clientId)
         {
             if (State != CommunicationState.Opened) return;
-            base.Channel.UnregisterContractAll(clientId);
+            base.Channel.UnregisterConsumerContractAll(clientId);
         }
 
-        public void UnregisterContract(Guid clientId, SubscribeTypes type)
+        public void UnregisterConsumerContract(Guid clientId, SubscribeTypes type)
         {
             if (State != CommunicationState.Opened) return;
-            base.Channel.UnregisterContract(clientId, type);
+            base.Channel.UnregisterConsumerContract(clientId, type);
         }
 
         public List<Candle> GetChart(string code, DateTime startDate, DateTime endDate, CandleTypes candleType)

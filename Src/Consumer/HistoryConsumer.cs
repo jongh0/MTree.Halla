@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.ServiceModel;
+using RealTimeProvider;
 
 namespace Consumer
 {
@@ -18,13 +19,25 @@ namespace Consumer
         void StopSimulation();
     }
 
-    [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
-    public class HistoryConsumer: ConsumerBase, ISimulation
+    public class HistoryConsumer : IConsumer, ISimulation
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         private DataLoader dataLoader = new DataLoader();
-        
+
+        #region Event
+        public event Action<MessageTypes, string> MessageNotified;
+        public event Action<BiddingPrice> BiddingPriceConsumed;
+        public event Action<CircuitBreak> CircuitBreakConsumed;
+        public event Action<IndexConclusion> IndexConclusionConsumed;
+        public event Action<StockConclusion> StockConclusionConsumed;
+        public event Action<ETFConclusion> ETFConclusionConsumed;
+        public event Action<List<StockMaster>> StockMasterConsumed;
+        public event Action<List<IndexMaster>> IndexMasterConsumed;
+        public event Action<Dictionary<string, object>> CodeMapConsumed;
+        public event Action<List<Candle>> ChartConsumed; 
+        #endregion
+
         public bool StartSimulation(string[] codes, DateTime targetDate)
         {
             List<StockMaster> masters = new List<StockMaster>();
@@ -35,13 +48,11 @@ namespace Consumer
 
             if (masters.Count == 0)
             {
-                NotifyMessage(RealTimeProvider.MessageTypes.SubscribingDone, null);
+                MessageNotified?.Invoke(MessageTypes.SubscribingDone, null);
                 return false;
             }
 
-			//return false;
-
-            ConsumeStockMaster(masters);
+            StockMasterConsumed?.Invoke(masters);
 
             object conclusionLock = new object();
             List<StockConclusion> conclusions = new List<StockConclusion>();
@@ -68,10 +79,10 @@ namespace Consumer
 
             foreach (StockConclusion conclusion in conclusions)
             {
-                ConsumeStockConclusion(conclusion);
+                StockConclusionConsumed?.Invoke(conclusion);
             }
 
-            NotifyMessage(RealTimeProvider.MessageTypes.SubscribingDone, null);
+            MessageNotified?.Invoke(MessageTypes.SubscribingDone, null);
 
             sw.Stop();
             _logger.Info($"Consuming done. Elapsed:{sw.Elapsed}");

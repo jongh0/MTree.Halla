@@ -352,6 +352,38 @@ namespace RealTimeProvider
             NotifyPropertyChanged(nameof(ETFConclusionQueueCount));
         }
 
+        private void ClientChannel_Closed(object sender, EventArgs e)
+        {
+            _logger.Info("Client channel closed");
+
+            if (sender is IRealTimeConsumerCallback consumerCallback)
+            {
+                var contract = ConsumerContracts.FirstOrDefault(c => c.Value.IsMatch(consumerCallback));
+                UnregisterConsumerContractAll(contract.Key);
+            }
+            else if (sender is IRealTimePublisherCallback publisherCallback)
+            {
+                var contract = PublisherContracts.FirstOrDefault(c => c.Value.IsMatch(publisherCallback));
+                UnregisterPublisherContract(contract.Key);
+            }
+        }
+
+        private void ClientChannel_Faulted(object sender, EventArgs e)
+        {
+            _logger.Error("Client channel faulted");
+
+            if (sender is IRealTimeConsumerCallback consumerCallback)
+            {
+                var contract = ConsumerContracts.FirstOrDefault(c => c.Value.IsMatch(consumerCallback));
+                UnregisterConsumerContractAll(contract.Key);
+            }
+            else if (sender is IRealTimePublisherCallback publisherCallback)
+            {
+                var contract = PublisherContracts.FirstOrDefault(c => c.Value.IsMatch(publisherCallback));
+                UnregisterPublisherContract(contract.Key);
+            }
+        }
+
         #region Command
         private RelayCommand _sendLogCommand;
         public ICommand SendLogCommand => _sendLogCommand ?? (_sendLogCommand = new RelayCommand(() => ExecuteSendLog(), () => CanSendLog));

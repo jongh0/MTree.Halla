@@ -113,7 +113,7 @@ namespace RealTimeProvider
             }
         }
 
-        public void RegisterContract(Guid clientId, PublisherContract contract)
+        public void RegisterPublisherContract(Guid clientId, PublisherContract contract)
         {
             try
             {
@@ -125,6 +125,13 @@ namespace RealTimeProvider
                 {
                     contract.Id = PublisherContract.IdNumbering++;
                     contract.Callback = OperationContext.Current.GetCallbackChannel<IRealTimePublisherCallback>();
+
+                    // Channel 오류 시 Callback 사용 중지하기 위해서
+                    if (contract.Callback is ICommunicationObject clientChannel)
+                    {
+                        clientChannel.Faulted += ClientChannel_Faulted;
+                        clientChannel.Closed += ClientChannel_Closed;
+                    }
 
                     if (contract.Type == ProcessTypes.Unknown)
                     {
@@ -359,8 +366,10 @@ namespace RealTimeProvider
             }
         }
 
-        public void UnregisterContract(Guid clientId)
+        public void UnregisterPublisherContract(Guid clientId)
         {
+            if (clientId == Guid.Empty) return;
+
             try
             {
                 if (PublisherContracts.ContainsKey(clientId) == true)
