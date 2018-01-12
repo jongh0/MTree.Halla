@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EbestResPropertyGenerator"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="1000">
+        Title="EbestResPropertyGenerator" Height="600" Width="1000">
     <Grid>
-        <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="512" Margin="10,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="972" AcceptsReturn="True"/>
+        <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="512" Margin="10,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="972" AcceptsReturn="True" VerticalScrollBarVisibility="Visible"/>
         <Button Content="Convert" HorizontalAlignment="Left" Margin="854,527,0,0" VerticalAlignment="Top" Width="128" Height="32" Click="Button_Click"/>
 
     </Grid>

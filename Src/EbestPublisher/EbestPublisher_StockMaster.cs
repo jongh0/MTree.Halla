@@ -36,7 +36,7 @@ namespace EbestPublisher
                 QuotingStockMaster = stockMaster;
                 QuotingStockMaster.Code = code;
 
-                stockQuotingObj.SetFieldData("t1102InBlock", "shcode", 0, code);
+                stockQuotingObj.SetFieldData(new t1102InBlock() { shcode = code });
                 var ret = stockQuotingObj.Request(false);
                 if (ret < 0)
                 {

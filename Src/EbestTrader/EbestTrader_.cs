@@ -12,6 +12,7 @@ using XA_DATASETLib;
 using XA_SESSIONLib;
 using CommonLib.Firm;
 using CommonLib.Extensions;
+using CommonLib.Firm.Ebest;
 
 namespace EbestTrader
 {
@@ -309,7 +310,7 @@ namespace EbestTrader
         {
             try
             {
-                stockQuotingObj.SetFieldData("t1102InBlock", "shcode", 0, "000020");
+                stockQuotingObj.SetFieldData(new t1102InBlock() { shcode = "000020" });
                 var ret = stockQuotingObj.Request(false);
                 if (ret < 0)
                     _logger.Error($"Keep alive error, {GetLastErrorMessage(ret)}");

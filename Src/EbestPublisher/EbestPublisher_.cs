@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.ComponentModel;
 using CommonLib;
+using CommonLib.Firm.Ebest;
 
 namespace EbestPublisher
 {
@@ -474,11 +475,12 @@ namespace EbestPublisher
                 LastCommTick = Environment.TickCount;
                 _logger.Trace($"szTrCode: {szTrCode}");
 
-                int cnt = stockListObj.GetBlockCount("t8430OutBlock");
+                int cnt = stockListObj.GetBlockCount(nameof(t8430OutBlock));
 
                 for (int i = 0; i < cnt; i++)
                 {
-                    StockCodeList.Add(stockListObj.GetFieldData("t8430OutBlock", "shcode", i), stockListObj.GetFieldData("t8430OutBlock", "hname", i));
+                    if (stockListObj.GetFieldData(out t8430OutBlock block, i) == true)
+                        StockCodeList.Add(block.shcode, block.hname);
                 }
             }
             catch (Exception ex)

@@ -29,9 +29,11 @@ namespace EbestResPropertyGenerator
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            sb.Clear();
+
             var str = textBox.Text;
 
-            var lines = str.Split(';');
+            var lines = str.Replace(";", "").Split('\n');
 
             foreach (var l in lines)
             {
@@ -39,7 +41,9 @@ namespace EbestResPropertyGenerator
                 AddProperty(values);
             }
 
-            textBox.Text = sb.ToString();
+            str = sb.ToString();
+            str = str.Substring(0, str.LastIndexOf("}") + 1);
+            textBox.Text = str;
         }
 
         /// <summary>
@@ -52,9 +56,11 @@ namespace EbestResPropertyGenerator
         {
             if (values.Length != 5) return;
             sb.AppendLine($"/// <summary>");
-            sb.AppendLine($"/// {values[0].Trim()}");
+            sb.AppendLine($"/// {values[0].Trim()} [{values[4].Trim()}]");
             sb.AppendLine($"/// </summary>");
-            sb.AppendLine($"public {values[3].Trim()} {values[1].Trim()} {{ get; set; }}\n");
+            var varType = values[3].Trim();
+            var varStr = varType == "char" ? "string" : varType;
+            sb.AppendLine($"public {varStr} {values[1].Trim()} {{ get; set; }}\n");
         }
     }
 }

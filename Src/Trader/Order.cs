@@ -63,7 +63,7 @@ namespace Trader
         {
             if (block == null) return;
 
-            block.OrgOrdNo = OriginOrderNumber;
+            block.OrgOrdNo = long.TryParse(OriginOrderNumber, out long oon) ? oon : 0;
             block.AcntNo = AccountNumber;
             block.InptPwd = AccountPassword;
             block.IsuNo = Code;
@@ -87,7 +87,7 @@ namespace Trader
         {
             if (block == null) return;
 
-            block.OrgOrdNo = OriginOrderNumber;
+            block.OrgOrdNo = long.TryParse(OriginOrderNumber, out long oon) ? oon : 0;
             block.AcntNo = AccountNumber;
             block.InptPwd = AccountPassword;
             block.IsuNo = Code;

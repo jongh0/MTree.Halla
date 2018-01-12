@@ -1,6 +1,7 @@
 ﻿using CommonLib.Attributes;
 using CommonLib.Extensions;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -13,6 +14,8 @@ namespace CommonLib.Firm.Ebest
     public static class XAQueryClassExtension
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
+
+        private static ConcurrentDictionary<Type, IEnumerable<PropertyInfo>> _propertyDictionary = new ConcurrentDictionary<Type, IEnumerable<PropertyInfo>>();
 
         /// <summary>
         /// Block Class의 내용을 XAQueryClass Field에 채워준다.
@@ -29,10 +32,15 @@ namespace CommonLib.Firm.Ebest
                 var type = block.GetType();
                 var blockName = type.Name;
 
-                foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty))
+                if (_propertyDictionary.TryGetValue(type, out var properties) == false)
                 {
-                    //if (Attribute.IsDefined(property, typeof(PropertyIgnoreAttribute)) == true) continue;
+                    properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(
+                        p => Attribute.IsDefined(p, typeof(PropertyIgnoreAttribute)) == false);
+                    _propertyDictionary.TryAdd(type, properties);
+                }
 
+                foreach (var property in properties)
+                {
                     query.SetFieldData(blockName, property.Name, 0, property.GetValue(block).ToString());
                 }
 
@@ -53,20 +61,25 @@ namespace CommonLib.Firm.Ebest
         /// <param name="query"></param>
         /// <param name="block"></param>
         /// <returns></returns>
-        public static bool GetFieldData<T>(this XAQueryClass query, out T block) where T : BlockBase
+        public static bool GetFieldData<T>(this XAQueryClass query, out T block, int index = 0) where T : BlockBase
         {
             block = Activator.CreateInstance<T>();
 
-            var type = typeof(T);
-            var blockName = type.Name;
-
             try
             {
-                foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty))
-                {
-                    //if (Attribute.IsDefined(property, typeof(PropertyIgnoreAttribute)) == true) continue;
+                var type = typeof(T);
+                var blockName = type.Name;
 
-                    var data = query.GetFieldData(blockName, property.Name, 0);
+                if (_propertyDictionary.TryGetValue(type, out var properties) == false)
+                {
+                    properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(
+                        p => Attribute.IsDefined(p, typeof(PropertyIgnoreAttribute)) == false);
+                    _propertyDictionary.TryAdd(type, properties);
+                }
+
+                foreach (var property in properties)
+                {
+                    var data = query.GetFieldData(blockName, property.Name, index);
                     if (string.IsNullOrEmpty(data) == false)
                         property.SetValueByType(block, data);
                 }
