@@ -94,7 +94,7 @@ namespace Publisher
                     var contract = new PublisherContract();
                     contract.Type = PublisherContract.ConvertToType(args[1]);
 
-                    ServiceClient.RegisterPublisherContract(ClientId, contract);
+                    ServiceClient?.RegisterPublisherContract(ClientId, contract);
                 }
                 else
                 {
