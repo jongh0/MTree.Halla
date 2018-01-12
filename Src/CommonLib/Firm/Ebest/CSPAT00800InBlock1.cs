@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CommonLib.Firm.Ebest.Query
+namespace CommonLib.Firm.Ebest
 {
     /// <summary>
     /// 현물 취소주문

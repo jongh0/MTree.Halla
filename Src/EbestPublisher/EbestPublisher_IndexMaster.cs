@@ -2,7 +2,7 @@
 using System.Threading;
 using DataStructure;
 using CommonLib;
-using CommonLib.Firm.Ebest.Query;
+using CommonLib.Firm.Ebest;
 
 namespace EbestPublisher
 {

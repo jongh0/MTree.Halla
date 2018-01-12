@@ -1,4 +1,4 @@
-﻿using CommonLib.Firm.Ebest.Query;
+﻿using CommonLib.Firm.Ebest;
 using System;
 using System.Collections.Generic;
 using System.Linq;

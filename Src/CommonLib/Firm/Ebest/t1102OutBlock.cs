@@ -1,6 +1,6 @@
 ﻿using XA_DATASETLib;
 
-namespace CommonLib.Firm.Ebest.Query
+namespace CommonLib.Firm.Ebest
 {
     /// <summary>
     /// 주식 현재가(시세) 조회

@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using XA_DATASETLib;
-using CommonLib.Firm.Ebest.Query;
+using CommonLib.Firm.Ebest;
 
 namespace EbestTrader
 {

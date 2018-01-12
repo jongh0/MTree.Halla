@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using XA_DATASETLib;
 
-namespace CommonLib.Firm.Ebest.Query
+namespace CommonLib.Firm.Ebest
 {
     /// <summary>
     /// 현물 취소주문
