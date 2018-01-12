@@ -9,37 +9,42 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.ServiceModel;
+using Configuration;
 
 namespace TestPublisher
 {
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
     class Publisher : PublisherBase
     {
-        private const int delay = 1000;
+        private const int delay = 2;
 
         public void StartPublising()
         {
             Random rand = new Random();
 
-            Task.Run(() =>
+            if (Config.General.SkipBiddingPrice == false)
             {
-                while (true)
+                Task.Run(() =>
                 {
-                    if (QueueTaskCancelToken.IsCancellationRequested)
-                        break;
+                    while (true)
+                    {
+                        if (QueueTaskCancelToken.IsCancellationRequested)
+                            break;
 
-                    var subscribable = new StockConclusion();
-                    subscribable.Id = ObjectId.GenerateNewId();
-                    subscribable.Code = "000020";
-                    subscribable.Price = rand.Next(100, 200);
-                    subscribable.Time = DateTime.Now;
-                    subscribable.ConclusionType = ConclusionTypes.Sell;
+                        var subscribable = new StockConclusion();
+                        subscribable.Id = ObjectId.GenerateNewId();
+                        subscribable.Code = "000020";
+                        subscribable.Price = rand.Next(100, 200);
+                        subscribable.Time = DateTime.Now;
+                        subscribable.ConclusionType = ConclusionTypes.Sell;
 
-                    ServiceClient.PublishStockConclusion(subscribable);
+                        if (ServiceClient?.State == CommunicationState.Opened)
+                            ServiceClient.PublishStockConclusion(subscribable);
 
-                    Thread.Sleep(delay);
-                }
-            }, QueueTaskCancelToken);
+                        Thread.Sleep(delay);
+                    }
+                }, QueueTaskCancelToken);
+            }
 
             Task.Run(() =>
             {
@@ -55,7 +60,8 @@ namespace TestPublisher
                     subscribable.Time = DateTime.Now;
                     subscribable.MarketCapitalization = 1000;
 
-                    ServiceClient.PublishIndexConclusion(subscribable);
+                    if (ServiceClient?.State == CommunicationState.Opened)
+                        ServiceClient.PublishIndexConclusion(subscribable);
 
                     Thread.Sleep(delay);
                 }
@@ -81,7 +87,8 @@ namespace TestPublisher
                     subscribable.Offers.Add(new BiddingPriceEntity(10, 10, 10));
                     subscribable.Offers.Add(new BiddingPriceEntity(10, 10, 10));
 
-                    ServiceClient.PublishBiddingPrice(subscribable);
+                    if (ServiceClient?.State == CommunicationState.Opened)
+                        ServiceClient.PublishBiddingPrice(subscribable);
 
                     Thread.Sleep(delay);
                 }

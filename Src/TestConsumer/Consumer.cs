@@ -20,13 +20,6 @@ namespace TestConsumer
         //int count = 0;
         double tick = 0;
 
-        public void StartConsume()
-        {
-            TaskUtility.Run("Consumer.StockConclusionQueue", QueueTaskCancelToken, ProcessStockConclusionQueue);
-            TaskUtility.Run("Consumer.IndexConclusionQueue", QueueTaskCancelToken, ProcessIndexConclusionQueue);
-            TaskUtility.Run("Consumer.BiddingPriceQueue", QueueTaskCancelToken, ProcessBiddingPriceQueue);
-        }
-
         public void StopConsume()
         {
             StopQueueTask();
@@ -39,14 +32,14 @@ namespace TestConsumer
 
             Task.Run(() =>
             {
-                ServiceClient.RegisterConsumerContract(ClientId, new SubscribeContract(SubscribeTypes.StockConclusion));
-                ServiceClient.RegisterConsumerContract(ClientId, new SubscribeContract(SubscribeTypes.IndexConclusion));
+                RegisterContract(new SubscribeContract(SubscribeTypes.StockConclusion));
+                RegisterContract(new SubscribeContract(SubscribeTypes.IndexConclusion));
                 if (Config.General.SkipBiddingPrice == false)
-                    ServiceClient.RegisterConsumerContract(ClientId, new SubscribeContract(SubscribeTypes.BiddingPrice));
+                    RegisterContract(new SubscribeContract(SubscribeTypes.BiddingPrice));
             });
         }
 
-        private void ProcessStockConclusionQueue()
+        protected override void ProcessStockConclusionQueue()
         {
             if (StockConclusionQueue.TryDequeue(out var conclusion) == true)
             {
@@ -59,7 +52,7 @@ namespace TestConsumer
                 Thread.Sleep(10);
         }
 
-        private void ProcessIndexConclusionQueue()
+        protected override void ProcessIndexConclusionQueue()
         {
             if (IndexConclusionQueue.TryDequeue(out var conclusion) == true)
             {
@@ -72,7 +65,7 @@ namespace TestConsumer
                 Thread.Sleep(10);
         }
 
-        private void ProcessBiddingPriceQueue()
+        protected override void ProcessBiddingPriceQueue()
         {
             if (BiddingPriceQueue.TryDequeue(out var biddingPrice) == true)
             {

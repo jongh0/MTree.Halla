@@ -21,9 +21,6 @@ namespace TestConsumer
 
             var consumer = new TestConsumer();
 
-            Thread.Sleep(1000);
-            consumer.StartConsume();
-
             Console.ReadLine();
             consumer.StopConsume();
         }

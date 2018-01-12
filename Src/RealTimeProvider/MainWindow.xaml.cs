@@ -90,7 +90,7 @@ namespace RealTimeProvider
 #if false
                     Thread.Sleep(2000);
 
-                    var clientCount = 1;
+                    var clientCount = 3;
 
                     for (int i = 0; i < clientCount; i++)
                         ProcessUtility.Start(ProcessTypes.TestConsumer, ProcessWindowStyle.Minimized);
