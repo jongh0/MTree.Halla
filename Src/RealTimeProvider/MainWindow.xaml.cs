@@ -87,7 +87,7 @@ namespace RealTimeProvider
                 }
                 else
                 {
-#if false
+#if true
                     Thread.Sleep(2000);
 
                     var clientCount = 3;

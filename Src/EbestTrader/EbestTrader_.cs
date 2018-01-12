@@ -33,7 +33,7 @@ namespace EbestTrader
         private ManualResetEvent WaitLoginEvent { get; } = new ManualResetEvent(false);
 
         #region Event
-        public event EventHandler<EventArgs<string>> StateNotified;
+        public event Action<string> StateNotified;
         #endregion
 
         #region Keep session
@@ -380,7 +380,7 @@ namespace EbestTrader
 
         private void NotifyState(string message)
         {
-            StateNotified?.Invoke(this, StateNotified.CreateArgs(message));
+            StateNotified?.Invoke(message);
         }
 
         #region INotifyPropertyChanged
