@@ -8,16 +8,16 @@ namespace RealTimeProvider
     [ServiceContract(CallbackContract = typeof(IRealTimeConsumerCallback))]
     public interface IRealTimeConsumer
     {
-        [OperationContract(IsOneWay = true)]
+        [OperationContract]
         void NotifyMessage(MessageTypes type, string message);
 
-        [OperationContract(IsOneWay = true)]
+        [OperationContract]
         void RegisterConsumerContract(Guid clientId, SubscribeContract contract);
 
-        [OperationContract(IsOneWay = true)]
+        [OperationContract]
         void UnregisterConsumerContractAll(Guid clientId);
 
-        [OperationContract(IsOneWay = true)]
+        [OperationContract]
         void UnregisterConsumerContract(Guid clientId, SubscribeTypes type);
 
         [OperationContract]
@@ -26,22 +26,22 @@ namespace RealTimeProvider
 
     public interface IRealTimeConsumerCallback
     {
-        [OperationContract(IsOneWay = true)]
+        [OperationContract]
         void NotifyMessage(MessageTypes type, string message);
 
-        [OperationContract(IsOneWay = true)]
+        [OperationContract]
         void ConsumeBiddingPrice(BiddingPrice biddingPrice);
 
-        [OperationContract(IsOneWay = true)]
+        [OperationContract]
         void ConsumeCircuitBreak(CircuitBreak circuitBreak);
 
-        [OperationContract(IsOneWay = true)]
+        [OperationContract]
         void ConsumeStockConclusion(StockConclusion conclusion);
 
-        [OperationContract(IsOneWay = true)]
+        [OperationContract]
         void ConsumeIndexConclusion(IndexConclusion conclusion);
 
-        [OperationContract(IsOneWay = true)]
+        [OperationContract]
         void ConsumeETFConclusion(ETFConclusion conclusion);
 
         [OperationContract]

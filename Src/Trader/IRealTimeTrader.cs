@@ -11,13 +11,13 @@ namespace Trader
     [ServiceContract(CallbackContract = typeof(IRealTimeTraderCallback))]
     public interface IRealTimeTrader
     {
-        [OperationContract(IsOneWay = true)]
+        [OperationContract]
         void NotifyMessage(MessageTypes type, string message);
 
-        [OperationContract(IsOneWay = true)]
+        [OperationContract]
         void RegisterTraderContract(Guid clientId, TraderContract contract);
 
-        [OperationContract(IsOneWay = true)]
+        [OperationContract]
         void UnregisterTraderContract(Guid clientId);
 
         [OperationContract]
@@ -35,10 +35,10 @@ namespace Trader
 
     public interface IRealTimeTraderCallback
     {
-        [OperationContract(IsOneWay = true)]
+        [OperationContract]
         void NotifyMessage(MessageTypes type, string message);
 
-        [OperationContract(IsOneWay = true)]
+        [OperationContract]
         void NotifyOrderResult(OrderResult result);
     }
 }

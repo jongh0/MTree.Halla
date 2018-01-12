@@ -8,13 +8,13 @@ namespace RealTimeProvider
     [ServiceContract(CallbackContract = typeof(IRealTimePublisherCallback))]
     public interface IRealTimePublisher
     {
-        [OperationContract(IsOneWay = true)]
+        [OperationContract]
         void NotifyMessage(MessageTypes type, string message);
 
-        [OperationContract(IsOneWay = true)]
+        [OperationContract]
         void RegisterPublisherContract(Guid clientId, PublisherContract contract);
 
-        [OperationContract(IsOneWay = true)]
+        [OperationContract]
         void UnregisterPublisherContract(Guid clientId);
 
         [OperationContract]
@@ -35,7 +35,7 @@ namespace RealTimeProvider
 
     public interface IRealTimePublisherCallback
     {
-        [OperationContract(IsOneWay = true)]
+        [OperationContract]
         void NotifyMessage(MessageTypes type, string message);
 
         [OperationContract]
