@@ -9,7 +9,7 @@ namespace Trader
 {
     public interface ITrader
     {
-        event EventHandler<EventArgs<string>> StateNotified;
+        event Action<string> StateNotified;
 
         List<string> GetAccountList();
 

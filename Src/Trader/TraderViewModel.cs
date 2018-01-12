@@ -213,9 +213,9 @@ namespace Trader
             }
         }
 
-        private void Trader_StateNotified(object sender, EventArgs<string> e)
+        private void Trader_StateNotified(string state)
         {
-            TraderState = e.Param;
+            TraderState = state;
         }
 
         #region INotifyPropertyChanged
