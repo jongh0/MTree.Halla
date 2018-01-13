@@ -167,6 +167,22 @@ namespace EbestTrader
         {
             try
             {
+#if true
+                var block = new CSPAT00600InBlock1();
+                order.CopyTo(block);
+
+                var query = new EbestQuery<CSPAT00600InBlock1, CSPAT00600OutBlock1, CSPAT00600OutBlock2>();
+                if (query.ExecuteQueryAndWait(block) == false)
+                {
+                    _logger.Error($"New order error, {order.ToString()}, {GetLastErrorMessage(query.Result)}");
+                    return false;
+                }
+
+                _logger.Info($"New order success, {order.ToString()}");
+                _logger.Debug(query.OutBlock1.ToString());
+                _logger.Debug(query.OutBlock2.ToString());
+                return true;
+#else
                 var block = new CSPAT00600InBlock1();
                 order.CopyTo(block);
 
@@ -184,7 +200,8 @@ namespace EbestTrader
                 }
 
                 _logger.Info($"New order success, {order.ToString()}");
-                return true;
+                return true; 
+#endif
             }
             catch (Exception ex)
             {
@@ -490,6 +507,78 @@ namespace EbestTrader
             }
 
             var result = GetOrderResult(orderRejectedObj, OrderResultTypes.Rejected);
+            NotifyOrderResult(result);
+        }
+
+        private void OrderRejectedReal_OutBlockReceived(SC4OutBlock block)
+        {
+            var result = new OrderResult();
+            result.AccountNumber = block.accno;
+            result.OrderNumber = block.ordno.ToString();
+            result.Code = block.Isuno;
+            result.OrderedQuantity = block.ordqty;
+            result.OrderedPrice = block.ordprc;
+            result.ConcludedQuantity = block.execqty;
+            result.ConcludedPrice = block.execprc;
+            result.ResultType = OrderResultTypes.Rejected;
+
+            NotifyOrderResult(result);
+        }
+
+        private void OrderCanceledReal_OutBlockReceived(SC3OutBlock block)
+        {
+            var result = new OrderResult();
+            result.AccountNumber = block.accno;
+            result.OrderNumber = block.ordno.ToString();
+            result.Code = block.Isuno;
+            result.OrderedQuantity = block.ordqty;
+            result.OrderedPrice = block.ordprc;
+            result.ConcludedQuantity = block.execqty;
+            result.ConcludedPrice = block.execprc;
+            result.ResultType = OrderResultTypes.Canceled;
+
+            NotifyOrderResult(result);
+        }
+
+        private void OrderModifiedReal_OutBlockReceived(SC2OutBlock block)
+        {
+            var result = new OrderResult();
+            result.AccountNumber = block.accno;
+            result.OrderNumber = block.ordno.ToString();
+            result.Code = block.Isuno;
+            result.OrderedQuantity = block.ordqty;
+            result.OrderedPrice = block.ordprc;
+            result.ConcludedQuantity = block.execqty;
+            result.ConcludedPrice = block.execprc;
+            result.ResultType = OrderResultTypes.Modified;
+
+            NotifyOrderResult(result);
+        }
+
+        private void OrderConclusionReal_OutBlockReceived(SC1OutBlock block)
+        {
+            var result = new OrderResult();
+            result.AccountNumber = block.accno;
+            result.OrderNumber = block.ordno.ToString();
+            result.Code = block.Isuno;
+            result.OrderedQuantity = block.ordqty;
+            result.OrderedPrice = block.ordprc;
+            result.ConcludedQuantity = block.execqty;
+            result.ConcludedPrice = block.execprc;
+            result.ResultType = OrderResultTypes.Concluded;
+
+            NotifyOrderResult(result);
+        }
+
+        private void OrderSubmitReal_OutBlockReceived(SC0OutBlock block)
+        {
+            var result = new OrderResult();
+            result.AccountNumber = block.accno;
+            result.OrderNumber = block.ordno.ToString();
+            result.Code = block.expcode;
+            result.OrderedQuantity = block.ordqty;
+            result.ResultType = OrderResultTypes.Submitted;
+
             NotifyOrderResult(result);
         }
 

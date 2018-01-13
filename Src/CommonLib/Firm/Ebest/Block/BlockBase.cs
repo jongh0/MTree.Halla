@@ -13,9 +13,12 @@ namespace CommonLib.Firm.Ebest.Block
 
         public abstract string BlockName { get; }
 
+        private const string _stringSeperator = ", "; // ToString()으로 로그 볼 때 편하라고..
+
         public override string ToString()
         {
             List<string> strList = new List<string>();
+            strList.Add(BlockName);
 
             try
             {
@@ -29,7 +32,7 @@ namespace CommonLib.Firm.Ebest.Block
                         strList.Add($"{property.Name}: {value}");
                 }
 
-                return string.Join(", ", strList.ToArray());
+                return string.Join(_stringSeperator, strList.ToArray());
             }
             catch
             {

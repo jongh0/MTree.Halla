@@ -30,6 +30,8 @@ namespace CommonLib.Firm.Ebest.Query
             }
         }
 
+        public int Result { get; private set; }
+
         protected XAQueryClass Query { get; private set; }
         protected AutoResetEvent QueryWaiter { get; private set; } = new AutoResetEvent(false);
         public int QueryTimeout { get; set; }
@@ -50,44 +52,54 @@ namespace CommonLib.Firm.Ebest.Query
             }
         }
 
-        public int ExecuteQuery(T block)
+        public bool ExecuteQuery(T block)
         {
             try
             {
                 if (block.BlockName.Contains(ResName) == false)
                     throw new ArgumentException($"Block not matched, {ResName}, {block.BlockName}");
 
+                _logger.Debug($"ExecuteQuery\n{block.ToString()}");
+
                 Query.SetFieldData(block);
-                return Query.Request(false);
+                Result = Query.Request(false);
+                return Result >= 0;
             }
             catch (Exception ex)
             {
                 _logger.Error(ex);
             }
 
-            return 0;
+            return false;
         }
 
-        public int ExecuteQueryAndWait(T block)
+        public bool ExecuteQueryAndWait(T block)
         {
             try
             {
                 if (block.BlockName.Contains(ResName) == false)
                     throw new ArgumentException($"Block not matched, {ResName}, {block.BlockName}");
 
+                _logger.Debug($"ExecuteQueryAndWait\n{block.ToString()}");
+
                 Query.SetFieldData(block);
+                Result = Query.Request(false);
+                if (Result < 0) return false;
 
-                var result = Query.Request(false);
-                if (result < 0) return result;
+                if (QueryWaiter.WaitOne(QueryTimeout) == false)
+                {
+                    _logger.Error($"{ResName} query time out");
+                    return false;
+                }
 
-                QueryWaiter.WaitOne(QueryTimeout);
+                return true;
             }
             catch (Exception ex)
             {
                 _logger.Error(ex);
             }
 
-            return 0;
+            return false;
         }
 
         protected virtual void OnReceiveChartRealData(string trCode)

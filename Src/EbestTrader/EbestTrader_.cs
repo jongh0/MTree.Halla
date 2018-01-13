@@ -15,6 +15,7 @@ using CommonLib.Extensions;
 using CommonLib.Firm.Ebest;
 using CommonLib.Firm.Ebest.Block;
 using CommonLib.Firm.Ebest.Query;
+using CommonLib.Firm.Ebest.Real;
 
 namespace EbestTrader
 {
@@ -59,6 +60,12 @@ namespace EbestTrader
         private XARealClass orderModifiedObj;
         private XARealClass orderCanceledObj;
         private XARealClass orderRejectedObj;
+
+        private EbestReal<SC0OutBlock> _orderSubmitReal;
+        private EbestReal<SC1OutBlock> _orderConclusionReal;
+        private EbestReal<SC2OutBlock> _orderModifiedReal;
+        private EbestReal<SC3OutBlock> _orderCanceledReal;
+        private EbestReal<SC4OutBlock> _orderRejectedReal;
         #endregion
 
         public EbestTrader_()
@@ -123,6 +130,12 @@ namespace EbestTrader
                 orderRejectedObj = new XARealClass();
                 orderRejectedObj.ResFileName = ResFilePath + "\\SC4.res";
                 orderRejectedObj.ReceiveRealData += OrderRejectedObj_ReceiveRealData;
+
+                _orderSubmitReal.OutBlockReceived += OrderSubmitReal_OutBlockReceived;
+                _orderConclusionReal.OutBlockReceived += OrderConclusionReal_OutBlockReceived;
+                _orderModifiedReal.OutBlockReceived += OrderModifiedReal_OutBlockReceived;
+                _orderCanceledReal.OutBlockReceived += OrderCanceledReal_OutBlockReceived;
+                _orderRejectedReal.OutBlockReceived += OrderRejectedReal_OutBlockReceived;
                 #endregion
 
                 #region Login
@@ -165,11 +178,17 @@ namespace EbestTrader
         {
             try
             {
-                orderSubmittedObj.AdviseRealData();
-                orderConcludedObj.AdviseRealData();
-                orderModifiedObj.AdviseRealData();
-                orderCanceledObj.AdviseRealData();
-                orderRejectedObj.AdviseRealData();
+                //orderSubmittedObj.AdviseRealData();
+                //orderConcludedObj.AdviseRealData();
+                //orderModifiedObj.AdviseRealData();
+                //orderCanceledObj.AdviseRealData();
+                //orderRejectedObj.AdviseRealData();
+
+                _orderSubmitReal.AdviseRealData();
+                _orderConclusionReal.AdviseRealData();
+                _orderModifiedReal.AdviseRealData();
+                _orderCanceledReal.AdviseRealData();
+                _orderRejectedReal.AdviseRealData();
             }
             catch (Exception ex)
             {

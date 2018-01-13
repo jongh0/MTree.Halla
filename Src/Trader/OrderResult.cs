@@ -14,13 +14,13 @@ namespace Trader
 
         public OrderResultTypes ResultType { get; set; }
 
-        public int ConcludedQuantity { get; set; }
+        public long ConcludedQuantity { get; set; }
 
-        public int ConcludedPrice { get; set; }
+        public long ConcludedPrice { get; set; }
 
-        public int OrderedQuantity { get; set; }
+        public long OrderedQuantity { get; set; }
 
-        public int OrderedPrice { get; set; }
+        public long OrderedPrice { get; set; }
 
         public string AccountNumber { get; set; }
 
