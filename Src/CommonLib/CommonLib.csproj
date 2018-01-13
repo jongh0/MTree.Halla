@@ -118,11 +118,11 @@
     <Compile Include="Firm\Ebest\Block\t8430OutBlock.cs" />
     <Compile Include="Firm\Ebest\Block\VIInBlock.cs" />
     <Compile Include="Firm\Ebest\Block\VIOutBlock.cs" />
-    <Compile Include="Firm\Ebest\Query\XAQueryBase.cs" />
-    <Compile Include="Firm\Ebest\Query\XAQuery.cs" />
+    <Compile Include="Firm\Ebest\Query\QueryBase.cs" />
+    <Compile Include="Firm\Ebest\Query\EbestQuery.cs" />
     <Compile Include="Firm\Ebest\Query\XAQueryClassExtension.cs" />
-    <Compile Include="Firm\Ebest\Real\XARealBase.cs" />
-    <Compile Include="Firm\Ebest\Real\XAReal.cs" />
+    <Compile Include="Firm\Ebest\Real\RealBase.cs" />
+    <Compile Include="Firm\Ebest\Real\EbestReal.cs" />
     <Compile Include="Firm\Ebest\Real\XARealClassExtension.cs" />
     <Compile Include="Firm\Kiwoom\KiwoomScreen.cs" />
     <Compile Include="Firm\Kiwoom\KiwoomError.cs" />

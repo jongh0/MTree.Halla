@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CommonLib.Firm.Ebest.Real
 {
-    public class XAReal<TOutBlock> : XARealBase<TOutBlock> where TOutBlock : BlockBase
+    public class EbestReal<TOutBlock> : RealBase<TOutBlock> where TOutBlock : BlockBase
     {
         public event Action<TOutBlock> OutBlockReceived;
 

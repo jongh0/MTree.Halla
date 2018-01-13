@@ -8,7 +8,7 @@ using XA_DATASETLib;
 
 namespace CommonLib.Firm.Ebest.Real
 {
-    public abstract class XARealBase<T> where T : BlockBase
+    public abstract class RealBase<T> where T : BlockBase
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -29,7 +29,7 @@ namespace CommonLib.Firm.Ebest.Real
 
         protected XARealClass Real { get; private set; }
 
-        public XARealBase()
+        public RealBase()
         {
             try
             {

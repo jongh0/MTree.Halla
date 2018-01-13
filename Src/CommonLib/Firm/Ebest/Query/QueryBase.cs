@@ -11,7 +11,7 @@ using XA_DATASETLib;
 
 namespace CommonLib.Firm.Ebest.Query
 {
-    public abstract class XAQueryBase<T> : IDisposable where T : BlockBase
+    public abstract class QueryBase<T> : IDisposable where T : BlockBase
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -34,7 +34,7 @@ namespace CommonLib.Firm.Ebest.Query
         protected AutoResetEvent QueryWaiter { get; private set; } = new AutoResetEvent(false);
         public int QueryTimeout { get; set; }
 
-        public XAQueryBase()
+        public QueryBase()
         {
             try
             {
@@ -107,7 +107,7 @@ namespace CommonLib.Firm.Ebest.Query
         #region IDisposable
         private bool disposed = false;
 
-        ~XAQueryBase()
+        ~QueryBase()
         {
             Dispose(false);
         }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CommonLib.Firm.Ebest.Query
 {
-    public class XAQuery<TInBlock, TOutBlock> : XAQueryBase<TInBlock> 
+    public class EbestQuery<TInBlock, TOutBlock> : QueryBase<TInBlock> 
         where TInBlock : BlockBase where TOutBlock : BlockBase
     {
         public event Action<TOutBlock> OutBlockReceived;
@@ -26,7 +26,7 @@ namespace CommonLib.Firm.Ebest.Query
         }
     }
 
-    public class XAQuery<TInBlock, TOutBlock1, TOutBlock2> : XAQueryBase<TInBlock> 
+    public class EbestQuery<TInBlock, TOutBlock1, TOutBlock2> : QueryBase<TInBlock> 
         where TInBlock : BlockBase where TOutBlock1 : BlockBase where TOutBlock2 : BlockBase
     {
         public event Action<TOutBlock1> OutBlock1Received;
