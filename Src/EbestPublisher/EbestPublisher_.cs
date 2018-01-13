@@ -14,6 +14,8 @@ using System.Diagnostics;
 using System.ComponentModel;
 using CommonLib;
 using CommonLib.Firm.Ebest;
+using CommonLib.Firm.Ebest.Block;
+using CommonLib.Firm.Ebest.Query;
 
 namespace EbestPublisher
 {

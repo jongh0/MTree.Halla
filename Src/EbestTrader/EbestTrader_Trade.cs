@@ -8,6 +8,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using XA_DATASETLib;
 using CommonLib.Firm.Ebest;
+using CommonLib.Firm.Ebest.Block;
+using CommonLib.Firm.Ebest.Query;
 
 namespace EbestTrader
 {

@@ -13,6 +13,8 @@ using XA_SESSIONLib;
 using CommonLib.Firm;
 using CommonLib.Extensions;
 using CommonLib.Firm.Ebest;
+using CommonLib.Firm.Ebest.Block;
+using CommonLib.Firm.Ebest.Query;
 
 namespace EbestTrader
 {
