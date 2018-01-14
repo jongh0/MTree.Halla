@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CommonLib.Extensions
+namespace CommonLib.Extension
 {
     public static class PropertyExtension
     {

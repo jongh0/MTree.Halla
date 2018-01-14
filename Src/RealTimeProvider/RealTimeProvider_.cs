@@ -15,6 +15,7 @@ using System.Windows.Input;
 using System.ComponentModel;
 using DbProvider;
 using System.Windows.Forms;
+using CommonLib.Utility;
 
 namespace RealTimeProvider
 {

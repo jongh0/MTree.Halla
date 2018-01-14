@@ -17,6 +17,7 @@ using GalaSoft.MvvmLight.Command;
 using System.Windows.Input;
 using System.Diagnostics;
 using System.ComponentModel;
+using CommonLib.Utility;
 
 namespace Dashboard
 {

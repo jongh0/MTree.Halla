@@ -34,7 +34,6 @@ namespace CommonLib.Firm.Ebest.Query
 
         protected XAQueryClass Query { get; private set; }
         protected AutoResetEvent QueryWaiter { get; private set; } = new AutoResetEvent(false);
-        public int QueryTimeout { get; set; }
 
         public QueryBase()
         {
@@ -73,7 +72,7 @@ namespace CommonLib.Firm.Ebest.Query
             return false;
         }
 
-        public bool ExecuteQueryAndWait(T block)
+        public bool ExecuteQueryAndWait(T block, int timeout = 1000 * 15)
         {
             try
             {
@@ -86,7 +85,7 @@ namespace CommonLib.Firm.Ebest.Query
                 Result = Query.Request(false);
                 if (Result < 0) return false;
 
-                if (QueryWaiter.WaitOne(QueryTimeout) == false)
+                if (QueryWaiter.WaitOne(timeout) == false)
                 {
                     _logger.Error($"{ResName} query time out");
                     return false;

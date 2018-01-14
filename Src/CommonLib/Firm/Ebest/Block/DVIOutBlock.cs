@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommonLib.Attribute;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,11 +7,12 @@ using System.Threading.Tasks;
 
 namespace CommonLib.Firm.Ebest.Block
 {
+    /// <summary>
+    /// 시간외단일가VI발동해제(DVI)
+    /// </summary>
     public class DVIOutBlock : BlockBase
     {
-        /// <summary>
-        /// 시간외단일가VI발동해제(DVI)
-        /// </summary>
+        [PropertyIgnore]
         public override string BlockName => "OutBlock";
 
         /// <summary>

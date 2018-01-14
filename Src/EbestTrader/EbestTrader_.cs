@@ -11,7 +11,7 @@ using System.Timers;
 using XA_DATASETLib;
 using XA_SESSIONLib;
 using CommonLib.Firm;
-using CommonLib.Extensions;
+using CommonLib.Extension;
 using CommonLib.Firm.Ebest;
 using CommonLib.Firm.Ebest.Block;
 using CommonLib.Firm.Ebest.Query;
@@ -131,10 +131,15 @@ namespace EbestTrader
                 orderRejectedObj.ResFileName = ResFilePath + "\\SC4.res";
                 orderRejectedObj.ReceiveRealData += OrderRejectedObj_ReceiveRealData;
 
+                _orderSubmitReal = new EbestReal<SC0OutBlock>();
                 _orderSubmitReal.OutBlockReceived += OrderSubmitReal_OutBlockReceived;
+                _orderConclusionReal = new EbestReal<SC1OutBlock>();
                 _orderConclusionReal.OutBlockReceived += OrderConclusionReal_OutBlockReceived;
+                _orderModifiedReal = new EbestReal<SC2OutBlock>();
                 _orderModifiedReal.OutBlockReceived += OrderModifiedReal_OutBlockReceived;
+                _orderCanceledReal = new EbestReal<SC3OutBlock>();
                 _orderCanceledReal.OutBlockReceived += OrderCanceledReal_OutBlockReceived;
+                _orderRejectedReal = new EbestReal<SC4OutBlock>();
                 _orderRejectedReal.OutBlockReceived += OrderRejectedReal_OutBlockReceived;
                 #endregion
 

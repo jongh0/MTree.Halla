@@ -12,6 +12,7 @@ using MongoDB.Driver;
 using System.Diagnostics;
 using MongoDB.Bson;
 using System.Globalization;
+using CommonLib.Utility;
 
 namespace TestConsole
 {

@@ -7,7 +7,7 @@ using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CommonLib
+namespace CommonLib.Utility
 {
     public class ServiceUtility
     {

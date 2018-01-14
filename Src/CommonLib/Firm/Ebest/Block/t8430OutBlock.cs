@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommonLib.Attribute;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,7 @@ namespace CommonLib.Firm.Ebest.Block
     /// </summary>
     public class t8430OutBlock : BlockBase
     {
+        [PropertyIgnore]
         public override string BlockName => nameof(t8430OutBlock);
 
         /// <summary>

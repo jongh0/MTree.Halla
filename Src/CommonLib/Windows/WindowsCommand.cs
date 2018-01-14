@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CommonLib
+namespace CommonLib.Windows
 {
     public class WindowsCommand
     {

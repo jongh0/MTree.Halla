@@ -18,7 +18,6 @@ namespace CommonLib.Firm.Ebest.Block
         public override string ToString()
         {
             List<string> strList = new List<string>();
-            strList.Add(BlockName);
 
             try
             {

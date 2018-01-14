@@ -4,13 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DataValidator"
-        xmlns:commonLib="clr-namespace:CommonLib;assembly=CommonLib"
+        xmlns:converter="clr-namespace:CommonLib.Converter;assembly=CommonLib"
         mc:Ignorable="d"
         Title="RecoveryPopup" Height="Auto" Width="Auto"
         WindowState="Maximized">
     <Grid>
         <Grid.Resources>
-            <commonLib:BoolInverterConverter x:Key="BoolInverterConverter"/>
+            <converter:BoolInverterConverter x:Key="BoolInverterConverter"/>
         </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>

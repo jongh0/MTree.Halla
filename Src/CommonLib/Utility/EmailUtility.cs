@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace CommonLib
+namespace CommonLib.Utility
 {
     /// <summary>
     /// Gmail을 통해 메일을 보내려면 "보안 수준이 낮은 앱" 사용 허가 필요함

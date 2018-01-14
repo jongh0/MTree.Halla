@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using CommonLib;
+using CommonLib.Windows;
 
 namespace PopupStopper
 {

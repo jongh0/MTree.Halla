@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Dashboard"
-        xmlns:commonLib="clr-namespace:CommonLib;assembly=CommonLib"
+        xmlns:sort="clr-namespace:CommonLib.Sort;assembly=CommonLib"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         mc:Ignorable="d"
         Title="Dashboard" Height="500" Width="880">
@@ -32,7 +32,7 @@
         </StackPanel>
         <TabControl Grid.Row="1" Margin="5">
             <TabItem Header="Stock">
-                <ListView x:Name="StockListView" ItemsSource="{Binding Path=Dashboard.StockItems.Values}" Margin="0" Style="{StaticResource GridViewStyle}" ItemContainerStyle="{StaticResource GridViewItemStyle}" commonLib:GridViewSort.AutoSort="True">
+                <ListView x:Name="StockListView" ItemsSource="{Binding Path=Dashboard.StockItems.Values}" Margin="0" Style="{StaticResource GridViewStyle}" ItemContainerStyle="{StaticResource GridViewItemStyle}" sort:GridViewSort.AutoSort="True">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="MouseDoubleClick">
                             <i:InvokeCommandAction Command="{Binding DoubleClickCommand}" CommandParameter="{Binding ElementName=StockListView, Path=SelectedItem}"/>
@@ -41,7 +41,7 @@
                 </ListView>
             </TabItem>
             <TabItem Header="Index">
-                <ListView x:Name="IndexListView" ItemsSource="{Binding Path=Dashboard.IndexItems.Values}" Margin="0" Style="{StaticResource GridViewStyle}" ItemContainerStyle="{StaticResource GridViewItemStyle}" commonLib:GridViewSort.AutoSort="True">
+                <ListView x:Name="IndexListView" ItemsSource="{Binding Path=Dashboard.IndexItems.Values}" Margin="0" Style="{StaticResource GridViewStyle}" ItemContainerStyle="{StaticResource GridViewItemStyle}" sort:GridViewSort.AutoSort="True">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="MouseDoubleClick">
                             <i:InvokeCommandAction Command="{Binding DoubleClickCommand}" CommandParameter="{Binding ElementName=IndexListView, Path=SelectedItem}"/>

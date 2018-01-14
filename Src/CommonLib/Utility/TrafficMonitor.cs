@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CommonLib
+namespace CommonLib.Utility
 {
     public class TrafficMonitor : INotifyPropertyChanged
     {

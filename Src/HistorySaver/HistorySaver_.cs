@@ -17,6 +17,7 @@ using System.IO;
 using System.Text;
 using System.Collections.Concurrent;
 using MongoDB.Bson;
+using CommonLib.Utility;
 
 namespace HistorySaver
 {

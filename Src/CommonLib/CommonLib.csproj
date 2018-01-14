@@ -74,16 +74,20 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Attributes\PropertyIgnoreAttribute.cs" />
-    <Compile Include="Collections\ObservableCollectionEx.cs" />
-    <Compile Include="Converters\BoolInverterConverter.cs" />
-    <Compile Include="Converters\NumberToCurrencyConverter.cs" />
-    <Compile Include="Converters\NumberToPercentConverter.cs" />
-    <Compile Include="Converters\EnumToStringConverter.cs" />
-    <Compile Include="Converters\ConvertUtility.cs" />
+    <Compile Include="Attribute\PropertyIgnoreAttribute.cs" />
+    <Compile Include="Behavior\NumberAndPointOnlyBehavior.cs" />
+    <Compile Include="Behavior\NumberOnlyBehavior.cs" />
+    <Compile Include="Behavior\RegexBehavior.cs" />
+    <Compile Include="Collection\ObservableCollectionEx.cs" />
+    <Compile Include="Converter\BoolInverterConverter.cs" />
+    <Compile Include="Converter\NumberToCurrencyConverter.cs" />
+    <Compile Include="Converter\NumberToPercentConverter.cs" />
+    <Compile Include="Converter\EnumToStringConverter.cs" />
+    <Compile Include="Converter\ConvertUtility.cs" />
+    <Compile Include="Converter\NumberToStringConverter.cs" />
     <Compile Include="EnumType.cs" />
-    <Compile Include="Extensions\EventHandlerExtension.cs" />
-    <Compile Include="Extensions\PropertyExtension.cs" />
+    <Compile Include="Extension\EventHandlerExtension.cs" />
+    <Compile Include="Extension\PropertyExtension.cs" />
     <Compile Include="Firm\Ebest\Block\CSPAT00600InBlock1.cs" />
     <Compile Include="Firm\Ebest\Block\CSPAT00600OutBlock1.cs" />
     <Compile Include="Firm\Ebest\Block\BlockBase.cs" />
@@ -127,17 +131,17 @@
     <Compile Include="Firm\Kiwoom\KiwoomScreen.cs" />
     <Compile Include="Firm\Kiwoom\KiwoomError.cs" />
     <Compile Include="Firm\LoginInfo.cs" />
-    <Compile Include="Utilities\ObjectIdUtility.cs" />
-    <Compile Include="Utilities\ServiceUtility.cs" />
+    <Compile Include="Utility\ObjectIdUtility.cs" />
+    <Compile Include="Utility\ServiceUtility.cs" />
     <Compile Include="Sort\GridViewSort.cs" />
-    <Compile Include="Collections\ObservableConcurrentDictionary.cs" />
-    <Compile Include="Utilities\EmailUtility.cs" />
-    <Compile Include="Utilities\LogUtility.cs" />
-    <Compile Include="Utilities\DateTimeUtility.cs" />
-    <Compile Include="Utilities\TaskUtility.cs" />
-    <Compile Include="Utilities\ProcessUtility.cs" />
+    <Compile Include="Collection\ObservableConcurrentDictionary.cs" />
+    <Compile Include="Utility\EmailUtility.cs" />
+    <Compile Include="Utility\LogUtility.cs" />
+    <Compile Include="Utility\DateTimeUtility.cs" />
+    <Compile Include="Utility\TaskUtility.cs" />
+    <Compile Include="Utility\ProcessUtility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utilities\TrafficMonitor.cs" />
+    <Compile Include="Utility\TrafficMonitor.cs" />
     <Compile Include="Windows\WindowsCommand.cs" />
     <Compile Include="Windows\WindowsAPI.cs" />
   </ItemGroup>

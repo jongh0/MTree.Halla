@@ -14,6 +14,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using CommonLib.Firm;
 using CommonLib.Firm.Kiwoom;
+using CommonLib.Windows;
+using CommonLib.Utility;
 
 namespace KiwoomTrader
 {

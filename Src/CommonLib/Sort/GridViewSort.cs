@@ -4,7 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace CommonLib
+namespace CommonLib.Sort
 {
     public class GridViewSort
     {

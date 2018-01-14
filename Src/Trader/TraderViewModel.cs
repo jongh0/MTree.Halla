@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Threading;
-using CommonLib.Extensions;
+using CommonLib.Extension;
 
 namespace Trader
 {
@@ -50,6 +50,7 @@ namespace Trader
             { 
                 _originalOrderNumber = value;
                 NotifyPropertyChanged(nameof(OriginalOrderNumber));
+                NotifyPropertyChanged(nameof(CanOrder));
             }
         }
 
@@ -61,28 +62,28 @@ namespace Trader
                 {
                     case OrderTypes.BuyNew:
                     case OrderTypes.SellNew:
-                        return true;
-                    default:
                         return false;
+                    default:
+                        return true;
                 }
             }
         }
 
-        private string _targetCode;
-        public string TargetCode
+        private string _code;
+        public string Code
         {
-            get { return _targetCode; }
+            get { return _code; }
             set
             {
-                _targetCode = value;
+                _code = value;
 
-                NotifyPropertyChanged(nameof(TargetCode));
+                NotifyPropertyChanged(nameof(Code));
                 NotifyPropertyChanged(nameof(CanOrder));
             }
         }
 
-        private int _price;
-        public int Price
+        private long _price;
+        public long Price
         {
             get { return _price; }
             set
@@ -93,8 +94,8 @@ namespace Trader
             }
         }
 
-        private int _quantity;
-        public int Quantity
+        private long _quantity;
+        public long Quantity
         {
             get { return _quantity; }
             set
@@ -136,10 +137,10 @@ namespace Trader
         {
             get
             {
-                bool canOrder = true;
-
-                if (string.IsNullOrEmpty(TargetCode) == true || Quantity == 0)
-                    canOrder = false;
+                if (string.IsNullOrEmpty(Code) == true ||
+                    Quantity <= 0 ||
+                    Price <= 0)
+                    return false;
 
                 switch (OrderType)
                 {
@@ -147,11 +148,12 @@ namespace Trader
                     case OrderTypes.BuyCancel:
                     case OrderTypes.SellModify:
                     case OrderTypes.SellCancel:
-                        canOrder = (string.IsNullOrEmpty(OriginalOrderNumber) == false);
+                        if (string.IsNullOrEmpty(OriginalOrderNumber) == true)
+                            return false;
                         break;
                 }
 
-                return canOrder;
+                return true;
             }
         }
 
@@ -176,7 +178,7 @@ namespace Trader
                     return;
             }
 
-            order.Code = TargetCode;
+            order.Code = Code;
             order.OrderType = OrderType;
             order.Quantity = Quantity;
             order.Price = Price;

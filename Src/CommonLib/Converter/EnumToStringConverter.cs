@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 
-namespace CommonLib
+namespace CommonLib.Converter
 {
     public class EnumToStringConverter : IValueConverter
     {

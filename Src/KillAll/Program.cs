@@ -32,7 +32,8 @@ namespace KillAll
             "DataStructureTests",
             "TestConsole",
             "TestConsumer",
-            "TestPublisher"
+            "TestPublisher",
+            "EbestResPropertyGenerator",
         };
 
         static void Main(string[] args)

@@ -7,7 +7,7 @@ using System.Threading;
 using System.Runtime.InteropServices;
 using System.IO;
 
-namespace CommonLib
+namespace CommonLib.Windows
 {
     public class WindowsAPI
     {

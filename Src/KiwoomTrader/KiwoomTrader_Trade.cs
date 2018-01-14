@@ -76,8 +76,8 @@ namespace KiwoomTrader
                     order.AccountNumber, 
                     (int)order.OrderType, 
                     order.Code, 
-                    order.Quantity, 
-                    order.Price, 
+                    (int)order.Quantity, 
+                    (int)order.Price, 
                     hoga, 
                     order.OriginOrderNumber);
 

@@ -4,6 +4,7 @@ using MongoDB.Bson;
 using System.ServiceModel;
 using XA_DATASETLib;
 using CommonLib;
+using CommonLib.Utility;
 
 namespace EbestPublisher
 {

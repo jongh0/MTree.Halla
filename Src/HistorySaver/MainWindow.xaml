@@ -4,12 +4,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HistorySaver"
-        xmlns:commonLib="clr-namespace:CommonLib;assembly=CommonLib"
+        xmlns:converter="clr-namespace:CommonLib.Converter;assembly=CommonLib"
         mc:Ignorable="d"
         Title="HistorySaver" Height="310.339" Width="351.864" ResizeMode="CanMinimize">
     <Grid>
         <Grid.Resources>
-            <commonLib:NumberToCurrencyConverter x:Key="NumberToCurrencyConverter"/>
+            <converter:NumberToCurrencyConverter x:Key="NumberToCurrencyConverter"/>
             <Style TargetType="TextBlock">
                 <Setter Property="FontSize" Value="16"/>
                 <Setter Property="Width" Value="140"/>

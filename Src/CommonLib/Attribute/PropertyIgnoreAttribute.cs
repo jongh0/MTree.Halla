@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CommonLib.Attributes
+namespace CommonLib.Attribute
 {
-    public class PropertyIgnoreAttribute : Attribute
+    public class PropertyIgnoreAttribute : System.Attribute
     {
     }
 }

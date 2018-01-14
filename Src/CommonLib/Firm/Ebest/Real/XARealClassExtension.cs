@@ -1,5 +1,5 @@
-﻿using CommonLib.Attributes;
-using CommonLib.Extensions;
+﻿using CommonLib.Attribute;
+using CommonLib.Extension;
 using CommonLib.Firm.Ebest.Block;
 using System;
 using System.Collections.Concurrent;
@@ -36,7 +36,7 @@ namespace CommonLib.Firm.Ebest.Real
                 if (_getPropDic.TryGetValue(type, out var properties) == false)
                 {
                     properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty).Where(
-                        p => Attribute.IsDefined(p, typeof(PropertyIgnoreAttribute)) == false);
+                        p => System.Attribute.IsDefined(p, typeof(PropertyIgnoreAttribute)) == false);
                     _getPropDic.TryAdd(type, properties);
                 }
 

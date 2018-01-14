@@ -10,6 +10,7 @@ using XA_DATASETLib;
 using CommonLib.Firm.Ebest;
 using CommonLib.Firm.Ebest.Block;
 using CommonLib.Firm.Ebest.Query;
+using CommonLib.Converter;
 
 namespace EbestTrader
 {

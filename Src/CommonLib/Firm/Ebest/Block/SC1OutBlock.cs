@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommonLib.Attribute;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,8 +7,12 @@ using System.Threading.Tasks;
 
 namespace CommonLib.Firm.Ebest.Block
 {
+    /// <summary>
+    /// 주식주문체결
+    /// </summary>
     public class SC1OutBlock : BlockBase
     {
+        [PropertyIgnore]
         public override string BlockName => "OutBlock";
 
         /// <summary>

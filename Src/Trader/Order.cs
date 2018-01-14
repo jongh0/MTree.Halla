@@ -16,9 +16,9 @@ namespace Trader
 
         public string Code { get; set; }
 
-        public int Quantity { get; set; }
+        public long Quantity { get; set; }
 
-        public int Price { get; set; }
+        public long Price { get; set; }
 
         public PriceTypes PriceType { get; set; }
 

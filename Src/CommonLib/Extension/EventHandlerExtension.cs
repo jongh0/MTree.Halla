@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CommonLib.Extensions
+namespace CommonLib.Extension
 {
     public delegate TReturn EventHandlerWithReturn<TEventArgs, TReturn>(object sender, TEventArgs e);
 

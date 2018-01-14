@@ -8,6 +8,8 @@ using System.Runtime.InteropServices;
 using System.IO;
 using Configuration;
 using CommonLib;
+using CommonLib.Utility;
+using CommonLib.Windows;
 
 namespace DaishinSessionManager
 {
