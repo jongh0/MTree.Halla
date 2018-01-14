@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using CommonLib.Utility;
 
 namespace DataStructure
 {
@@ -31,7 +32,7 @@ namespace DataStructure
     [KnownType(typeof(IndexMaster))]
     [KnownType(typeof(ETFConclusion))]
     [KnownType(typeof(CodeMapDbObject))]
-    public class Subscribable
+    public abstract class Subscribable
     {
         [BsonId]
         [DataMember]
@@ -52,23 +53,18 @@ namespace DataStructure
 
         public override string ToString()
         {
-            return ToString(string.Empty);
+            return ToString(null);
         }
 
         public virtual string ToString(params string[] excludeProperties)
-        {
-            return ToString(typeof(Subscribable), excludeProperties);
-        }
-
-        public string ToString(Type type, params string[] excludeProperties)
         {
             List<string> strList = new List<string>();
 
             try
             {
-                foreach (var property in type.GetProperties())
+                foreach (var property in PropertyUtility.GetProperties(GetType()))
                 {
-                    if (excludeProperties.Contains(property.Name) == false)
+                    if (excludeProperties == null || excludeProperties.Contains(property.Name) == false)
                     {
                         object value = property.GetValue(this);
 

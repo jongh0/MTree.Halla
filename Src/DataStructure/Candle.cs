@@ -49,11 +49,6 @@ namespace DataStructure
             Code = code;
         }
 
-        public override string ToString(params string[] excludeProperties)
-        {
-            return ToString(typeof(Candle), excludeProperties);
-        }
-
         public static char ConvertToCharType(CandleTypes type)
         {
             switch (type)

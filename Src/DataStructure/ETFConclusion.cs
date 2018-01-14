@@ -66,11 +66,5 @@ namespace DataStructure
         [BsonElement("EI")]
         [DataMember(Name = "EI")]
         public float ReferenceIndex { get; set; }
-
-        public override string ToString(params string[] excludeProperties)
-        {
-            return ToString(GetType(), excludeProperties);
-        }
-
     }
 }

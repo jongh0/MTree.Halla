@@ -1,6 +1,7 @@
 ﻿using CommonLib.Attribute;
 using CommonLib.Extension;
 using CommonLib.Firm.Ebest.Block;
+using CommonLib.Utility;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -31,15 +32,7 @@ namespace CommonLib.Firm.Ebest.Query
 
             try
             {
-                var type = block.GetType();
-
-                if (_setPropDic.TryGetValue(type, out var properties) == false)
-                {
-                    properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty).Where(
-                        p => System.Attribute.IsDefined(p, typeof(PropertyIgnoreAttribute)) == false);
-                    _setPropDic.TryAdd(type, properties);
-                }
-
+                var properties = PropertyUtility.GetProperties(block.GetType(), typeof(PropertyIgnoreAttribute));
                 foreach (var property in properties)
                 {
                     query.SetFieldData(block.BlockName, property.Name, 0, property.GetValue(block).ToString());
@@ -68,19 +61,11 @@ namespace CommonLib.Firm.Ebest.Query
 
             try
             {
-                var type = typeof(T);
-
-                if (_getPropDic.TryGetValue(type, out var properties) == false)
-                {
-                    properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty).Where(
-                        p => System.Attribute.IsDefined(p, typeof(PropertyIgnoreAttribute)) == false);
-                    _getPropDic.TryAdd(type, properties);
-                }
-
+                var properties = PropertyUtility.GetProperties(typeof(T), typeof(PropertyIgnoreAttribute));
                 foreach (var property in properties)
                 {
                     var data = query.GetFieldData(block.BlockName, property.Name, index);
-                    if (string.IsNullOrEmpty(data) == false)
+                    if (string.IsNullOrEmpty(data) == false && property.CanWrite == true)
                         property.SetValueByType(block, data);
                 }
 

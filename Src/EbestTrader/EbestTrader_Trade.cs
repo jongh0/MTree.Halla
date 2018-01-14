@@ -173,15 +173,15 @@ namespace EbestTrader
                 order.CopyTo(block);
 
                 var query = new EbestQuery<CSPAT00600InBlock1, CSPAT00600OutBlock1, CSPAT00600OutBlock2>();
-                if (query.ExecuteQueryAndWait(block) == false)
+                if (query.ExecuteQuery(block) == false)
                 {
                     _logger.Error($"New order error, {order.ToString()}, {GetLastErrorMessage(query.Result)}");
                     return false;
                 }
 
-                _logger.Info($"New order success, {order.ToString()}");
-                _logger.Debug(query.OutBlock1.ToString());
-                _logger.Debug(query.OutBlock2.ToString());
+                //_logger.Info($"New order success, {order.ToString()}");
+                //_logger.Debug(query.OutBlock1.ToString());
+                //_logger.Debug(query.OutBlock2.ToString());
                 return true;
 #else
                 var block = new CSPAT00600InBlock1();

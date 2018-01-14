@@ -132,6 +132,7 @@
     <Compile Include="Firm\Kiwoom\KiwoomError.cs" />
     <Compile Include="Firm\LoginInfo.cs" />
     <Compile Include="Utility\ObjectIdUtility.cs" />
+    <Compile Include="Utility\PropertyUtility.cs" />
     <Compile Include="Utility\ServiceUtility.cs" />
     <Compile Include="Sort\GridViewSort.cs" />
     <Compile Include="Collection\ObservableConcurrentDictionary.cs" />
@@ -141,7 +142,6 @@
     <Compile Include="Utility\TaskUtility.cs" />
     <Compile Include="Utility\ProcessUtility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utility\TrafficMonitor.cs" />
     <Compile Include="Windows\WindowsCommand.cs" />
     <Compile Include="Windows\WindowsAPI.cs" />
   </ItemGroup>
@@ -157,10 +157,6 @@
     <ProjectReference Include="..\Configuration\Configuration.csproj">
       <Project>{9c52064a-188b-449a-89a1-de3a9dd3f766}</Project>
       <Name>Configuration</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DataStructure\DataStructure.csproj">
-      <Project>{da1959a9-15fa-47aa-98ac-3844a723fea1}</Project>
-      <Name>DataStructure</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

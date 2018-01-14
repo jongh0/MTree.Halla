@@ -18,10 +18,5 @@ namespace DataStructure
         [BsonElement("BP")]
         [DataMember(Name = "BP")]
         public float BasisPrice { get; set; }
-
-        public override string ToString(params string[] excludeProperties)
-        {
-            return ToString(typeof(IndexMaster), excludeProperties);
-        }
     }
 }

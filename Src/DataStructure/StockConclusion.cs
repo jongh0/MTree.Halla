@@ -15,10 +15,5 @@ namespace DataStructure
         [BsonElement("CT")]
         [DataMember(Name = "CT")]
         public ConclusionTypes ConclusionType { get; set; }
-
-        public override string ToString(params string[] excludeProperties)
-        {
-            return ToString(typeof(StockConclusion), excludeProperties);
-        }
     }
 }

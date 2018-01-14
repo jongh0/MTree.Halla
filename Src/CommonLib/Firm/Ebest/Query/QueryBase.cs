@@ -58,7 +58,7 @@ namespace CommonLib.Firm.Ebest.Query
                 if (block.BlockName.Contains(ResName) == false)
                     throw new ArgumentException($"Block not matched, {ResName}, {block.BlockName}");
 
-                _logger.Debug($"ExecuteQuery\n{block.ToString()}");
+                _logger.Info($"ExecuteQuery\n{block.ToString()}");
 
                 Query.SetFieldData(block);
                 Result = Query.Request(false);
@@ -79,7 +79,7 @@ namespace CommonLib.Firm.Ebest.Query
                 if (block.BlockName.Contains(ResName) == false)
                     throw new ArgumentException($"Block not matched, {ResName}, {block.BlockName}");
 
-                _logger.Debug($"ExecuteQueryAndWait\n{block.ToString()}");
+                _logger.Info($"ExecuteQueryAndWait\n{block.ToString()}");
 
                 Query.SetFieldData(block);
                 Result = Query.Request(false);

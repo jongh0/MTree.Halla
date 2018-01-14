@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace DataStructure
 {
     [DataContract]
-    public class Conclusion : Subscribable
+    public abstract class Conclusion : Subscribable
     {
         [BsonElement("A")]
         [DataMember(Name = "A")]
@@ -22,10 +22,5 @@ namespace DataStructure
         [BsonElement("P")]
         [DataMember(Name = "P")]
         public float Price { get; set; }
-
-        public override string ToString(params string[] excludeProperties)
-        {
-            return ToString(typeof(Conclusion), excludeProperties);
-        }
     }
 }

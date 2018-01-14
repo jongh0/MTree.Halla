@@ -214,10 +214,5 @@ namespace DataStructure
         [BsonElement("VAT")]
         [DataMember(Name = "VAT")]
         public ValueAlteredTypes ValueAlteredType { get; set; }
-
-        public override string ToString(params string[] excludeProperties)
-        {
-            return ToString(typeof(StockMaster), excludeProperties);
-        }
     }
 }

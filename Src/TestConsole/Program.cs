@@ -60,14 +60,6 @@ namespace TestConsole
             c.ReceivedTime = DateTime.Now;
 
             Console.WriteLine(c);
-
-            var s = new Subscribable();
-            s.Id = ObjectIdUtility.GenerateNewId();
-            s.Code = "111122";
-            s.Time = DateTime.Now;
-            s.ReceivedTime = DateTime.Now;
-
-            Console.WriteLine(s);
         }
 
         private static void TestObjectId()

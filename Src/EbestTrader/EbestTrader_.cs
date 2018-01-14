@@ -317,6 +317,9 @@ namespace EbestTrader
         {
             if (errCode == 0)
                 errCode = sessionObj.GetLastError();
+
+            if (errCode >= 0) return string.Empty;
+
             var errMsg = sessionObj.GetErrorMessage(errCode);
 
             return $"errCode: {errCode}, errMsg: {errMsg}";

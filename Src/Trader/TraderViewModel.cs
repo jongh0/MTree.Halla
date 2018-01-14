@@ -69,7 +69,7 @@ namespace Trader
             }
         }
 
-        private string _code;
+        private string _code = "005930";
         public string Code
         {
             get { return _code; }
@@ -82,7 +82,7 @@ namespace Trader
             }
         }
 
-        private long _price;
+        private long _price = 2410000;
         public long Price
         {
             get { return _price; }
@@ -94,7 +94,7 @@ namespace Trader
             }
         }
 
-        private long _quantity;
+        private long _quantity = 1;
         public long Quantity
         {
             get { return _quantity; }
@@ -159,6 +159,7 @@ namespace Trader
 
         public void ExecuteOrder()
         {
+
             var order = new Order();
             order.AccountNumber = SelectedAccount;
 
