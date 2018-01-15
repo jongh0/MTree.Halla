@@ -31,7 +31,7 @@ namespace TestPublisher
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            _logger.Error((Exception)e.ExceptionObject, $"Unhandled exception, IsTerminating: {e.IsTerminating}");
+            _logger.Error((Exception)e.ExceptionObject);
         }
     }
 }
