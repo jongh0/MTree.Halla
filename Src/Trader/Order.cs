@@ -1,5 +1,6 @@
 ﻿using CommonLib.Firm.Ebest;
 using CommonLib.Firm.Ebest.Block;
+using CommonLib.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,7 +29,7 @@ namespace Trader
 
         public override string ToString()
         {
-            return $"{AccountNumber}/{Code}/{Quantity}/{Price}/{PriceType}/{OrderType}/{OriginOrderNumber}";
+            return PropertyUtility.PrintNameValues(this);
         }
 
         public void CopyTo(CSPAT00600InBlock1 block)

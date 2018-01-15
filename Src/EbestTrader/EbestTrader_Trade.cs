@@ -179,9 +179,6 @@ namespace EbestTrader
                     return false;
                 }
 
-                //_logger.Info($"New order success, {order.ToString()}");
-                //_logger.Debug(query.OutBlock1.ToString());
-                //_logger.Debug(query.OutBlock2.ToString());
                 return true;
 #else
                 var block = new CSPAT00600InBlock1();

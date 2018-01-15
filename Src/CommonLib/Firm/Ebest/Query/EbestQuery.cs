@@ -20,7 +20,7 @@ namespace CommonLib.Firm.Ebest.Query
         {
             if (Query.GetFieldData(out TOutBlock block) == true)
             {
-                _logger.Debug($"OnReceiveData\n{block.ToString()}");
+                _logger.Info($"OnReceiveData\n{block.ToString()}");
                 OutBlock = block;
                 OutBlockReceived?.Invoke(block);
             }
@@ -44,14 +44,14 @@ namespace CommonLib.Firm.Ebest.Query
         {
             if (Query.GetFieldData(out TOutBlock1 block1) == true)
             {
-                _logger.Debug($"OnReceiveData\n{block1.ToString()}");
+                _logger.Info($"OnReceiveData\n{block1.ToString()}");
                 OutBlock1 = block1;
                 OutBlock1Received?.Invoke(block1);
             }
 
             if (Query.GetFieldData(out TOutBlock2 block2) == true)
             {
-                _logger.Debug($"OnReceiveData\n{block2.ToString()}");
+                _logger.Info($"OnReceiveData\n{block2.ToString()}");
                 OutBlock2 = block2;
                 OutBlock2Received?.Invoke(block2);
             }
