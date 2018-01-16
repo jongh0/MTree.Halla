@@ -38,6 +38,8 @@ namespace Configuration
 
         public bool ExcludeKiwoom { get; set; } = true;
 
+        public bool RunTrader { get; set; } = true;
+
         [JsonConverter(typeof(StringEnumConverter))]
         public TraderTypes TraderType { get; set; } = TraderTypes.Ebest;
 

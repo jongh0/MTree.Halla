@@ -107,6 +107,26 @@ namespace RealTimeProvider
                     for (int i = 0; i < ebestProcessCount; i++)
                         ProcessUtility.Start(ProcessTypes.EbestPublisher, ProcessWindowStyle.Minimized);
                 }
+
+                if (Config.General.RunTrader == true)
+                {
+                    switch (Config.General.TraderType)
+                    {
+                        case TraderTypes.Ebest:
+                        case TraderTypes.EbestSimul:
+                            if (Config.General.ExcludeEbest == false)
+                                ProcessUtility.Start(ProcessTypes.EbestTrader, ProcessWindowStyle.Minimized);
+                            break;
+                        case TraderTypes.Kiwoom:
+                        case TraderTypes.KiwoomSimul:
+                            if (Config.General.ExcludeKiwoom == false)
+                                ProcessUtility.Start(ProcessTypes.KiwoomTrader, ProcessWindowStyle.Minimized);
+                            break;
+                        case TraderTypes.Virtual:
+                            ProcessUtility.Start(ProcessTypes.VirtualTrader, ProcessWindowStyle.Minimized);
+                            break;
+                    }
+                }
             }
             catch (Exception ex)
             {
