@@ -16,21 +16,19 @@ namespace CommonLib.Utility
 
         private static ConcurrentDictionary<Type, IEnumerable<PropertyInfo>> _propDic = new ConcurrentDictionary<Type, IEnumerable<PropertyInfo>>();
 
-        public static IEnumerable<PropertyInfo> GetProperties(Type objectType, Type ignoreAttributeType = default(Type))
+        public static IEnumerable<PropertyInfo> GetProperties(Type type)
         {
-            if (_propDic.TryGetValue(objectType, out var properties) == false)
+            if (_propDic.TryGetValue(type, out var properties) == false)
             {
-                properties = objectType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
-                _propDic.TryAdd(objectType, properties);
+                properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                    .Where(p => System.Attribute.IsDefined(p, typeof(PropertyIgnoreAttribute)) == false);
+                _propDic.TryAdd(type, properties);
             }
-
-            if (ignoreAttributeType != default(Type))
-                return properties.Where(p => System.Attribute.IsDefined(p, ignoreAttributeType) == false);
 
             return properties;
         }
 
-        public static string PrintValues(object obj, Type ignoreAttributeType = default(Type), string seperator = ", ")
+        public static string PrintValues(object obj, string seperator = ", ")
         {
             if (obj == null) return string.Empty;
 
@@ -38,8 +36,7 @@ namespace CommonLib.Utility
 
             try
             {
-                var properties = GetProperties(obj.GetType(), ignoreAttributeType);
-                foreach (var property in properties)
+                foreach (var property in GetProperties(obj.GetType()))
                 {
                     var value = property.GetValue(obj);
 
@@ -62,7 +59,7 @@ namespace CommonLib.Utility
             return string.Empty;
         }
 
-        public static string PrintNameValues(object obj, Type ignoreAttributeType = default(Type), string seperator = ", ")
+        public static string PrintNameValues(object obj, string seperator = ", ")
         {
             if (obj == null) return string.Empty;
 
@@ -70,8 +67,7 @@ namespace CommonLib.Utility
 
             try
             {
-                var properties = GetProperties(obj.GetType(), ignoreAttributeType);
-                foreach (var property in properties)
+                foreach (var property in GetProperties(obj.GetType()))
                 {
                     var value = property.GetValue(obj);
 

@@ -68,6 +68,7 @@ namespace CommonLib.Firm.Ebest.Block
         /// <summary>
         /// 전략코드 [6]
         /// </summary>
+        [PropertyIgnore]
         public string StrtgCode { get; set; }
 
         /// <summary>

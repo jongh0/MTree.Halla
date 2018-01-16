@@ -32,8 +32,7 @@ namespace CommonLib.Firm.Ebest.Query
 
             try
             {
-                var properties = PropertyUtility.GetProperties(block.GetType(), typeof(PropertyIgnoreAttribute));
-                foreach (var property in properties)
+                foreach (var property in PropertyUtility.GetProperties(block.GetType()))
                 {
                     query.SetFieldData(block.BlockName, property.Name, 0, property.GetValue(block).ToString());
                 }
@@ -61,11 +60,12 @@ namespace CommonLib.Firm.Ebest.Query
 
             try
             {
-                var properties = PropertyUtility.GetProperties(typeof(T), typeof(PropertyIgnoreAttribute));
-                foreach (var property in properties)
+                foreach (var property in PropertyUtility.GetProperties(typeof(T)))
                 {
+                    if (property.CanWrite == false) continue;
+
                     var data = query.GetFieldData(block.BlockName, property.Name, index);
-                    if (string.IsNullOrEmpty(data) == false && property.CanWrite == true)
+                    if (string.IsNullOrEmpty(data) == false)
                         property.SetValueByType(block, data);
                 }
 

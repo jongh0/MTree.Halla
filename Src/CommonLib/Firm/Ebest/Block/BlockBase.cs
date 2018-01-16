@@ -21,7 +21,7 @@ namespace CommonLib.Firm.Ebest.Block
 
         public override string ToString()
         {
-            return PropertyUtility.PrintNameValues(this);
+            return PropertyUtility.PrintNameValues(this, Environment.NewLine);
         }
     }
 }

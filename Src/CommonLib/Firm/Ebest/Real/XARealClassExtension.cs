@@ -1,6 +1,7 @@
 ﻿using CommonLib.Attribute;
 using CommonLib.Extension;
 using CommonLib.Firm.Ebest.Block;
+using CommonLib.Utility;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -16,8 +17,6 @@ namespace CommonLib.Firm.Ebest.Real
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private static ConcurrentDictionary<Type, IEnumerable<PropertyInfo>> _getPropDic = new ConcurrentDictionary<Type, IEnumerable<PropertyInfo>>();
-
         /// <summary>
         /// XARealClass Field를 읽어서 Block Class를 만들어준다.
         /// </summary>
@@ -31,16 +30,7 @@ namespace CommonLib.Firm.Ebest.Real
 
             try
             {
-                var type = typeof(T);
-
-                if (_getPropDic.TryGetValue(type, out var properties) == false)
-                {
-                    properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty).Where(
-                        p => System.Attribute.IsDefined(p, typeof(PropertyIgnoreAttribute)) == false);
-                    _getPropDic.TryAdd(type, properties);
-                }
-
-                foreach (var property in properties)
+                foreach (var property in PropertyUtility.GetProperties(typeof(T)))
                 {
                     var data = real.GetFieldData(block.BlockName, property.Name);
                     if (string.IsNullOrEmpty(data) == false)
