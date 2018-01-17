@@ -164,7 +164,7 @@ namespace DbProvider
                 else if (typeof(T) == typeof(IndexConclusion))
                     return (IMongoCollection<T>)IndexConclusionDb.GetCollection<IndexConclusion>(collectionName);
                 else if (typeof(T) == typeof(ETFConclusion))
-                    return (IMongoCollection<T>)IndexConclusionDb.GetCollection<ETFConclusion>(collectionName);
+                    return (IMongoCollection<T>)ETFConclusionDb.GetCollection<ETFConclusion>(collectionName);
                 else if (typeof(T) == typeof(DataCounter))
                     return (IMongoCollection<T>)CommonDb.GetCollection<DataCounter>(collectionName);
                 else if (typeof(T) == typeof(CodeMapDbObject))
@@ -558,6 +558,10 @@ namespace DbProvider
                     var collection = GetCollection<ETFConclusion>(collectionName);
                     var builder = Builders<ETFConclusion>.Filter;
                     var filter = builder.Gte(i => i.Time, startDate) & builder.Lte(i => i.Time, endDate);
+#if false // Filter logging
+                    var renderedFilter = filter.Render(collection.DocumentSerializer, collection.Settings.SerializerRegistry);
+                    Trace.WriteLine(renderedFilter.ToJson()); 
+#endif
                     Counter.ETFConclusionCount += (int)collection.Find(filter).Count();
                 }
                 #endregion
