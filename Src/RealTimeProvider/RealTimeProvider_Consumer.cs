@@ -48,12 +48,13 @@ namespace RealTimeProvider
             {
                 contract.Callback = OperationContext.Current.GetCallbackChannel<IRealTimeConsumerCallback>();
 
-                // Channel 오류 시 Callback 사용 중지하기 위해서
+#if false // Channel 오류 시 Callback 사용 중지하기 위해서
                 if (contract.Callback is ICommunicationObject clientChannel)
                 {
                     clientChannel.Faulted += ClientChannel_Faulted;
                     clientChannel.Closed += ClientChannel_Closed;
-                }
+                } 
+#endif
 
                 // 모든 Contract 저장
                 if (ConsumerContracts.ContainsKey(clientId) == false)
