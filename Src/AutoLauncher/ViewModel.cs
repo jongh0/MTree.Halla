@@ -21,6 +21,8 @@ namespace AutoLauncher
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
+        public string MainTitle => $"AutoLauncher {AssemblyUtility.VersionName}";
+
         public Shutdowner Shutdowner { get; set; } = new Shutdowner();
 
         private List<Launcher> _launchers;

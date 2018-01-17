@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AutoLauncher"
         mc:Ignorable="d"
-        Title="AutoLauncher" ResizeMode="NoResize" SizeToContent="WidthAndHeight">
+        Title="{Binding Path=MainTitle, Mode=OneWay}" ResizeMode="NoResize" SizeToContent="WidthAndHeight">
     <Window.DataContext>
         <local:ViewModel/>
     </Window.DataContext>
