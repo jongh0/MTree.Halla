@@ -67,10 +67,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Handler\DbHandler.cs" />
     <Compile Include="StrategyManager_.cs" />
-    <Compile Include="Handler\TradeHandler.cs" />
-    <Compile Include="TechnicalAnalysisHelper.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
