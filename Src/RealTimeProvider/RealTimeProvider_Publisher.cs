@@ -1,18 +1,11 @@
-﻿#define EVENLY_DISTRIBUTION
-
-using MongoDB.Bson;
-using Configuration;
+﻿using Configuration;
 using DataStructure;
 using CommonLib;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.ServiceModel;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CommonLib.Utility;
@@ -67,72 +60,6 @@ namespace RealTimeProvider
         }
         #endregion
         #endregion
-
-        private void LaunchClientProcess()
-        {
-            try
-            {
-                RealTimeState = "Launch client process";
-                _logger.Info(RealTimeState);
-
-                // HistorySaver
-                if (Config.General.LaunchHistorySaver == true)
-                    ProcessUtility.Start(ProcessTypes.HistorySaver, ProcessWindowStyle.Minimized);
-
-                // Dashboard
-                if (Config.General.LaunchDashboard == true)
-                    ProcessUtility.Start(ProcessTypes.Dashboard, ProcessWindowStyle.Minimized);
-
-                // Kiwoom
-                if (SkipMastering == false && Config.General.ExcludeKiwoom == false)
-                    ProcessUtility.Start(ProcessTypes.KiwoomPublisher, ProcessWindowStyle.Minimized);
-
-                // Daishin
-                int daishinProcessCount;
-                if (Config.General.SkipBiddingPrice == true)
-                    daishinProcessCount = (StockCodeList.Count * 2 + IndexCodeList.Count) / 400 + 1;
-                else
-                    daishinProcessCount = (StockCodeList.Count * 3 + IndexCodeList.Count) / 400 + 1;
-
-                if (Config.General.SkipETFConclusion == false)
-                    daishinProcessCount += StockCodeList.Values.Where(c => c.MarketType == MarketTypes.ETF).Count() / 400;
-
-                for (int i = 0; i < daishinProcessCount; i++)
-                    ProcessUtility.Start(ProcessTypes.DaishinPublisher, ProcessWindowStyle.Minimized);
-
-                // Ebest
-                if (Config.General.ExcludeEbest == false)
-                {
-                    int ebestProcessCount = 2;
-                    for (int i = 0; i < ebestProcessCount; i++)
-                        ProcessUtility.Start(ProcessTypes.EbestPublisher, ProcessWindowStyle.Minimized);
-                }
-
-                if (Config.General.RunTrader == true)
-                {
-                    switch (Config.General.TraderType)
-                    {
-                        case TraderTypes.Ebest:
-                        case TraderTypes.EbestSimul:
-                            if (Config.General.ExcludeEbest == false)
-                                ProcessUtility.Start(ProcessTypes.EbestTrader, ProcessWindowStyle.Minimized);
-                            break;
-                        case TraderTypes.Kiwoom:
-                        case TraderTypes.KiwoomSimul:
-                            if (Config.General.ExcludeKiwoom == false)
-                                ProcessUtility.Start(ProcessTypes.KiwoomTrader, ProcessWindowStyle.Minimized);
-                            break;
-                        case TraderTypes.Virtual:
-                            ProcessUtility.Start(ProcessTypes.VirtualTrader, ProcessWindowStyle.Minimized);
-                            break;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex);
-            }
-        }
 
         public void RegisterPublisherContract(Guid clientId, PublisherContract contract)
         {
@@ -379,7 +306,7 @@ namespace RealTimeProvider
                     MarketEndTimer.AutoReset = false;
                     MarketEndTimer.Start();
 
-                    _logger.Info($"Market end timer will be triggered after {interval.Hours}:{interval.Minutes}:{interval.Seconds}");
+                    _logger.Info($"Market end timer will be triggered after {interval.Hours}:{interval.Minutes}");
                 }
             }
             catch (Exception ex)
@@ -415,19 +342,10 @@ namespace RealTimeProvider
             RealTimeState = "Start code distributing";
             _logger.Info(RealTimeState);
 
-
-#if EVENLY_DISTRIBUTION
             DistributeConclusionAndBiddingSubscribingCode();
-#else
-            DistributeStockConclusionSubscribingCode();
-            DistributeIndexConclusionSubscribingCode();
-            if (Config.General.SkipBiddingPrice == false)
-                DistributeBiddingSubscribingCode(); 
-#endif
             DistributeCircuitBreakSubscribingCode();
         }
 
-#if EVENLY_DISTRIBUTION
         private void DistributeConclusionAndBiddingSubscribingCode()
         {
             try
@@ -476,157 +394,6 @@ namespace RealTimeProvider
                 _logger.Error(ex);
             }
         }
-#else
-        private void DistributeBiddingSubscribingCode()
-        {
-            RealTimeState = "Bidding code distribution, Start";
-            _logger.Info(RealTimeState);
-
-            int index = 0;
-
-            foreach (var contract in DaishinContracts)
-            {
-                while (true)
-                {
-                    try
-                    {
-                        if (StockCodeList.Count > index &&
-                            contract.Callback.IsSubscribable() == true)
-                        {
-                            var codeEntity = StockCodeList.Values.ElementAt(index);
-                            var code = codeEntity.Code;
-
-                            if (contract.Type == ProcessTypes.Daishin)
-                                code = CodeEntity.ConvertToDaishinCode(codeEntity);
-
-                            if (contract.Callback.SubscribeBidding(code) == true)
-                                index++;
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.Error(ex);
-                        break;
-                    }
-                }
-            }
-
-            if (StockCodeList.Count == index)
-            {
-                RealTimeState = "Bidding code distribution, Done";
-                _logger.Info(RealTimeState);
-            }
-            else
-            {
-                RealTimeState = "Bidding code distribution, Fail";
-                _logger.Error(RealTimeState);
-            }
-        }
-
-        private void DistributeStockConclusionSubscribingCode()
-        {
-            RealTimeState = "Stock conclusion code distribution, Start";
-            _logger.Info(RealTimeState);
-
-            int index = 0;
-
-            foreach (var contract in DaishinContracts)
-            {
-                while (true)
-                {
-                    try
-                    {
-                        if (StockCodeList.Count > index &&
-                            contract.Callback.IsSubscribable() == true)
-                        {
-                            var codeEntity = StockCodeList.Values.ElementAt(index);
-                            var code = codeEntity.Code;
-
-                            if (contract.Type == ProcessTypes.Daishin)
-                                code = CodeEntity.ConvertToDaishinCode(codeEntity);
-
-                            if (contract.Callback.SubscribeStock(code) == true)
-                                index++;
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.Error(ex);
-                        break;
-                    }
-                }
-            }
-
-            if (StockCodeList.Count == index)
-            {
-                RealTimeState = "Stock code distribution, Done";
-                _logger.Info(RealTimeState);
-            }
-            else
-            {
-                RealTimeState = "Stock code distribution, Fail";
-                _logger.Error(RealTimeState);
-            }
-        }
-
-        private void DistributeIndexConclusionSubscribingCode()
-        {
-            RealTimeState = "Index conclusion code distribution, Start";
-            _logger.Info(RealTimeState);
-
-            int index = 0;
-
-            foreach (var contract in DaishinContracts)
-            {
-                while (true)
-                {
-                    try
-                    {
-                        if (IndexCodeList.Count > index &&
-                            contract.Callback.IsSubscribable() == true)
-                        {
-                            var codeEntity = IndexCodeList.Values.ElementAt(index);
-                            var code = codeEntity.Code;
-
-                            if (contract.Type == ProcessTypes.Daishin)
-                                code = CodeEntity.ConvertToDaishinCode(codeEntity);
-
-                            if (contract.Callback.SubscribeIndex(code) == true)
-                                index++;
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.Error(ex);
-                        break;
-                    }
-                }
-            }
-
-            if (IndexCodeList.Count == index)
-            {
-                RealTimeState = "Index code distribution, Done";
-                _logger.Info(RealTimeState);
-            }
-            else
-            {
-                RealTimeState = "Index code distribution, Fail";
-                _logger.Error(RealTimeState);
-            }
-        } 
-#endif
 
         private void DistributeCircuitBreakSubscribingCode()
         {

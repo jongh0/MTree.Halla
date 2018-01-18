@@ -89,6 +89,74 @@ namespace RealTimeProvider
             StartRefreshTimer();
         }
 
+        private void LaunchClientProcess()
+        {
+            try
+            {
+                RealTimeState = "Launch client process";
+                _logger.Info(RealTimeState);
+
+                // HistorySaver
+                if (Config.General.LaunchHistorySaver == true)
+                    ProcessUtility.Start(ProcessTypes.HistorySaver, ProcessWindowStyle.Minimized);
+
+                // Dashboard
+                if (Config.General.LaunchDashboard == true)
+                    ProcessUtility.Start(ProcessTypes.Dashboard, ProcessWindowStyle.Minimized);
+
+                // Kiwoom
+                if (SkipMastering == false && Config.General.ExcludeKiwoom == false)
+                    ProcessUtility.Start(ProcessTypes.KiwoomPublisher, ProcessWindowStyle.Minimized);
+
+                // Daishin
+                int daishinProcessCount;
+                if (Config.General.SkipBiddingPrice == true)
+                    daishinProcessCount = (StockCodeList.Count * 2 + IndexCodeList.Count) / 400 + 1;
+                else
+                    daishinProcessCount = (StockCodeList.Count * 3 + IndexCodeList.Count) / 400 + 1;
+
+                if (Config.General.SkipETFConclusion == false)
+                    daishinProcessCount += StockCodeList.Values.Where(c => c.MarketType == MarketTypes.ETF).Count() / 400;
+
+                for (int i = 0; i < daishinProcessCount; i++)
+                    ProcessUtility.Start(ProcessTypes.DaishinPublisher, ProcessWindowStyle.Minimized);
+
+                // Ebest
+                if (Config.General.ExcludeEbest == false)
+                {
+                    int ebestProcessCount = 2;
+                    for (int i = 0; i < ebestProcessCount; i++)
+                        ProcessUtility.Start(ProcessTypes.EbestPublisher, ProcessWindowStyle.Minimized);
+                }
+
+                if (Config.General.LaunchStrategyManager == true)
+                {
+                    switch (Config.General.TraderType)
+                    {
+                        case TraderTypes.Ebest:
+                        case TraderTypes.EbestSimul:
+                            if (Config.General.ExcludeEbest == false)
+                                ProcessUtility.Start(ProcessTypes.EbestTrader, ProcessWindowStyle.Minimized);
+                            break;
+                        case TraderTypes.Kiwoom:
+                        case TraderTypes.KiwoomSimul:
+                            if (Config.General.ExcludeKiwoom == false)
+                                ProcessUtility.Start(ProcessTypes.KiwoomTrader, ProcessWindowStyle.Minimized);
+                            break;
+                        case TraderTypes.Virtual:
+                            ProcessUtility.Start(ProcessTypes.VirtualTrader, ProcessWindowStyle.Minimized);
+                            break;
+                    }
+
+                    ProcessUtility.Start(ProcessTypes.StrategyManager, ProcessWindowStyle.Minimized);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+        }
+
         #region NotifyMessage
         public void NotifyMessage(MessageTypes type, string message)
         {
@@ -114,6 +182,7 @@ namespace RealTimeProvider
             {
                 try
                 {
+                    _logger.Info($"NotifyMessageToConsumer, {nameof(type)}: {type}, {nameof(message)}: {message}");
                     contract.Value.Callback.NotifyMessage(type, message);
                 }
                 catch (Exception ex)
@@ -129,6 +198,7 @@ namespace RealTimeProvider
             {
                 try
                 {
+                    _logger.Info($"NotifyMessageToPubliser, {nameof(type)}: {type}, {nameof(message)}: {message}");
                     contract.Value.Callback.NotifyMessage(type, message);
                 }
                 catch (Exception ex)
