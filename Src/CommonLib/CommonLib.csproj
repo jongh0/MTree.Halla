@@ -142,7 +142,6 @@
     <Compile Include="Utility\DateTimeUtility.cs" />
     <Compile Include="Utility\TaskUtility.cs" />
     <Compile Include="Utility\ProcessUtility.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Windows\WindowsCommand.cs" />
     <Compile Include="Windows\WindowsAPI.cs" />
   </ItemGroup>

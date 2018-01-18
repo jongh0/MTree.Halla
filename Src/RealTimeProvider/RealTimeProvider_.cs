@@ -138,12 +138,14 @@ namespace RealTimeProvider
                             if (Config.General.ExcludeEbest == false)
                                 ProcessUtility.Start(ProcessTypes.EbestTrader, ProcessWindowStyle.Minimized);
                             break;
+
                         case TraderTypes.Kiwoom:
                         case TraderTypes.KiwoomSimul:
                             if (Config.General.ExcludeKiwoom == false)
                                 ProcessUtility.Start(ProcessTypes.KiwoomTrader, ProcessWindowStyle.Minimized);
                             break;
-                        case TraderTypes.Virtual:
+
+                        default:
                             ProcessUtility.Start(ProcessTypes.VirtualTrader, ProcessWindowStyle.Minimized);
                             break;
                     }

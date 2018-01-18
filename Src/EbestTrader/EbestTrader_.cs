@@ -50,17 +50,6 @@ namespace EbestTrader
 
         #region Ebest Specific
         private XASessionClass _session;
-        private XAQueryClass stockQuotingObj;
-        private XAQueryClass newOrderObj;
-        private XAQueryClass modifyOrderObj;
-        private XAQueryClass cancelOrderObj;
-        private XAQueryClass accDepositObj;
-
-        private XARealClass orderSubmittedObj;
-        private XARealClass orderConcludedObj;
-        private XARealClass orderModifiedObj;
-        private XARealClass orderCanceledObj;
-        private XARealClass orderRejectedObj;
 
         private EbestReal<SC0OutBlock> _orderSubmitReal;
         private EbestReal<SC1OutBlock> _orderConclusionReal;

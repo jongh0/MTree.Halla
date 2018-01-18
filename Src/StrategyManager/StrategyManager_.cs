@@ -32,24 +32,43 @@ namespace StrategyManager
             _concernCodeList.Add("035420"); // Naver
 
             _historyConsumer = new HistoryConsumer();
+
+            if (ProcessUtility.WaitIfNotExists(ProcessTypes.RealTimeProvider) == false)
+            {
+                _logger.Error($"{nameof(ProcessTypes.RealTimeProvider)} process not exists");
+                return;
+            }
+
             _realTimeConsumer = new RealTimeConsumer();
             _realTimeConsumer.ChannelOpened += RealTimeConsumer_ChannelOpened;
 
-            var traderConfiguration = string.Empty;
+            string traderConfiguration;
+            ProcessTypes processType;
 
             switch (Config.General.TraderType)
             {
                 case TraderTypes.Ebest:
                 case TraderTypes.EbestSimul:
                     traderConfiguration = "EbestTraderConfig";
+                    processType = ProcessTypes.EbestTrader;
                     break;
+
                 case TraderTypes.Kiwoom:
                 case TraderTypes.KiwoomSimul:
-                    traderConfiguration = "EbestTraderConfig";
+                    traderConfiguration = "KiwoomTraderConfig";
+                    processType = ProcessTypes.KiwoomTrader;
                     break;
-                case TraderTypes.Virtual:
-                    traderConfiguration = "EbestTraderConfig";
+
+                default:
+                    traderConfiguration = "VirtualTraderConfig";
+                    processType = ProcessTypes.VirtualTrader;
                     break;
+            }
+
+            if (ProcessUtility.WaitIfNotExists(processType) == false)
+            {
+                _logger.Error($"{processType} process not exists");
+                return;
             }
 
             _trader = new RealTimeTrader(traderConfiguration);

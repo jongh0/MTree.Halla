@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.ServiceProcess;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CommonLib.Utility
@@ -148,6 +149,36 @@ namespace CommonLib.Utility
         {
             var processList = Process.GetProcessesByName(processName);
             return (processList != null && processList.Length > 0);
+        }
+
+        public static bool WaitIfNotExists(ProcessTypes type, int timeout = 1000 * 2)
+        {
+            var retry = timeout / 100;
+
+            while (retry-- > 0)
+            {
+                if (Exists(type) == true)
+                    return true;
+
+                Thread.Sleep(100);
+            }
+
+            return false;
+        }
+
+        public static bool WaitIfNotExists(string processName, int timeout = 1000 * 2)
+        {
+            var retry = timeout / 100;
+
+            while (retry-- > 0)
+            {
+                if (Exists(processName) == true)
+                    return true;
+
+                Thread.Sleep(100);
+            }
+
+            return false;
         }
     }
 }

@@ -159,7 +159,6 @@ namespace EbestTrader
         {
             try
             {
-#if true
                 var block = new CSPAT00600InBlock1();
                 order.CopyTo(block);
 
@@ -171,26 +170,6 @@ namespace EbestTrader
                 }
 
                 return true;
-#else
-                var block = new CSPAT00600InBlock1();
-                order.CopyTo(block);
-
-                if (newOrderObj.SetFieldData(block) == false)
-                {
-                    _logger.Error("New order set field error");
-                    return false;
-                }
-
-                var ret = newOrderObj.Request(false);
-                if (ret < 0)
-                {
-                    _logger.Error($"New order error, {order.ToString()}, {GetLastErrorMessage(ret)}");
-                    return false;
-                }
-
-                _logger.Info($"New order success, {order.ToString()}");
-                return true; 
-#endif
             }
             catch (Exception ex)
             {
@@ -207,20 +186,13 @@ namespace EbestTrader
                 var block = new CSPAT00700InBlock1();
                 order.CopyTo(block);
 
-                if (newOrderObj.SetFieldData(block) == false)
+                var query = new EbestQuery<CSPAT00700InBlock1, CSPAT00700OutBlock1, CSPAT00700OutBlock2>();
+                if (query.ExecuteQuery(block) == false)
                 {
-                    _logger.Error("Modify order set field error");
+                    _logger.Error($"Modify order error, {order.ToString()}, {GetLastErrorMessage(query.Result)}");
                     return false;
                 }
 
-                var ret = modifyOrderObj.Request(false);
-                if (ret < 0)
-                {
-                    _logger.Error($"Modify order error , {order.ToString()}, {GetLastErrorMessage(ret)}");
-                    return false;
-                }
-
-                _logger.Info($"Modify order success, {order.ToString()}");
                 return true;
             }
             catch (Exception ex)
@@ -238,20 +210,13 @@ namespace EbestTrader
                 var block = new CSPAT00800InBlock1();
                 order.CopyTo(block);
 
-                if (newOrderObj.SetFieldData(block) == false)
+                var query = new EbestQuery<CSPAT00800InBlock1, CSPAT00800OutBlock1, CSPAT00800OutBlock2>();
+                if (query.ExecuteQuery(block) == false)
                 {
-                    _logger.Error("Cancel order set field error");
+                    _logger.Error($"Cancel order error, {order.ToString()}, {GetLastErrorMessage(query.Result)}");
                     return false;
                 }
 
-                var ret = cancelOrderObj.Request(false);
-                if (ret < 0)
-                {
-                    _logger.Error($"Cancel order error, {order.ToString()}, {GetLastErrorMessage(ret)}");
-                    return false;
-                }
-
-                _logger.Info($"Cancel order success, {order.ToString()}");
                 return true;
             }
             catch (Exception ex)
