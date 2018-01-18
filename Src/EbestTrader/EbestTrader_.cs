@@ -16,6 +16,7 @@ using CommonLib.Firm.Ebest;
 using CommonLib.Firm.Ebest.Block;
 using CommonLib.Firm.Ebest.Query;
 using CommonLib.Firm.Ebest.Real;
+using System.Threading.Tasks;
 
 namespace EbestTrader
 {
@@ -48,7 +49,7 @@ namespace EbestTrader
         #endregion
 
         #region Ebest Specific
-        private XASessionClass sessionObj;
+        private XASessionClass _session;
         private XAQueryClass stockQuotingObj;
         private XAQueryClass newOrderObj;
         private XAQueryClass modifyOrderObj;
@@ -77,60 +78,13 @@ namespace EbestTrader
                 CommTimer.AutoReset = true;
 
                 #region XASession
-                sessionObj = new XASessionClass();
-                sessionObj.Disconnect += SessionObj_Disconnect;
-                sessionObj._IXASessionEvents_Event_Login += SessionObj_Event_Login;
-                sessionObj._IXASessionEvents_Event_Logout += SessionObj_Event_Logout;
-                #endregion
-
-                #region XAQuery
-                stockQuotingObj = new XAQueryClass();
-                stockQuotingObj.ResFileName = ResFilePath + "\\t1102.res";
-                stockQuotingObj.ReceiveData += StockQuotingObj_ReceiveData;
-                stockQuotingObj.ReceiveMessage += QueryObj_ReceiveMessage;
-
-                newOrderObj = new XAQueryClass();
-                newOrderObj.ResFileName = ResFilePath + "\\CSPAT00600.res";
-                newOrderObj.ReceiveData += NewOrderObj_ReceiveData;
-                newOrderObj.ReceiveMessage += QueryObj_ReceiveMessage;
-
-                modifyOrderObj = new XAQueryClass();
-                modifyOrderObj.ResFileName = ResFilePath + "\\CSPAT00700.res";
-                modifyOrderObj.ReceiveData += ModifyOrderObj_ReceiveData;
-                modifyOrderObj.ReceiveMessage += QueryObj_ReceiveMessage;
-
-                cancelOrderObj = new XAQueryClass();
-                cancelOrderObj.ResFileName = ResFilePath + "\\CSPAT00800.res";
-                cancelOrderObj.ReceiveData += CancelOrderObj_ReceiveData;
-                cancelOrderObj.ReceiveMessage += QueryObj_ReceiveMessage;
-
-                accDepositObj = new XAQueryClass();
-                accDepositObj.ResFileName = ResFilePath + "\\t0424.res";
-                accDepositObj.ReceiveData += AccDepositObj_ReceiveData;
-                accDepositObj.ReceiveMessage += QueryObj_ReceiveMessage;
+                _session = new XASessionClass();
+                _session.Disconnect += SessionObj_Disconnect;
+                _session._IXASessionEvents_Event_Login += Session_Event_Login;
+                _session._IXASessionEvents_Event_Logout += Session_Event_Logout;
                 #endregion
 
                 #region XAReal
-                orderSubmittedObj = new XARealClass();
-                orderSubmittedObj.ResFileName = ResFilePath + "\\SC0.res";
-                orderSubmittedObj.ReceiveRealData += OrderSubmittedObj_ReceiveRealData;
-
-                orderConcludedObj = new XARealClass();
-                orderConcludedObj.ResFileName = ResFilePath + "\\SC1.res";
-                orderConcludedObj.ReceiveRealData += OrderConcludedObj_ReceiveRealData;
-
-                orderModifiedObj = new XARealClass();
-                orderModifiedObj.ResFileName = ResFilePath + "\\SC2.res";
-                orderModifiedObj.ReceiveRealData += OrderModifiedObj_ReceiveRealData;
-
-                orderCanceledObj = new XARealClass();
-                orderCanceledObj.ResFileName = ResFilePath + "\\SC3.res";
-                orderCanceledObj.ReceiveRealData += OrderCanceledObj_ReceiveRealData;
-
-                orderRejectedObj = new XARealClass();
-                orderRejectedObj.ResFileName = ResFilePath + "\\SC4.res";
-                orderRejectedObj.ReceiveRealData += OrderRejectedObj_ReceiveRealData;
-
                 _orderSubmitReal = new EbestReal<SC0OutBlock>();
                 _orderSubmitReal.OutBlockReceived += OrderSubmitReal_OutBlockReceived;
                 _orderConclusionReal = new EbestReal<SC1OutBlock>();
@@ -183,12 +137,6 @@ namespace EbestTrader
         {
             try
             {
-                //orderSubmittedObj.AdviseRealData();
-                //orderConcludedObj.AdviseRealData();
-                //orderModifiedObj.AdviseRealData();
-                //orderCanceledObj.AdviseRealData();
-                //orderRejectedObj.AdviseRealData();
-
                 _orderSubmitReal.AdviseRealData();
                 _orderConclusionReal.AdviseRealData();
                 _orderModifiedReal.AdviseRealData();
@@ -201,23 +149,16 @@ namespace EbestTrader
             }
         }
 
-        private void QueryObj_ReceiveMessage(bool bIsSystemError, string nMessageCode, string szMessage)
-        {
-            if (bIsSystemError == true)
-                _logger.Error($"{nameof(nMessageCode)}: {nMessageCode}, {nameof(szMessage)}: {szMessage}");
-            else
-                _logger.Info($"{nameof(nMessageCode)}: {nMessageCode}, {nameof(szMessage)}: {szMessage}");
-        }
 
         #region XASession
-        private void SessionObj_Event_Logout()
+        private void Session_Event_Logout()
         {
             CommTimer.Stop();
             LoginInstance.State = LoginStates.LoggedOut;
             _logger.Info(LoginInstance.ToString());
         }
 
-        private void SessionObj_Event_Login(string szCode, string szMsg)
+        private void Session_Event_Login(string szCode, string szMsg)
         {
             if (szCode == "0000")
             {
@@ -244,7 +185,6 @@ namespace EbestTrader
         #endregion
 
         #region Login / Logout
-
         public bool WaitLogin()
         {
             if (WaitLoginEvent.WaitOne(WaitLoginTimeout) == false)
@@ -268,7 +208,7 @@ namespace EbestTrader
         {
             try
             {
-                if (sessionObj.ConnectServer(LoginInstance.ServerAddress, LoginInstance.ServerPort) == false)
+                if (_session.ConnectServer(LoginInstance.ServerAddress, LoginInstance.ServerPort) == false)
                 {
                     _logger.Error($"Server connection fail, {GetLastErrorMessage()}");
                     return false;
@@ -276,7 +216,7 @@ namespace EbestTrader
 
                 _logger.Info($"Try login, Id: {LoginInstance.UserId}");
 
-                if (sessionObj.Login(LoginInstance.UserId, LoginInstance.UserPw, LoginInstance.CertPw, 0, true) == false)
+                if (_session.Login(LoginInstance.UserId, LoginInstance.UserPw, LoginInstance.CertPw, 0, true) == false)
                 {
                     _logger.Error($"Login error, {GetLastErrorMessage()}");
                     return false;
@@ -298,7 +238,7 @@ namespace EbestTrader
             try
             {
                 CommTimer.Stop();
-                sessionObj.DisconnectServer();
+                _session.DisconnectServer();
                 LoginInstance.State = LoginStates.Disconnect;
 
                 _logger.Info("Logout success");
@@ -316,11 +256,11 @@ namespace EbestTrader
         private string GetLastErrorMessage(int errCode = 0)
         {
             if (errCode == 0)
-                errCode = sessionObj.GetLastError();
+                errCode = _session.GetLastError();
 
             if (errCode >= 0) return string.Empty;
 
-            var errMsg = sessionObj.GetErrorMessage(errCode);
+            var errMsg = _session.GetErrorMessage(errCode);
 
             return $"errCode: {errCode}, errMsg: {errMsg}";
         }
@@ -339,10 +279,9 @@ namespace EbestTrader
         {
             try
             {
-                stockQuotingObj.SetFieldData(new t1102InBlock() { shcode = "000020" });
-                var ret = stockQuotingObj.Request(false);
-                if (ret < 0)
-                    _logger.Error($"Keep alive error, {GetLastErrorMessage(ret)}");
+                var query = new EbestQuery<t1102InBlock, t1102OutBlock>();
+                if (query.ExecuteQuery(new t1102InBlock { shcode = "000020" }) == false)
+                    _logger.Error($"Keep alive error, {GetLastErrorMessage(query.Result)}");
             }
             catch (Exception ex)
             {
@@ -350,17 +289,22 @@ namespace EbestTrader
             }
         }
 
-        private void StockQuotingObj_ReceiveData(string szTrCode)
-        {
-            LastCommTick = Environment.TickCount;
-            _logger.Trace($"szTrCode: {szTrCode}");
-        }
-
         public void NotifyMessage(MessageTypes type, string message)
         {
             try
             {
+                if (type == MessageTypes.CloseClient)
+                {
+                    Logout();
 
+                    Task.Run(() =>
+                    {
+                        _logger.Info("Process will be closed");
+                        Thread.Sleep(1000 * 5);
+
+                        Environment.Exit(0);
+                    });
+                }
             }
             catch (Exception ex)
             {

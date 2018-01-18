@@ -73,7 +73,7 @@
     <Compile Include="Order.cs" />
     <Compile Include="OrderResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TraderBase.cs" />
+    <Compile Include="RealTimeTrader.cs" />
     <Compile Include="TraderCallback.cs" />
     <Compile Include="TraderClient.cs" />
     <Compile Include="TraderContract.cs" />

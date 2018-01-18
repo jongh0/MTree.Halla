@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RealTimeProvider;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Trader
 {
-    public class TraderBase : TraderCallback
+    public class RealTimeTrader : TraderCallback
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -17,7 +18,15 @@ namespace Trader
         protected InstanceContext CallbackInstance { get; set; }
         protected TraderClient ServiceClient { get; set; }
 
-        public TraderBase(string endpointConfigurationName)
+        #region Event
+        public event Action<MessageTypes, string> MessageNotified;
+
+        public event Action<RealTimeTrader> ChannelOpened;
+        public event Action<RealTimeTrader> ChannelClosed;
+        public event Action<RealTimeTrader> ChannelFaulted;
+        #endregion
+
+        public RealTimeTrader(string endpointConfigurationName)
         {
             try
             {
@@ -72,16 +81,19 @@ namespace Trader
         protected virtual void ServiceClient_Opened(object sender, EventArgs e)
         {
             _logger.Info($"[{GetType().Name}] Channel opened");
+            ChannelOpened?.BeginInvoke(this, null, null);
         }
 
         protected virtual void ServiceClient_Closed(object sender, EventArgs e)
         {
             _logger.Info($"[{GetType().Name}] Channel closed");
+            ChannelClosed?.BeginInvoke(this, null, null);
         }
 
         protected virtual void ServiceClient_Faulted(object sender, EventArgs e)
         {
             _logger.Error($"[{GetType().Name}] Channel faulted");
+            ChannelFaulted?.BeginInvoke(this, null, null);
         }
     }
 }
