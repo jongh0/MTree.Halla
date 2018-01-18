@@ -25,6 +25,8 @@ namespace EbestPublisher
         {
             try
             {
+                if (WaitLogin() == false) return false;
+
                 viSubscribingObj.SetFieldData("InBlock", "shcode", code);
                 viSubscribingObj.AdviseRealData();
 
