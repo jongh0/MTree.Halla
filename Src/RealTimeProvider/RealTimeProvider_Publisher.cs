@@ -74,7 +74,7 @@ namespace RealTimeProvider
                     contract.Id = PublisherContract.IdNumbering++;
                     contract.Callback = OperationContext.Current.GetCallbackChannel<IRealTimePublisherCallback>();
 
-#if false // Channel 오류 시 Callback 사용 중지하기 위해서
+#if true // Channel 오류 시 Callback 사용 중지하기 위해서
                     if (contract.Callback is ICommunicationObject clientChannel)
                     {
                         clientChannel.Faulted += ClientChannel_Faulted;
