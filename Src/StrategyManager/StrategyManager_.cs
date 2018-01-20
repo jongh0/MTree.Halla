@@ -22,8 +22,8 @@ namespace StrategyManager
 
         private List<string> _concernCodeList = new List<string>();
 
-        private RealTimeConsumer _realTimeConsumer;
-        private HistoryConsumer _historyConsumer;
+        private RealTimeConsumer _realTime;
+        private HistoryConsumer _history;
         private RealTimeTrader _trader;
 
         public StrategyManager_()
@@ -31,7 +31,7 @@ namespace StrategyManager
             _concernCodeList.Add("005930"); // 삼성전자
             _concernCodeList.Add("035420"); // Naver
 
-            _historyConsumer = new HistoryConsumer();
+            _history = new HistoryConsumer();
 
             if (ProcessUtility.WaitIfNotExists(ProcessTypes.RealTimeProvider) == false)
             {
@@ -39,11 +39,11 @@ namespace StrategyManager
                 return;
             }
 
-            _realTimeConsumer = new RealTimeConsumer();
-            _realTimeConsumer.ChannelOpened += RealTimeConsumer_ChannelOpened;
-            _realTimeConsumer.MessageNotified += RealTimeConsumer_MessageNotified;
-            _realTimeConsumer.StockMasterConsumed += RealTimeConsumer_StockMasterConsumed;
-            _realTimeConsumer.StockConclusionConsumed += RealTimeConsumer_StockConclusionConsumed;
+            _realTime = new RealTimeConsumer();
+            _realTime.ChannelOpened += RealTime_ChannelOpened;
+            _realTime.MessageNotified += RealTime_MessageNotified;
+            _realTime.StockMasterConsumed += RealTime_StockMasterConsumed;
+            _realTime.StockConclusionConsumed += RealTime_StockConclusionConsumed;
 
             string traderConfiguration;
             ProcessTypes processType;
@@ -77,20 +77,22 @@ namespace StrategyManager
             _trader = new RealTimeTrader(traderConfiguration);
         }
 
-        private void RealTimeConsumer_StockMasterConsumed(List<StockMaster> stockMasters)
+        private void RealTime_StockMasterConsumed(List<StockMaster> stockMasters)
         {
         }
 
-        private void RealTimeConsumer_StockConclusionConsumed(StockConclusion conclusion)
+        private void RealTime_StockConclusionConsumed(StockConclusion conclusion)
         {
         }
 
-        private void RealTimeConsumer_MessageNotified(MessageTypes type, string message)
+        private void RealTime_MessageNotified(MessageTypes type, string message)
         {
             if (type == MessageTypes.CloseClient)
             {
                 Task.Run(() =>
                 {
+                    _trader.NotifyMessage(MessageTypes.CloseClient, message);
+
                     _logger.Info("Process will be closed");
                     Thread.Sleep(1000 * 5);
 
@@ -99,7 +101,7 @@ namespace StrategyManager
             }
         }
 
-        private void RealTimeConsumer_ChannelOpened(RealTimeConsumer consumer)
+        private void RealTime_ChannelOpened(RealTimeConsumer consumer)
         {
             if (consumer == null) return;
 
