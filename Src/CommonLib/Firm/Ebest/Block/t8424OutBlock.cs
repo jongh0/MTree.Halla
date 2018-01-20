@@ -8,12 +8,17 @@ using System.Threading.Tasks;
 namespace CommonLib.Firm.Ebest.Block
 {
     /// <summary>
-    /// 업종현재가
+    /// 전체업종
     /// </summary>
-    public class t1511InBlock : BlockBase
+    public class t8424OutBlock : BlockBase
     {
         [PropertyIgnore]
-        public override string BlockName => nameof(t1511InBlock);
+        public override string BlockName => nameof(t8424OutBlock);
+
+        /// <summary>
+        /// 업종명 [20]
+        /// </summary>
+        public string hname { get; set; }
 
         /// <summary>
         /// 업종코드 [3]

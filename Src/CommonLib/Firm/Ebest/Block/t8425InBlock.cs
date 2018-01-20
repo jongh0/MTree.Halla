@@ -8,16 +8,16 @@ using System.Threading.Tasks;
 namespace CommonLib.Firm.Ebest.Block
 {
     /// <summary>
-    /// 업종현재가
+    /// 전체테마
     /// </summary>
-    public class t1511InBlock : BlockBase
+    public class t8425InBlock : BlockBase
     {
         [PropertyIgnore]
-        public override string BlockName => nameof(t1511InBlock);
+        public override string BlockName => nameof(t8425InBlock);
 
         /// <summary>
-        /// 업종코드 [3]
+        /// Dummy [1]
         /// </summary>
-        public string upcode { get; set; }
+        public string dummy { get; set; }
     }
 }

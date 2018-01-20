@@ -72,7 +72,7 @@ namespace EbestTrader
                     return 0;
                 }
 
-                return CurrDeposit = query.OutBlock1.sunamt;
+                return CurrDeposit = query.OutBlock.sunamt;
             }
             catch (Exception ex)
             {

@@ -41,6 +41,9 @@ namespace StrategyManager
 
             _realTimeConsumer = new RealTimeConsumer();
             _realTimeConsumer.ChannelOpened += RealTimeConsumer_ChannelOpened;
+            _realTimeConsumer.MessageNotified += RealTimeConsumer_MessageNotified;
+            _realTimeConsumer.StockMasterConsumed += RealTimeConsumer_StockMasterConsumed;
+            _realTimeConsumer.StockConclusionConsumed += RealTimeConsumer_StockConclusionConsumed;
 
             string traderConfiguration;
             ProcessTypes processType;
@@ -72,6 +75,28 @@ namespace StrategyManager
             }
 
             _trader = new RealTimeTrader(traderConfiguration);
+        }
+
+        private void RealTimeConsumer_StockMasterConsumed(List<StockMaster> stockMasters)
+        {
+        }
+
+        private void RealTimeConsumer_StockConclusionConsumed(StockConclusion conclusion)
+        {
+        }
+
+        private void RealTimeConsumer_MessageNotified(MessageTypes type, string message)
+        {
+            if (type == MessageTypes.CloseClient)
+            {
+                Task.Run(() =>
+                {
+                    _logger.Info("Process will be closed");
+                    Thread.Sleep(1000 * 5);
+
+                    Environment.Exit(0);
+                });
+            }
         }
 
         private void RealTimeConsumer_ChannelOpened(RealTimeConsumer consumer)

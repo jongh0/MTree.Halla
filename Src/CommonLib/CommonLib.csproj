@@ -116,8 +116,17 @@
     <Compile Include="Firm\Ebest\Block\t1404InBlock.cs" />
     <Compile Include="Firm\Ebest\Block\t1404OutBlock.cs" />
     <Compile Include="Firm\Ebest\Block\t1404OutBlock1.cs" />
+    <Compile Include="Firm\Ebest\Block\t1405InBlock.cs" />
+    <Compile Include="Firm\Ebest\Block\t1405OutBlock1.cs" />
     <Compile Include="Firm\Ebest\Block\t1511InBlock.cs" />
     <Compile Include="Firm\Ebest\Block\t1511OutBlock.cs" />
+    <Compile Include="Firm\Ebest\Block\t1537InBlock.cs" />
+    <Compile Include="Firm\Ebest\Block\t1537OutBlock.cs" />
+    <Compile Include="Firm\Ebest\Block\t1537OutBlock1.cs" />
+    <Compile Include="Firm\Ebest\Block\t8424InBlock.cs" />
+    <Compile Include="Firm\Ebest\Block\t8424OutBlock.cs" />
+    <Compile Include="Firm\Ebest\Block\t8425InBlock.cs" />
+    <Compile Include="Firm\Ebest\Block\t8425OutBlock.cs" />
     <Compile Include="Firm\Ebest\Block\t8430InBlock.cs" />
     <Compile Include="Firm\Ebest\Block\t8430OutBlock.cs" />
     <Compile Include="Firm\Ebest\Block\VIInBlock.cs" />

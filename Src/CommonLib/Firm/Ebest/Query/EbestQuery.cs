@@ -27,21 +27,55 @@ namespace CommonLib.Firm.Ebest.Query
 
             base.OnReceiveData(trCode);
         }
+
+        public int GetOutBlockCount()
+        {
+            return Query.GetBlockCount(typeof(TOutBlock).Name);
+        }
+
+        public TOutBlock GetOutBlock(int index)
+        {
+            if (Query.GetFieldData(out TOutBlock block, index) == true)
+                return block;
+
+            return null;
+        }
+
+        public IEnumerable<TOutBlock> GetAllOutBlocks()
+        {
+            var blocks = new List<TOutBlock>();
+            var count = GetOutBlockCount();
+
+            for (int i = 0; i < count; i++)
+            {
+                if (Query.GetFieldData(out TOutBlock block, i) == true)
+                    blocks.Add(block);
+            }
+
+            return blocks;
+        }
     }
 
-    public class EbestQuery<TInBlock, TOutBlock1, TOutBlock2> : QueryBase<TInBlock> 
-        where TInBlock : BlockBase where TOutBlock1 : BlockBase where TOutBlock2 : BlockBase
+    public class EbestQuery<TInBlock, TOutBlock, TOutBlock1> : QueryBase<TInBlock> 
+        where TInBlock : BlockBase where TOutBlock : BlockBase where TOutBlock1 : BlockBase
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
+        public event Action<TOutBlock> OutBlockReceived;
         public event Action<TOutBlock1> OutBlock1Received;
-        public event Action<TOutBlock2> OutBlock2Received;
 
+        public TOutBlock OutBlock { get; private set; }
         public TOutBlock1 OutBlock1 { get; private set; }
-        public TOutBlock2 OutBlock2 { get; private set; }
 
         protected override void OnReceiveData(string trCode)
         {
+            if (Query.GetFieldData(out TOutBlock block) == true)
+            {
+                _logger.Info($"OnReceiveData\n{block.ToString()}");
+                OutBlock = block;
+                OutBlockReceived?.Invoke(block);
+            }
+
             if (Query.GetFieldData(out TOutBlock1 block1) == true)
             {
                 _logger.Info($"OnReceiveData\n{block1.ToString()}");
@@ -49,14 +83,93 @@ namespace CommonLib.Firm.Ebest.Query
                 OutBlock1Received?.Invoke(block1);
             }
 
-            if (Query.GetFieldData(out TOutBlock2 block2) == true)
+            base.OnReceiveData(trCode);
+        }
+
+        public int GetOutBlockCount()
+        {
+            try
             {
-                _logger.Info($"OnReceiveData\n{block2.ToString()}");
-                OutBlock2 = block2;
-                OutBlock2Received?.Invoke(block2);
+                return Query.GetBlockCount(typeof(TOutBlock).Name);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
             }
 
-            base.OnReceiveData(trCode);
+            return 0;
+        }
+
+        public TOutBlock GetOutBlock(int index)
+        {
+            if (Query.GetFieldData(out TOutBlock block, index) == true)
+                return block;
+
+            return null;
+        }
+
+        public IEnumerable<TOutBlock> GetAllOutBlock()
+        {
+            var blocks = new List<TOutBlock>();
+
+            try
+            {
+                var count = GetOutBlockCount();
+                for (int i = 0; i < count; i++)
+                {
+                    if (Query.GetFieldData(out TOutBlock block, i) == true)
+                        blocks.Add(block);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+
+            return blocks;
+        }
+
+        public int GetOutBlock1Count()
+        {
+            try
+            {
+                return Query.GetBlockCount(typeof(TOutBlock1).Name);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+
+            return 0;
+        }
+
+        public TOutBlock1 GetOutBlock1(int index)
+        {
+            if (Query.GetFieldData(out TOutBlock1 block, index) == true)
+                return block;
+
+            return null;
+        }
+
+        public IEnumerable<TOutBlock1> GetAllOutBlock1()
+        {
+            var blocks = new List<TOutBlock1>();
+
+            try
+            {
+                var count = GetOutBlock1Count();
+                for (int i = 0; i < count; i++)
+                {
+                    if (Query.GetFieldData(out TOutBlock1 block, i) == true)
+                        blocks.Add(block);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+
+            return blocks;
         }
     }
 }

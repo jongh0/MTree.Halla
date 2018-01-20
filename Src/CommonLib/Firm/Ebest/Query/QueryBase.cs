@@ -115,6 +115,11 @@ namespace CommonLib.Firm.Ebest.Query
             _logger.Log(isSystemError ? LogLevel.Error : LogLevel.Info, $"{nameof(messageCode)}: {messageCode}, {nameof(message)}: {message}");
         }
 
+        public int GetTRCountPerSec()
+        {
+            return Query.GetTRCountPerSec(ResName);
+        }
+
         #region IDisposable
         private bool disposed = false;
 
