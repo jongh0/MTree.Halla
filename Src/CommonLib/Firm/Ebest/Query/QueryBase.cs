@@ -11,14 +11,16 @@ using XA_DATASETLib;
 
 namespace CommonLib.Firm.Ebest.Query
 {
-    public abstract class QueryBase<TInBlock> : IDisposable 
+    public abstract class QueryBase<TInBlock> 
         where TInBlock : BlockBase
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         public const int QUERY_TIMEOUT = 15000;
 
+        private ManualResetEvent _waitQuery;
         private string _resName;
+
         public string ResName
         {
             get
@@ -36,7 +38,6 @@ namespace CommonLib.Firm.Ebest.Query
         public int Result { get; private set; }
 
         protected XAQueryClass Query { get; private set; }
-        protected AutoResetEvent WaitQuery { get; private set; } = new AutoResetEvent(false);
 
         public QueryBase()
         {
@@ -88,7 +89,10 @@ namespace CommonLib.Firm.Ebest.Query
                 Result = Query.Request(false);
                 if (Result < 0) return false;
 
-                if (WaitQuery.WaitOne(timeout) == false)
+                if (_waitQuery == null)
+                    _waitQuery = new ManualResetEvent(false);
+
+                if (_waitQuery.WaitOne(timeout) == false)
                 {
                     _logger.Error($"{ResName} query time out");
                     return false;
@@ -100,6 +104,14 @@ namespace CommonLib.Firm.Ebest.Query
             {
                 _logger.Error(ex);
             }
+            finally
+            {
+                if (_waitQuery != null)
+                {
+                    _waitQuery.Dispose();
+                    _waitQuery = null;
+                }
+            }
 
             return false;
         }
@@ -110,7 +122,7 @@ namespace CommonLib.Firm.Ebest.Query
 
         protected virtual void OnReceiveData(string trCode)
         {
-            WaitQuery.Set();
+            _waitQuery?.Set();
         }
 
         protected virtual void OnReceiveMessage(bool isSystemError, string messageCode, string message)
@@ -122,41 +134,5 @@ namespace CommonLib.Firm.Ebest.Query
         {
             return Query.GetTRCountPerSec(ResName);
         }
-
-        #region IDisposable
-        private bool disposed = false;
-
-        ~QueryBase()
-        {
-            Dispose(false);
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!this.disposed)
-            {
-                if (disposing)
-                {
-                }
-
-                try
-                {
-                    WaitQuery.Dispose();
-                }
-                catch (Exception ex)
-                {
-                    _logger.Error(ex);
-                }
-
-                this.disposed = true;
-            }
-        }
-        #endregion
     }
 }
