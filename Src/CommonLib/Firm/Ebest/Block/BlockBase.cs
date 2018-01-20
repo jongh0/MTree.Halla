@@ -13,11 +13,19 @@ namespace CommonLib.Firm.Ebest.Block
 {
     public abstract class BlockBase
     {
-        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
+        private string _blockName;
 
-        private static ConcurrentDictionary<Type, IEnumerable<PropertyInfo>> _propDic = new ConcurrentDictionary<Type, IEnumerable<PropertyInfo>>();
+        [PropertyIgnore]
+        public virtual string BlockName
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_blockName) == true)
+                    _blockName = GetType().Name;
 
-        public abstract string BlockName { get; }
+                return _blockName;
+            }
+        }
 
         public override string ToString()
         {

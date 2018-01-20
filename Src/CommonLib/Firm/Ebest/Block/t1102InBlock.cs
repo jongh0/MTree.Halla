@@ -12,9 +12,6 @@ namespace CommonLib.Firm.Ebest.Block
     /// </summary>
     public class t1102InBlock : BlockBase
     {
-        [PropertyIgnore]
-        public override string BlockName => nameof(t1102InBlock);
-
         /// <summary>
         /// 단축코드 [6]
         /// </summary>

@@ -12,9 +12,6 @@ namespace CommonLib.Firm.Ebest.Block
     /// </summary>
     public class CSPAT00600InBlock1 : BlockBase
     {
-        [PropertyIgnore]
-        public override string BlockName => nameof(CSPAT00600InBlock1);
-
         /// <summary>
         /// 계좌번호 [20]
         /// </summary>

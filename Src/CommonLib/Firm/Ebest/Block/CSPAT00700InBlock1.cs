@@ -12,9 +12,6 @@ namespace CommonLib.Firm.Ebest.Block
     /// </summary>
     public class CSPAT00700InBlock1 : BlockBase
     {
-        [PropertyIgnore]
-        public override string BlockName => nameof(CSPAT00700InBlock1);
-
         /// <summary>
         /// 원주문번호 [10]
         /// </summary>

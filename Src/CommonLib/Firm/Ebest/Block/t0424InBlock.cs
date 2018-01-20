@@ -12,9 +12,6 @@ namespace CommonLib.Firm.Ebest.Block
     /// </summary>
     public class t0424InBlock : BlockBase
     {
-        [PropertyIgnore]
-        public override string BlockName => nameof(t0424InBlock);
-
         /// <summary>
         /// 계좌번호 [11]
         /// </summary>

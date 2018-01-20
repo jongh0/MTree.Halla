@@ -12,9 +12,6 @@ namespace CommonLib.Firm.Ebest.Block
     /// </summary>
     public class t1102OutBlock : BlockBase
     {
-        [PropertyIgnore]
-        public override string BlockName => nameof(t1102OutBlock);
-
         /// <summary>
         /// 한글명 [20]
         /// </summary>

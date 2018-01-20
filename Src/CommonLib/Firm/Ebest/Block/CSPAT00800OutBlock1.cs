@@ -12,9 +12,6 @@ namespace CommonLib.Firm.Ebest.Block
     /// </summary>
     public class CSPAT00800OutBlock1 : BlockBase
     {
-        [PropertyIgnore]
-        public override string BlockName => nameof(CSPAT00800OutBlock1);
-
         /// <summary>
         /// 레코드갯수 [5]
         /// </summary>

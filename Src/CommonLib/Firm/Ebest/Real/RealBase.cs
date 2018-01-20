@@ -8,9 +8,12 @@ using XA_DATASETLib;
 
 namespace CommonLib.Firm.Ebest.Real
 {
-    public abstract class RealBase<T> where T : BlockBase
+    public abstract class RealBase<TOutBlock> 
+        where TOutBlock : BlockBase
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
+
+        public event Action<TOutBlock> OutBlockReceived;
 
         private string _resName;
         public string ResName
@@ -19,7 +22,7 @@ namespace CommonLib.Firm.Ebest.Real
             {
                 if (string.IsNullOrEmpty(_resName) == true)
                 {
-                    var typeName = typeof(T).Name;
+                    var typeName = typeof(TOutBlock).Name;
                     _resName = typeName.Substring(0, typeName.IndexOf("Out"));
                 }
 
@@ -45,29 +48,10 @@ namespace CommonLib.Firm.Ebest.Real
 
         protected virtual void OnReceiveRealData(string trCode)
         {
-        }
-
-        public void AdviseRealData()
-        {
-            try
+            if (OutBlockReceived != null && Real.GetFieldData(out TOutBlock block) == true)
             {
-                Real?.AdviseRealData();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex);
-            }
-        }
-
-        public void UnadviseRealData()
-        {
-            try
-            {
-                Real?.UnadviseRealData();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex);
+                _logger.Info($"OnReceiveRealData\n{block.ToString()}");
+                OutBlockReceived.Invoke(block);
             }
         }
     }

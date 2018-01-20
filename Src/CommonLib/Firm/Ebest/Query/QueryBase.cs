@@ -11,9 +11,12 @@ using XA_DATASETLib;
 
 namespace CommonLib.Firm.Ebest.Query
 {
-    public abstract class QueryBase<T> : IDisposable where T : BlockBase
+    public abstract class QueryBase<TInBlock> : IDisposable 
+        where TInBlock : BlockBase
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
+
+        public const int QUERY_TIMEOUT = 15000;
 
         private string _resName;
         public string ResName
@@ -22,7 +25,7 @@ namespace CommonLib.Firm.Ebest.Query
             {
                 if (string.IsNullOrEmpty(_resName) == true)
                 {
-                    var typeName = typeof(T).Name;
+                    var typeName = typeof(TInBlock).Name;
                     _resName = typeName.Substring(0, typeName.IndexOf("In"));
                 }
 
@@ -33,7 +36,7 @@ namespace CommonLib.Firm.Ebest.Query
         public int Result { get; private set; }
 
         protected XAQueryClass Query { get; private set; }
-        protected AutoResetEvent QueryWaiter { get; private set; } = new AutoResetEvent(false);
+        protected AutoResetEvent WaitQuery { get; private set; } = new AutoResetEvent(false);
 
         public QueryBase()
         {
@@ -51,7 +54,7 @@ namespace CommonLib.Firm.Ebest.Query
             }
         }
 
-        public bool ExecuteQuery(T block)
+        public virtual bool ExecuteQuery(TInBlock block)
         {
             try
             {
@@ -72,7 +75,7 @@ namespace CommonLib.Firm.Ebest.Query
             return false;
         }
 
-        public bool ExecuteQueryAndWait(T block, int timeout = 1000 * 15)
+        public virtual bool ExecuteQueryAndWait(TInBlock block, int timeout = QUERY_TIMEOUT)
         {
             try
             {
@@ -85,7 +88,7 @@ namespace CommonLib.Firm.Ebest.Query
                 Result = Query.Request(false);
                 if (Result < 0) return false;
 
-                if (QueryWaiter.WaitOne(timeout) == false)
+                if (WaitQuery.WaitOne(timeout) == false)
                 {
                     _logger.Error($"{ResName} query time out");
                     return false;
@@ -107,7 +110,7 @@ namespace CommonLib.Firm.Ebest.Query
 
         protected virtual void OnReceiveData(string trCode)
         {
-            QueryWaiter.Set();
+            WaitQuery.Set();
         }
 
         protected virtual void OnReceiveMessage(bool isSystemError, string messageCode, string message)
@@ -144,7 +147,7 @@ namespace CommonLib.Firm.Ebest.Query
 
                 try
                 {
-                    QueryWaiter.Dispose();
+                    WaitQuery.Dispose();
                 }
                 catch (Exception ex)
                 {

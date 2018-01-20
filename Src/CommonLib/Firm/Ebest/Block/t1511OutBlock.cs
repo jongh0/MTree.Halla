@@ -12,9 +12,6 @@ namespace CommonLib.Firm.Ebest.Block
     /// </summary>
     public class t1511OutBlock : BlockBase
     {
-        [PropertyIgnore]
-        public override string BlockName => nameof(t1511OutBlock);
-
         /// <summary>
         /// 업종구분 [1]
         /// </summary>
