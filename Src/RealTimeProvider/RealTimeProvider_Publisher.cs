@@ -321,15 +321,10 @@ namespace RealTimeProvider
 
             try
             {
-                if (PublisherContracts.ContainsKey(clientId) == true)
-                {
-                    PublisherContracts.TryRemove(clientId, out var temp);
+                if (PublisherContracts.TryRemove(clientId, out var temp) == true)
                     _logger.Info($"{clientId} / {temp.Type} contract unregistered");
-                }
                 else
-                {
                     _logger.Warn($"{clientId} contract not exist");
-                }
             }
             catch (Exception ex)
             {

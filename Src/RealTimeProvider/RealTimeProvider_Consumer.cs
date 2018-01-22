@@ -103,13 +103,10 @@ namespace RealTimeProvider
                 var contractList = GetSubscriptionList(type);
                 if (contractList == null) return;
 
-                if (contractList.ContainsKey(clientId) == true)
+                if (contractList.TryRemove(clientId, out var temp) == true)
                 {
-                    if (contractList.TryRemove(clientId, out var temp) == true)
-                    {
-                        temp.Callback = null;
-                        _logger.Info($"{clientId} / {type} contract unregistered");
-                    }
+                    temp.Callback = null;
+                    _logger.Info($"{clientId} / {type} contract unregistered");
                 }
                 else
                 {
@@ -124,9 +121,9 @@ namespace RealTimeProvider
                     IndexConclusionContracts.ContainsKey(clientId) == false &&
                     ETFConclusionContracts.ContainsKey(clientId) == false)
                 {
-                    if (ConsumerContracts.TryRemove(clientId, out var temp) == true)
+                    if (ConsumerContracts.TryRemove(clientId, out var temp1) == true)
                     {
-                        temp.Callback = null;
+                        temp1.Callback = null;
                         _logger.Info($"{clientId} / {type} contract unregistered");
                     }
                 }

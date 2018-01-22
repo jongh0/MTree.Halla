@@ -318,15 +318,10 @@ namespace EbestTrader
         {
             try
             {
-                if (TraderContracts.ContainsKey(clientId) == true)
-                {
-                    TraderContracts.TryRemove(clientId, out var temp);
+                if (TraderContracts.TryRemove(clientId, out var temp) == true)
                     _logger.Info($"{clientId} contract unregistered");
-                }
                 else
-                {
                     _logger.Warn($"{clientId} contract not exist");
-                }
             }
             catch (Exception ex)
             {
