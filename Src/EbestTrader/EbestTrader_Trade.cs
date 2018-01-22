@@ -306,9 +306,9 @@ namespace EbestTrader
             if (result.ResultType == OrderResultTypes.Unknown)
                 return;
 
-            foreach (var contract in TraderContracts)
+            foreach (var contract in TraderContracts.Values)
             {
-                contract.Value.Callback.NotifyOrderResult(result);
+                contract.Callback.NotifyOrderResult(result);
             }
         }
     }

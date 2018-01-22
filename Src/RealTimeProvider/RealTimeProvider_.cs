@@ -180,12 +180,12 @@ namespace RealTimeProvider
 
         private void NotifyMessageToConsumer(MessageTypes type, string message = "")
         {
-            foreach (var contract in ConsumerContracts)
+            foreach (var contract in ConsumerContracts.Values)
             {
                 try
                 {
                     _logger.Info($"NotifyMessageToConsumer, {nameof(type)}: {type}, {nameof(message)}: {message}");
-                    contract.Value.Callback.NotifyMessage(type, message);
+                    contract.Callback.NotifyMessage(type, message);
                 }
                 catch (Exception ex)
                 {
@@ -196,12 +196,12 @@ namespace RealTimeProvider
 
         private void NotifyMessageToPubliser(MessageTypes type, string message = "")
         {
-            foreach (var contract in PublisherContracts)
+            foreach (var contract in PublisherContracts.Values)
             {
                 try
                 {
                     _logger.Info($"NotifyMessageToPubliser, {nameof(type)}: {type}, {nameof(message)}: {message}");
-                    contract.Value.Callback.NotifyMessage(type, message);
+                    contract.Callback.NotifyMessage(type, message);
                 }
                 catch (Exception ex)
                 {
@@ -282,9 +282,9 @@ namespace RealTimeProvider
                     int publisherTick = Environment.TickCount - startTick;
                     startTick = Environment.TickCount;
 
-                    foreach (var consumerContract in ChartContracts)
+                    foreach (var consumerContract in ChartContracts.Values)
                     {
-                        consumerContract.Value.Callback.ConsumeChart(candleList);
+                        consumerContract.Callback.ConsumeChart(candleList);
                     }
 
                     int consumerTick = Environment.TickCount - startTick;
@@ -321,9 +321,9 @@ namespace RealTimeProvider
                     int publisherTick = Environment.TickCount - startTick;
                     startTick = Environment.TickCount;
 
-                    foreach (var consumerContract in ChartContracts)
+                    foreach (var consumerContract in ChartContracts.Values)
                     {
-                        consumerContract.Value.Callback.ConsumeChart(candleList);
+                        consumerContract.Callback.ConsumeChart(candleList);
                     }
 
                     int consumerTick = Environment.TickCount - startTick;

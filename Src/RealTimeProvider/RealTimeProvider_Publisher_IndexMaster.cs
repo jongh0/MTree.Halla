@@ -85,11 +85,11 @@ namespace RealTimeProvider
 
                 Counter.IndexMasterCount = indexMasterList.Count;
 
-                foreach (var contract in MasteringContracts)
+                foreach (var contract in MasteringContracts.Values)
                 {
                     try
                     {
-                        contract.Value.Callback.ConsumeIndexMaster(indexMasterList);
+                        contract.Callback.ConsumeIndexMaster(indexMasterList);
                     }
                     catch (Exception ex)
                     {

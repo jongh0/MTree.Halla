@@ -159,14 +159,14 @@ namespace RealTimeProvider
             {
                 if (BiddingPriceQueue.TryDequeue(out var biddingPrice) == true)
                 {
-                    foreach (var contract in BiddingPriceContracts)
+                    foreach (var contract in BiddingPriceContracts.Values)
                     {
-                        if (contract.Value.Scope == SubscribeScopes.All ||
-                            contract.Value.ContainCode(biddingPrice.Code) == true)
+                        if (contract.Scope == SubscribeScopes.All ||
+                            contract.ContainCode(biddingPrice.Code) == true)
                         {
                             try
                             {
-                                contract.Value.Callback.ConsumeBiddingPrice(biddingPrice);
+                                contract.Callback.ConsumeBiddingPrice(biddingPrice);
                             }
                             catch (Exception ex)
                             {
@@ -192,14 +192,14 @@ namespace RealTimeProvider
             {
                 if (CircuitBreakQueue.TryDequeue(out var circuitBreak) == true)
                 {
-                    foreach (var contract in CircuitBreakContracts)
+                    foreach (var contract in CircuitBreakContracts.Values)
                     {
-                        if (contract.Value.Scope == SubscribeScopes.All ||
-                            contract.Value.ContainCode(circuitBreak.Code) == true)
+                        if (contract.Scope == SubscribeScopes.All ||
+                            contract.ContainCode(circuitBreak.Code) == true)
                         {
                             try
                             {
-                                contract.Value.Callback.ConsumeCircuitBreak(circuitBreak);
+                                contract.Callback.ConsumeCircuitBreak(circuitBreak);
                             }
                             catch (Exception ex)
                             {
@@ -225,14 +225,14 @@ namespace RealTimeProvider
             {
                 if (StockConclusionQueue.TryDequeue(out var conclusion) == true)
                 {
-                    foreach (var contract in StockConclusionContracts)
+                    foreach (var contract in StockConclusionContracts.Values)
                     {
-                        if (contract.Value.Scope == SubscribeScopes.All ||
-                            contract.Value.ContainCode(conclusion.Code) == true)
+                        if (contract.Scope == SubscribeScopes.All ||
+                            contract.ContainCode(conclusion.Code) == true)
                         {
                             try
                             {
-                                contract.Value.Callback.ConsumeStockConclusion(conclusion);
+                                contract.Callback.ConsumeStockConclusion(conclusion);
                             }
                             catch (Exception ex)
                             {
@@ -258,14 +258,14 @@ namespace RealTimeProvider
             {
                 if (IndexConclusionQueue.TryDequeue(out var conclusion) == true)
                 {
-                    foreach (var contract in IndexConclusionContracts)
+                    foreach (var contract in IndexConclusionContracts.Values)
                     {
-                        if (contract.Value.Scope == SubscribeScopes.All ||
-                            contract.Value.ContainCode(conclusion.Code) == true)
+                        if (contract.Scope == SubscribeScopes.All ||
+                            contract.ContainCode(conclusion.Code) == true)
                         {
                             try
                             {
-                                contract.Value.Callback.ConsumeIndexConclusion(conclusion);
+                                contract.Callback.ConsumeIndexConclusion(conclusion);
                             }
                             catch (Exception ex)
                             {
@@ -291,14 +291,14 @@ namespace RealTimeProvider
             {
                 if (ETFConclusionQueue.TryDequeue(out var conclusion) == true)
                 {
-                    foreach (var contract in ETFConclusionContracts)
+                    foreach (var contract in ETFConclusionContracts.Values)
                     {
-                        if (contract.Value.Scope == SubscribeScopes.All ||
-                            contract.Value.ContainCode(conclusion.Code) == true)
+                        if (contract.Scope == SubscribeScopes.All ||
+                            contract.ContainCode(conclusion.Code) == true)
                         {
                             try
                             {
-                                contract.Value.Callback.ConsumeETFConclusion(conclusion);
+                                contract.Callback.ConsumeETFConclusion(conclusion);
                             }
                             catch (Exception ex)
                             {

@@ -96,11 +96,11 @@ namespace RealTimeProvider
 
                 Counter.StockMasterCount = stockMasterList.Count;
 
-                foreach (var contract in MasteringContracts)
+                foreach (var contract in MasteringContracts.Values)
                 {
                     try
                     {
-                        contract.Value.Callback.ConsumeStockMaster(stockMasterList);
+                        contract.Callback.ConsumeStockMaster(stockMasterList);
                     }
                     catch (Exception ex)
                     {
@@ -130,11 +130,11 @@ namespace RealTimeProvider
 
             try
             {
-                foreach (var contract in MasteringContracts)
+                foreach (var contract in MasteringContracts.Values)
                 {
                     try
                     {
-                        contract.Value.Callback.ConsumeCodeMap(codemap);
+                        contract.Callback.ConsumeCodeMap(codemap);
                     }
                     catch (Exception ex)
                     {
