@@ -163,11 +163,11 @@ namespace DaishinPublisher
             {
                 Task.Run(() =>
                 {
-                    sessionObj.OnDisconnect -= sessionObj_OnDisconnect;
-                    sessionObj.PlusDisconnect();
-
                     _logger.Info("Process will be closed");
                     Thread.Sleep(1000 * 5);
+
+                    sessionObj.OnDisconnect -= sessionObj_OnDisconnect;
+                    sessionObj.PlusDisconnect();
 
                     Environment.Exit(0);
                 });

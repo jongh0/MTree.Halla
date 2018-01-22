@@ -180,12 +180,12 @@ namespace RealTimeProvider
 
         private void NotifyMessageToConsumer(MessageTypes type, string message = "")
         {
-            foreach (var callback in ConsumerContracts.Select(c => c.Value.Callback))
+            foreach (var contract in ConsumerContracts)
             {
                 try
                 {
                     _logger.Info($"NotifyMessageToConsumer, {nameof(type)}: {type}, {nameof(message)}: {message}");
-                    callback.NotifyMessage(type, message);
+                    contract.Value.Callback.NotifyMessage(type, message);
                 }
                 catch (Exception ex)
                 {
@@ -196,12 +196,12 @@ namespace RealTimeProvider
 
         private void NotifyMessageToPubliser(MessageTypes type, string message = "")
         {
-            foreach (var callback in PublisherContracts.Select(c => c.Value.Callback))
+            foreach (var contract in PublisherContracts)
             {
                 try
                 {
                     _logger.Info($"NotifyMessageToPubliser, {nameof(type)}: {type}, {nameof(message)}: {message}");
-                    callback.NotifyMessage(type, message);
+                    contract.Value.Callback.NotifyMessage(type, message);
                 }
                 catch (Exception ex)
                 {

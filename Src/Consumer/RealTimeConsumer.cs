@@ -122,8 +122,12 @@ namespace Consumer
 
                 if (type == MessageTypes.CloseClient)
                 {
-                    StopQueueTask();
-                    CloseChannel();
+                    Task.Run(() =>
+                    {
+                        Thread.Sleep(2000);
+                        StopQueueTask();
+                        CloseChannel();
+                    });
                 }
             }
             catch (Exception ex)
