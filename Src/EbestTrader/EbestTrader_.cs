@@ -280,24 +280,17 @@ namespace EbestTrader
 
         public void NotifyMessage(MessageTypes type, string message)
         {
-            try
+            if (type == MessageTypes.CloseClient)
             {
-                if (type == MessageTypes.CloseClient)
+                Logout();
+
+                Task.Run(() =>
                 {
-                    Logout();
+                    _logger.Info("Process will be closed");
+                    Thread.Sleep(1000 * 5);
 
-                    Task.Run(() =>
-                    {
-                        _logger.Info("Process will be closed");
-                        Thread.Sleep(1000 * 5);
-
-                        Environment.Exit(0);
-                    });
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex);
+                    Environment.Exit(0);
+                });
             }
         }
 
