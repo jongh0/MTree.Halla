@@ -14,7 +14,7 @@ namespace RealTimeProvider
 {
     public partial class RealTimeProvider_
     {
-        public int PublisherContractCount { get { return PublisherContracts.Count; } }
+        public int PublisherContractCount => PublisherContracts.Count;
         private ConcurrentDictionary<Guid, PublisherContract> PublisherContracts { get; set; } = new ConcurrentDictionary<Guid, PublisherContract>();
 
 

@@ -14,7 +14,7 @@ namespace RealTimeProvider
     public partial class RealTimeProvider_
     {
         #region Contracts
-        public int ConsumerContractCount { get { return ConsumerContracts.Count; } }
+        public int ConsumerContractCount => ConsumerContracts.Count;
         private ConcurrentDictionary<Guid, SubscribeContract> ConsumerContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
         private ConcurrentDictionary<Guid, SubscribeContract> MasteringContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();
         private ConcurrentDictionary<Guid, SubscribeContract> ChartContracts { get; set; } = new ConcurrentDictionary<Guid, SubscribeContract>();

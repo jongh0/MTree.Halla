@@ -31,10 +31,10 @@ namespace EbestTrader
 
         public LoginInfo LoginInstance { get; } = new LoginInfo();
 
-        private int WaitTimeout { get; } = 1000 * 10;
+        private int WaitTimeout => 1000 * 10;
         private AutoResetEvent WaitDepositEvent { get; } = new AutoResetEvent(false);
 
-        private int WaitLoginTimeout { get; } = 1000 * 15;
+        private int WaitLoginTimeout => 1000 * 15;
         private ManualResetEvent WaitLoginEvent { get; } = new ManualResetEvent(false);
 
         #region Event
@@ -42,8 +42,8 @@ namespace EbestTrader
         #endregion
 
         #region Keep session
-        private int MaxCommInterval { get; } = 1000 * 60 * 20; // 통신 안한지 20분 넘어가면 Quote 시작
-        private int CommTimerInterval { get; } = 1000 * 60 * 2; // 2분마다 체크
+        private int MaxCommInterval => 1000 * 60 * 20; // 통신 안한지 20분 넘어가면 Quote 시작
+        private int CommTimerInterval => 1000 * 60 * 2; // 2분마다 체크
         private int LastCommTick { get; set; } = Environment.TickCount;
         private System.Timers.Timer CommTimer { get; set; }
         #endregion

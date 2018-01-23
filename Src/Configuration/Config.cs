@@ -18,14 +18,14 @@ namespace Configuration
         public ValidatorConfiguration validator { get; set; } = new ValidatorConfiguration();
         public ResourceMonitorConfiguration resourceMonitor { get; set; } = new ResourceMonitorConfiguration();
 
-        public static GeneralConfiguration General { get { return Instance.general; } }
-        public static DatabaseConfiguration Database { get { return Instance.database; } }
-        public static DaishinConfiguration Daishin { get { return Instance.daishin; } }
-        public static EbestConfiguration Ebest { get { return Instance.ebest; } }
-        public static KiwoomConfiguration Kiwoom { get { return Instance.kiwoom; } }
-        public static EmailConfiguration Email { get { return Instance.email; } }
-        public static ValidatorConfiguration Validator { get { return Instance.validator; } }
-        public static ResourceMonitorConfiguration ResourceMonitor { get { return Instance.resourceMonitor; } }
+        public static GeneralConfiguration General => Instance.general;
+        public static DatabaseConfiguration Database => Instance.database;
+        public static DaishinConfiguration Daishin => Instance.daishin;
+        public static EbestConfiguration Ebest => Instance.ebest;
+        public static KiwoomConfiguration Kiwoom => Instance.kiwoom;
+        public static EmailConfiguration Email => Instance.email;
+        public static ValidatorConfiguration Validator => Instance.validator;
+        public static ResourceMonitorConfiguration ResourceMonitor => Instance.resourceMonitor;
 
         #region Instance
         private static readonly object _lockObject = new object();

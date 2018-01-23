@@ -94,22 +94,22 @@ namespace DataStructure
         // 외국인한도비율
         [BsonIgnore]
         [IgnoreDataMember]
-        public float ForeigneLimitRate { get { return (float)ForeigneLimit / ShareVolume * 100; } }
+        public float ForeigneLimitRate => (float)ForeigneLimit / ShareVolume * 100;
 
         // 외국인보유
         [BsonIgnore]
         [IgnoreDataMember]
-        public long ForeigneHold { get { return ForeigneLimit - ForeigneAvailableRemain; } }
+        public long ForeigneHold => ForeigneLimit - ForeigneAvailableRemain;
 
         // 외국인소진율
         [BsonIgnore]
         [IgnoreDataMember]
-        public float ForeigneExhaustingRate { get { return (float)ForeigneHold / ForeigneLimit * 100; } }
+        public float ForeigneExhaustingRate => (float)ForeigneHold / ForeigneLimit * 100;
 
         // 외국인잔량률
         [BsonIgnore]
         [IgnoreDataMember]
-        public float ForeigneAvailableRemainRate { get { return (float)ForeigneAvailableRemain / ShareVolume * 100; } }
+        public float ForeigneAvailableRemainRate => (float)ForeigneAvailableRemain / ShareVolume * 100;
 
         // 관리(Ebest)
         [BsonElement("AI")]

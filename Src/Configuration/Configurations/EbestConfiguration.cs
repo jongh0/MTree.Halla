@@ -14,12 +14,12 @@ namespace Configuration
         public string AccountPw { get; set; } = string.Empty;
 
         [JsonIgnore]
-        public string RealServerAddress { get { return "Hts.etrade.co.kr"; } }
+        public string RealServerAddress => "Hts.etrade.co.kr";
 
         [JsonIgnore]
-        public string SimulServerAddress { get { return "demo.etrade.co.kr"; } }
+        public string SimulServerAddress => "demo.etrade.co.kr";
 
         [JsonIgnore]
-        public int ServerPort { get; } = 20001;
+        public int ServerPort => 20001;
     }
 }

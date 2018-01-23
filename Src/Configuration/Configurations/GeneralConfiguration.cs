@@ -7,34 +7,33 @@ namespace Configuration
     public class GeneralConfiguration
     {
         [JsonIgnore]
-        public string DateFormat { get; } = "yyyy-MM-dd";
+        public string DateFormat => "yyyy-MM-dd";
 
         [JsonIgnore]
-        public string TimeFormat { get; } = "HH:mm:ss.fff";
+        public string TimeFormat => "HH:mm:ss.fff";
 
         [JsonIgnore]
-        public string DateTimeFormat { get; } = "yyyy-MM-dd HH:mm:ss.ffff";
+        public string DateTimeFormat => "yyyy-MM-dd HH:mm:ss.ffff";
 
         [JsonIgnore]
-        public string DateNow { get { return DateTime.Now.ToString(DateFormat); } }
+        public string DateNow => DateTime.Now.ToString(DateFormat);
 
         [JsonIgnore]
-        public string TimeNow { get { return DateTime.Now.ToString(TimeFormat); } }
+        public string TimeNow => DateTime.Now.ToString(TimeFormat);
 
         [JsonIgnore]
-        public string DateTimeNow { get { return DateTime.Now.ToString(DateTimeFormat); } }
+        public string DateTimeNow => DateTime.Now.ToString(DateTimeFormat);
 
         [JsonIgnore]
-        public string CurrencyFormat { get; } = "#,###.##";
+        public string CurrencyFormat => "#,###.##";
 
         [JsonIgnore]
-        public string PercentFormat { get; } = "P2";
+        public string PercentFormat => "P2";
 
         [JsonIgnore]
         public DateTime DefaultStartDate { get; } = new DateTime(1999, 1, 1);
 
-        [JsonIgnore]
-        public bool ExcludeEbest { get; } = false;
+        public bool ExcludeEbest { get; set; } = false;
 
         public bool ExcludeKiwoom { get; set; } = true;
 
@@ -74,5 +73,28 @@ namespace Configuration
 
         // 0보다 큰 값일 때만 동작한다.
         public int LogZipFileKeepDays { get; set; } = 15;
+
+        [JsonIgnore]
+        public string AccountPw
+        {
+            get
+            {
+                switch (Config.General.TraderType)
+                {
+                    case TraderTypes.Ebest:
+                        return Config.Ebest.AccountPw;
+
+                    case TraderTypes.EbestSimul:
+                        return "0000";
+
+                    case TraderTypes.Kiwoom:
+                    case TraderTypes.KiwoomSimul:
+                        return Config.Kiwoom.AccountPw;
+
+                    default:
+                        return string.Empty;
+                }
+            }
+        }
     }
 }

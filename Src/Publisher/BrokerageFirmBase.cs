@@ -22,7 +22,7 @@ namespace Publisher
 
         // Login
         public LoginInfo LoginInstance { get; } = new LoginInfo();
-        private int WaitLoginTimeout { get; } = 1000 * 60;
+        private int WaitLoginTimeout => 1000 * 60;
         private ManualResetEvent WaitLoginEvent { get; } = new ManualResetEvent(false);
 
         // TestMode Lock
@@ -33,11 +33,11 @@ namespace Publisher
         protected int QuoteInterval { get; set; } = 0;
 
         // Quote lock
-        protected int QuoteLockTimeout { get; } = 1000 * 15;
+        protected int QuoteLockTimeout => 1000 * 15;
         protected object QuoteLock { get; } = new object();
 
         // Quoting timeout
-        private int WaitQuotingTimeout { get; } = 1000 * 15;
+        private int WaitQuotingTimeout => 1000 * 15;
         private AutoResetEvent WaitQuotingEvent { get; } = new AutoResetEvent(false);
 
         // Quoting instance

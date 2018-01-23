@@ -16,7 +16,7 @@ namespace EbestTrader
 {
     public partial class EbestTrader_
     {
-        private int OrderLockTimeout { get; } = 1000 * 10;
+        private int OrderLockTimeout => 1000 * 10;
 
         private object OrderLock { get; } = new object();
 

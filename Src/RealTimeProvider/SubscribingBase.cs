@@ -22,11 +22,11 @@ namespace RealTimeProvider
         #endregion
 
         #region Queue Count
-        public int BiddingPriceQueueCount { get { return BiddingPriceQueue.Count; } }
-        public int CircuitBreakQueueCount { get { return CircuitBreakQueue.Count; } }
-        public int StockConclusionQueueCount { get { return StockConclusionQueue.Count; } }
-        public int IndexConclusionQueueCount { get { return IndexConclusionQueue.Count; } }
-        public int ETFConclusionQueueCount { get { return ETFConclusionQueue.Count; } }
+        public int BiddingPriceQueueCount => BiddingPriceQueue.Count;
+        public int CircuitBreakQueueCount => CircuitBreakQueue.Count;
+        public int StockConclusionQueueCount => StockConclusionQueue.Count;
+        public int IndexConclusionQueueCount => IndexConclusionQueue.Count;
+        public int ETFConclusionQueueCount => ETFConclusionQueue.Count;
         #endregion
 
         #region Queue Task
