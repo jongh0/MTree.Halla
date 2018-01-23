@@ -21,7 +21,7 @@ namespace Consumer
         protected Guid ClientId { get; } = Guid.NewGuid();
 
         protected InstanceContext CallbackInstance { get; set; }
-        protected ConsumerClient ServiceClient { get; set; }
+        public ConsumerClient ServiceClient { get; private set; }
 
         #region Event
         public event Action<MessageTypes, string> MessageNotified;

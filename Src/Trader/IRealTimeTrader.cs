@@ -12,7 +12,7 @@ namespace Trader
     public interface IRealTimeTrader
     {
         [OperationContract]
-        void NotifyMessage(MessageTypes type, string message);
+        void SendMessage(MessageTypes type, string message);
 
         [OperationContract]
         void RegisterTraderContract(Guid clientId, TraderContract contract);

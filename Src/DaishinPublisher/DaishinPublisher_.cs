@@ -132,7 +132,7 @@ namespace DaishinPublisher
             _logger.Error("Disconnected");
 
             if (IsMasterProcess == true)
-                ServiceClient?.NotifyMessage(MessageTypes.DaishinSessionDisconnected, string.Empty);
+                ServiceClient?.SendMessage(MessageTypes.DaishinSessionDisconnected, string.Empty);
         }
 
         public override bool IsSubscribable()

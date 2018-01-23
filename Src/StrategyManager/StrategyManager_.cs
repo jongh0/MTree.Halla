@@ -13,6 +13,8 @@ using System.Threading.Tasks;
 using Trader;
 using CommonLib.Utility;
 using System.Diagnostics;
+using Strategy;
+using Strategy.Strategies;
 
 namespace StrategyManager
 {
@@ -26,55 +28,97 @@ namespace StrategyManager
         private HistoryConsumer _history;
         private RealTimeTrader _trader;
 
+        private IStrategy _strategy;
+
         public StrategyManager_()
+        {
+            AddConcernCode();
+            BuildStrategy();
+            InitializeWCF();
+        }
+
+        private void AddConcernCode()
         {
             _concernCodeList.Add("005930"); // 삼성전자
             _concernCodeList.Add("035420"); // Naver
+        }
 
-            _history = new HistoryConsumer();
+        private void BuildStrategy()
+        {
+            _strategy = new EvenOddStrategy();
+        }
 
-            if (ProcessUtility.WaitIfNotExists(ProcessTypes.RealTimeProvider) == false)
+        private void InitializeWCF()
+        {
+            try
             {
-                _logger.Error($"{nameof(ProcessTypes.RealTimeProvider)} process not exists");
-                return;
+                _history = new HistoryConsumer();
+
+                if (ProcessUtility.WaitIfNotExists(ProcessTypes.RealTimeProvider) == false)
+                {
+                    _logger.Error($"{nameof(ProcessTypes.RealTimeProvider)} process not exists");
+                    return;
+                }
+
+                _realTime = new RealTimeConsumer();
+                _realTime.ChannelOpened += RealTime_ChannelOpened;
+                _realTime.MessageNotified += RealTime_MessageNotified;
+                _realTime.StockMasterConsumed += RealTime_StockMasterConsumed;
+                //_realTime.StockConclusionConsumed += RealTime_StockConclusionConsumed;
+
+                string traderConfiguration;
+                ProcessTypes processType;
+
+                switch (Config.General.TraderType)
+                {
+                    case TraderTypes.Ebest:
+                    case TraderTypes.EbestSimul:
+                        traderConfiguration = "EbestTraderConfig";
+                        processType = ProcessTypes.EbestTrader;
+                        break;
+
+                    case TraderTypes.Kiwoom:
+                    case TraderTypes.KiwoomSimul:
+                        traderConfiguration = "KiwoomTraderConfig";
+                        processType = ProcessTypes.KiwoomTrader;
+                        break;
+
+                    default:
+                        traderConfiguration = "VirtualTraderConfig";
+                        processType = ProcessTypes.VirtualTrader;
+                        break;
+                }
+
+                if (ProcessUtility.WaitIfNotExists(processType) == false)
+                {
+                    _logger.Error($"{processType} process not exists");
+                    return;
+                }
+
+                _trader = new RealTimeTrader(traderConfiguration);
+                _trader.ChannelOpened += Trader_ChannelOpened;
+                _trader.MessageNotified += Trader_MessageNotified;
+                _trader.OrderResultNotified += Trader_OrderResultNotified;
             }
-
-            _realTime = new RealTimeConsumer();
-            _realTime.ChannelOpened += RealTime_ChannelOpened;
-            _realTime.MessageNotified += RealTime_MessageNotified;
-            _realTime.StockMasterConsumed += RealTime_StockMasterConsumed;
-            _realTime.StockConclusionConsumed += RealTime_StockConclusionConsumed;
-
-            string traderConfiguration;
-            ProcessTypes processType;
-
-            switch (Config.General.TraderType)
+            catch (Exception ex)
             {
-                case TraderTypes.Ebest:
-                case TraderTypes.EbestSimul:
-                    traderConfiguration = "EbestTraderConfig";
-                    processType = ProcessTypes.EbestTrader;
-                    break;
-
-                case TraderTypes.Kiwoom:
-                case TraderTypes.KiwoomSimul:
-                    traderConfiguration = "KiwoomTraderConfig";
-                    processType = ProcessTypes.KiwoomTrader;
-                    break;
-
-                default:
-                    traderConfiguration = "VirtualTraderConfig";
-                    processType = ProcessTypes.VirtualTrader;
-                    break;
+                _logger.Error(ex);
             }
+        }
 
-            if (ProcessUtility.WaitIfNotExists(processType) == false)
-            {
-                _logger.Error($"{processType} process not exists");
-                return;
-            }
+        private void Trader_OrderResultNotified(OrderResult result)
+        {
+        }
 
-            _trader = new RealTimeTrader(traderConfiguration);
+        private void Trader_MessageNotified(MessageTypes type, string message)
+        {
+        }
+
+        private void Trader_ChannelOpened(RealTimeTrader trader)
+        {
+            if (trader == null) return;
+
+            trader.RegisterTraderContract(new TraderContract());
         }
 
         private void RealTime_StockMasterConsumed(List<StockMaster> stockMasters)
@@ -91,7 +135,7 @@ namespace StrategyManager
             {
                 Task.Run(() =>
                 {
-                    _trader.NotifyMessage(MessageTypes.CloseClient, message);
+                    _trader.SendMessage(MessageTypes.CloseClient, message);
 
                     _logger.Info("Process will be closed");
                     Thread.Sleep(1000 * 5);

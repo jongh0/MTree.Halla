@@ -17,7 +17,7 @@ namespace Publisher
         protected Guid ClientId { get; } = Guid.NewGuid();
 
         protected InstanceContext CallbackInstance { get; set; }
-        protected PublisherClient ServiceClient { get; set; }
+        public PublisherClient ServiceClient { get; private set; }
 
         public PublisherBase()
         {

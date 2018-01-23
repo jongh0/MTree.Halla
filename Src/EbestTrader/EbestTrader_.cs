@@ -278,7 +278,7 @@ namespace EbestTrader
             }
         }
 
-        public void NotifyMessage(MessageTypes type, string message)
+        public void SendMessage(MessageTypes type, string message)
         {
             if (type == MessageTypes.CloseClient)
             {

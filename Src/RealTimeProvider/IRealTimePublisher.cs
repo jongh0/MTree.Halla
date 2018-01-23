@@ -9,7 +9,7 @@ namespace RealTimeProvider
     public interface IRealTimePublisher
     {
         [OperationContract]
-        void NotifyMessage(MessageTypes type, string message);
+        void SendMessage(MessageTypes type, string message);
 
         [OperationContract]
         void RegisterPublisherContract(Guid clientId, PublisherContract contract);

@@ -16,10 +16,11 @@ namespace Trader
         protected Guid ClientId { get; } = Guid.NewGuid();
 
         protected InstanceContext CallbackInstance { get; set; }
-        protected TraderClient ServiceClient { get; set; }
+        public TraderClient ServiceClient { get; private set; }
 
         #region Event
         public event Action<MessageTypes, string> MessageNotified;
+        public event Action<OrderResult> OrderResultNotified;
 
         public event Action<RealTimeTrader> ChannelOpened;
         public event Action<RealTimeTrader> ChannelClosed;
@@ -94,6 +95,55 @@ namespace Trader
         {
             _logger.Error($"[{GetType().Name}] Channel faulted");
             ChannelFaulted?.BeginInvoke(this, null, null);
+        }
+
+        public void SendMessage(MessageTypes type, string message)
+        {
+            ServiceClient?.SendMessage(type, message);
+        }
+
+        public override void NotifyMessage(MessageTypes type, string message)
+        {
+            MessageNotified?.Invoke(type, message);
+
+            base.NotifyMessage(type, message);
+        }
+
+        public override void NotifyOrderResult(OrderResult result)
+        {
+            OrderResultNotified?.Invoke(result);
+
+            base.NotifyOrderResult(result);
+        }
+
+        public void RegisterTraderContract(TraderContract contract)
+        {
+            ServiceClient?.RegisterTraderContract(ClientId, contract);
+        }
+
+        public void UnregisterTraderContract()
+        {
+            ServiceClient?.UnregisterTraderContract(ClientId);
+        }
+
+        public List<string> GetAccountList()
+        {
+            return ServiceClient?.GetAccountList() ?? null;
+        }
+
+        public long GetDeposit(string accNum, string accPw)
+        {
+            return ServiceClient?.GetDeposit(accNum, accPw) ?? 0;
+        }
+
+        public List<HoldingStock> GetHoldingList(string accNum)
+        {
+            return ServiceClient?.GetHoldingList(accNum) ?? null;
+        }
+
+        public bool MakeOrder(Order order)
+        {
+            return ServiceClient?.MakeOrder(order) ?? false;
         }
     }
 }

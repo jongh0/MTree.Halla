@@ -160,7 +160,7 @@ namespace RealTimeProvider
         }
 
         #region NotifyMessage
-        public void NotifyMessage(MessageTypes type, string message)
+        public void SendMessage(MessageTypes type, string message)
         {
             try
             {

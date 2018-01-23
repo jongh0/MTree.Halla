@@ -4,20 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Strategy
+namespace Strategy.Strategies
 {
-    public class StrategySample : IStrategy
+    public class EvenOddStrategy : IStrategy
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public string Name { get; set; } = "StrategySample";
+        public string Name { get; set; } = nameof(EvenOddStrategy);
 
         public bool CanBuy()
         {
             try
             {
-
-                _logger.Info($"[{Name}] CanBuy: true");
+                if (DateTime.Now.Day % 2 == 0)
+                {
+                    _logger.Info($"[{Name}] CanBuy: true");
+                    return true;
+                }
             }
             catch (Exception ex)
             {
@@ -32,7 +35,11 @@ namespace Strategy
         {
             try
             {
-                _logger.Info($"[{Name}] CanSell: true");
+                if (DateTime.Now.Day % 2 == 1)
+                {
+                    _logger.Info($"[{Name}] CanSell: true");
+                    return true;
+                }
             }
             catch (Exception ex)
             {

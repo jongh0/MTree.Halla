@@ -14,10 +14,10 @@ namespace Publisher
     {
         public PublisherClient(InstanceContext callbackInstance, string endpointConfigurationName) : base(callbackInstance, endpointConfigurationName) { }
 
-        public void NotifyMessage(MessageTypes type, string message)
+        public void SendMessage(MessageTypes type, string message)
         {
             if (State != CommunicationState.Opened) return;
-            base.Channel.NotifyMessage(type, message);
+            base.Channel.SendMessage(type, message);
         }
 
         public void RegisterPublisherContract(Guid clientId, PublisherContract contract)

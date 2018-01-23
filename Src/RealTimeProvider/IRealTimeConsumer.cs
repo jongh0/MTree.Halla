@@ -9,7 +9,7 @@ namespace RealTimeProvider
     public interface IRealTimeConsumer
     {
         [OperationContract]
-        void NotifyMessage(MessageTypes type, string message);
+        void SendMessage(MessageTypes type, string message);
 
         [OperationContract]
         void RegisterConsumerContract(Guid clientId, SubscribeContract contract);

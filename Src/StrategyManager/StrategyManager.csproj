@@ -126,6 +126,10 @@
       <Project>{c9620f6e-d254-45f4-81c1-f33b0855fadc}</Project>
       <Name>RealTimeProvider</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Strategy\Strategy.csproj">
+      <Project>{F21CCFA2-C902-4C2E-BE2C-D9353B23965C}</Project>
+      <Name>Strategy</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Trader\Trader.csproj">
       <Project>{147b0e77-7a22-4ea5-83ea-a0909b456408}</Project>
       <Name>Trader</Name>

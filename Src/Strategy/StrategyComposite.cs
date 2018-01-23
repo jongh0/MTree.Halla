@@ -10,15 +10,15 @@ namespace Strategy
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public string Name { get; set; } = "StrategyComposite";
+        public string Name { get; set; } = nameof(StrategyComposite);
 
         public LogicTypes Logic { get; set; } = LogicTypes.AND;
 
-        private List<IStrategy> StrategyList = new List<IStrategy>();
+        private List<IStrategy> _strategyList = new List<IStrategy>();
 
         public void Add(IStrategy strategy)
         {
-            StrategyList.Add(strategy);
+            _strategyList.Add(strategy);
         }
 
         public bool CanBuy()
@@ -27,7 +27,7 @@ namespace Strategy
 
             try
             {
-                foreach (var s in StrategyList)
+                foreach (var s in _strategyList)
                 {
                     ret = s.CanBuy();
 
@@ -61,7 +61,7 @@ namespace Strategy
 
             try
             {
-                foreach (var s in StrategyList)
+                foreach (var s in _strategyList)
                 {
                     ret = s.CanSell();
 

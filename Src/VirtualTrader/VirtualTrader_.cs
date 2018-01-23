@@ -14,7 +14,7 @@ namespace VirtualTrader
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public void NotifyMessage(MessageTypes type, string message)
+        public void SendMessage(MessageTypes type, string message)
         {
         }
 
