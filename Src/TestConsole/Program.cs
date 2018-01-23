@@ -38,7 +38,7 @@ namespace TestConsole
             //TestDbAgent();
             //TestEmail();
             //TestDaishinInstanceLimit();
-            TestDbCollection();
+            //TestDbCollection();
 
             Console.WriteLine("Press any key..");
             Console.ReadLine();

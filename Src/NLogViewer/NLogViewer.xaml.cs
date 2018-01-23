@@ -19,7 +19,7 @@ using System.Windows.Shapes;
 namespace NLogViewer
 {
     /// <summary>
-    /// Interaction logic for NlogViewer.xaml
+    /// Interaction logic for NLogViewer.xaml
     /// </summary>
     public partial class NLogViewer : UserControl
     {
