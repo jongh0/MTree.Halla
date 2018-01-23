@@ -162,23 +162,7 @@ namespace Trader
 
             var order = new Order();
             order.AccountNumber = SelectedAccount;
-
-            switch (Config.General.TraderType)
-            {
-                case TraderTypes.Ebest:
-                    order.AccountPassword = Config.Ebest.AccountPw;
-                    break;
-                case TraderTypes.EbestSimul:
-                    order.AccountPassword = "0000";
-                    break;
-                case TraderTypes.Kiwoom:
-                case TraderTypes.KiwoomSimul:
-                    order.AccountPassword = Config.Kiwoom.AccountPw;
-                    break;
-                default:
-                    return;
-            }
-
+            order.AccountPassword = Config.General.AccountPw;
             order.Code = Code;
             order.OrderType = OrderType;
             order.Quantity = Quantity;

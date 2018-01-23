@@ -119,6 +119,11 @@ namespace StrategyManager
             if (trader == null) return;
 
             trader.RegisterTraderContract(new TraderContract());
+
+            var accNumList = trader.GetAccountList();
+            var accNum = accNumList[0];
+            var deposit = trader.GetDeposit(accNum, Config.General.AccountPw);
+            var holdingList = trader.GetHoldingList(accNum);
         }
 
         private void RealTime_StockMasterConsumed(List<StockMaster> stockMasters)
