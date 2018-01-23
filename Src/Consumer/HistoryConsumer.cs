@@ -35,7 +35,59 @@ namespace Consumer
         public event Action<List<StockMaster>> StockMasterConsumed;
         public event Action<List<IndexMaster>> IndexMasterConsumed;
         public event Action<Dictionary<string, object>> CodeMapConsumed;
-        public event Action<List<Candle>> ChartConsumed; 
+        public event Action<List<Candle>> ChartConsumed;
+        #endregion
+
+        #region Event Invoke
+        private void NotifyMessage(MessageTypes type, string message)
+        {
+            MessageNotified?.Invoke(type, message);
+        }
+
+        private void ConsumeBiddingPrice(BiddingPrice biddingPrice)
+        {
+            BiddingPriceConsumed?.Invoke(biddingPrice);
+        }
+
+        private void ConsumeCircuitBreak(CircuitBreak circuitBreak)
+        {
+            CircuitBreakConsumed?.Invoke(circuitBreak);
+        }
+
+        private void ConsumeIndexConclusion(IndexConclusion conclusion)
+        {
+            IndexConclusionConsumed?.Invoke(conclusion);
+        }
+
+        private void ConsumeStockConclusion(StockConclusion conclusion)
+        {
+            StockConclusionConsumed?.Invoke(conclusion);
+        }
+
+        private void ConsumeETFConclusion(ETFConclusion conclusion)
+        {
+            ETFConclusionConsumed?.Invoke(conclusion);
+        }
+
+        private void ConsumeStockMaster(List<StockMaster> stockMasters)
+        {
+            StockMasterConsumed?.Invoke(stockMasters);
+        }
+
+        private void ConsumeChart(List<Candle> chart)
+        {
+            ChartConsumed?.Invoke(chart);
+        }
+
+        private void ConsumeIndexMaster(List<IndexMaster> indexMasters)
+        {
+            IndexMasterConsumed?.Invoke(indexMasters);
+        }
+
+        private void ConsumeCodeMap(Dictionary<string, object> codeMap)
+        {
+            CodeMapConsumed?.Invoke(codeMap);
+        } 
         #endregion
 
         public bool StartSimulation(string[] codes, DateTime targetDate)
@@ -48,11 +100,11 @@ namespace Consumer
 
             if (masters.Count == 0)
             {
-                MessageNotified?.Invoke(MessageTypes.SubscribingDone, null);
+                NotifyMessage(MessageTypes.SubscribingDone, null);
                 return false;
             }
 
-            StockMasterConsumed?.Invoke(masters);
+            ConsumeStockMaster(masters);
 
             object conclusionLock = new object();
             List<StockConclusion> conclusions = new List<StockConclusion>();
@@ -79,10 +131,10 @@ namespace Consumer
 
             foreach (StockConclusion conclusion in conclusions)
             {
-                StockConclusionConsumed?.Invoke(conclusion);
+                ConsumeStockConclusion(conclusion);
             }
 
-            MessageNotified?.Invoke(MessageTypes.SubscribingDone, null);
+            NotifyMessage(MessageTypes.SubscribingDone, null);
 
             sw.Stop();
             _logger.Info($"Consuming done. Elapsed:{sw.Elapsed}");
