@@ -98,15 +98,24 @@ namespace RealTimeProvider
 
                 // HistorySaver
                 if (Config.General.LaunchHistorySaver == true)
+                {
+                    ProcessUtility.Kill(ProcessTypes.HistorySaver);
                     ProcessUtility.Start(ProcessTypes.HistorySaver, ProcessWindowStyle.Minimized);
+                }
 
                 // Dashboard
                 if (Config.General.LaunchDashboard == true)
+                {
+                    ProcessUtility.Kill(ProcessTypes.Dashboard);
                     ProcessUtility.Start(ProcessTypes.Dashboard, ProcessWindowStyle.Minimized);
+                }
 
                 // Kiwoom
                 if (SkipMastering == false && Config.General.ExcludeKiwoom == false)
+                {
+                    ProcessUtility.Kill(ProcessTypes.KiwoomPublisher);
                     ProcessUtility.Start(ProcessTypes.KiwoomPublisher, ProcessWindowStyle.Minimized);
+                }
 
                 // Daishin
                 int daishinProcessCount;
@@ -118,12 +127,16 @@ namespace RealTimeProvider
                 if (Config.General.SkipETFConclusion == false)
                     daishinProcessCount += StockCodeList.Values.Where(c => c.MarketType == MarketTypes.ETF).Count() / 400;
 
+                ProcessUtility.Kill(ProcessTypes.DaishinPublisher);
+
                 for (int i = 0; i < daishinProcessCount; i++)
                     ProcessUtility.Start(ProcessTypes.DaishinPublisher, ProcessWindowStyle.Minimized);
 
                 // Ebest
                 if (Config.General.ExcludeEbest == false)
                 {
+                    ProcessUtility.Kill(ProcessTypes.EbestPublisher);
+
                     int ebestProcessCount = 2;
                     for (int i = 0; i < ebestProcessCount; i++)
                         ProcessUtility.Start(ProcessTypes.EbestPublisher, ProcessWindowStyle.Minimized);
@@ -136,20 +149,28 @@ namespace RealTimeProvider
                         case TraderTypes.Ebest:
                         case TraderTypes.EbestSimul:
                             if (Config.General.ExcludeEbest == false)
+                            {
+                                ProcessUtility.Kill(ProcessTypes.EbestTrader);
                                 ProcessUtility.Start(ProcessTypes.EbestTrader, ProcessWindowStyle.Minimized);
+                            }
                             break;
 
                         case TraderTypes.Kiwoom:
                         case TraderTypes.KiwoomSimul:
                             if (Config.General.ExcludeKiwoom == false)
+                            {
+                                ProcessUtility.Kill(ProcessTypes.KiwoomTrader);
                                 ProcessUtility.Start(ProcessTypes.KiwoomTrader, ProcessWindowStyle.Minimized);
+                            }
                             break;
 
                         default:
+                            ProcessUtility.Kill(ProcessTypes.VirtualTrader);
                             ProcessUtility.Start(ProcessTypes.VirtualTrader, ProcessWindowStyle.Minimized);
                             break;
                     }
 
+                    ProcessUtility.Kill(ProcessTypes.StrategyManager);
                     ProcessUtility.Start(ProcessTypes.StrategyManager, ProcessWindowStyle.Minimized);
                 }
             }
