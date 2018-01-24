@@ -14,13 +14,15 @@ namespace PopupStopper
 {
     class Program
     {
-        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
+        private static NLog.Logger _logger;
 
         private static CancellationTokenSource _cancelSource = new CancellationTokenSource();
         private static CancellationToken _cancelToken = _cancelSource.Token;
 
         static void Main(string[] args)
         {
+            _logger = NLog.LogManager.GetCurrentClassLogger();
+
             _logger.Info("Popup stopper started");
 
             Console.CancelKeyPress += Console_CancelKeyPress;

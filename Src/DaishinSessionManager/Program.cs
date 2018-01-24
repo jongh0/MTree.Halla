@@ -15,10 +15,12 @@ namespace DaishinSessionManager
 {
     class Program
     {
-        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
+        private static NLog.Logger _logger;
 
         static void Main(string[] args)
         {
+            _logger = NLog.LogManager.GetCurrentClassLogger();
+
             try
             {
                 _logger.Info("Application Started");
