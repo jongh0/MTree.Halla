@@ -28,7 +28,7 @@ namespace CommonLib.Utility
             return properties;
         }
 
-        public static string PrintValues(object obj, string seperator = ", ")
+        public static string PrintValues(object obj, string seperator = ", ", bool excludeEmptyProperty = true)
         {
             if (obj == null) return string.Empty;
 
@@ -39,11 +39,20 @@ namespace CommonLib.Utility
                 foreach (var property in GetProperties(obj.GetType()))
                 {
                     var value = property.GetValue(obj);
+                    if (value == null) continue;
 
                     if (value is DateTime dateTime)
+                    {
                         strList.Add($"{dateTime.ToString(Config.General.DateTimeFormat)}");
+                    }
                     else
-                        strList.Add($"{value}");
+                    {
+                        var str = value.ToString();
+                        if (excludeEmptyProperty == true && string.IsNullOrEmpty(str) == true)
+                            continue;
+
+                        strList.Add($"{str}");
+                    }
                 }
 
                 return string.Join(seperator, strList.ToArray());
@@ -59,7 +68,7 @@ namespace CommonLib.Utility
             return string.Empty;
         }
 
-        public static string PrintNameValues(object obj, string seperator = ", ")
+        public static string PrintNameValues(object obj, string seperator = ", ", bool excludeEmptyProperty = true)
         {
             if (obj == null) return string.Empty;
 
@@ -70,11 +79,20 @@ namespace CommonLib.Utility
                 foreach (var property in GetProperties(obj.GetType()))
                 {
                     var value = property.GetValue(obj);
+                    if (value == null) continue;
 
                     if (value is DateTime dateTime)
+                    {
                         strList.Add($"{property.Name}: {dateTime.ToString(Config.General.DateTimeFormat)}");
+                    }
                     else
-                        strList.Add($"{property.Name}: {value}");
+                    {
+                        var str = value.ToString();
+                        if (excludeEmptyProperty == true && string.IsNullOrEmpty(str) == true)
+                            continue;
+
+                        strList.Add($"{property.Name}: {str}");
+                    }
                 }
 
                 return string.Join(seperator, strList.ToArray());
