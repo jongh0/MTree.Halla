@@ -20,6 +20,8 @@ namespace CommonLib.Utility
         {
             ProcessList = new Dictionary<ProcessTypes, string>();
             ProcessList.Add(ProcessTypes.CybosStarter, "CpStart");
+            ProcessList.Add(ProcessTypes.DibServer, "DibServer");
+            ProcessList.Add(ProcessTypes.KiwoomStarter, "khministarter");
             ProcessList.Add(ProcessTypes.Dashboard, "Dashboard");
             ProcessList.Add(ProcessTypes.HistorySaver, "HistorySaver");
             ProcessList.Add(ProcessTypes.StrategyManager, "StrategyManager");
@@ -83,10 +85,10 @@ namespace CommonLib.Utility
             return null;
         }
 
-        public static void Kill(ProcessTypes type)
+        public static void Kill(ProcessTypes type, int excludeId = -1)
         {
             if (ProcessList.ContainsKey(type) == true)
-                Kill(ProcessList[type]);
+                Kill(ProcessList[type], excludeId);
         }
 
         public static void Kill(string processName, int excludeId = -1)

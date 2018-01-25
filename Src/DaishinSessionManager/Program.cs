@@ -33,9 +33,9 @@ namespace DaishinSessionManager
                     return;
                 }
 
-                ProcessUtility.Kill("DaishinSessionManager", Process.GetCurrentProcess().Id);
-                ProcessUtility.Kill("CpStart"); // 키보드 보안 및 메모리 보안 프로그램 사용 체크 해제해야 함 (CpStart -> 설정)
-                ProcessUtility.Kill("DibServer");
+                ProcessUtility.Kill(ProcessTypes.DaishinSessionManager, Process.GetCurrentProcess().Id);
+                ProcessUtility.Kill(ProcessTypes.CybosStarter); // 키보드 보안 및 메모리 보안 프로그램 사용 체크 해제해야 함 (CpStart -> 설정)
+                ProcessUtility.Kill(ProcessTypes.DibServer);
 
                 LaunchStarter();
 

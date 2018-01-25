@@ -155,25 +155,25 @@ namespace CommonLib.Firm.Ebest.Block
         /// <summary>
         /// 매도증권사코드1 [3]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string offernocd1 { get; set; }
 
         /// <summary>
         /// 매수증권사코드1 [3]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string bidnocd1 { get; set; }
 
         /// <summary>
         /// 매도증권사명1 [6]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string offerno1 { get; set; }
 
         /// <summary>
         /// 매수증권사명1 [6]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string bidno1 { get; set; }
 
         /// <summary>
@@ -209,25 +209,25 @@ namespace CommonLib.Firm.Ebest.Block
         /// <summary>
         /// 매도증권사코드2 [3]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string offernocd2 { get; set; }
 
         /// <summary>
         /// 매수증권사코드2 [3]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string bidnocd2 { get; set; }
 
         /// <summary>
         /// 매도증권사명2 [6]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string offerno2 { get; set; }
 
         /// <summary>
         /// 매수증권사명2 [6]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string bidno2 { get; set; }
 
         /// <summary>
@@ -263,25 +263,25 @@ namespace CommonLib.Firm.Ebest.Block
         /// <summary>
         /// 매도증권사코드3 [3]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string offernocd3 { get; set; }
 
         /// <summary>
         /// 매수증권사코드3 [3]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string bidnocd3 { get; set; }
 
         /// <summary>
         /// 매도증권사명3 [6]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string offerno3 { get; set; }
 
         /// <summary>
         /// 매수증권사명3 [6]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string bidno3 { get; set; }
 
         /// <summary>
@@ -317,25 +317,25 @@ namespace CommonLib.Firm.Ebest.Block
         /// <summary>
         /// 매도증권사코드4 [3]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string offernocd4 { get; set; }
 
         /// <summary>
         /// 매수증권사코드4 [3]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string bidnocd4 { get; set; }
 
         /// <summary>
         /// 매도증권사명4 [6]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string offerno4 { get; set; }
 
         /// <summary>
         /// 매수증권사명4 [6]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string bidno4 { get; set; }
 
         /// <summary>
@@ -371,25 +371,25 @@ namespace CommonLib.Firm.Ebest.Block
         /// <summary>
         /// 매도증권사코드5 [3]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string offernocd5 { get; set; }
 
         /// <summary>
         /// 매수증권사코드5 [3]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string bidnocd5 { get; set; }
 
         /// <summary>
         /// 매도증권사명5 [6]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string offerno5 { get; set; }
 
         /// <summary>
         /// 매수증권사명5 [6]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string bidno5 { get; set; }
 
         /// <summary>
@@ -515,7 +515,7 @@ namespace CommonLib.Firm.Ebest.Block
         /// <summary>
         /// 결산월 [2]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string gsmm { get; set; }
 
         /// <summary>
@@ -536,7 +536,7 @@ namespace CommonLib.Firm.Ebest.Block
         /// <summary>
         /// 전분기명 [10]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string name { get; set; }
 
         /// <summary>

@@ -12,7 +12,7 @@ namespace CommonLib.Firm.Ebest.Block
     /// </summary>
     public class DVIInBlock : BlockBase
     {
-        [PropertyIgnore]
+        [IgnoreProperty]
         public override string BlockName => "InBlock";
 
         /// <summary>

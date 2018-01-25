@@ -34,7 +34,13 @@ namespace CommonLib.Firm.Ebest.Query
             {
                 foreach (var property in PropertyUtility.GetProperties(block.GetType()))
                 {
-                    query.SetFieldData(block.BlockName, property.Name, 0, property.GetValue(block).ToString());
+                    var value = property.GetValue(block);
+                    if (value == null) continue;
+
+                    var str = value.ToString();
+                    if (string.IsNullOrEmpty(str) == true) continue;
+
+                    query.SetFieldData(block.BlockName, property.Name, 0, str);
                 }
 
                 return true;

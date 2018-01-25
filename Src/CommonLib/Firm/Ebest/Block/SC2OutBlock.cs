@@ -12,7 +12,7 @@ namespace CommonLib.Firm.Ebest.Block
     /// </summary>
     public class SC2OutBlock : BlockBase
     {
-        [PropertyIgnore]
+        [IgnoreProperty]
         public override string BlockName => "OutBlock";
 
         /// <summary>
@@ -28,37 +28,37 @@ namespace CommonLib.Firm.Ebest.Block
         /// <summary>
         /// 조작자ID [8]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string user { get; set; }
 
         /// <summary>
         /// 헤더길이 [6]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public long len { get; set; }
 
         /// <summary>
         /// 헤더구분 [1]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string gubun { get; set; }
 
         /// <summary>
         /// 압축구분 [1]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string compress { get; set; }
 
         /// <summary>
         /// 암호구분 [1]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string encrypt { get; set; }
 
         /// <summary>
         /// 공통시작지점 [3]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public long offset { get; set; }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace CommonLib.Firm.Ebest.Block
         /// <summary>
         /// 이용사번호 [3]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string comid { get; set; }
 
         /// <summary>
@@ -80,13 +80,13 @@ namespace CommonLib.Firm.Ebest.Block
         /// <summary>
         /// 접속매체 [2]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string media { get; set; }
 
         /// <summary>
         /// I/F일련번호 [3]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string ifid { get; set; }
 
         /// <summary>
@@ -97,139 +97,139 @@ namespace CommonLib.Firm.Ebest.Block
         /// <summary>
         /// TR추적ID [16]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string trid { get; set; }
 
         /// <summary>
         /// 공인IP [12]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string pubip { get; set; }
 
         /// <summary>
         /// 사설IP [12]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string prvip { get; set; }
 
         /// <summary>
         /// 처리지점번호 [3]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string pcbpno { get; set; }
 
         /// <summary>
         /// 지점번호 [3]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string bpno { get; set; }
 
         /// <summary>
         /// 단말번호 [8]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string termno { get; set; }
 
         /// <summary>
         /// 언어구분 [1]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string lang { get; set; }
 
         /// <summary>
         /// AP처리시간 [9]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public long proctm { get; set; }
 
         /// <summary>
         /// 메세지코드 [4]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string msgcode { get; set; }
 
         /// <summary>
         /// 메세지출력구분 [1]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string outgu { get; set; }
 
         /// <summary>
         /// 압축요청구분 [1]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string compreq { get; set; }
 
         /// <summary>
         /// 기능키 [4]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string funckey { get; set; }
 
         /// <summary>
         /// 요청레코드개수 [4]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public long reqcnt { get; set; }
 
         /// <summary>
         /// 예비영역 [6]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string filler { get; set; }
 
         /// <summary>
         /// 연속구분 [1]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string cont { get; set; }
 
         /// <summary>
         /// 연속키값 [18]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string contkey { get; set; }
 
         /// <summary>
         /// 가변시스템길이 [2]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public long varlen { get; set; }
 
         /// <summary>
         /// 가변해더길이 [2]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public long varhdlen { get; set; }
 
         /// <summary>
         /// 가변메시지길이 [2]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public long varmsglen { get; set; }
 
         /// <summary>
         /// 조회발원지 [1]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string trsrc { get; set; }
 
         /// <summary>
         /// I/F이벤트ID [4]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string eventid { get; set; }
 
         /// <summary>
         /// I/F정보 [4]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string ifinfo { get; set; }
 
         /// <summary>
         /// 예비영역 [41]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string filler1 { get; set; }
 
         /// <summary>
@@ -250,25 +250,25 @@ namespace CommonLib.Firm.Ebest.Block
         /// <summary>
         /// 관리지점번호 [3]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string mgmtbrnno { get; set; }
 
         /// <summary>
         /// 계좌번호 [11]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string accno1 { get; set; }
 
         /// <summary>
         /// 계좌번호 [9]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string accno2 { get; set; }
 
         /// <summary>
         /// 계좌명 [40]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string acntnm { get; set; }
 
         /// <summary>
@@ -359,7 +359,7 @@ namespace CommonLib.Firm.Ebest.Block
         /// <summary>
         /// 비저축체결수량 [16]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public long nsavtrdqty { get; set; }
 
         /// <summary>
@@ -370,13 +370,13 @@ namespace CommonLib.Firm.Ebest.Block
         /// <summary>
         /// 운용지시번호 [12]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string opdrtnno { get; set; }
 
         /// <summary>
         /// 반대매매주문구분 [1]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string cvrgordtp { get; set; }
 
         /// <summary>
@@ -417,7 +417,7 @@ namespace CommonLib.Firm.Ebest.Block
         /// <summary>
         /// 전표준종목번호 [12]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string bfstdIsuno { get; set; }
 
         /// <summary>
@@ -428,37 +428,37 @@ namespace CommonLib.Firm.Ebest.Block
         /// <summary>
         /// 주문거래유형코드 [2]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string ordtrdptncode { get; set; }
 
         /// <summary>
         /// 신용거래코드 [3]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string mgntrncode { get; set; }
 
         /// <summary>
         /// 수수료합산코드 [2]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string adduptp { get; set; }
 
         /// <summary>
         /// 통신매체코드 [2]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string commdacode { get; set; }
 
         /// <summary>
         /// 대출일 [8]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string Loandt { get; set; }
 
         /// <summary>
         /// 회원/비회원사번호 [3]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public long mbrnmbrno { get; set; }
 
         /// <summary>
@@ -524,25 +524,25 @@ namespace CommonLib.Firm.Ebest.Block
         /// <summary>
         /// 신용담보체결금액 [16]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public long crdtpldgexecamt { get; set; }
 
         /// <summary>
         /// 신용체결금액 [16]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public long crdtexecamt { get; set; }
 
         /// <summary>
         /// 전일재사용체결금액 [16]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public long prdayruseexecval { get; set; }
 
         /// <summary>
         /// 금일재사용체결금액 [16]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public long crdayruseexecval { get; set; }
 
         /// <summary>
@@ -558,7 +558,7 @@ namespace CommonLib.Firm.Ebest.Block
         /// <summary>
         /// 전략코드 [6]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string strtgcode { get; set; }
 
         /// <summary>
@@ -599,25 +599,25 @@ namespace CommonLib.Firm.Ebest.Block
         /// <summary>
         /// 차입관리여부 [1]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public long brwmgmtYn { get; set; }
 
         /// <summary>
         /// 외국인고유번호 [6]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string frgrunqno { get; set; }
 
         /// <summary>
         /// 거래세징수구분 [1]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string trtzxLevytp { get; set; }
 
         /// <summary>
         /// 유동성공급자구분 [1]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public string lptp { get; set; }
 
         /// <summary>
@@ -688,25 +688,25 @@ namespace CommonLib.Firm.Ebest.Block
         /// <summary>
         /// 대용금 [16]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public long substamt { get; set; }
 
         /// <summary>
         /// 위탁증거금현금 [16]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public long csgnmnymgn { get; set; }
 
         /// <summary>
         /// 위탁증거금대용 [16]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public long csgnsubstmgn { get; set; }
 
         /// <summary>
         /// 신용담보재사용금 [16]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public long crdtpldgruseamt { get; set; }
 
         /// <summary>
@@ -717,13 +717,13 @@ namespace CommonLib.Firm.Ebest.Block
         /// <summary>
         /// 주문가능대용 [16]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public long ordablesubstamt { get; set; }
 
         /// <summary>
         /// 재사용가능금액 [16]
         /// </summary>
-        [PropertyIgnore]
+        [IgnoreProperty]
         public long ruseableamt { get; set; }
     }
 }

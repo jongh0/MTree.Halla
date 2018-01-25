@@ -15,7 +15,7 @@ namespace CommonLib.Firm.Ebest.Block
     {
         private string _blockName;
 
-        [PropertyIgnore]
+        [IgnoreProperty]
         public virtual string BlockName
         {
             get

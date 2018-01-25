@@ -21,7 +21,7 @@ namespace CommonLib.Utility
             if (_propDic.TryGetValue(type, out var properties) == false)
             {
                 properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                    .Where(p => System.Attribute.IsDefined(p, typeof(PropertyIgnoreAttribute)) == false);
+                    .Where(p => System.Attribute.IsDefined(p, typeof(IgnorePropertyAttribute)) == false);
                 _propDic.TryAdd(type, properties);
             }
 

@@ -355,7 +355,7 @@ namespace KiwoomPublisher
                 {
                     _logger.Error("Login Fail");
 
-                    ProcessUtility.Kill("khministarter");
+                    ProcessUtility.Kill(ProcessTypes.KiwoomStarter);
                     _logger.Error("Restart Kiwoom Publisher");
                     Process.Start(System.Windows.Forms.Application.ExecutablePath);
                     Environment.Exit(-1);

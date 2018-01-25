@@ -24,6 +24,8 @@ namespace CommonLib
     {
         Unknown,
         CybosStarter,
+        DibServer,
+        KiwoomStarter,
         Dashboard,
         HistorySaver,
         StrategyManager,
