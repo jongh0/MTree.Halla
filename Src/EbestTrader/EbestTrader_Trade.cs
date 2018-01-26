@@ -66,13 +66,12 @@ namespace EbestTrader
                 }
 
                 var query = new EbestQuery<t0424InBlock, t0424OutBlock, t0424OutBlock1>();
-                if (query.ExecuteQuery(new t0424InBlock { accno = accNum, passwd = accPw}) == false)
+                if (query.ExecuteQueryAndWait(new t0424InBlock { accno = accNum, passwd = accPw}) == false)
                 {
                     _logger.Error($"Deposit query error, {GetLastErrorMessage(query.Result)}");
                     return 0;
                 }
 
-                return 0; // 임시
                 return CurrDeposit = query.OutBlock.sunamt;
             }
             catch (Exception ex)

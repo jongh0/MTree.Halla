@@ -19,16 +19,12 @@ namespace CommonLib.Firm.Ebest.Query
 
         public override bool ExecuteQuery(TInBlock block)
         {
-            _logger.Info($"ExecuteQuery: {block}");
-
             OutBlock = default(TOutBlock);
             return base.ExecuteQuery(block);
         }
 
         public override bool ExecuteQueryAndWait(TInBlock block, int timeout = QUERY_TIMEOUT)
         {
-            _logger.Info($"ExecuteQueryAndWait: {block}");
-
             OutBlock = default(TOutBlock);
             return base.ExecuteQueryAndWait(block, timeout);
         }
@@ -97,8 +93,6 @@ namespace CommonLib.Firm.Ebest.Query
 
         public override bool ExecuteQuery(TInBlock block)
         {
-            _logger.Info($"ExecuteQuery: {block}");
-
             OutBlock = default(TOutBlock);
             OutBlock1 = default(TOutBlock1);
             return base.ExecuteQuery(block);
@@ -106,10 +100,9 @@ namespace CommonLib.Firm.Ebest.Query
 
         public override bool ExecuteQueryAndWait(TInBlock block, int timeout = QUERY_TIMEOUT)
         {
-            _logger.Info($"ExecuteQueryAndWait: {block}");
-
             OutBlock = default(TOutBlock);
             OutBlock1 = default(TOutBlock1);
+
             return base.ExecuteQueryAndWait(block, timeout);
         }
 

@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 
 namespace EbestTrader
 {
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Single, ValidateMustUnderstand = false)]
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple, ValidateMustUnderstand = false)]
     public partial class EbestTrader_ : IRealTimeTrader, ITrader, INotifyPropertyChanged
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
@@ -36,6 +36,8 @@ namespace EbestTrader
 
         private int WaitLoginTimeout => 1000 * 15;
         private ManualResetEvent WaitLoginEvent { get; } = new ManualResetEvent(false);
+
+        private int ServerType => Config.General.TraderType == TraderTypes.Ebest ? 0 : 1;
 
         #region Event
         public event Action<string> StateNotified;
@@ -205,7 +207,7 @@ namespace EbestTrader
 
                 _logger.Info($"Try login, Id: {LoginInstance.UserId}");
 
-                if (_session.Login(LoginInstance.UserId, LoginInstance.UserPw, LoginInstance.CertPw, 0, true) == false)
+                if (_session.Login(LoginInstance.UserId, LoginInstance.UserPw, LoginInstance.CertPw, ServerType, true) == false)
                 {
                     _logger.Error($"Login error, {GetLastErrorMessage()}");
                     return false;

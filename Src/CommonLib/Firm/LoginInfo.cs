@@ -1,4 +1,5 @@
-﻿using Configuration;
+﻿using CommonLib.Utility;
+using Configuration;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -56,7 +57,7 @@ namespace CommonLib.Firm
 
         public override string ToString()
         {
-            return $"{State}/{FirmType}/{ServerAddress}/{ServerPort}/{UserId}/{Id}";
+            return PropertyUtility.PrintNameValues(this);
         }
 
         #region INotifyPropertyChanged

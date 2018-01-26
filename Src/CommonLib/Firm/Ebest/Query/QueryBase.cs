@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using XA_DATASETLib;
 
 namespace CommonLib.Firm.Ebest.Query
@@ -62,7 +63,7 @@ namespace CommonLib.Firm.Ebest.Query
                 if (block.BlockName.Contains(ResName) == false)
                     throw new ArgumentException($"Block not matched, {ResName}, {block.BlockName}");
 
-                _logger.Info($"ExecuteQuery\n{block.ToString()}");
+                _logger.Info($"ExecuteQuery: {block.ToString()}");
 
                 Query.SetFieldData(block);
                 Result = Query.Request(false);
@@ -83,10 +84,11 @@ namespace CommonLib.Firm.Ebest.Query
                 if (block.BlockName.Contains(ResName) == false)
                     throw new ArgumentException($"Block not matched, {ResName}, {block.BlockName}");
 
-                _logger.Info($"ExecuteQueryAndWait\n{block.ToString()}");
+                _logger.Info($"ExecuteQueryAndWait: {block.ToString()}");
 
                 Query.SetFieldData(block);
                 Result = Query.Request(false);
+
                 if (Result < 0) return false;
 
                 if (_waitQuery == null)

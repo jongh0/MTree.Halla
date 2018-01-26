@@ -29,7 +29,7 @@ namespace CommonLib.Firm.Ebest.Block
 
         public override string ToString()
         {
-            return PropertyUtility.PrintNameValues(this, Environment.NewLine);
+            return $"{BlockName}\n" + PropertyUtility.PrintNameValues(this, Environment.NewLine);
         }
     }
 }

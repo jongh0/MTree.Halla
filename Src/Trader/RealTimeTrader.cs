@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace Trader
 {
+    [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
     public class RealTimeTrader : TraderCallback
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
