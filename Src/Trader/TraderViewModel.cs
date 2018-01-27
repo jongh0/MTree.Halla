@@ -182,7 +182,7 @@ namespace Trader
 
                 Task.Run(() =>
                 {
-                    var accounts = trader.GetAccountList();
+                    var accounts = trader.GetAccountNumberList();
                     if (accounts == null) return;
 
                     foreach (string account in accounts)

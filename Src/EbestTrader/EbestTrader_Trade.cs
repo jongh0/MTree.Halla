@@ -11,6 +11,8 @@ using CommonLib.Firm.Ebest;
 using CommonLib.Firm.Ebest.Block;
 using CommonLib.Firm.Ebest.Query;
 using CommonLib.Converter;
+using Trader.Account;
+using Configuration;
 
 namespace EbestTrader
 {
@@ -22,7 +24,59 @@ namespace EbestTrader
 
         private long CurrDeposit { get; set; } = 0;
 
-        public List<string> GetAccountList()
+        public List<AccountInfo> GetAccountInfoList()
+        {
+            var infoList = new List<AccountInfo>();
+
+            try
+            {
+                var accountList = GetAccountNumberList();
+                if (accountList == null) return infoList;
+
+                foreach (var account in accountList)
+                {
+                    var info = GetAccountInfo(account, Config.General.AccountPw);
+                    if (info != null)
+                        infoList.Add(info);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+
+            return infoList;
+        }
+
+        public AccountInfo GetAccountInfo(string accountNum, string accountPw)
+        {
+            try
+            {
+                var query = new EbestQuery<t0424InBlock, t0424OutBlock, t0424OutBlock1>();
+                if (query.ExecuteQueryAndWait(new t0424InBlock { accno = accountNum, passwd = accountPw }) == false)
+                {
+                    _logger.Error($"Deposit query error, {GetLastErrorMessage(query.Result)}");
+                    return null;
+                }
+
+                var info = AutoMapper.Mapper.Map<AccountInfo>(query.OutBlock);
+
+                var blocks = query.GetAllOutBlock1();
+                foreach (var block in blocks)
+                {
+                    var stock = AutoMapper.Mapper.Map<HoldingStock>(block);
+                    info.HoldingStocks.Add(stock);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+
+            return null;
+        }
+
+        public List<string> GetAccountNumberList()
         {
             var accList = new List<string>();
 
@@ -31,15 +85,9 @@ namespace EbestTrader
                 if (WaitLogin() == false)
                 {
                     _logger.Error("Login timeout");
-                    return null;
+                    return accList;
                 }
-                
-                if (_session.IsConnected() == false)
-                {
-                    _logger.Error("Account list query, session not connected");
-                    return null;
-                }
-                
+
                 var accCount = _session.GetAccountListCount();
                 for (int i = 0; i < accCount; i++)
                 {
@@ -53,51 +101,6 @@ namespace EbestTrader
             }
 
             return accList;
-        }
-
-        public long GetDeposit(string accNum, string accPw)
-        {
-            try
-            {
-                if (_session.IsConnected() == false)
-                {
-                    _logger.Error("Deposit query, session not connected");
-                    return 0;
-                }
-
-                var query = new EbestQuery<t0424InBlock, t0424OutBlock, t0424OutBlock1>();
-                if (query.ExecuteQueryAndWait(new t0424InBlock { accno = accNum, passwd = accPw}) == false)
-                {
-                    _logger.Error($"Deposit query error, {GetLastErrorMessage(query.Result)}");
-                    return 0;
-                }
-
-                return CurrDeposit = query.OutBlock.sunamt;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex);
-            }
-
-            return 0;
-        }
-
-        public List<HoldingStock> GetHoldingList(string accNum)
-        {
-            try
-            {
-                if (_session.IsConnected() == false)
-                {
-                    _logger.Error("Holding list query, session not connected");
-                    return null;
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex);
-            }
-
-            return null;
         }
         
         public bool MakeOrder(Order order)
@@ -159,8 +162,7 @@ namespace EbestTrader
         {
             try
             {
-                var block = new CSPAT00600InBlock1();
-                order.CopyTo(block);
+                var block = AutoMapper.Mapper.Map<CSPAT00600InBlock1>(order);
 
                 var query = new EbestQuery<CSPAT00600InBlock1, CSPAT00600OutBlock1, CSPAT00600OutBlock2>();
                 if (query.ExecuteQuery(block) == false)
@@ -183,8 +185,7 @@ namespace EbestTrader
         {
             try
             {
-                var block = new CSPAT00700InBlock1();
-                order.CopyTo(block);
+                var block = AutoMapper.Mapper.Map<CSPAT00700InBlock1>(order);
 
                 var query = new EbestQuery<CSPAT00700InBlock1, CSPAT00700OutBlock1, CSPAT00700OutBlock2>();
                 if (query.ExecuteQuery(block) == false)
@@ -207,8 +208,7 @@ namespace EbestTrader
         {
             try
             {
-                var block = new CSPAT00800InBlock1();
-                order.CopyTo(block);
+                var block = AutoMapper.Mapper.Map<CSPAT00800InBlock1>(order);
 
                 var query = new EbestQuery<CSPAT00800InBlock1, CSPAT00800OutBlock1, CSPAT00800OutBlock2>();
                 if (query.ExecuteQuery(block) == false)

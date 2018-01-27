@@ -6,6 +6,7 @@ using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
 using RealTimeProvider;
+using Trader.Account;
 
 namespace Trader
 {
@@ -31,22 +32,10 @@ namespace Trader
             base.Channel.UnregisterTraderContract(clientId);
         }
 
-        public List<string> GetAccountList()
+        public List<AccountInfo> GetAccountInfoList()
         {
             if (State != CommunicationState.Opened) return null;
-            return base.Channel.GetAccountList();
-        }
-
-        public long GetDeposit(string accNum, string accPw)
-        {
-            if (State != CommunicationState.Opened) return 0;
-            return base.Channel.GetDeposit(accNum, accPw);
-        }
-
-        public List<HoldingStock> GetHoldingList(string accNum)
-        {
-            if (State != CommunicationState.Opened) return null;
-            return base.Channel.GetHoldingList(accNum);
+            return base.Channel.GetAccountInfoList();
         }
 
         public bool MakeOrder(Order order)

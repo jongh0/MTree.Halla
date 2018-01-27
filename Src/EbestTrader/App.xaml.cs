@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using Trader;
 
 namespace EbestTrader
 {
@@ -24,6 +25,8 @@ namespace EbestTrader
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
             base.OnStartup(e);
+
+            TraderMappingBootstrapper.Initialize();
         }
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)

@@ -54,6 +54,7 @@ namespace StrategyManager
             {
                 _history = new HistoryConsumer();
 
+#if true // Strategy & Trader만 테스트할 때는 Block
                 if (ProcessUtility.WaitIfNotExists(ProcessTypes.RealTimeProvider) == false)
                 {
                     _logger.Error($"{nameof(ProcessTypes.RealTimeProvider)} process not exists");
@@ -64,7 +65,8 @@ namespace StrategyManager
                 _realTime.ChannelOpened += RealTime_ChannelOpened;
                 _realTime.MessageNotified += RealTime_MessageNotified;
                 _realTime.StockMasterConsumed += RealTime_StockMasterConsumed;
-                //_realTime.StockConclusionConsumed += RealTime_StockConclusionConsumed;
+                _realTime.StockConclusionConsumed += RealTime_StockConclusionConsumed; 
+#endif
 
                 string traderConfiguration;
                 ProcessTypes processType;
@@ -119,11 +121,6 @@ namespace StrategyManager
             if (trader == null) return;
 
             trader.RegisterTraderContract(new TraderContract());
-
-            var accNumList = trader.GetAccountList();
-            var accNum = accNumList[0];
-            var deposit = trader.GetDeposit(accNum, Config.General.AccountPw);
-            var holdingList = trader.GetHoldingList(accNum);
         }
 
         private void RealTime_StockMasterConsumed(List<StockMaster> stockMasters)

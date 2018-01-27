@@ -9,6 +9,10 @@ namespace CommonLib.Utility
 {
     public static class DispatcherUtility
     {
+        /// <summary>
+        /// Message pumping
+        /// WinForm의 Application.DoEvents()와 동일
+        /// </summary>
         public static void DoEvents()
         {
             DispatcherFrame frame = new DispatcherFrame();

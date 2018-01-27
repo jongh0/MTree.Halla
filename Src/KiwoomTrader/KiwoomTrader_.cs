@@ -16,6 +16,7 @@ using CommonLib.Firm;
 using CommonLib.Firm.Kiwoom;
 using CommonLib.Windows;
 using CommonLib.Utility;
+using Trader.Account;
 
 namespace KiwoomTrader
 {

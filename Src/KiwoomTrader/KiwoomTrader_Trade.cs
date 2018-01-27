@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CommonLib.Firm.Kiwoom;
+using Trader.Account;
 
 namespace KiwoomTrader
 {
@@ -13,138 +14,44 @@ namespace KiwoomTrader
     {
         private OrderResult CurrOrderResult { get; set; }
 
+        public List<AccountInfo> GetAccountInfoList()
+        {
+            throw new NotImplementedException();
+        }
+
         public List<string> GetAccountList()
         {
-            try
-            {
-                if (_kiwoomObj.GetConnectState() == 0)
-                {
-                    _logger.Error("Account list query, session not connected");
-                    return null;
-                }
-
-                List<string> accList = new List<string>();
-                foreach (string acc in _kiwoomObj.GetLoginInfo("ACCNO").Split(';'))
-                {
-                    if (string.IsNullOrEmpty(acc) == false)
-                        accList.Add(acc);
-                }
-
-                return accList;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex);
-            }
-
-            return null;
+            throw new NotImplementedException();
         }
 
         public long GetDeposit(string accNum, string accPw)
         {
-            try
-            {
-                if (_kiwoomObj.GetConnectState() == 0)
-                {
-                    _logger.Error("Deposit query, session not connected");
-                    return 0;
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex);
-            }
-
-            return 0;
+            throw new NotImplementedException();
         }
         
         public bool MakeOrder(Order order)
         {
-            try
-            {
-                if (_kiwoomObj.GetConnectState() == 0)
-                {
-                    _logger.Error("Make order, session not connected");
-                    return false;
-                }
-
-                var hoga = (order.PriceType == PriceTypes.LimitPrice) ? "00" : "03";
-
-                var ret = _kiwoomObj.SendOrder(
-                    "주식주문",
-                    KiwoomScreen.GetScreenNum(), 
-                    order.AccountNumber, 
-                    (int)order.OrderType, 
-                    order.Code, 
-                    (int)order.Quantity, 
-                    (int)order.Price, 
-                    hoga, 
-                    order.OriginOrderNumber);
-
-                if (ret == 0)
-                {
-                    _logger.Info($"Order success, {order.ToString()}");
-                    return true;
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex);
-            }
-
-            _logger.Error($"Order fail, {order.ToString()}");
-            return false;
+            throw new NotImplementedException();
         }
 
         public List<HoldingStock> GetHoldingList(string accNum)
         {
-            try
-            {
-                if (_kiwoomObj.GetConnectState() == 0)
-                {
-                    _logger.Error("Holding list query, session not connected");
-                    return null;
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex);
-            }
-
-            return null;
+            throw new NotImplementedException();
         }
 
         private void OrderResultReceived(AxKHOpenAPILib._DKHOpenAPIEvents_OnReceiveTrDataEvent e)
         {
-            try
-            {
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex);
-            }
+            throw new NotImplementedException();
         }
 
         private void OrderConclusionReceived(AxKHOpenAPILib._DKHOpenAPIEvents_OnReceiveChejanDataEvent e)
         {
-            try
-            {
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex);
-            }
+            throw new NotImplementedException();
         }
 
         private void AccountDepositReceived(AxKHOpenAPILib._DKHOpenAPIEvents_OnReceiveChejanDataEvent e)
         {
-            try
-            {
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex);
-            }
+            throw new NotImplementedException();
         }
     }
 }

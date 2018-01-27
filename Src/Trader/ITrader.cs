@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Trader.Account;
 
 namespace Trader
 {
@@ -11,11 +12,7 @@ namespace Trader
     {
         event Action<string> StateNotified;
 
-        List<string> GetAccountList();
-
-        long GetDeposit(string accNum, string accPw);
-
-        List<HoldingStock> GetHoldingList(string accNum);
+        List<string> GetAccountNumberList();
 
         bool MakeOrder(Order order);
     }

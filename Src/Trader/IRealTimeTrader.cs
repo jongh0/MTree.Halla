@@ -5,6 +5,7 @@ using System.Linq;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
+using Trader.Account;
 
 namespace Trader
 {
@@ -21,13 +22,7 @@ namespace Trader
         void UnregisterTraderContract(Guid clientId);
 
         [OperationContract]
-        List<string> GetAccountList();
-
-        [OperationContract]
-        long GetDeposit(string accNum, string accPw);
-
-        [OperationContract]
-        List<HoldingStock> GetHoldingList(string accNum);
+        List<AccountInfo> GetAccountInfoList();
 
         [OperationContract]
         bool MakeOrder(Order order);

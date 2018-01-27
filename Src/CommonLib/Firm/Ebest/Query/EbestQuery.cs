@@ -102,7 +102,6 @@ namespace CommonLib.Firm.Ebest.Query
         {
             OutBlock = default(TOutBlock);
             OutBlock1 = default(TOutBlock1);
-
             return base.ExecuteQueryAndWait(block, timeout);
         }
 

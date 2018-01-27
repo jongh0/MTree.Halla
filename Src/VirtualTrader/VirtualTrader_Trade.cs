@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Trader.Account;
 
 namespace VirtualTrader
 {
@@ -12,6 +13,11 @@ namespace VirtualTrader
         private OrderResult CurrOrderResult { get; set; }
 
         public VirtualAccountManager AccountManager { get; set; } = new VirtualAccountManager();
+
+        public List<AccountInfo> GetAccountInfoList()
+        {
+            throw new NotImplementedException();
+        }
 
         public List<string> GetAccountList()
         {

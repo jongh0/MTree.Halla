@@ -6,6 +6,7 @@ using System.ServiceModel;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Trader.Account;
 
 namespace Trader
 {
@@ -127,19 +128,9 @@ namespace Trader
             ServiceClient?.UnregisterTraderContract(ClientId);
         }
 
-        public List<string> GetAccountList()
+        public List<AccountInfo> GetAccountInfoList()
         {
-            return ServiceClient?.GetAccountList() ?? null;
-        }
-
-        public long GetDeposit(string accNum, string accPw)
-        {
-            return ServiceClient?.GetDeposit(accNum, accPw) ?? 0;
-        }
-
-        public List<HoldingStock> GetHoldingList(string accNum)
-        {
-            return ServiceClient?.GetHoldingList(accNum) ?? null;
+            return ServiceClient?.GetAccountInfoList() ?? null;
         }
 
         public bool MakeOrder(Order order)

@@ -31,69 +31,63 @@ namespace Trader
         {
             return PropertyUtility.PrintNameValues(this);
         }
+    }
 
-        public void CopyTo(CSPAT00600InBlock1 block)
+    public class OrderMappingProfile : AutoMapper.Profile
+    {
+        public OrderMappingProfile()
         {
-            if (block == null) return;
+            CreateMap<Order, CSPAT00600InBlock1>()
+                .ForMember(dest => dest.AcntNo,
+                           opts => opts.MapFrom(src => src.AccountNumber))
+                .ForMember(dest => dest.InptPwd,
+                           opts => opts.MapFrom(src => src.AccountPassword))
+                .ForMember(dest => dest.IsuNo,
+                           opts => opts.MapFrom(src => src.Code))
+                .ForMember(dest => dest.OrdQty,
+                           opts => opts.MapFrom(src => src.Quantity))
+                .ForMember(dest => dest.BnsTpCode,
+                           opts => opts.MapFrom(src => src.OrderType == OrderTypes.BuyNew ? "2" : "1"))
+                .ForMember(dest => dest.OrdPrc,
+                           opts => opts.MapFrom(src => src.PriceType == PriceTypes.LimitPrice ? src.Price : 0))
+                .ForMember(dest => dest.OrdprcPtnCode,
+                           opts => opts.MapFrom(src => src.PriceType == PriceTypes.LimitPrice ? "00" : "03"))
+                .ForMember(dest => dest.MgntrnCode,
+                           opts => opts.MapFrom(src => "000"))
+                .ForMember(dest => dest.LoanDt,
+                           opts => opts.MapFrom(src => ""))
+                .ForMember(dest => dest.OrdCndiTpCode,
+                        opts => opts.MapFrom(src => "0"));
 
-            block.AcntNo = AccountNumber;
-            block.InptPwd = AccountPassword;
-            block.IsuNo = Code;
-            block.OrdQty = Quantity;
-            if (OrderType == OrderTypes.BuyNew)
-                block.BnsTpCode = "2";
-            else
-                block.BnsTpCode = "1";
+            CreateMap<Order, CSPAT00700InBlock1>()
+                .ForMember(dest => dest.OrgOrdNo,
+                           opts => opts.MapFrom(src => long.Parse(src.OriginOrderNumber)))
+                .ForMember(dest => dest.AcntNo,
+                           opts => opts.MapFrom(src => src.AccountNumber))
+                .ForMember(dest => dest.InptPwd,
+                           opts => opts.MapFrom(src => src.AccountPassword))
+                .ForMember(dest => dest.IsuNo,
+                           opts => opts.MapFrom(src => src.Code))
+                .ForMember(dest => dest.OrdQty,
+                           opts => opts.MapFrom(src => src.Quantity))
+                .ForMember(dest => dest.OrdPrc,
+                           opts => opts.MapFrom(src => src.PriceType == PriceTypes.LimitPrice ? src.Price : 0))
+                .ForMember(dest => dest.OrdprcPtnCode,
+                           opts => opts.MapFrom(src => src.PriceType == PriceTypes.LimitPrice ? "00" : "03"))
+                .ForMember(dest => dest.OrdCndiTpCode,
+                        opts => opts.MapFrom(src => "0"));
 
-            if (PriceType == PriceTypes.LimitPrice)
-            {
-                block.OrdPrc = Price;
-                block.OrdprcPtnCode = "00";
-            }
-            else
-            {
-                block.OrdPrc = 0;
-                block.OrdprcPtnCode = "03";
-            }
-
-            block.MgntrnCode = "000";
-            block.LoanDt = "";
-            block.OrdCndiTpCode = "0";
-        }
-
-        public void CopyTo(CSPAT00700InBlock1 block)
-        {
-            if (block == null) return;
-
-            block.OrgOrdNo = long.TryParse(OriginOrderNumber, out long oon) ? oon : 0;
-            block.AcntNo = AccountNumber;
-            block.InptPwd = AccountPassword;
-            block.IsuNo = Code;
-            block.OrdQty = Quantity;
-
-            if (PriceType == PriceTypes.LimitPrice)
-            {
-                block.OrdPrc = Price;
-                block.OrdprcPtnCode = "00";
-            }
-            else
-            {
-                block.OrdPrc = 0;
-                block.OrdprcPtnCode = "03";
-            }
-
-            block.OrdCndiTpCode = "0";
-        }
-
-        public void CopyTo(CSPAT00800InBlock1 block)
-        {
-            if (block == null) return;
-
-            block.OrgOrdNo = long.TryParse(OriginOrderNumber, out long oon) ? oon : 0;
-            block.AcntNo = AccountNumber;
-            block.InptPwd = AccountPassword;
-            block.IsuNo = Code;
-            block.OrdQty = Quantity;
+            CreateMap<Order, CSPAT00800InBlock1>()
+                .ForMember(dest => dest.OrgOrdNo,
+                           opts => opts.MapFrom(src => long.Parse(src.OriginOrderNumber)))
+                .ForMember(dest => dest.AcntNo,
+                           opts => opts.MapFrom(src => src.AccountNumber))
+                .ForMember(dest => dest.InptPwd,
+                           opts => opts.MapFrom(src => src.AccountPassword))
+                .ForMember(dest => dest.IsuNo,
+                           opts => opts.MapFrom(src => src.Code))
+                .ForMember(dest => dest.OrdQty,
+                           opts => opts.MapFrom(src => src.Quantity));
         }
     }
 }
