@@ -141,6 +141,7 @@
     <Compile Include="Firm\Kiwoom\KiwoomError.cs" />
     <Compile Include="Firm\LoginInfo.cs" />
     <Compile Include="Utility\AssemblyUtility.cs" />
+    <Compile Include="Utility\DispatcherUtility.cs" />
     <Compile Include="Utility\ObjectIdUtility.cs" />
     <Compile Include="Utility\PropertyUtility.cs" />
     <Compile Include="Utility\ServiceUtility.cs" />

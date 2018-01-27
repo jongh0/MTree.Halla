@@ -1,4 +1,5 @@
 ﻿using CommonLib.Firm.Ebest.Block;
+using CommonLib.Utility;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -17,11 +18,11 @@ namespace CommonLib.Firm.Ebest.Query
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public const int QUERY_TIMEOUT = 15000;
+        public const int QUERY_TIMEOUT = 10000;
 
-        private ManualResetEvent _waitQuery;
+        private bool QueryDone { get; set; }
+
         private string _resName;
-
         public string ResName
         {
             get
@@ -88,31 +89,24 @@ namespace CommonLib.Firm.Ebest.Query
 
                 Query.SetFieldData(block);
                 Result = Query.Request(false);
-
                 if (Result < 0) return false;
 
-                if (_waitQuery == null)
-                    _waitQuery = new ManualResetEvent(false);
+                QueryDone = false;
 
-                if (_waitQuery.WaitOne(timeout) == false)
+                while (timeout > 0)
                 {
-                    _logger.Error($"{ResName} query time out");
-                    return false;
+                    timeout -= 10;
+                    Thread.Sleep(10);
+                    DispatcherUtility.DoEvents();
+
+                    if (QueryDone == true) return true;
                 }
 
-                return true;
+                _logger.Error($"{ResName} query time out");
             }
             catch (Exception ex)
             {
                 _logger.Error(ex);
-            }
-            finally
-            {
-                if (_waitQuery != null)
-                {
-                    _waitQuery.Dispose();
-                    _waitQuery = null;
-                }
             }
 
             return false;
@@ -124,7 +118,7 @@ namespace CommonLib.Firm.Ebest.Query
 
         protected virtual void OnReceiveData(string trCode)
         {
-            _waitQuery?.Set();
+            QueryDone = true;
         }
 
         protected virtual void OnReceiveMessage(bool isSystemError, string messageCode, string message)
