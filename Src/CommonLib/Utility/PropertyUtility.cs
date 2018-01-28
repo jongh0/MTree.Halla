@@ -58,15 +58,14 @@ namespace CommonLib.Utility
                     {
                         strList.Add($"{propertyName}{dateTime.ToString(Config.General.DateTimeFormat)}");
                     }
-                    //else if (value.GetType().GetInterfaces().Contains(typeof(IEnumerable<>)))
-                    //{
-                    //    var enumerable = obj as IEnumerable<object>;
-                    //    var str = string.Join(" | ", enumerable.Select(i => i.ToString()).ToArray());
-                    //    if (excludeEmptyProperty == true && string.IsNullOrEmpty(str) == true)
-                    //        continue;
+                    else if (value is IEnumerable<object> enumerable)
+                    {
+                        var str = string.Join(" | ", enumerable.Select(i => i.ToString()).ToArray());
+                        if (excludeEmptyProperty == true && string.IsNullOrEmpty(str) == true)
+                            continue;
 
-                    //    strList.Add($"{propertyName}{str}");
-                    //}
+                        strList.Add($"{propertyName}{{{str}}}");
+                    }
                     else
                     {
                         var str = value.ToString();
@@ -79,8 +78,9 @@ namespace CommonLib.Utility
 
                 return string.Join(seperator, strList.ToArray());
             }
-            catch
+            catch (Exception ex)
             {
+                _logger.Error(ex);
             }
             finally
             {
