@@ -10,6 +10,10 @@ using XA_SESSIONLib;
 
 namespace CommonLib.Firm.Ebest
 {
+    /// <summary>
+    /// Ebest Login 처리
+    /// 일정 시간 이상 통신이 없을 경우 Quote 수행해서 연결을 유지한다.
+    /// </summary>
     public class EbestSession
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
@@ -26,7 +30,6 @@ namespace CommonLib.Firm.Ebest
 
         public XASessionClass Session { get; private set; }
         public LoginInformation LoginInfo { get; private set; }
-        public LoginStates LoginState => LoginInfo?.State ?? LoginStates.Disconnect;
 
         #region Event
         public event Action Logined;
@@ -53,6 +56,11 @@ namespace CommonLib.Firm.Ebest
             }
         }
 
+        /// <summary>
+        /// 서버에 접속 후 Login한다.
+        /// </summary>
+        /// <param name="info"></param>
+        /// <returns></returns>
         public bool Login(LoginInformation info)
         {
             try
@@ -69,7 +77,7 @@ namespace CommonLib.Firm.Ebest
                 }
 
                 if (LoginInfo.State != LoginStates.Login && 
-                    Session.Login(LoginInfo.UserId, LoginInfo.UserPw, LoginInfo.CertPw, (int)LoginInfo.ServerType, true) == false)
+                    Session.Login(LoginInfo.UserId, LoginInfo.UserPassword, LoginInfo.CertPassword, (int)LoginInfo.ServerType, true) == false)
                 {
                     _logger.Error($"Login error, {GetLastErrorMessage()}");
                     return false;
@@ -85,6 +93,10 @@ namespace CommonLib.Firm.Ebest
             return false;
         }
 
+        /// <summary>
+        /// Logout 후 서버와 연결을 끊는다.
+        /// </summary>
+        /// <returns></returns>
         public bool Logout()
         {
             try
@@ -104,6 +116,11 @@ namespace CommonLib.Firm.Ebest
             return false;
         }
 
+        /// <summary>
+        /// Login이 완료될 때 까지 대기한다.
+        /// </summary>
+        /// <param name="timeout"></param>
+        /// <returns></returns>
         public bool WaitLogin(int timeout = WaitLoginTimeout)
         {
             if (_waitLoginEvent.WaitOne(timeout) == false)
@@ -161,6 +178,10 @@ namespace CommonLib.Firm.Ebest
             return $"{nameof(errCode)}: {errCode}";
         }
 
+        /// <summary>
+        /// 계좌가 몇 개 있는지 조회한다.
+        /// </summary>
+        /// <returns></returns>
         public int GetAccountListCount()
         {
             if (Session.IsConnected() == false)
@@ -169,6 +190,11 @@ namespace CommonLib.Firm.Ebest
             return Session.GetAccountListCount();
         }
 
+        /// <summary>
+        /// 계좌번호를 조회한다.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
         public string GetAccountList(int index)
         {
             if (Session.IsConnected() == false)

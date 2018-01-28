@@ -37,7 +37,9 @@ namespace Trader
     {
         public OrderMappingProfile()
         {
-            CreateMap<Order, CSPAT00600InBlock1>()
+            long originOrderNumber;
+
+            CreateMap<Order, CSPAT00600InBlock1>(AutoMapper.MemberList.None)
                 .ForMember(dest => dest.AcntNo,
                            opts => opts.MapFrom(src => src.AccountNumber))
                 .ForMember(dest => dest.InptPwd,
@@ -59,9 +61,9 @@ namespace Trader
                 .ForMember(dest => dest.OrdCndiTpCode,
                         opts => opts.MapFrom(src => "0"));
 
-            CreateMap<Order, CSPAT00700InBlock1>()
+            CreateMap<Order, CSPAT00700InBlock1>(AutoMapper.MemberList.None)
                 .ForMember(dest => dest.OrgOrdNo,
-                           opts => opts.MapFrom(src => long.Parse(src.OriginOrderNumber)))
+                           opts => opts.MapFrom(src => long.TryParse(src.OriginOrderNumber, out originOrderNumber) ? originOrderNumber : 0))
                 .ForMember(dest => dest.AcntNo,
                            opts => opts.MapFrom(src => src.AccountNumber))
                 .ForMember(dest => dest.InptPwd,
@@ -77,9 +79,9 @@ namespace Trader
                 .ForMember(dest => dest.OrdCndiTpCode,
                         opts => opts.MapFrom(src => "0"));
 
-            CreateMap<Order, CSPAT00800InBlock1>()
+            CreateMap<Order, CSPAT00800InBlock1>(AutoMapper.MemberList.None)
                 .ForMember(dest => dest.OrgOrdNo,
-                           opts => opts.MapFrom(src => long.Parse(src.OriginOrderNumber)))
+                           opts => opts.MapFrom(src => long.TryParse(src.OriginOrderNumber, out originOrderNumber) ? originOrderNumber : 0))
                 .ForMember(dest => dest.AcntNo,
                            opts => opts.MapFrom(src => src.AccountNumber))
                 .ForMember(dest => dest.InptPwd,

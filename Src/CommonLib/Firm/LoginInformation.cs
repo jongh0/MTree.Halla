@@ -13,47 +13,51 @@ namespace CommonLib.Firm
     {
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        private LoginStates _State = LoginStates.Disconnect;
+        private LoginStates _state = LoginStates.Disconnect;
         public LoginStates State
         {
-            get { return _State; }
+            get { return _state; }
             set
             {
-                _State = value;
+                _state = value;
                 NotifyPropertyChanged(nameof(State));
             }
         }
 
         public FirmTypes FirmType { get; set; } = FirmTypes.Ebest;
 
-        private ServerTypes _ServerType = ServerTypes.Real;
+        private ServerTypes _serverType = ServerTypes.Real;
         public ServerTypes ServerType
         {
-            get { return _ServerType; }
+            get { return _serverType; }
             set
             {
-                _ServerType = value;
+                _serverType = value;
                 NotifyPropertyChanged(nameof(ServerType));
             }
         }
 
-        private string _UserId;
+        private string _userId;
         public string UserId
         {
-            get { return _UserId; }
+            get { return _userId; }
             set
             {
-                _UserId = value;
+                _userId = value;
                 NotifyPropertyChanged(nameof(UserId));
             }
         }
 
-        public string UserPw { get; set; }
-        public string CertPw { get; set; }
-        public string AccountPw { get; set; }
+        public string UserPassword { get; set; }
+        public string CertPassword { get; set; }
+        public string AccountPassword { get; set; }
 
         public string ServerAddress { get; set; }
         public int ServerPort { get; set; }
+
+        public bool IsValid => string.IsNullOrEmpty(UserId) == false &&
+                               string.IsNullOrEmpty(UserPassword) == false &&
+                               string.IsNullOrEmpty(CertPassword) == false;
 
         public override string ToString()
         {

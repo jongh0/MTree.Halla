@@ -1,22 +1,17 @@
 ﻿using Configuration;
 using RealTimeProvider;
 using Trader;
-using CommonLib;
 using System;
 using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.ServiceModel;
 using System.Threading;
-using System.Timers;
-using XA_DATASETLib;
-using XA_SESSIONLib;
 using CommonLib.Firm;
-using CommonLib.Extension;
 using CommonLib.Firm.Ebest;
 using CommonLib.Firm.Ebest.Block;
-using CommonLib.Firm.Ebest.Query;
 using CommonLib.Firm.Ebest.Real;
 using System.Threading.Tasks;
+using CommonLib;
 
 namespace EbestTrader
 {
@@ -24,6 +19,8 @@ namespace EbestTrader
     public partial class EbestTrader_ : IRealTimeTrader, ITrader, INotifyPropertyChanged
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
+
+        private LoginInformation _loginInfo;
 
         private ConcurrentDictionary<Guid, TraderContract> TraderContracts { get; } = new ConcurrentDictionary<Guid, TraderContract>();
 
@@ -45,7 +42,7 @@ namespace EbestTrader
         {
             try
             {
-                #region XASession
+                #region EbestSession
                 _session = new EbestSession();
                 _session.Logined += Session_Logined;
                 _session.Logouted += Session_Logouted;
@@ -64,40 +61,39 @@ namespace EbestTrader
                 _orderRejectedReal.OutBlockReceived += OrderRejectedReal_OutBlockReceived;
                 #endregion
 
-                #region Login
-                var loginInfo = new LoginInformation();
-                loginInfo.UserId = Config.Ebest.UserId;
-                loginInfo.UserPw = Config.Ebest.UserPw;
-                loginInfo.CertPw = Config.Ebest.CertPw;
+                #region LoginInformation
+                _loginInfo = new LoginInformation();
+                _loginInfo.FirmType = FirmTypes.Ebest;
+                _loginInfo.UserId = Config.Ebest.UserId;
+                _loginInfo.UserPassword = Config.Ebest.UserPw;
+                _loginInfo.CertPassword = Config.Ebest.CertPw;
                 if (Config.General.TraderType == TraderTypes.EbestSimul)
                 {
-                    loginInfo.AccountPw = "0000";
-                    loginInfo.ServerType = ServerTypes.Simul;
-                    loginInfo.ServerAddress = Config.Ebest.SimulServerAddress;
+                    _loginInfo.AccountPassword = "0000";
+                    _loginInfo.ServerType = ServerTypes.Simul;
+                    _loginInfo.ServerAddress = Config.Ebest.SimulServerAddress;
                 }
                 else
                 {
-                    loginInfo.AccountPw = Config.Ebest.AccountPw;
-                    loginInfo.ServerType = ServerTypes.Real;
-                    loginInfo.ServerAddress = Config.Ebest.RealServerAddress;
+                    _loginInfo.AccountPassword = Config.Ebest.AccountPw;
+                    _loginInfo.ServerType = ServerTypes.Real;
+                    _loginInfo.ServerAddress = Config.Ebest.RealServerAddress;
                 }
-                loginInfo.ServerPort = Config.Ebest.ServerPort;
+                _loginInfo.ServerPort = Config.Ebest.ServerPort;
 
-                if (string.IsNullOrEmpty(loginInfo.UserId) == false &&
-                    string.IsNullOrEmpty(loginInfo.UserPw) == false &&
-                    string.IsNullOrEmpty(loginInfo.CertPw) == false)
-                {
-                    if (_session.Login(loginInfo) == false)
-                    {
-                        _logger.Error("Login fail");
-                        NotifyState(TraderStateTypes.LoginFail);
-                    }
-                }
-                else
+                if (_loginInfo.IsValid == false)
                 {
                     _logger.Error("Check Ebest configuration");
                     return;
                 }
+                #endregion
+
+                #region Login
+                if (_session.Login(_loginInfo) == false)
+                {
+                    _logger.Error("Login fail");
+                    NotifyState(TraderStateTypes.LoginFail);
+                } 
                 #endregion
             }
             catch (Exception ex)

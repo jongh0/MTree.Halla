@@ -76,7 +76,7 @@ namespace Trader.Account
     {
         public HoldingStockMappingProfile()
         {
-            CreateMap<t0424OutBlock1, HoldingStock>()
+            CreateMap<t0424OutBlock1, HoldingStock>(AutoMapper.MemberList.None)
                 .ForMember(dest => dest.Code,
                            opts => opts.MapFrom(src => src.expcode))
                 .ForMember(dest => dest.Name,

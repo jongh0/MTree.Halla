@@ -17,6 +17,9 @@ namespace CommonLib.Firm
 
         public int LastQueryTick { get; set; } = Environment.TickCount;
 
+        /// <summary>
+        /// 이전 Query와의 Interval 시간이 충족되지 않을 경우 대기한다.
+        /// </summary>
         public void WaitInterval()
         {
             if (QueryInterval <= 0) return;

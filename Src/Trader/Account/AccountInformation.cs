@@ -64,7 +64,7 @@ namespace Trader.Account
     {
         public AccountInfoMappingProfile()
         {
-            CreateMap<t0424OutBlock, AccountInformation>()
+            CreateMap<t0424OutBlock, AccountInformation>(AutoMapper.MemberList.None)
                 .ForMember(dest => dest.EstimatedNetWorth,
                            opts => opts.MapFrom(src => src.sunamt))
                 .ForMember(dest => dest.RealizedProfit,
@@ -74,11 +74,7 @@ namespace Trader.Account
                 .ForMember(dest => dest.EvaluationPrice,
                            opts => opts.MapFrom(src => src.tappamt))
                 .ForMember(dest => dest.EvaluationProfit,
-                           opts => opts.MapFrom(src => src.tdtsunik))
-                .ForMember(dest => dest.HoldingStocks,
-                           opts => opts.Ignore())
-                .ForMember(dest => dest.AccountNumber,
-                           opts => opts.Ignore());
+                           opts => opts.MapFrom(src => src.tdtsunik));
         }
     }
 }

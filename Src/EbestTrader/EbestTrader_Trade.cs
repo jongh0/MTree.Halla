@@ -2,17 +2,9 @@
 using CommonLib;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using XA_DATASETLib;
-using CommonLib.Firm.Ebest;
 using CommonLib.Firm.Ebest.Block;
 using CommonLib.Firm.Ebest.Query;
-using CommonLib.Converter;
 using Trader.Account;
-using Configuration;
 
 namespace EbestTrader
 {
@@ -24,7 +16,7 @@ namespace EbestTrader
 
             try
             {
-                if (_session.LoginState != LoginStates.Login)
+                if (_loginInfo.State != LoginStates.Login)
                 {
                     _logger.Error("Not login state");
                     return accountInfos;
@@ -35,7 +27,7 @@ namespace EbestTrader
 
                 foreach (var accountNum in accountNums)
                 {
-                    var info = GetAccountInfo(accountNum, _session.LoginInfo.AccountPw);
+                    var info = GetAccountInfo(accountNum, _loginInfo.AccountPassword);
                     if (info != null)
                     {
                         info.AccountNumber = accountNum;
@@ -55,6 +47,14 @@ namespace EbestTrader
         {
             try
             {
+                if (_loginInfo.State != LoginStates.Login)
+                {
+                    _logger.Error("Not login state");
+                    return null;
+                }
+
+                _session.LastCommTick = Environment.TickCount;
+
                 var query = new EbestQuery<t0424InBlock, t0424OutBlock, t0424OutBlock1>();
                 if (query.ExecuteQueryAndWait(new t0424InBlock { accno = accountNum, passwd = accountPw }) == false)
                 {
@@ -87,7 +87,7 @@ namespace EbestTrader
 
             try
             {
-                if (_session.LoginState != LoginStates.Login)
+                if (_loginInfo.State != LoginStates.Login)
                 {
                     _logger.Error("Not login state");
                     return accountNums;
@@ -112,13 +112,16 @@ namespace EbestTrader
         {
             try
             {
-                if (_session.LoginState != LoginStates.Login)
+                if (_loginInfo.State != LoginStates.Login)
                 {
                     _logger.Error("Not login state");
                     return false;
                 }
 
                 bool ret = false;
+
+                if (string.IsNullOrEmpty(order.AccountPassword) == true)
+                    order.AccountPassword = _loginInfo.AccountPassword;
 
                 switch (order.OrderType)
                 {

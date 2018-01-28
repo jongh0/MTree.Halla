@@ -17,12 +17,23 @@ namespace CommonLib.Firm.Ebest.Query
 
         public TOutBlock OutBlock { get; private set; }
 
+        /// <summary>
+        /// Query를 수행한다.
+        /// </summary>
+        /// <param name="block"></param>
+        /// <returns></returns>
         public override bool ExecuteQuery(TInBlock block)
         {
             OutBlock = default(TOutBlock);
             return base.ExecuteQuery(block);
         }
 
+        /// <summary>
+        /// Query 수행 후 결과 반환될 때 까지 대기한다.
+        /// </summary>
+        /// <param name="block"></param>
+        /// <param name="timeout"></param>
+        /// <returns></returns>
         public override bool ExecuteQueryAndWait(TInBlock block, int timeout = QUERY_TIMEOUT)
         {
             OutBlock = default(TOutBlock);
@@ -42,11 +53,20 @@ namespace CommonLib.Firm.Ebest.Query
             base.OnReceiveData(trCode);
         }
 
+        /// <summary>
+        /// OutBlock의 갯수를 조회한다.
+        /// </summary>
+        /// <returns></returns>
         public int GetOutBlockCount()
         {
             return Query.GetBlockCount(typeof(TOutBlock).Name);
         }
 
+        /// <summary>
+        /// Index에 맞는 OutBock을 반환한다.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
         public TOutBlock GetOutBlock(int index)
         {
             if (Query.GetFieldData(out TOutBlock block, index) == true)
@@ -55,6 +75,10 @@ namespace CommonLib.Firm.Ebest.Query
             return null;
         }
 
+        /// <summary>
+        /// 모든 OutBlock을 반환한다.
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<TOutBlock> GetAllOutBlocks()
         {
             var blocks = new List<TOutBlock>();
@@ -91,6 +115,11 @@ namespace CommonLib.Firm.Ebest.Query
         public TOutBlock OutBlock { get; private set; }
         public TOutBlock1 OutBlock1 { get; private set; }
 
+        /// <summary>
+        /// Query를 수행한다.
+        /// </summary>
+        /// <param name="block"></param>
+        /// <returns></returns>
         public override bool ExecuteQuery(TInBlock block)
         {
             OutBlock = default(TOutBlock);
@@ -98,6 +127,12 @@ namespace CommonLib.Firm.Ebest.Query
             return base.ExecuteQuery(block);
         }
 
+        /// <summary>
+        /// Query 수행 후 결과 반환될 때 까지 대기한다.
+        /// </summary>
+        /// <param name="block"></param>
+        /// <param name="timeout"></param>
+        /// <returns></returns>
         public override bool ExecuteQueryAndWait(TInBlock block, int timeout = QUERY_TIMEOUT)
         {
             OutBlock = default(TOutBlock);
@@ -126,11 +161,20 @@ namespace CommonLib.Firm.Ebest.Query
             base.OnReceiveData(trCode);
         }
 
+        /// <summary>
+        /// OutBlock의 갯수를 조회한다.
+        /// </summary>
+        /// <returns></returns>
         public int GetOutBlockCount()
         {
             return Query.GetBlockCount(typeof(TOutBlock).Name);
         }
 
+        /// <summary>
+        /// Index에 맞는 OutBlock을 반환한다.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
         public TOutBlock GetOutBlock(int index)
         {
             if (Query.GetFieldData(out TOutBlock block, index) == true)
@@ -139,6 +183,10 @@ namespace CommonLib.Firm.Ebest.Query
             return null;
         }
 
+        /// <summary>
+        /// 모든 OutBlock을 반환한다.
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<TOutBlock> GetAllOutBlock()
         {
             var blocks = new List<TOutBlock>();
@@ -161,11 +209,20 @@ namespace CommonLib.Firm.Ebest.Query
             return blocks;
         }
 
+        /// <summary>
+        /// OutBlock1의 갯수를 조회한다.
+        /// </summary>
+        /// <returns></returns>
         public int GetOutBlock1Count()
         {
             return Query.GetBlockCount(typeof(TOutBlock1).Name);
         }
 
+        /// <summary>
+        /// Index에 맞는 OutBlock1을 반환한다.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
         public TOutBlock1 GetOutBlock1(int index)
         {
             if (Query.GetFieldData(out TOutBlock1 block, index) == true)
@@ -174,6 +231,10 @@ namespace CommonLib.Firm.Ebest.Query
             return null;
         }
 
+        /// <summary>
+        /// 모든 OutBlock1을 반환한다.
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<TOutBlock1> GetAllOutBlock1()
         {
             var blocks = new List<TOutBlock1>();

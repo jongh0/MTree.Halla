@@ -143,17 +143,18 @@ namespace EbestPublisher
                 #endregion
 
                 #region Login
+                LoginInfo.FirmType = FirmTypes.Ebest;
                 LoginInfo.UserId = Config.Ebest.UserId;
-                LoginInfo.UserPw = Config.Ebest.UserPw;
-                LoginInfo.CertPw = Config.Ebest.CertPw;
-                LoginInfo.AccountPw = Config.Ebest.AccountPw;
+                LoginInfo.UserPassword = Config.Ebest.UserPw;
+                LoginInfo.CertPassword = Config.Ebest.CertPw;
+                LoginInfo.AccountPassword = Config.Ebest.AccountPw;
                 LoginInfo.ServerType = ServerTypes.Real;
                 LoginInfo.ServerAddress = Config.Ebest.RealServerAddress;
                 LoginInfo.ServerPort = Config.Ebest.ServerPort;
 
                 if (string.IsNullOrEmpty(LoginInfo.UserId) == false &&
-                    string.IsNullOrEmpty(LoginInfo.UserPw) == false &&
-                    string.IsNullOrEmpty(LoginInfo.CertPw) == false)
+                    string.IsNullOrEmpty(LoginInfo.UserPassword) == false &&
+                    string.IsNullOrEmpty(LoginInfo.CertPassword) == false)
                 {
                     Login();
                 }
@@ -231,7 +232,7 @@ namespace EbestPublisher
 
                 _logger.Info($"Try login, Id: {LoginInfo.UserId}");
 
-                if (sessionObj.Login(LoginInfo.UserId, LoginInfo.UserPw, LoginInfo.CertPw, (int)LoginInfo.ServerType, true) == false)
+                if (sessionObj.Login(LoginInfo.UserId, LoginInfo.UserPassword, LoginInfo.CertPassword, (int)LoginInfo.ServerType, true) == false)
                 {
                     _logger.Error($"Login error, {GetLastErrorMessage()}");
                     return false;
