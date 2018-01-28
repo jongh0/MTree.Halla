@@ -25,26 +25,14 @@ namespace EbestTrader
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private ConcurrentDictionary<Guid, TraderContract> TraderContracts { get; set; } = new ConcurrentDictionary<Guid, TraderContract>();
-
-        public LoginInformation LoginInfo { get; } = new LoginInformation();
-
-        private const int WaitLoginTimeout = 1000 * 15;
-        private ManualResetEvent WaitLoginEvent { get; } = new ManualResetEvent(false);
+        private ConcurrentDictionary<Guid, TraderContract> TraderContracts { get; } = new ConcurrentDictionary<Guid, TraderContract>();
 
         #region Event
         public event Action<TraderStateTypes, string> StateNotified;
         #endregion
 
-        #region Keep session
-        private int MaxCommInterval => 1000 * 60 * 20; // 통신 안한지 20분 넘어가면 Quote 시작
-        private int CommTimerInterval => 1000 * 60 * 2; // 2분마다 체크
-        private int LastCommTick { get; set; } = Environment.TickCount;
-        private System.Timers.Timer CommTimer { get; set; }
-        #endregion
-
         #region Ebest Specific
-        private XASessionClass _session;
+        private EbestSession _session;
 
         private EbestReal<SC0OutBlock> _orderSubmitReal;
         private EbestReal<SC1OutBlock> _orderConclusionReal;
@@ -57,18 +45,13 @@ namespace EbestTrader
         {
             try
             {
-                CommTimer = new System.Timers.Timer(CommTimerInterval);
-                CommTimer.Elapsed += OnCommunTimer;
-                CommTimer.AutoReset = true;
-
                 #region XASession
-                _session = new XASessionClass();
-                _session.Disconnect += SessionObj_Disconnect;
-                _session._IXASessionEvents_Event_Login += Session_Event_Login;
-                _session._IXASessionEvents_Event_Logout += Session_Event_Logout;
+                _session = new EbestSession();
+                _session.Logined += Session_Logined;
+                _session.Logouted += Session_Logouted;
                 #endregion
 
-                #region XAReal
+                #region EbestReal
                 _orderSubmitReal = new EbestReal<SC0OutBlock>();
                 _orderSubmitReal.OutBlockReceived += OrderSubmitReal_OutBlockReceived;
                 _orderConclusionReal = new EbestReal<SC1OutBlock>();
@@ -82,28 +65,33 @@ namespace EbestTrader
                 #endregion
 
                 #region Login
-                LoginInfo.UserId = Config.Ebest.UserId;
-                LoginInfo.UserPw = Config.Ebest.UserPw;
-                LoginInfo.CertPw = Config.Ebest.CertPw;
+                var loginInfo = new LoginInformation();
+                loginInfo.UserId = Config.Ebest.UserId;
+                loginInfo.UserPw = Config.Ebest.UserPw;
+                loginInfo.CertPw = Config.Ebest.CertPw;
                 if (Config.General.TraderType == TraderTypes.EbestSimul)
                 {
-                    LoginInfo.AccountPw = "0000";
-                    LoginInfo.ServerType = ServerTypes.Simul;
-                    LoginInfo.ServerAddress = Config.Ebest.SimulServerAddress;
+                    loginInfo.AccountPw = "0000";
+                    loginInfo.ServerType = ServerTypes.Simul;
+                    loginInfo.ServerAddress = Config.Ebest.SimulServerAddress;
                 }
                 else
                 {
-                    LoginInfo.AccountPw = Config.Ebest.AccountPw;
-                    LoginInfo.ServerType = ServerTypes.Real;
-                    LoginInfo.ServerAddress = Config.Ebest.RealServerAddress;
+                    loginInfo.AccountPw = Config.Ebest.AccountPw;
+                    loginInfo.ServerType = ServerTypes.Real;
+                    loginInfo.ServerAddress = Config.Ebest.RealServerAddress;
                 }
-                LoginInfo.ServerPort = Config.Ebest.ServerPort;
+                loginInfo.ServerPort = Config.Ebest.ServerPort;
 
-                if (string.IsNullOrEmpty(LoginInfo.UserId) == false &&
-                    string.IsNullOrEmpty(LoginInfo.UserPw) == false &&
-                    string.IsNullOrEmpty(LoginInfo.CertPw) == false)
+                if (string.IsNullOrEmpty(loginInfo.UserId) == false &&
+                    string.IsNullOrEmpty(loginInfo.UserPw) == false &&
+                    string.IsNullOrEmpty(loginInfo.CertPw) == false)
                 {
-                    Login();
+                    if (_session.Login(loginInfo) == false)
+                    {
+                        _logger.Error("Login fail");
+                        NotifyState(TraderStateTypes.LoginFail);
+                    }
                 }
                 else
                 {
@@ -116,6 +104,16 @@ namespace EbestTrader
             {
                 _logger.Error(ex);
             }
+        }
+
+        private void Session_Logouted()
+        {
+            NotifyState(TraderStateTypes.Logout);
+        }
+
+        private void Session_Logined()
+        {
+            NotifyState(TraderStateTypes.LoginSuccess);
         }
 
         private void AdviseRealData()
@@ -134,151 +132,18 @@ namespace EbestTrader
             }
         }
 
-
-        #region XASession
-        private void Session_Event_Logout()
-        {
-            CommTimer.Stop();
-            LoginInfo.State = LoginStates.Logout;
-            _logger.Info(LoginInfo.ToString());
-        }
-
-        private void Session_Event_Login(string szCode, string szMsg)
-        {
-            if (szCode == "0000")
-            {
-                LoginInfo.State = LoginStates.Login;
-                _logger.Info($"Login success, {LoginInfo.ToString()}");
-                SetLogin();
-
-                NotifyState(TraderStateTypes.LoginSuccess, "Login success");
-                AdviseRealData();
-            }
-            else
-            {
-                _logger.Error($"Login fail, szCode: {szCode}, szMsg: {szMsg}");
-                NotifyState(TraderStateTypes.LoginFail, "Login fail");
-            }
-        }
-
-        private void SessionObj_Disconnect()
-        {
-            CommTimer.Stop();
-            LoginInfo.State = LoginStates.Disconnect;
-            _logger.Error(LoginInfo.ToString());
-        }
-        #endregion
-
-        #region Login / Logout
-        public bool WaitLogin()
-        {
-            if (WaitLoginEvent.WaitOne(WaitLoginTimeout) == false)
-            {
-                _logger.Error($"{GetType().Name} login timeout");
-                return false;
-            }
-
-            return true;
-        }
-
-        private void SetLogin()
-        {
-            Thread.Sleep(1000 * 3); // 로그인후 대기
-
-            _logger.Info($"{GetType().Name} set login");
-            WaitLoginEvent.Set();
-        }
-
-        public bool Login()
-        {
-            try
-            {
-                if (_session.ConnectServer(LoginInfo.ServerAddress, LoginInfo.ServerPort) == false)
-                {
-                    _logger.Error($"Server connection fail, {GetLastErrorMessage()}");
-                    return false;
-                }
-
-                _logger.Info($"Try login, Id: {LoginInfo.UserId}");
-
-                if (_session.Login(LoginInfo.UserId, LoginInfo.UserPw, LoginInfo.CertPw, (int)LoginInfo.ServerType, true) == false)
-                {
-                    _logger.Error($"Login error, {GetLastErrorMessage()}");
-                    return false;
-                }
-
-                CommTimer.Start();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex);
-            }
-
-            return false;
-        }
-
-        public bool Logout()
-        {
-            try
-            {
-                CommTimer.Stop();
-                _session.DisconnectServer();
-                LoginInfo.State = LoginStates.Disconnect;
-
-                _logger.Info("Logout success");
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex);
-            }
-
-            return false;
-        }
-        #endregion
-
         private string GetLastErrorMessage(int errCode = 0)
         {
-            if (errCode == 0)
-                errCode = _session.GetLastError();
-
-            if (errCode >= 0) return string.Empty;
-
-            var errMsg = _session.GetErrorMessage(errCode);
-
-            return $"errCode: {errCode}, errMsg: {errMsg}";
-        }
-
-        private void OnCommunTimer(object sender, ElapsedEventArgs e)
-        {
-            if ((Environment.TickCount - LastCommTick) > MaxCommInterval)
-            {
-                LastCommTick = Environment.TickCount;
-                _logger.Info($"Ebest keep alive");
-                KeepAlive();
-            }
-        }
-
-        public void KeepAlive()
-        {
-            try
-            {
-                var query = new EbestQuery<t1102InBlock, t1102OutBlock>();
-                if (query.ExecuteQuery(new t1102InBlock { shcode = "000020" }) == false)
-                    _logger.Error($"Keep alive error, {GetLastErrorMessage(query.Result)}");
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex);
-            }
+            return _session.GetLastErrorMessage(errCode);
         }
 
         public void SendMessage(MessageTypes type, string message)
         {
+            _session.LastCommTick = Environment.TickCount;
+
             if (type == MessageTypes.CloseClient)
             {
-                Logout();
+                _session.Logout();
 
                 Task.Run(() =>
                 {

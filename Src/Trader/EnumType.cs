@@ -42,5 +42,6 @@ namespace Trader
         Error,
         LoginSuccess,
         LoginFail,
+        Logout,
     }
 }

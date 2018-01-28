@@ -31,6 +31,7 @@ namespace StrategyManager
 
         private IStrategy _strategy;
 
+        private AccountInformation SelectedAccount { get; set; }
         private IEnumerable<AccountInformation> AccountInfos { get; set; }
 
         public StrategyManager_()
@@ -126,6 +127,13 @@ namespace StrategyManager
             trader.RegisterTraderContract(new TraderContract());
 
             AccountInfos = trader.GetAccountInformations();
+            if (AccountInfos == null)
+            {
+                _logger.Error($"{nameof(AccountInfos)} is null");
+                return;
+            }
+
+            SelectedAccount = AccountInfos.FirstOrDefault();
 
             foreach (var accountInfo in AccountInfos)
             {

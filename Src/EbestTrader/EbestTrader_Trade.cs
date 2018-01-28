@@ -24,7 +24,7 @@ namespace EbestTrader
 
             try
             {
-                if (LoginInfo.State != LoginStates.Login)
+                if (_session.LoginState != LoginStates.Login)
                 {
                     _logger.Error("Not login state");
                     return accountInfos;
@@ -35,7 +35,7 @@ namespace EbestTrader
 
                 foreach (var accountNum in accountNums)
                 {
-                    var info = GetAccountInfo(accountNum, LoginInfo.AccountPw);
+                    var info = GetAccountInfo(accountNum, _session.LoginInfo.AccountPw);
                     if (info != null)
                     {
                         info.AccountNumber = accountNum;
@@ -87,7 +87,7 @@ namespace EbestTrader
 
             try
             {
-                if (LoginInfo.State != LoginStates.Login)
+                if (_session.LoginState != LoginStates.Login)
                 {
                     _logger.Error("Not login state");
                     return accountNums;
@@ -112,7 +112,7 @@ namespace EbestTrader
         {
             try
             {
-                if (LoginInfo.State != LoginStates.Login)
+                if (_session.LoginState != LoginStates.Login)
                 {
                     _logger.Error("Not login state");
                     return false;
@@ -224,30 +224,40 @@ namespace EbestTrader
 
         private void OrderRejectedReal_OutBlockReceived(SC4OutBlock block)
         {
+            _session.LastCommTick = Environment.TickCount;
+
             var result = AutoMapper.Mapper.Map<OrderResult>(block);
             NotifyOrderResult(result);
         }
 
         private void OrderCanceledReal_OutBlockReceived(SC3OutBlock block)
         {
+            _session.LastCommTick = Environment.TickCount;
+
             var result = AutoMapper.Mapper.Map<OrderResult>(block);
             NotifyOrderResult(result);
         }
 
         private void OrderModifiedReal_OutBlockReceived(SC2OutBlock block)
         {
+            _session.LastCommTick = Environment.TickCount;
+
             var result = AutoMapper.Mapper.Map<OrderResult>(block);
             NotifyOrderResult(result);
         }
 
         private void OrderConclusionReal_OutBlockReceived(SC1OutBlock block)
         {
+            _session.LastCommTick = Environment.TickCount;
+
             var result = AutoMapper.Mapper.Map<OrderResult>(block);
             NotifyOrderResult(result);
         }
 
         private void OrderSubmitReal_OutBlockReceived(SC0OutBlock block)
         {
+            _session.LastCommTick = Environment.TickCount;
+
             var result = AutoMapper.Mapper.Map<OrderResult>(block);
             NotifyOrderResult(result);
         }
