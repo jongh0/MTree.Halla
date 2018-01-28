@@ -162,7 +162,6 @@ namespace Trader
 
             var order = new Order();
             order.AccountNumber = SelectedAccount;
-            order.AccountPassword = Config.General.AccountPw;
             order.Code = Code;
             order.OrderType = OrderType;
             order.Quantity = Quantity;
@@ -177,12 +176,25 @@ namespace Trader
             {
                 Trader = trader ?? throw new ArgumentNullException(nameof(trader));
                 Trader.StateNotified += Trader_StateNotified;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+        }
 
-                AccountNumbers = new ObservableCollectionEx<string>();
+        private void Trader_StateNotified(TraderStateTypes state, string message)
+        {
+            TraderState = string.IsNullOrEmpty(message) ? state.ToString() : message;
+
+            if (state == TraderStateTypes.LoginSuccess)
+            {
+                if (AccountNumbers == null)
+                    AccountNumbers = new ObservableCollectionEx<string>();
 
                 Task.Run(() =>
                 {
-                    var accounts = trader.GetAccountNumberList();
+                    var accounts = Trader.GetAccountNumbers();
                     if (accounts == null) return;
 
                     foreach (string account in accounts)
@@ -194,15 +206,6 @@ namespace Trader
                     SelectedAccount = AccountNumbers[0];
                 });
             }
-            catch (Exception ex)
-            {
-                _logger.Error(ex);
-            }
-        }
-
-        private void Trader_StateNotified(string state)
-        {
-            TraderState = state;
         }
 
         #region INotifyPropertyChanged

@@ -73,28 +73,5 @@ namespace Configuration
 
         // 0보다 큰 값일 때만 동작한다.
         public int LogZipFileKeepDays { get; set; } = 15;
-
-        [JsonIgnore]
-        public string AccountPw
-        {
-            get
-            {
-                switch (Config.General.TraderType)
-                {
-                    case TraderTypes.Ebest:
-                        return Config.Ebest.AccountPw;
-
-                    case TraderTypes.EbestSimul:
-                        return "0000";
-
-                    case TraderTypes.Kiwoom:
-                    case TraderTypes.KiwoomSimul:
-                        return Config.Kiwoom.AccountPw;
-
-                    default:
-                        return string.Empty;
-                }
-            }
-        }
     }
 }

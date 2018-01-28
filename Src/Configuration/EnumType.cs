@@ -8,8 +8,8 @@ namespace Configuration
 {
     public enum ServerTypes
     {
-        Real,
-        Simul,
+        Real = 0,
+        Simul = 1,
     }
 
     public enum TraderTypes

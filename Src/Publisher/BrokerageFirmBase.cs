@@ -21,7 +21,7 @@ namespace Publisher
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         // Login
-        public LoginInfo LoginInstance { get; } = new LoginInfo();
+        public LoginInformation LoginInfo { get; } = new LoginInformation();
         private int WaitLoginTimeout => 1000 * 60;
         private ManualResetEvent WaitLoginEvent { get; } = new ManualResetEvent(false);
 

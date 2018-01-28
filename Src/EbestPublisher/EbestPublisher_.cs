@@ -143,17 +143,17 @@ namespace EbestPublisher
                 #endregion
 
                 #region Login
-                LoginInstance.UserId = Config.Ebest.UserId;
-                LoginInstance.UserPw = Config.Ebest.UserPw;
-                LoginInstance.CertPw = Config.Ebest.CertPw;
-                LoginInstance.AccountPw = Config.Ebest.AccountPw;
-                LoginInstance.ServerType = ServerTypes.Real;
-                LoginInstance.ServerAddress = Config.Ebest.RealServerAddress;
-                LoginInstance.ServerPort = Config.Ebest.ServerPort;
+                LoginInfo.UserId = Config.Ebest.UserId;
+                LoginInfo.UserPw = Config.Ebest.UserPw;
+                LoginInfo.CertPw = Config.Ebest.CertPw;
+                LoginInfo.AccountPw = Config.Ebest.AccountPw;
+                LoginInfo.ServerType = ServerTypes.Real;
+                LoginInfo.ServerAddress = Config.Ebest.RealServerAddress;
+                LoginInfo.ServerPort = Config.Ebest.ServerPort;
 
-                if (string.IsNullOrEmpty(LoginInstance.UserId) == false &&
-                    string.IsNullOrEmpty(LoginInstance.UserPw) == false &&
-                    string.IsNullOrEmpty(LoginInstance.CertPw) == false)
+                if (string.IsNullOrEmpty(LoginInfo.UserId) == false &&
+                    string.IsNullOrEmpty(LoginInfo.UserPw) == false &&
+                    string.IsNullOrEmpty(LoginInfo.CertPw) == false)
                 {
                     Login();
                 }
@@ -192,16 +192,16 @@ namespace EbestPublisher
         private void SessionObj_Event_Logout()
         {
             CommTimer.Stop();
-            LoginInstance.State = LoginStates.LoggedOut;
-            _logger.Info(LoginInstance.ToString());
+            LoginInfo.State = LoginStates.Logout;
+            _logger.Info(LoginInfo.ToString());
         }
 
         private void SessionObj_Event_Login(string szCode, string szMsg)
         {
             if (szCode == "0000")
             {
-                LoginInstance.State = LoginStates.LoggedIn;
-                _logger.Info($"Login success, {LoginInstance.ToString()}");
+                LoginInfo.State = LoginStates.Login;
+                _logger.Info($"Login success, {LoginInfo.ToString()}");
                 SetLogin();
             }
             else
@@ -213,8 +213,8 @@ namespace EbestPublisher
         private void SessionObj_Disconnect()
         {
             CommTimer.Stop();
-            LoginInstance.State = LoginStates.Disconnect;
-            _logger.Error(LoginInstance.ToString());
+            LoginInfo.State = LoginStates.Disconnect;
+            _logger.Error(LoginInfo.ToString());
         }
         #endregion
 
@@ -223,15 +223,15 @@ namespace EbestPublisher
         {
             try
             {
-                if (sessionObj.ConnectServer(LoginInstance.ServerAddress, LoginInstance.ServerPort) == false)
+                if (sessionObj.ConnectServer(LoginInfo.ServerAddress, LoginInfo.ServerPort) == false)
                 {
                     _logger.Error($"Server connection fail, {GetLastErrorMessage()}");
                     return false;
                 }
 
-                _logger.Info($"Try login, Id: {LoginInstance.UserId}");
+                _logger.Info($"Try login, Id: {LoginInfo.UserId}");
 
-                if (sessionObj.Login(LoginInstance.UserId, LoginInstance.UserPw, LoginInstance.CertPw, 0, true) == false)
+                if (sessionObj.Login(LoginInfo.UserId, LoginInfo.UserPw, LoginInfo.CertPw, (int)LoginInfo.ServerType, true) == false)
                 {
                     _logger.Error($"Login error, {GetLastErrorMessage()}");
                     return false;
@@ -254,7 +254,7 @@ namespace EbestPublisher
             {
                 CommTimer.Stop();
                 sessionObj.DisconnectServer();
-                LoginInstance.State = LoginStates.Disconnect;
+                LoginInfo.State = LoginStates.Disconnect;
 
                 _logger.Info("Logout success");
                 return true;

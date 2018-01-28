@@ -128,9 +128,9 @@ namespace Trader
             ServiceClient?.UnregisterTraderContract(ClientId);
         }
 
-        public List<AccountInfo> GetAccountInfoList()
+        public List<AccountInformation> GetAccountInformations()
         {
-            return ServiceClient?.GetAccountInfoList() ?? null;
+            return ServiceClient?.GetAccountInformations() ?? null;
         }
 
         public bool MakeOrder(Order order)

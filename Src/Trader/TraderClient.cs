@@ -32,10 +32,10 @@ namespace Trader
             base.Channel.UnregisterTraderContract(clientId);
         }
 
-        public List<AccountInfo> GetAccountInfoList()
+        public List<AccountInformation> GetAccountInformations()
         {
             if (State != CommunicationState.Opened) return null;
-            return base.Channel.GetAccountInfoList();
+            return base.Channel.GetAccountInformations();
         }
 
         public bool MakeOrder(Order order)

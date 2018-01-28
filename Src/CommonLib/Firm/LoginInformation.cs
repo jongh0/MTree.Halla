@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CommonLib.Firm
 {
-    public class LoginInfo : INotifyPropertyChanged
+    public class LoginInformation : INotifyPropertyChanged
     {
         public Guid Id { get; set; } = Guid.NewGuid();
 

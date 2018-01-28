@@ -29,7 +29,7 @@ namespace KiwoomTrader
 
         private AxKHOpenAPILib.AxKHOpenAPI _kiwoomObj;
 
-        public LoginInfo LoginInstance { get; } = new LoginInfo();
+        public LoginInformation LoginInfo { get; } = new LoginInformation();
 
         public KiwoomTrader_(AxKHOpenAPILib.AxKHOpenAPI axKHOpenAPI)
         {
@@ -84,7 +84,7 @@ namespace KiwoomTrader
             try
             {
                 _kiwoomObj.CommTerminate();
-                LoginInstance.State = LoginStates.LoggedOut;
+                LoginInfo.State = LoginStates.Logout;
                 _logger.Info("Logout success");
                 return true;
             }
@@ -103,7 +103,7 @@ namespace KiwoomTrader
                 if (e.nErrCode == 0)
                 {
                     _logger.Info("Login sucess");
-                    LoginInstance.State = LoginStates.LoggedIn;
+                    LoginInfo.State = LoginStates.Login;
                 }
                 else
                 {

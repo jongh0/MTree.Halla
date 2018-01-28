@@ -1,58 +1,75 @@
 ﻿using CommonLib.Firm.Ebest.Block;
+using CommonLib.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Trader.Account
 {
+    [DataContract]
     public class HoldingStock
     {
         /// <summary>
         /// 종목번호
         /// </summary>
+        [DataMember]
         public string Code { get; set; }
 
         /// <summary>
         /// 종목명
         /// </summary>
+        [DataMember]
         public string Name { get; set; }
 
         /// <summary>
         /// 잔고수량
         /// </summary>
+        [DataMember]
         public int Quantity { get; set; }
 
         /// <summary>
         /// 매도가능수량
         /// </summary>
+        [DataMember]
         public int SellableQuantity { get; set; }
 
         /// <summary>
         /// 평균단가
         /// </summary>
+        [DataMember]
         public long AveragePrice { get; set; }
 
         /// <summary>
         /// 매입금액
         /// </summary>
+        [DataMember]
         public int PurchasePrice { get; set; }
 
         /// <summary>
         /// 평가금액
         /// </summary>
+        [DataMember]
         public long EvaluationPrice { get; set; }
 
         /// <summary>
         /// 평가손익
         /// </summary>
+        [DataMember]
         public long EvaluationProfit { get; set; }
 
         /// <summary>
         /// 수익율
         /// </summary>
+        [DataMember]
         public float ProfitRate { get; set; }
+
+        public override string ToString()
+        {
+            return PropertyUtility.PrintNameValues(this, Environment.NewLine);
+        }
     }
 
     public class HoldingStockMappingProfile : AutoMapper.Profile

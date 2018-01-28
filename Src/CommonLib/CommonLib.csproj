@@ -133,13 +133,14 @@
     <Compile Include="Firm\Ebest\Block\VIOutBlock.cs" />
     <Compile Include="Firm\Ebest\Query\QueryBase.cs" />
     <Compile Include="Firm\Ebest\Query\EbestQuery.cs" />
+    <Compile Include="Firm\QueryLimit.cs" />
     <Compile Include="Firm\Ebest\Query\XAQueryClassExtension.cs" />
     <Compile Include="Firm\Ebest\Real\RealBase.cs" />
     <Compile Include="Firm\Ebest\Real\EbestReal.cs" />
     <Compile Include="Firm\Ebest\Real\XARealClassExtension.cs" />
     <Compile Include="Firm\Kiwoom\KiwoomScreen.cs" />
     <Compile Include="Firm\Kiwoom\KiwoomError.cs" />
-    <Compile Include="Firm\LoginInfo.cs" />
+    <Compile Include="Firm\LoginInformation.cs" />
     <Compile Include="Utility\AssemblyUtility.cs" />
     <Compile Include="Utility\DispatcherUtility.cs" />
     <Compile Include="Utility\ObjectIdUtility.cs" />

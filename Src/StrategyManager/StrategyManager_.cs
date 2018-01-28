@@ -15,6 +15,7 @@ using CommonLib.Utility;
 using System.Diagnostics;
 using Strategy;
 using Strategy.Strategies;
+using Trader.Account;
 
 namespace StrategyManager
 {
@@ -29,6 +30,8 @@ namespace StrategyManager
         private RealTimeTrader _trader;
 
         private IStrategy _strategy;
+
+        private IEnumerable<AccountInformation> AccountInfos { get; set; }
 
         public StrategyManager_()
         {
@@ -121,6 +124,13 @@ namespace StrategyManager
             if (trader == null) return;
 
             trader.RegisterTraderContract(new TraderContract());
+
+            AccountInfos = trader.GetAccountInformations();
+
+            foreach (var accountInfo in AccountInfos)
+            {
+                _logger.Info(accountInfo.ToString());
+            }
         }
 
         private void RealTime_StockMasterConsumed(List<StockMaster> stockMasters)

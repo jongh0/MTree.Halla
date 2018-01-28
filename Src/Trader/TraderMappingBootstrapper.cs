@@ -21,7 +21,10 @@ namespace Trader
                     cfg.AddProfile<AccountInfoMappingProfile>();
                     cfg.AddProfile<HoldingStockMappingProfile>();
                     cfg.AddProfile<OrderMappingProfile>();
+                    cfg.AddProfile<OrderResultMappingProfile>();
                 });
+
+                AutoMapper.Mapper.AssertConfigurationIsValid();
             }
             catch (Exception ex)
             {

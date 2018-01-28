@@ -10,9 +10,9 @@ namespace Trader
 {
     public interface ITrader
     {
-        event Action<string> StateNotified;
+        event Action<TraderStateTypes, string> StateNotified;
 
-        List<string> GetAccountNumberList();
+        List<string> GetAccountNumbers();
 
         bool MakeOrder(Order order);
     }

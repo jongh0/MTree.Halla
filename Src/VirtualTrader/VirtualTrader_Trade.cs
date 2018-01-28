@@ -14,7 +14,7 @@ namespace VirtualTrader
 
         public VirtualAccountManager AccountManager { get; set; } = new VirtualAccountManager();
 
-        public List<AccountInfo> GetAccountInfoList()
+        public List<AccountInformation> GetAccountInformations()
         {
             throw new NotImplementedException();
         }

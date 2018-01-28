@@ -9,8 +9,8 @@ namespace CommonLib
     public enum LoginStates
     {
         Disconnect,
-        LoggedIn,
-        LoggedOut,
+        Login,
+        Logout,
     }
 
     public enum FirmTypes

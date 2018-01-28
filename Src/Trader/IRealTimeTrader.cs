@@ -22,7 +22,7 @@ namespace Trader
         void UnregisterTraderContract(Guid clientId);
 
         [OperationContract]
-        List<AccountInfo> GetAccountInfoList();
+        List<AccountInformation> GetAccountInformations();
 
         [OperationContract]
         bool MakeOrder(Order order);

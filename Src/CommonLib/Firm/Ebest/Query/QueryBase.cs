@@ -2,6 +2,7 @@
 using CommonLib.Utility;
 using NLog;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -17,6 +18,8 @@ namespace CommonLib.Firm.Ebest.Query
         where TInBlock : BlockBase
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
+
+        private static ConcurrentDictionary<string, QueryLimit> _queryLimitDic = new ConcurrentDictionary<string, QueryLimit>();
 
         public const int QUERY_TIMEOUT = 10000;
 
@@ -67,6 +70,7 @@ namespace CommonLib.Firm.Ebest.Query
                 _logger.Info($"ExecuteQuery: {block.ToString()}");
 
                 Query.SetFieldData(block);
+                WaitQueryInterval();
                 Result = Query.Request(false);
                 return Result >= 0;
             }
@@ -88,6 +92,7 @@ namespace CommonLib.Firm.Ebest.Query
                 _logger.Info($"ExecuteQueryAndWait: {block.ToString()}");
 
                 Query.SetFieldData(block);
+                WaitQueryInterval();
                 Result = Query.Request(false);
                 if (Result < 0) return false;
 
@@ -112,6 +117,21 @@ namespace CommonLib.Firm.Ebest.Query
             return false;
         }
 
+        private void WaitQueryInterval()
+        {
+            if (_queryLimitDic.TryGetValue(ResName, out var limit) == false)
+            {
+                limit = new QueryLimit();
+                limit.QueryName = ResName;
+                limit.QueryInterval = (int)(1000 / Query.GetTRCountPerSec(ResName) * 1.1);
+
+                _queryLimitDic.TryAdd(limit.QueryName, limit);
+                return;
+            }
+
+            limit.WaitInterval();
+        }
+
         protected virtual void OnReceiveChartRealData(string trCode)
         {
         }
@@ -124,11 +144,6 @@ namespace CommonLib.Firm.Ebest.Query
         protected virtual void OnReceiveMessage(bool isSystemError, string messageCode, string message)
         {
             _logger.Log(isSystemError ? LogLevel.Error : LogLevel.Info, $"{nameof(messageCode)}: {messageCode}, {nameof(message)}: {message}");
-        }
-
-        public int GetTRCountPerSec()
-        {
-            return Query.GetTRCountPerSec(ResName);
         }
     }
 }

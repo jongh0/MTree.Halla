@@ -67,6 +67,7 @@ namespace DataStructure
                     if (excludeProperties == null || excludeProperties.Contains(property.Name) == false)
                     {
                         object value = property.GetValue(this);
+                        if (value == null) continue;
 
                         if (value is DateTime dateTime)
                             strList.Add($"{property.Name}: {dateTime.ToString(Config.General.DateTimeFormat)}");

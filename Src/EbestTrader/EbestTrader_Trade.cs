@@ -18,26 +18,29 @@ namespace EbestTrader
 {
     public partial class EbestTrader_
     {
-        private int OrderLockTimeout => 1000 * 10;
-
-        private object OrderLock { get; } = new object();
-
-        private long CurrDeposit { get; set; } = 0;
-
-        public List<AccountInfo> GetAccountInfoList()
+        public List<AccountInformation> GetAccountInformations()
         {
-            var infoList = new List<AccountInfo>();
+            var accountInfos = new List<AccountInformation>();
 
             try
             {
-                var accountList = GetAccountNumberList();
-                if (accountList == null) return infoList;
-
-                foreach (var account in accountList)
+                if (LoginInfo.State != LoginStates.Login)
                 {
-                    var info = GetAccountInfo(account, Config.General.AccountPw);
+                    _logger.Error("Not login state");
+                    return accountInfos;
+                }
+
+                var accountNums = GetAccountNumbers();
+                if (accountNums == null) return accountInfos;
+
+                foreach (var accountNum in accountNums)
+                {
+                    var info = GetAccountInfo(accountNum, LoginInfo.AccountPw);
                     if (info != null)
-                        infoList.Add(info);
+                    {
+                        info.AccountNumber = accountNum;
+                        accountInfos.Add(info);
+                    }
                 }
             }
             catch (Exception ex)
@@ -45,10 +48,10 @@ namespace EbestTrader
                 _logger.Error(ex);
             }
 
-            return infoList;
+            return accountInfos;
         }
 
-        public AccountInfo GetAccountInfo(string accountNum, string accountPw)
+        private AccountInformation GetAccountInfo(string accountNum, string accountPw)
         {
             try
             {
@@ -59,7 +62,7 @@ namespace EbestTrader
                     return null;
                 }
 
-                var info = AutoMapper.Mapper.Map<AccountInfo>(query.OutBlock);
+                var info = AutoMapper.Mapper.Map<AccountInformation>(query.OutBlock);
 
                 var blocks = query.GetAllOutBlock1();
                 foreach (var block in blocks)
@@ -67,6 +70,8 @@ namespace EbestTrader
                     var stock = AutoMapper.Mapper.Map<HoldingStock>(block);
                     info.HoldingStocks.Add(stock);
                 }
+
+                return info;
             }
             catch (Exception ex)
             {
@@ -76,23 +81,23 @@ namespace EbestTrader
             return null;
         }
 
-        public List<string> GetAccountNumberList()
+        public List<string> GetAccountNumbers()
         {
-            var accList = new List<string>();
+            var accountNums = new List<string>();
 
             try
             {
-                if (WaitLogin() == false)
+                if (LoginInfo.State != LoginStates.Login)
                 {
-                    _logger.Error("Login timeout");
-                    return accList;
+                    _logger.Error("Not login state");
+                    return accountNums;
                 }
 
                 var accCount = _session.GetAccountListCount();
                 for (int i = 0; i < accCount; i++)
                 {
                     var acc = _session.GetAccountList(i);
-                    accList.Add(acc);
+                    accountNums.Add(acc);
                 }
             }
             catch (Exception ex)
@@ -100,25 +105,19 @@ namespace EbestTrader
                 _logger.Error(ex);
             }
 
-            return accList;
+            return accountNums;
         }
         
         public bool MakeOrder(Order order)
         {
-            if (_session.IsConnected() == false)
-            {
-                _logger.Error("Make order, session not connected");
-                return false;
-            }
-
-            if (Monitor.TryEnter(OrderLock, OrderLockTimeout) == false)
-            {
-                _logger.Error("Making order failed, Can't obtaion lock object");
-                return false;
-            }
-
             try
             {
+                if (LoginInfo.State != LoginStates.Login)
+                {
+                    _logger.Error("Not login state");
+                    return false;
+                }
+
                 bool ret = false;
 
                 switch (order.OrderType)
@@ -148,10 +147,6 @@ namespace EbestTrader
             catch (Exception ex)
             {
                 _logger.Error(ex);
-            }
-            finally
-            {
-                Monitor.Exit(OrderLock);
             }
 
             _logger.Error($"Order fail, {order.ToString()}");
@@ -229,73 +224,31 @@ namespace EbestTrader
 
         private void OrderRejectedReal_OutBlockReceived(SC4OutBlock block)
         {
-            var result = new OrderResult();
-            result.AccountNumber = block.accno;
-            result.OrderNumber = block.ordno.ToString();
-            result.Code = block.Isuno;
-            result.OrderedQuantity = block.ordqty;
-            result.OrderedPrice = block.ordprc;
-            result.ConcludedQuantity = block.execqty;
-            result.ConcludedPrice = block.execprc;
-            result.ResultType = OrderResultTypes.Rejected;
-
+            var result = AutoMapper.Mapper.Map<OrderResult>(block);
             NotifyOrderResult(result);
         }
 
         private void OrderCanceledReal_OutBlockReceived(SC3OutBlock block)
         {
-            var result = new OrderResult();
-            result.AccountNumber = block.accno;
-            result.OrderNumber = block.ordno.ToString();
-            result.Code = block.Isuno;
-            result.OrderedQuantity = block.ordqty;
-            result.OrderedPrice = block.ordprc;
-            result.ConcludedQuantity = block.execqty;
-            result.ConcludedPrice = block.execprc;
-            result.ResultType = OrderResultTypes.Canceled;
-
+            var result = AutoMapper.Mapper.Map<OrderResult>(block);
             NotifyOrderResult(result);
         }
 
         private void OrderModifiedReal_OutBlockReceived(SC2OutBlock block)
         {
-            var result = new OrderResult();
-            result.AccountNumber = block.accno;
-            result.OrderNumber = block.ordno.ToString();
-            result.Code = block.Isuno;
-            result.OrderedQuantity = block.ordqty;
-            result.OrderedPrice = block.ordprc;
-            result.ConcludedQuantity = block.execqty;
-            result.ConcludedPrice = block.execprc;
-            result.ResultType = OrderResultTypes.Modified;
-
+            var result = AutoMapper.Mapper.Map<OrderResult>(block);
             NotifyOrderResult(result);
         }
 
         private void OrderConclusionReal_OutBlockReceived(SC1OutBlock block)
         {
-            var result = new OrderResult();
-            result.AccountNumber = block.accno;
-            result.OrderNumber = block.ordno.ToString();
-            result.Code = block.Isuno;
-            result.OrderedQuantity = block.ordqty;
-            result.OrderedPrice = block.ordprc;
-            result.ConcludedQuantity = block.execqty;
-            result.ConcludedPrice = block.execprc;
-            result.ResultType = OrderResultTypes.Concluded;
-
+            var result = AutoMapper.Mapper.Map<OrderResult>(block);
             NotifyOrderResult(result);
         }
 
         private void OrderSubmitReal_OutBlockReceived(SC0OutBlock block)
         {
-            var result = new OrderResult();
-            result.AccountNumber = block.accno;
-            result.OrderNumber = block.ordno.ToString();
-            result.Code = block.expcode;
-            result.OrderedQuantity = block.ordqty;
-            result.ResultType = OrderResultTypes.Submitted;
-
+            var result = AutoMapper.Mapper.Map<OrderResult>(block);
             NotifyOrderResult(result);
         }
 

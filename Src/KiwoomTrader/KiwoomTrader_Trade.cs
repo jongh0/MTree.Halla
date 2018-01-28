@@ -14,7 +14,7 @@ namespace KiwoomTrader
     {
         private OrderResult CurrOrderResult { get; set; }
 
-        public List<AccountInfo> GetAccountInfoList()
+        public List<AccountInformation> GetAccountInformations()
         {
             throw new NotImplementedException();
         }

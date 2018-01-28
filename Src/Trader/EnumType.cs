@@ -34,4 +34,13 @@ namespace Trader
         Canceled,
         Rejected,
     }
+
+    public enum TraderStateTypes
+    {
+        Normal,
+        Warning,
+        Error,
+        LoginSuccess,
+        LoginFail,
+    }
 }

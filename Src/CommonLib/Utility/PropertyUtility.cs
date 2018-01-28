@@ -30,45 +30,15 @@ namespace CommonLib.Utility
 
         public static string PrintValues(object obj, string seperator = ", ", bool excludeEmptyProperty = true)
         {
-            if (obj == null) return string.Empty;
-
-            List<string> strList = new List<string>();
-
-            try
-            {
-                foreach (var property in GetProperties(obj.GetType()))
-                {
-                    var value = property.GetValue(obj);
-                    if (value == null) continue;
-
-                    if (value is DateTime dateTime)
-                    {
-                        strList.Add($"{dateTime.ToString(Config.General.DateTimeFormat)}");
-                    }
-                    else
-                    {
-                        var str = value.ToString();
-                        if (excludeEmptyProperty == true && string.IsNullOrEmpty(str) == true)
-                            continue;
-
-                        strList.Add($"{str}");
-                    }
-                }
-
-                return string.Join(seperator, strList.ToArray());
-            }
-            catch
-            {
-            }
-            finally
-            {
-                strList.Clear();
-            }
-
-            return string.Empty;
+            return Print(obj, seperator, excludeEmptyProperty, includePropertyName: false);
         }
 
         public static string PrintNameValues(object obj, string seperator = ", ", bool excludeEmptyProperty = true)
+        {
+            return Print(obj, seperator, excludeEmptyProperty, includePropertyName: true);
+        }
+
+        private static string Print(object obj, string seperator, bool excludeEmptyProperty, bool includePropertyName)
         {
             if (obj == null) return string.Empty;
 
@@ -81,17 +51,29 @@ namespace CommonLib.Utility
                     var value = property.GetValue(obj);
                     if (value == null) continue;
 
+                    var propertyName = (includePropertyName == true) ? $"{property.Name}: " : string.Empty;
+                    var type = value.GetType();
+
                     if (value is DateTime dateTime)
                     {
-                        strList.Add($"{property.Name}: {dateTime.ToString(Config.General.DateTimeFormat)}");
+                        strList.Add($"{propertyName}{dateTime.ToString(Config.General.DateTimeFormat)}");
                     }
+                    //else if (value.GetType().GetInterfaces().Contains(typeof(IEnumerable<>)))
+                    //{
+                    //    var enumerable = obj as IEnumerable<object>;
+                    //    var str = string.Join(" | ", enumerable.Select(i => i.ToString()).ToArray());
+                    //    if (excludeEmptyProperty == true && string.IsNullOrEmpty(str) == true)
+                    //        continue;
+
+                    //    strList.Add($"{propertyName}{str}");
+                    //}
                     else
                     {
                         var str = value.ToString();
                         if (excludeEmptyProperty == true && string.IsNullOrEmpty(str) == true)
                             continue;
 
-                        strList.Add($"{property.Name}: {str}");
+                        strList.Add($"{propertyName}{str}");
                     }
                 }
 

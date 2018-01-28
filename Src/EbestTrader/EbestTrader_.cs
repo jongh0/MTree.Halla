@@ -27,20 +27,13 @@ namespace EbestTrader
 
         private ConcurrentDictionary<Guid, TraderContract> TraderContracts { get; set; } = new ConcurrentDictionary<Guid, TraderContract>();
 
-        private const string ResFilePath = "\\Res";
+        public LoginInformation LoginInfo { get; } = new LoginInformation();
 
-        public LoginInfo LoginInstance { get; } = new LoginInfo();
-
-        private int WaitTimeout => 1000 * 10;
-        private AutoResetEvent WaitDepositEvent { get; } = new AutoResetEvent(false);
-
-        private int WaitLoginTimeout => 1000 * 15;
+        private const int WaitLoginTimeout = 1000 * 15;
         private ManualResetEvent WaitLoginEvent { get; } = new ManualResetEvent(false);
 
-        private int ServerType => Config.General.TraderType == TraderTypes.Ebest ? 0 : 1;
-
         #region Event
-        public event Action<string> StateNotified;
+        public event Action<TraderStateTypes, string> StateNotified;
         #endregion
 
         #region Keep session
@@ -89,25 +82,26 @@ namespace EbestTrader
                 #endregion
 
                 #region Login
-                LoginInstance.UserId = Config.Ebest.UserId;
-                LoginInstance.UserPw = Config.Ebest.UserPw;
-                LoginInstance.CertPw = Config.Ebest.CertPw;
-                LoginInstance.AccountPw = Config.Ebest.AccountPw;
+                LoginInfo.UserId = Config.Ebest.UserId;
+                LoginInfo.UserPw = Config.Ebest.UserPw;
+                LoginInfo.CertPw = Config.Ebest.CertPw;
                 if (Config.General.TraderType == TraderTypes.EbestSimul)
                 {
-                    LoginInstance.ServerType = ServerTypes.Simul;
-                    LoginInstance.ServerAddress = Config.Ebest.SimulServerAddress;
+                    LoginInfo.AccountPw = "0000";
+                    LoginInfo.ServerType = ServerTypes.Simul;
+                    LoginInfo.ServerAddress = Config.Ebest.SimulServerAddress;
                 }
                 else
                 {
-                    LoginInstance.ServerType = ServerTypes.Real;
-                    LoginInstance.ServerAddress = Config.Ebest.RealServerAddress;
+                    LoginInfo.AccountPw = Config.Ebest.AccountPw;
+                    LoginInfo.ServerType = ServerTypes.Real;
+                    LoginInfo.ServerAddress = Config.Ebest.RealServerAddress;
                 }
-                LoginInstance.ServerPort = Config.Ebest.ServerPort;
+                LoginInfo.ServerPort = Config.Ebest.ServerPort;
 
-                if (string.IsNullOrEmpty(LoginInstance.UserId) == false &&
-                    string.IsNullOrEmpty(LoginInstance.UserPw) == false &&
-                    string.IsNullOrEmpty(LoginInstance.CertPw) == false)
+                if (string.IsNullOrEmpty(LoginInfo.UserId) == false &&
+                    string.IsNullOrEmpty(LoginInfo.UserPw) == false &&
+                    string.IsNullOrEmpty(LoginInfo.CertPw) == false)
                 {
                     Login();
                 }
@@ -145,33 +139,33 @@ namespace EbestTrader
         private void Session_Event_Logout()
         {
             CommTimer.Stop();
-            LoginInstance.State = LoginStates.LoggedOut;
-            _logger.Info(LoginInstance.ToString());
+            LoginInfo.State = LoginStates.Logout;
+            _logger.Info(LoginInfo.ToString());
         }
 
         private void Session_Event_Login(string szCode, string szMsg)
         {
             if (szCode == "0000")
             {
-                LoginInstance.State = LoginStates.LoggedIn;
-                _logger.Info($"Login success, {LoginInstance.ToString()}");
+                LoginInfo.State = LoginStates.Login;
+                _logger.Info($"Login success, {LoginInfo.ToString()}");
                 SetLogin();
 
-                NotifyState("Login success");
+                NotifyState(TraderStateTypes.LoginSuccess, "Login success");
                 AdviseRealData();
             }
             else
             {
                 _logger.Error($"Login fail, szCode: {szCode}, szMsg: {szMsg}");
-                NotifyState("Login fail");
+                NotifyState(TraderStateTypes.LoginFail, "Login fail");
             }
         }
 
         private void SessionObj_Disconnect()
         {
             CommTimer.Stop();
-            LoginInstance.State = LoginStates.Disconnect;
-            _logger.Error(LoginInstance.ToString());
+            LoginInfo.State = LoginStates.Disconnect;
+            _logger.Error(LoginInfo.ToString());
         }
         #endregion
 
@@ -180,7 +174,7 @@ namespace EbestTrader
         {
             if (WaitLoginEvent.WaitOne(WaitLoginTimeout) == false)
             {
-                _logger.Error($"{GetType().Name} wait login timeout");
+                _logger.Error($"{GetType().Name} login timeout");
                 return false;
             }
 
@@ -199,15 +193,15 @@ namespace EbestTrader
         {
             try
             {
-                if (_session.ConnectServer(LoginInstance.ServerAddress, LoginInstance.ServerPort) == false)
+                if (_session.ConnectServer(LoginInfo.ServerAddress, LoginInfo.ServerPort) == false)
                 {
                     _logger.Error($"Server connection fail, {GetLastErrorMessage()}");
                     return false;
                 }
 
-                _logger.Info($"Try login, Id: {LoginInstance.UserId}");
+                _logger.Info($"Try login, Id: {LoginInfo.UserId}");
 
-                if (_session.Login(LoginInstance.UserId, LoginInstance.UserPw, LoginInstance.CertPw, ServerType, true) == false)
+                if (_session.Login(LoginInfo.UserId, LoginInfo.UserPw, LoginInfo.CertPw, (int)LoginInfo.ServerType, true) == false)
                 {
                     _logger.Error($"Login error, {GetLastErrorMessage()}");
                     return false;
@@ -230,7 +224,7 @@ namespace EbestTrader
             {
                 CommTimer.Stop();
                 _session.DisconnectServer();
-                LoginInstance.State = LoginStates.Disconnect;
+                LoginInfo.State = LoginStates.Disconnect;
 
                 _logger.Info("Logout success");
                 return true;
@@ -331,9 +325,9 @@ namespace EbestTrader
             }
         }
 
-        private void NotifyState(string message)
+        private void NotifyState(TraderStateTypes state, string message = "")
         {
-            StateNotified?.Invoke(message);
+            StateNotified?.Invoke(state, message);
         }
 
         #region INotifyPropertyChanged
