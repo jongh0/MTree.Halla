@@ -84,7 +84,7 @@ namespace DataValidator
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
-            var filter = FilterFactory.Instance.BuildIndexMasterFilter(targetDate);
+            var filter = FilterFactory.BuildIndexMasterFilter(targetDate);
 
             IndexMaster srcMaster = Source.Find(code, filter).FirstOrDefault();
             //_logger.Info($"Get Index Master for {code} from source done.");
@@ -117,7 +117,7 @@ namespace DataValidator
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
-            var filter = FilterFactory.Instance.BuildStockMasterFilter(targetDate);
+            var filter = FilterFactory.BuildStockMasterFilter(targetDate);
 
             StockMaster srcMaster = Source.Find(code, filter).FirstOrDefault();
             //_logger.Info($"Get Stock Master for {code} from source done.");
@@ -159,7 +159,7 @@ namespace DataValidator
             indexCodes.AddRange(Source.GetCollectionList(DbTypes.IndexMaster).OrderBy(o => o));
             stockCodes.AddRange(Source.GetCollectionList(DbTypes.StockMaster).OrderBy(o => o));
 
-            var indexFilter = FilterFactory.Instance.BuildIndexMasterFilter(targetDate);
+            var indexFilter = FilterFactory.BuildIndexMasterFilter(targetDate);
             foreach (string code in indexCodes)
             {
                 IndexMaster srcMaster = Source.Find(code, indexFilter).FirstOrDefault();
@@ -173,7 +173,7 @@ namespace DataValidator
                     destMasters.Add(destMaster.ToString(nameof(destMaster.Id)));
             }
 
-            var stockFilter = FilterFactory.Instance.BuildStockMasterFilter(targetDate);
+            var stockFilter = FilterFactory.BuildStockMasterFilter(targetDate);
             foreach (string code in stockCodes)
             {
                 StockMaster srcMaster = Source.Find(code, stockFilter).FirstOrDefault();
@@ -216,7 +216,7 @@ namespace DataValidator
             List<string> codeList = new List<string>();
             codeList.AddRange(Source.GetCollectionList(DbTypes.StockMaster).OrderBy(o => o));
 
-            var filter = FilterFactory.Instance.BuildStockConclusionFilter(targetDate);
+            var filter = FilterFactory.BuildStockConclusionFilter(targetDate);
 
             Parallel.ForEach(codeList, new ParallelOptions { MaxDegreeOfParallelism = Config.Validator.ThreadLimit }, code =>
             {
@@ -290,7 +290,7 @@ namespace DataValidator
             List<Subscribable> sourceList = new List<Subscribable>();
             List<Subscribable> destinationList = new List<Subscribable>();
             
-            var filter = FilterFactory.Instance.BuildStockConclusionFilter(targetDate);
+            var filter = FilterFactory.BuildStockConclusionFilter(targetDate);
             
             tasks.Add(Task.Run(() => { sourceList.AddRange(Source.Find(code, filter, o => o.Id).ToList()); }));
             tasks.Add(Task.Run(() => { destinationList.AddRange(Destination.Find(code, filter, o => o.Id).ToList()); }));
@@ -347,7 +347,7 @@ namespace DataValidator
                 List<Subscribable> sourceList = new List<Subscribable>();
                 List<Subscribable> destinationList = new List<Subscribable>();
 
-                var filter = FilterFactory.Instance.BuildStockConclusionFilter(targetDate, true);
+                var filter = FilterFactory.BuildStockConclusionFilter(targetDate, true);
 
                 tasks.Add(Task.Run(() => { sourceList.AddRange(Source.Find(code, filter, o => o.Id).ToList()); }));
                 tasks.Add(Task.Run(() => { destinationList.AddRange(daishin.GetStockConclusions(targetDate, code, true)); }));
@@ -408,7 +408,7 @@ namespace DataValidator
             List<Subscribable> destinationList = new List<Subscribable>();
 
             DateTime targetDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
-            var filter = FilterFactory.Instance.BuildStockConclusionFilter(targetDate, true);
+            var filter = FilterFactory.BuildStockConclusionFilter(targetDate, true);
 
             tasks.Add(Task.Run(() => { sourceList.AddRange(Source.Find(code, filter, o => o.Id).ToList()); }));
             tasks.Add(Task.Run(() => { destinationList.AddRange(daishin.GetStockConclusions(targetDate, code, true)); }));
@@ -462,7 +462,7 @@ namespace DataValidator
                 List<Subscribable> sourceList = new List<Subscribable>();
                 List<Subscribable> destinationList = new List<Subscribable>();
 
-                var filter = FilterFactory.Instance.BuildIndexConclusionFilter(targetDate);
+                var filter = FilterFactory.BuildIndexConclusionFilter(targetDate);
 
                 tasks.Add(Task.Run(() => { sourceList.AddRange(Source.Find(code, filter, o => o.Id).ToList()); }));
                 tasks.Add(Task.Run(() => { destinationList.AddRange(Destination.Find(code, filter, o => o.Id).ToList()); }));
@@ -509,7 +509,7 @@ namespace DataValidator
 
             try
             {
-                var filter = FilterFactory.Instance.BuildIndexConclusionFilter(targetDate);
+                var filter = FilterFactory.BuildIndexConclusionFilter(targetDate);
                 tasks.Add(Task.Run(() => { sourceList.AddRange(Source.Find(code, filter, o => o.Id).ToList()); }));
                 tasks.Add(Task.Run(() => { destinationList.AddRange(Destination.Find(code, filter, o => o.Id).ToList()); }));
 
@@ -553,7 +553,7 @@ namespace DataValidator
 
             try
             {
-                var filter = FilterFactory.Instance.BuildCircuitBreakFilter(targetDate);
+                var filter = FilterFactory.BuildCircuitBreakFilter(targetDate);
 
                 tasks.Add(Task.Run(() => { sourceList.AddRange(Source.Find(code, filter, o => o.Id).ToList()); }));
                 tasks.Add(Task.Run(() => { destinationList.AddRange(Destination.Find(code, filter, o => o.Id).ToList()); }));
@@ -602,7 +602,7 @@ namespace DataValidator
 
             try
             {
-	            var filter = FilterFactory.Instance.BuildCircuitBreakFilter(targetDate);
+	            var filter = FilterFactory.BuildCircuitBreakFilter(targetDate);
 
                 foreach (string code in codeList)
                 {

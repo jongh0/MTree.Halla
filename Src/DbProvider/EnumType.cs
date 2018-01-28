@@ -15,6 +15,7 @@ namespace DbProvider
         StockConclusion,
         IndexConclusion,
         ETFConclusion,
+        TradeConclusion,
         CircuitBreak,
         Common,
         Test,

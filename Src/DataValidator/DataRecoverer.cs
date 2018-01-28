@@ -46,7 +46,7 @@ namespace DataValidator
         private void RecoverIndexMaster(DateTime targetDate, string code)
         {
             //_logger.Info($"Index Master Recovery for {code} Started");
-            var filter = FilterFactory.Instance.BuildIndexMasterFilter(targetDate);
+            var filter = FilterFactory.BuildIndexMasterFilter(targetDate);
 
             IndexMaster master = To.Find(code, filter).FirstOrDefault();
             To.Delete(code, filter);
@@ -57,7 +57,7 @@ namespace DataValidator
         private void RecoverStockMaster(DateTime targetDate, string code)
         {
             //_logger.Info($"Stock Master Recovery for {code} Started");
-            var filter = FilterFactory.Instance.BuildStockMasterFilter(targetDate);
+            var filter = FilterFactory.BuildStockMasterFilter(targetDate);
 
             StockMaster master = To.Find(code, filter).FirstOrDefault();
             To.Delete(code, filter);
@@ -84,7 +84,7 @@ namespace DataValidator
 
             List<string> codeList = new List<string>();
             codeList.AddRange(From.GetCollectionList(DbTypes.IndexMaster).OrderBy(s => s));
-            var filter = FilterFactory.Instance.BuildIndexMasterFilter(targetDate);
+            var filter = FilterFactory.BuildIndexMasterFilter(targetDate);
             
             Parallel.ForEach(codeList, new ParallelOptions { MaxDegreeOfParallelism = Config.Validator.ThreadLimit }, code =>
             {
@@ -101,7 +101,7 @@ namespace DataValidator
 
             List<string> codeList = new List<string>();
             codeList.AddRange(From.GetCollectionList(DbTypes.StockMaster).OrderBy(s => s));
-            var filter = FilterFactory.Instance.BuildStockMasterFilter(targetDate);
+            var filter = FilterFactory.BuildStockMasterFilter(targetDate);
             
             Parallel.ForEach(codeList, new ParallelOptions { MaxDegreeOfParallelism = Config.Validator.ThreadLimit }, code =>
             {
@@ -114,7 +114,7 @@ namespace DataValidator
         public void RecoverStockConclusion(DateTime targetDate, string code)
         {
             //_logger.Info($"Stock Conclusion Recovery for {code} Started");
-            var filter = FilterFactory.Instance.BuildStockConclusionFilter(targetDate);
+            var filter = FilterFactory.BuildStockConclusionFilter(targetDate);
             List<StockConclusion> conclusions = To.Find(code, filter).ToList();
             To.Delete(code, filter);
             conclusions = From.Find(code, filter).ToList();
@@ -132,7 +132,7 @@ namespace DataValidator
             int cnt = 0;
             List<string> codeList = new List<string>();
             codeList.AddRange(From.GetCollectionList(DbTypes.StockMaster).OrderBy(s => s));
-            var filter = FilterFactory.Instance.BuildStockConclusionFilter(targetDate);
+            var filter = FilterFactory.BuildStockConclusionFilter(targetDate);
             Parallel.ForEach(codeList, new ParallelOptions { MaxDegreeOfParallelism = Config.Validator.ThreadLimit }, code =>
             {
                 List<StockConclusion> conclusions = To.Find(code, filter).ToList();
@@ -151,7 +151,7 @@ namespace DataValidator
         public void RecoverIndexConclusion(DateTime targetDate, string code)
         {
             //_logger.Info($"Index Conclusion Recovery for {code} Started");
-            var filter = FilterFactory.Instance.BuildIndexConclusionFilter(targetDate);
+            var filter = FilterFactory.BuildIndexConclusionFilter(targetDate);
             List<IndexConclusion> conclusions = To.Find(code, filter).ToList();
             To.Delete(code, filter);
             conclusions = From.Find(code, filter).ToList();
@@ -168,7 +168,7 @@ namespace DataValidator
             int cnt = 0;
             List<string> codeList = new List<string>();
             codeList.AddRange(From.GetCollectionList(DbTypes.IndexMaster).OrderBy(s => s));
-            var filter = FilterFactory.Instance.BuildIndexConclusionFilter(targetDate);
+            var filter = FilterFactory.BuildIndexConclusionFilter(targetDate);
             Parallel.ForEach(codeList, new ParallelOptions { MaxDegreeOfParallelism = Config.Validator.ThreadLimit }, code =>
             {
                 List<IndexConclusion> conclusions = To.Find(code, filter).ToList();
@@ -186,7 +186,7 @@ namespace DataValidator
         public void RecoverCircuitBreak(DateTime targetDate, string code)
         {
             _logger.Info($"Circuit Break Recovery for {code} Started");
-            var filter = FilterFactory.Instance.BuildCircuitBreakFilter(targetDate);
+            var filter = FilterFactory.BuildCircuitBreakFilter(targetDate);
             List<CircuitBreak> cbs = To.Find(code, filter).ToList();
             To.Delete(code, filter);
             cbs = From.Find(code, filter).ToList();
@@ -203,7 +203,7 @@ namespace DataValidator
             int cnt = 0;
             List<string> codeList = new List<string>();
             codeList.AddRange(From.GetCollectionList(DbTypes.StockMaster).OrderBy(s => s));
-            var filter = FilterFactory.Instance.BuildCircuitBreakFilter(targetDate);
+            var filter = FilterFactory.BuildCircuitBreakFilter(targetDate);
             Parallel.ForEach(codeList, new ParallelOptions { MaxDegreeOfParallelism = Config.Validator.ThreadLimit }, code =>
             {
                 List<CircuitBreak> cbs = To.Find(code, filter).ToList();

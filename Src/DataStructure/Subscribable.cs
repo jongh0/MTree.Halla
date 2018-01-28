@@ -21,6 +21,7 @@ namespace DataStructure
                     typeof(StockMaster),
                     typeof(IndexMaster),
                     typeof(ETFConclusion),
+                    typeof(TradeConclusion),
                     typeof(CodeMapDbObject))]
     [DataContract]
     [KnownType(typeof(Candle))]
@@ -31,6 +32,7 @@ namespace DataStructure
     [KnownType(typeof(StockMaster))]
     [KnownType(typeof(IndexMaster))]
     [KnownType(typeof(ETFConclusion))]
+    [KnownType(typeof(TradeConclusion))]
     [KnownType(typeof(CodeMapDbObject))]
     public abstract class Subscribable
     {

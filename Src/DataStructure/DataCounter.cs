@@ -25,121 +25,135 @@ namespace DataStructure
 
         public DataTypes Type { get; set; }
 
-        private int _ChartCount = 0;
+        private int _chartCount = 0;
         public int ChartCount
         {
-            get { return _ChartCount; }
+            get { return _chartCount; }
             set
             {
-                if (_ChartCount != value)
+                if (_chartCount != value)
                 {
-                    _ChartCount = value;
+                    _chartCount = value;
                     NotifyPropertyChanged(nameof(ChartCount));
                 }
             }
         }
 
-        private int _BiddingPriceCount = 0;
+        private int _biddingPriceCount = 0;
         public int BiddingPriceCount
         {
-            get { return _BiddingPriceCount; }
+            get { return _biddingPriceCount; }
             set
             {
-                if (_BiddingPriceCount != value)
+                if (_biddingPriceCount != value)
                 {
-                    _BiddingPriceCount = value;
+                    _biddingPriceCount = value;
                     NotifyPropertyChanged(nameof(BiddingPriceCount));
                 }
             }
         }
 
-        private int _CircuitBreakCount = 0;
+        private int _circuitBreakCount = 0;
         public int CircuitBreakCount
         {
-            get { return _CircuitBreakCount; }
+            get { return _circuitBreakCount; }
             set
             {
-                if (_CircuitBreakCount != value)
+                if (_circuitBreakCount != value)
                 {
-                    _CircuitBreakCount = value;
+                    _circuitBreakCount = value;
                     NotifyPropertyChanged(nameof(CircuitBreakCount));
                 }
             }
         }
 
-        private int _StockMasterCount = 0;
+        private int _stockMasterCount = 0;
         public int StockMasterCount
         {
-            get { return _StockMasterCount; }
+            get { return _stockMasterCount; }
             set
             {
-                if (_StockMasterCount != value)
+                if (_stockMasterCount != value)
                 {
-                    _StockMasterCount = value;
+                    _stockMasterCount = value;
                     NotifyPropertyChanged(nameof(StockMasterCount));
                 }
             }
         }
 
-        private int _IndexMasterCount = 0;
+        private int _indexMasterCount = 0;
         public int IndexMasterCount
         {
-            get { return _IndexMasterCount; }
+            get { return _indexMasterCount; }
             set
             {
-                if (_IndexMasterCount != value)
+                if (_indexMasterCount != value)
                 {
-                    _IndexMasterCount = value;
+                    _indexMasterCount = value;
                     NotifyPropertyChanged(nameof(IndexMasterCount));
                 }
             }
         }
 
-        private int _StockConclusionCount = 0;
+        private int _stockConclusionCount = 0;
         public int StockConclusionCount
         {
-            get { return _StockConclusionCount; }
+            get { return _stockConclusionCount; }
             set
             {
-                if (_StockConclusionCount != value)
+                if (_stockConclusionCount != value)
                 {
-                    _StockConclusionCount = value;
+                    _stockConclusionCount = value;
                     NotifyPropertyChanged(nameof(StockConclusionCount));
                 }
             }
         }
 
-        private int _IndexConclusionCount = 0;
+        private int _indexConclusionCount = 0;
         public int IndexConclusionCount
         {
-            get { return _IndexConclusionCount; }
+            get { return _indexConclusionCount; }
             set
             {
-                if (_IndexConclusionCount != value)
+                if (_indexConclusionCount != value)
                 {
-                    _IndexConclusionCount = value;
+                    _indexConclusionCount = value;
                     NotifyPropertyChanged(nameof(IndexConclusionCount));
                 }
             }
         }
 
-        private int _ETFConclusionCount = 0;
+        private int _etfConclusionCount = 0;
         public int ETFConclusionCount
         {
-            get { return _ETFConclusionCount; }
+            get { return _etfConclusionCount; }
             set
             {
-                if (_ETFConclusionCount != value)
+                if (_etfConclusionCount != value)
                 {
-                    _ETFConclusionCount = value;
+                    _etfConclusionCount = value;
                     NotifyPropertyChanged(nameof(ETFConclusionCount));
+                }
+            }
+        }
+
+        private int _tradeConclusionCount = 0;
+        public int TradeConclusionCount
+        {
+            get { return _tradeConclusionCount; }
+            set
+            {
+                if (_tradeConclusionCount != value)
+                {
+                    _tradeConclusionCount = value;
+                    NotifyPropertyChanged(nameof(TradeConclusionCount));
                 }
             }
         }
 
         public int TotalCount
         {
-            get { return ChartCount + StockMasterCount + IndexMasterCount + BiddingPriceCount + CircuitBreakCount + StockConclusionCount + IndexConclusionCount + ETFConclusionCount; }
+            get { return ChartCount + StockMasterCount + IndexMasterCount + BiddingPriceCount + CircuitBreakCount + StockConclusionCount + IndexConclusionCount + ETFConclusionCount + TradeConclusionCount; }
         }
 
         public DataCounter(DataTypes type)
@@ -158,6 +172,7 @@ namespace DataStructure
             NotifyPropertyChanged(nameof(StockConclusionCount));
             NotifyPropertyChanged(nameof(IndexConclusionCount));
             NotifyPropertyChanged(nameof(ETFConclusionCount));
+            NotifyPropertyChanged(nameof(TradeConclusionCount));
             NotifyPropertyChanged(nameof(TotalCount));
         }
 
@@ -175,35 +190,39 @@ namespace DataStructure
             switch (type)
             {
                 case CounterTypes.Chart:
-                    Interlocked.Increment(ref _ChartCount);
+                    Interlocked.Increment(ref _chartCount);
                     break;
 
                 case CounterTypes.BiddingPrice:
-                    Interlocked.Increment(ref _BiddingPriceCount);
+                    Interlocked.Increment(ref _biddingPriceCount);
                     break;
 
                 case CounterTypes.CircuitBreak:
-                    Interlocked.Increment(ref _CircuitBreakCount);
+                    Interlocked.Increment(ref _circuitBreakCount);
                     break;
 
                 case CounterTypes.StockMaster:
-                    Interlocked.Increment(ref _StockMasterCount);
+                    Interlocked.Increment(ref _stockMasterCount);
                     break;
 
                 case CounterTypes.IndexMaster:
-                    Interlocked.Increment(ref _IndexMasterCount);
+                    Interlocked.Increment(ref _indexMasterCount);
                     break;
 
                 case CounterTypes.StockConclusion:
-                    Interlocked.Increment(ref _StockConclusionCount);
+                    Interlocked.Increment(ref _stockConclusionCount);
                     break;
 
                 case CounterTypes.IndexConclusion:
-                    Interlocked.Increment(ref _IndexConclusionCount);
+                    Interlocked.Increment(ref _indexConclusionCount);
                     break;
 
                 case CounterTypes.ETFConclusion:
-                    Interlocked.Increment(ref _ETFConclusionCount);
+                    Interlocked.Increment(ref _etfConclusionCount);
+                    break;
+
+                case CounterTypes.TradeConclusion:
+                    Interlocked.Increment(ref _tradeConclusionCount);
                     break;
             }
         }
@@ -213,35 +232,39 @@ namespace DataStructure
             switch (type)
             {
                 case CounterTypes.Chart:
-                    Interlocked.Add(ref _ChartCount, value);
+                    Interlocked.Add(ref _chartCount, value);
                     break;
 
                 case CounterTypes.BiddingPrice:
-                    Interlocked.Add(ref _BiddingPriceCount, value);
+                    Interlocked.Add(ref _biddingPriceCount, value);
                     break;
 
                 case CounterTypes.CircuitBreak:
-                    Interlocked.Add(ref _CircuitBreakCount, value);
+                    Interlocked.Add(ref _circuitBreakCount, value);
                     break;
 
                 case CounterTypes.StockMaster:
-                    Interlocked.Add(ref _StockMasterCount, value);
+                    Interlocked.Add(ref _stockMasterCount, value);
                     break;
 
                 case CounterTypes.IndexMaster:
-                    Interlocked.Add(ref _IndexMasterCount, value);
+                    Interlocked.Add(ref _indexMasterCount, value);
                     break;
 
                 case CounterTypes.StockConclusion:
-                    Interlocked.Add(ref _StockConclusionCount, value);
+                    Interlocked.Add(ref _stockConclusionCount, value);
                     break;
 
                 case CounterTypes.IndexConclusion:
-                    Interlocked.Add(ref _IndexConclusionCount, value);
+                    Interlocked.Add(ref _indexConclusionCount, value);
                     break;
 
                 case CounterTypes.ETFConclusion:
-                    Interlocked.Add(ref _ETFConclusionCount, value);
+                    Interlocked.Add(ref _etfConclusionCount, value);
+                    break;
+
+                case CounterTypes.TradeConclusion:
+                    Interlocked.Add(ref _tradeConclusionCount, value);
                     break;
             }
         }
@@ -264,6 +287,7 @@ namespace DataStructure
                     sw.WriteLine($"StockConclusion, {StockConclusionCount}");
                     sw.WriteLine($"IndexConclusion, {IndexConclusionCount}");
                     sw.WriteLine($"ETFConclusion, {ETFConclusionCount}");
+                    sw.WriteLine($"TradeConclusion, {TradeConclusionCount}");
                     sw.WriteLine($"Total, {TotalCount}");
 
                     sw.Flush();
@@ -292,6 +316,7 @@ namespace DataStructure
                 sb.AppendLine($"StockConclusion: {StockConclusionCount.ToString(Config.General.CurrencyFormat)}");
                 sb.AppendLine($"IndexConclusion: {IndexConclusionCount.ToString(Config.General.CurrencyFormat)}");
                 sb.AppendLine($"ETFConclusion: {ETFConclusionCount.ToString(Config.General.CurrencyFormat)}");
+                sb.AppendLine($"TradeConclusion: {TradeConclusionCount.ToString(Config.General.CurrencyFormat)}");
                 sb.Append($"Total: {TotalCount.ToString(Config.General.CurrencyFormat)}");
             }
             catch (Exception ex)

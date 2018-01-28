@@ -74,6 +74,7 @@ namespace DbProvider
         public IMongoDatabase StockConclusionDb { get; set; }
         public IMongoDatabase IndexConclusionDb { get; set; }
         public IMongoDatabase ETFConclusionDb { get; set; }
+        public IMongoDatabase TradeConclusionDb { get; set; }
         public IMongoDatabase CommonDb { get; set; }
         
         private DbAgent(string connectionString = null)
@@ -97,6 +98,7 @@ namespace DbProvider
             StockConclusionDb = DbProvider.GetDatabase(DbTypes.StockConclusion);
             IndexConclusionDb = DbProvider.GetDatabase(DbTypes.IndexConclusion);
             ETFConclusionDb = DbProvider.GetDatabase(DbTypes.ETFConclusion);
+            TradeConclusionDb = DbProvider.GetDatabase(DbTypes.TradeConclusion);
             CommonDb = DbProvider.GetDatabase(DbTypes.Common);
         }
 
@@ -165,6 +167,8 @@ namespace DbProvider
                     return (IMongoCollection<T>)IndexConclusionDb.GetCollection<IndexConclusion>(collectionName);
                 else if (typeof(T) == typeof(ETFConclusion))
                     return (IMongoCollection<T>)ETFConclusionDb.GetCollection<ETFConclusion>(collectionName);
+                else if (typeof(T) == typeof(TradeConclusion))
+                    return (IMongoCollection<T>)TradeConclusionDb.GetCollection<TradeConclusion>(collectionName);
                 else if (typeof(T) == typeof(DataCounter))
                     return (IMongoCollection<T>)CommonDb.GetCollection<DataCounter>(collectionName);
                 else if (typeof(T) == typeof(CodeMapDbObject))
@@ -185,9 +189,9 @@ namespace DbProvider
             try
             {
                 var collectionName = GetCollectionName(item);
-                if (collectionName == null)
+                if (string.IsNullOrEmpty(collectionName) == true)
                 {
-                    _logger.Error("Collection name is null");
+                    _logger.Error("Collection name is empty");
                     return null;
                 }
 
@@ -207,6 +211,8 @@ namespace DbProvider
                     return (IMongoCollection<T>)IndexConclusionDb.GetCollection<IndexConclusion>(collectionName);
                 else if (item is ETFConclusion)
                     return (IMongoCollection<T>)ETFConclusionDb.GetCollection<ETFConclusion>(collectionName);
+                else if (item is TradeConclusion)
+                    return (IMongoCollection<T>)TradeConclusionDb.GetCollection<TradeConclusion>(collectionName);
                 else if (item is DataCounter)
                     return (IMongoCollection<T>)CommonDb.GetCollection<DataCounter>(collectionName);
                 else if (item is CodeMapDbObject)
@@ -226,7 +232,9 @@ namespace DbProvider
         {
             try
             {
-                if (item is Subscribable)
+                if (item is TradeConclusion)
+                    return (item as TradeConclusion).AccountNumber;
+                else if (item is Subscribable)
                     return (item as Subscribable).Code;
                 else if (item is DataCounter)
                     return nameof(DataCounter);
@@ -449,7 +457,19 @@ namespace DbProvider
                         collection.Indexes.DropAll();
 
                     collection.Indexes.CreateOne(Builders<ETFConclusion>.IndexKeys.Ascending(i => i.Time));
-                } 
+                }
+                #endregion
+
+                #region TradeConclusion
+                foreach (var collectionName in GetCollectionList(DbTypes.TradeConclusion))
+                {
+                    var collection = GetCollection<TradeConclusion>(collectionName);
+
+                    if (recreate == true)
+                        collection.Indexes.DropAll();
+
+                    collection.Indexes.CreateOne(Builders<TradeConclusion>.IndexKeys.Ascending(i => i.Time));
+                }
                 #endregion
 
                 _logger.Info("Database indexing done");
@@ -563,6 +583,16 @@ namespace DbProvider
                     Trace.WriteLine(renderedFilter.ToJson()); 
 #endif
                     Counter.ETFConclusionCount += (int)collection.Find(filter).Count();
+                }
+                #endregion
+
+                #region TradeConclusion
+                foreach (var collectionName in GetCollectionList(DbTypes.TradeConclusion))
+                {
+                    var collection = GetCollection<TradeConclusion>(collectionName);
+                    var builder = Builders<TradeConclusion>.Filter;
+                    var filter = builder.Gte(i => i.Time, startDate) & builder.Lte(i => i.Time, endDate);
+                    Counter.TradeConclusionCount += (int)collection.Find(filter).Count();
                 }
                 #endregion
 

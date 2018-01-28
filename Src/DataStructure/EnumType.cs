@@ -45,6 +45,7 @@ namespace DataStructure
         StockConclusion,
         IndexConclusion,
         ETFConclusion,
+        TradeConclusion,
     }
 
     public enum DataTypes

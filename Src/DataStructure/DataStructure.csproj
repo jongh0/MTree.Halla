@@ -81,6 +81,7 @@
     <Compile Include="StockConclusion.cs" />
     <Compile Include="StockMaster.cs" />
     <Compile Include="Subscribable.cs" />
+    <Compile Include="TradeConclusion.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
