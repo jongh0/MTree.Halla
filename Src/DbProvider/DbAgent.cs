@@ -130,6 +130,8 @@ namespace DbProvider
             try
             {
                 var db = DbProvider.GetDatabase(type);
+                if (db == null) return collectionList;
+
                 using (var cursor = db.ListCollections())
                 {
                     foreach (var doc in cursor.ToList())

@@ -22,6 +22,7 @@ namespace DbProvider
         private readonly string stockConclusionDbString = "MTree_StockConclusion";
         private readonly string indexConclusionDbString = "MTree_IndexConclusion";
         private readonly string etfConclusionDbString = "MTree_ETFConclusion";
+        private readonly string tradeConclusionDbString = "MTree_TradeConclusion";
         private readonly string commonDbString = "MTree_Common";
         private readonly string testDbString = "MTree_Test";
 
@@ -74,6 +75,7 @@ namespace DbProvider
                 case DbTypes.StockConclusion:   return Client.GetDatabase(stockConclusionDbString);
                 case DbTypes.IndexConclusion:   return Client.GetDatabase(indexConclusionDbString);
                 case DbTypes.ETFConclusion:     return Client.GetDatabase(etfConclusionDbString);
+                case DbTypes.TradeConclusion:   return Client.GetDatabase(tradeConclusionDbString);
                 case DbTypes.Common:            return Client.GetDatabase(commonDbString);
                 case DbTypes.Test:              return Client.GetDatabase(testDbString);
                 default:                        return null;

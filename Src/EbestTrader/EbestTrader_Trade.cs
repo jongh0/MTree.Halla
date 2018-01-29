@@ -16,7 +16,7 @@ namespace EbestTrader
 
             try
             {
-                if (_loginInfo.State != LoginStates.Login)
+                if (_session.WaitLogin() == false)
                 {
                     _logger.Error("Not login state");
                     return accountInfos;
@@ -47,7 +47,7 @@ namespace EbestTrader
         {
             try
             {
-                if (_loginInfo.State != LoginStates.Login)
+                if (_session.WaitLogin() == false)
                 {
                     _logger.Error("Not login state");
                     return null;
@@ -87,7 +87,7 @@ namespace EbestTrader
 
             try
             {
-                if (_loginInfo.State != LoginStates.Login)
+                if (_session.WaitLogin() == false)
                 {
                     _logger.Error("Not login state");
                     return accountNums;
@@ -112,7 +112,7 @@ namespace EbestTrader
         {
             try
             {
-                if (_loginInfo.State != LoginStates.Login)
+                if (_session.WaitLogin() == false)
                 {
                     _logger.Error("Not login state");
                     return false;

@@ -1,5 +1,6 @@
 ﻿using CommonLib.Firm.Ebest.Block;
 using CommonLib.Firm.Ebest.Query;
+using CommonLib.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,8 +22,6 @@ namespace CommonLib.Firm.Ebest
         private const int MaxCommInterval = 1000 * 60 * 20; // 통신 안한지 20분 넘어가면 Quote 시작
         private const int CommTimerInterval = 1000 * 60 * 2; // 2분마다 체크
         private const int WaitLoginTimeout = 10000;
-
-        private ManualResetEvent _waitLoginEvent = new ManualResetEvent(false);
 
         public int LastCommTick { get; set; }
 
@@ -123,10 +122,16 @@ namespace CommonLib.Firm.Ebest
         /// <returns></returns>
         public bool WaitLogin(int timeout = WaitLoginTimeout)
         {
-            if (_waitLoginEvent.WaitOne(timeout) == false)
+            if (LoginInfo == null) return false;
+
+            while (LoginInfo.State != LoginStates.Login)
             {
-                _logger.Error($"Wait login timeout");
-                return false;
+                if (timeout <= 0) return false;
+
+                DispatcherUtility.DoEvents();
+
+                timeout -= 10;
+                Thread.Sleep(10);
             }
 
             return true;
