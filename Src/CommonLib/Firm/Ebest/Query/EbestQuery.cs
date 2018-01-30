@@ -144,7 +144,8 @@ namespace CommonLib.Firm.Ebest.Query
         {
             if (Query.GetFieldData(out TOutBlock block) == true)
             {
-                _logger.Info($"OnReceiveData: {block}");
+                if (block.BlockName != nameof(t1102OutBlock))
+                    _logger.Info($"OnReceiveData: {block}");
 
                 OutBlock = block;
                 OutBlockReceived?.Invoke(block);

@@ -66,7 +66,7 @@ namespace CommonLib.Firm.Ebest
             {
                 LoginInfo = info ?? throw new ArgumentNullException(nameof(info));
 
-                _logger.Info($"Login, Id: {LoginInfo.UserId}");
+                _logger.Info($"Login, UserId: {LoginInfo.UserId}, ServerAddress: {LoginInfo.ServerAddress}");
 
                 if (Session.IsConnected() == false &&
                     Session.ConnectServer(LoginInfo.ServerAddress, LoginInfo.ServerPort) == false)
@@ -100,7 +100,7 @@ namespace CommonLib.Firm.Ebest
         {
             try
             {
-                _logger.Info("Logout");
+                _logger.Info($"Logout, UserId: {LoginInfo.UserId}, ServerAddress: {LoginInfo.ServerAddress}");
 
                 _commTimer.Stop();
                 Session.Logout();
