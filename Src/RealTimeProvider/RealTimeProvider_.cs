@@ -368,8 +368,12 @@ namespace RealTimeProvider
 
                 Task.Run(() =>
                 {
-                    // CybosStarter 종료
+                    Thread.Sleep(1000 * 10);
+
+                    // 종료 잘 안되는 Process들 Kill
                     ProcessUtility.Kill(ProcessTypes.CybosStarter);
+                    ProcessUtility.Kill(ProcessTypes.DibServer);
+                    ProcessUtility.Kill(ProcessTypes.EbestTrader);
 
                     if (exitType == ExitProgramTypes.Normal)
                     {
