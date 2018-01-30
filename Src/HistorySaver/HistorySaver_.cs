@@ -26,6 +26,8 @@ namespace HistorySaver
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
+        private bool _consumeChartStarted = false;
+
         public DataCounter Counter { get; set; } = new DataCounter(DataTypes.HistorySaver);
 
         public HistorySaver_()
@@ -299,7 +301,19 @@ namespace HistorySaver
         {
             try
             {
-                DbAgent.Instance.ChartDb.DropCollection(candles[0].Code);
+                // 매일 처음 Chart 저장 시 모든 Chart Collection Drop 시킨다.
+                if (_consumeChartStarted == false)
+                {
+                    _consumeChartStarted = true;
+
+                    _logger.Info("Drop all chart collection");
+
+                    foreach (var collectionName in DbAgent.Instance.GetCollectionList(DbTypes.Chart))
+                    {
+                        DbAgent.Instance.ChartDb.DropCollection(collectionName);
+                    }
+                }
+
                 DbAgent.Instance.InsertMany(candles);
                 Counter.Add(CounterTypes.Chart, candles.Count);
             }
