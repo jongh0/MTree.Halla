@@ -14,8 +14,9 @@ using Trader;
 using CommonLib.Utility;
 using System.Diagnostics;
 using Strategy;
-using Strategy.Strategies;
 using Trader.Account;
+using Strategy.TradeAvailable;
+using Strategy.TradeDecision;
 
 namespace StrategyManager
 {
@@ -29,7 +30,8 @@ namespace StrategyManager
         private HistoryConsumer _history;
         private RealTimeTrader _trader;
 
-        private IStrategy _strategy;
+        private ITradeAvailable _tradeAvailable;
+        private ITradeDecision _tradeDesicion;
 
         private AccountInformation SelectedAccount { get; set; }
         private IEnumerable<AccountInformation> AccountInfos { get; set; }
@@ -49,7 +51,6 @@ namespace StrategyManager
 
         private void BuildStrategy()
         {
-            _strategy = new EvenOddStrategy();
         }
 
         private void InitializeWCF()

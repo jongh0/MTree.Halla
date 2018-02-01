@@ -3,25 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Trader;
+using Trader.Account;
 
-namespace Strategy
+namespace Strategy.TradeAvailable
 {
-    public class StrategyComposite : IStrategy
+    public class TradeAvailableComposite : ITradeAvailable
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public string Name { get; set; } = nameof(StrategyComposite);
+        public string Name { get; set; } = nameof(TradeAvailableComposite);
 
         public LogicTypes Logic { get; set; } = LogicTypes.AND;
 
-        private List<IStrategy> _strategyList = new List<IStrategy>();
+        private List<ITradeAvailable> _strategyList = new List<ITradeAvailable>();
 
-        public void Add(IStrategy strategy)
+        public void Add(ITradeAvailable strategy)
         {
             _strategyList.Add(strategy);
         }
 
-        public bool CanBuy()
+        public bool CanBuy(AccountInformation accInfo, Order order)
         {
             bool ret = false;
 
@@ -29,7 +31,7 @@ namespace Strategy
             {
                 foreach (var s in _strategyList)
                 {
-                    ret = s.CanBuy();
+                    ret = s.CanBuy(accInfo, order);
 
                     if (ret == false && Logic == LogicTypes.AND)
                     {
@@ -55,7 +57,7 @@ namespace Strategy
             return ret;
         }
 
-        public bool CanSell()
+        public bool CanSell(AccountInformation accInfo, Order order)
         {
             bool ret = false;
 
@@ -63,7 +65,7 @@ namespace Strategy
             {
                 foreach (var s in _strategyList)
                 {
-                    ret = s.CanSell();
+                    ret = s.CanSell(accInfo, order);
 
                     if (ret == false && Logic == LogicTypes.AND)
                     {

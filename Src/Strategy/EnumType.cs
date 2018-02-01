@@ -8,7 +8,11 @@ namespace Strategy
 {
     public enum LogicTypes
     {
-        AND,
-        OR,
+        AND, OR
+    }
+
+    public enum TradeTypes
+    {
+        Sell, Buy, Hold
     }
 }

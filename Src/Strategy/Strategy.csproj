@@ -45,17 +45,28 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TradeAvailable\AccountAvailable.cs" />
+    <Compile Include="TradeDecision\ITradeDecision.cs" />
     <Compile Include="EnumType.cs" />
-    <Compile Include="IStrategy.cs" />
+    <Compile Include="TradeAvailable\ITradeAvailable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Strategies\EvenOddStrategy.cs" />
-    <Compile Include="StrategyComposite.cs" />
-    <Compile Include="Strategies\SampleStrategy.cs" />
+    <Compile Include="TradeDecision\EvenOddTradeDecision.cs" />
+    <Compile Include="TradeAvailable\TradeAvailableComposite.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\DataStructure\DataStructure.csproj">
+      <Project>{DA1959A9-15FA-47AA-98AC-3844A723FEA1}</Project>
+      <Name>DataStructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Trader\Trader.csproj">
+      <Project>{147B0E77-7A22-4EA5-83EA-A0909B456408}</Project>
+      <Name>Trader</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
