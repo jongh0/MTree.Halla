@@ -152,7 +152,7 @@ namespace CommonLib.Firm.Ebest
             {
                 LastCommTick = Environment.TickCount;
 
-                var query = new EbestQuery<t1102InBlock, t1102OutBlock>();
+                var query = new EbestQuery<t1102InBlock>();
                 if (query.ExecuteQuery(new t1102InBlock { shcode = "000020" }) == false)
                     _logger.Error($"Keep alive error, {GetLastErrorMessage(query.Result)}");
             }

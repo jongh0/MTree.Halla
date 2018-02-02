@@ -23,6 +23,8 @@ namespace CommonLib.Firm.Ebest.Query
 
         public const int QUERY_TIMEOUT = 10000;
 
+        public event Action OutBlockReceived;
+
         private bool QueryDone { get; set; }
 
         private string _resName;
@@ -123,7 +125,7 @@ namespace CommonLib.Firm.Ebest.Query
             {
                 limit = new QueryLimit();
                 limit.QueryName = ResName;
-                limit.QueryInterval = (int)(1000 / Query.GetTRCountPerSec(ResName) * 1.1);
+                limit.QueryInterval = (int)(1000 / Query.GetTRCountPerSec(ResName) * 1.1); // Limit 보다 조금 더 기다린다
 
                 _queryLimitDic.TryAdd(limit.QueryName, limit);
                 return;
@@ -139,6 +141,7 @@ namespace CommonLib.Firm.Ebest.Query
         protected virtual void OnReceiveData(string trCode)
         {
             QueryDone = true;
+            OutBlockReceived?.Invoke();
         }
 
         protected virtual void OnReceiveMessage(bool isSystemError, string messageCode, string message)

@@ -55,16 +55,16 @@ namespace EbestTrader
 
                 _session.LastCommTick = Environment.TickCount;
 
-                var query = new EbestQuery<t0424InBlock, t0424OutBlock, t0424OutBlock1>();
+                var query = new EbestQuery<t0424InBlock>();
                 if (query.ExecuteQueryAndWait(new t0424InBlock { accno = accountNum, passwd = accountPw }) == false)
                 {
                     _logger.Error($"Deposit query error, {GetLastErrorMessage(query.Result)}");
                     return null;
                 }
 
-                var info = AutoMapper.Mapper.Map<AccountInformation>(query.OutBlock);
+                var info = AutoMapper.Mapper.Map<AccountInformation>(query.GetOutBlock<t0424OutBlock>());
 
-                var blocks = query.GetAllOutBlock1();
+                var blocks = query.GetAllOutBlocks<t0424OutBlock1>();
                 foreach (var block in blocks)
                 {
                     var stock = AutoMapper.Mapper.Map<HoldingStock>(block);
@@ -162,7 +162,7 @@ namespace EbestTrader
             {
                 var block = AutoMapper.Mapper.Map<CSPAT00600InBlock1>(order);
 
-                var query = new EbestQuery<CSPAT00600InBlock1, CSPAT00600OutBlock1, CSPAT00600OutBlock2>();
+                var query = new EbestQuery<CSPAT00600InBlock1>();
                 if (query.ExecuteQuery(block) == false)
                 {
                     _logger.Error($"New order error, {order.ToString()}, {GetLastErrorMessage(query.Result)}");
@@ -185,7 +185,7 @@ namespace EbestTrader
             {
                 var block = AutoMapper.Mapper.Map<CSPAT00700InBlock1>(order);
 
-                var query = new EbestQuery<CSPAT00700InBlock1, CSPAT00700OutBlock1, CSPAT00700OutBlock2>();
+                var query = new EbestQuery<CSPAT00700InBlock1>();
                 if (query.ExecuteQuery(block) == false)
                 {
                     _logger.Error($"Modify order error, {order.ToString()}, {GetLastErrorMessage(query.Result)}");
@@ -208,7 +208,7 @@ namespace EbestTrader
             {
                 var block = AutoMapper.Mapper.Map<CSPAT00800InBlock1>(order);
 
-                var query = new EbestQuery<CSPAT00800InBlock1, CSPAT00800OutBlock1, CSPAT00800OutBlock2>();
+                var query = new EbestQuery<CSPAT00800InBlock1>();
                 if (query.ExecuteQuery(block) == false)
                 {
                     _logger.Error($"Cancel order error, {order.ToString()}, {GetLastErrorMessage(query.Result)}");

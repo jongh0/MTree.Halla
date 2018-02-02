@@ -88,6 +88,10 @@
     <Compile Include="EnumType.cs" />
     <Compile Include="Extension\EventHandlerExtension.cs" />
     <Compile Include="Extension\PropertyExtension.cs" />
+    <Compile Include="Firm\Ebest\Block\CSPAQ12300InBlock1.cs" />
+    <Compile Include="Firm\Ebest\Block\CSPAQ12300OutBlock1.cs" />
+    <Compile Include="Firm\Ebest\Block\CSPAQ12300OutBlock2.cs" />
+    <Compile Include="Firm\Ebest\Block\CSPAQ12300OutBlock3.cs" />
     <Compile Include="Firm\Ebest\Block\CSPAT00600InBlock1.cs" />
     <Compile Include="Firm\Ebest\Block\CSPAT00600OutBlock1.cs" />
     <Compile Include="Firm\Ebest\Block\BlockBase.cs" />

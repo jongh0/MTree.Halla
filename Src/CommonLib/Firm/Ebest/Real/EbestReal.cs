@@ -7,40 +7,30 @@ using System.Threading.Tasks;
 
 namespace CommonLib.Firm.Ebest.Real
 {
-    public class EbestReal<TOutBlock> : RealBase<TOutBlock> 
-        where TOutBlock : BlockBase
+    public class EbestReal<TOutBlock> : RealBase<TOutBlock> where TOutBlock : BlockBase
     {
         public void AdviseRealData()
         {
-            Real?.AdviseRealData();
+            Real.AdviseRealData();
+        }
+
+        public void AdviseRealData<TInBlock>(TInBlock inBlock) where TInBlock : BlockBase
+        {
+            if (inBlock != default(TInBlock))
+                Real.SetFieldData(inBlock);
+            Real.AdviseRealData();
         }
 
         public void UnadviseRealData()
         {
-            Real?.UnadviseRealData();
-        }
-    }
-
-    public class EbestReal<TInBlock, TOutBlock> : RealBase<TOutBlock> 
-        where TInBlock : BlockBase 
-        where TOutBlock : BlockBase
-    {
-        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
-
-        public void AdviseRealData(TInBlock block)
-        {
-            _logger.Info($"AdviseRealData: {block}");
-
-            Real?.SetFieldData(block);
-            Real?.AdviseRealData();
+            Real.UnadviseRealData();
         }
 
-        public void UnadviseRealData(TInBlock block)
+        public void UnadviseRealData<TInBlock>(TInBlock inBlock) where TInBlock : BlockBase
         {
-            _logger.Info($"UnadviseRealData: {block}");
-
-            Real?.SetFieldData(block);
-            Real?.AdviseRealData();
+            if (inBlock != default(TInBlock))
+                Real.SetFieldData(inBlock);
+            Real.UnadviseRealData();
         }
     }
 }
