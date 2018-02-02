@@ -24,7 +24,9 @@ namespace Trader
                     cfg.AddProfile<OrderResultMappingProfile>();
                 });
 
-                AutoMapper.Mapper.AssertConfigurationIsValid();
+#if DEBUG // Debug 실행일 때만 Mapping 오류 출력
+                AutoMapper.Mapper.AssertConfigurationIsValid(); 
+#endif
             }
             catch (Exception ex)
             {
