@@ -55,6 +55,7 @@ namespace EbestTrader
 
                 _session.LastCommTick = Environment.TickCount;
 
+#if true
                 var query = new EbestQuery<t0424InBlock>();
                 if (query.ExecuteQueryAndWait(new t0424InBlock { accno = accountNum, passwd = accountPw }) == false)
                 {
@@ -71,7 +72,17 @@ namespace EbestTrader
                     info.HoldingStocks.Add(stock);
                 }
 
-                return info;
+                return info; 
+#else
+                var query = new EbestQuery<CSPAQ12300InBlock1>();
+                if (query.ExecuteQueryAndWait(new CSPAQ12300InBlock1 { AcntNo = accountNum, Pwd = accountPw }) == false)
+                {
+                    _logger.Error($"Deposit query error, {GetLastErrorMessage(query.Result)}");
+                    return null;
+                }
+
+                var info = AutoMapper.Mapper.Map<AccountInformation>(query.GetOutBlock<t0424OutBlock>());
+#endif
             }
             catch (Exception ex)
             {

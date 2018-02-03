@@ -22,16 +22,6 @@ namespace CommonLib.Firm.Ebest.Block
         public string IsuNm { get; set; }
 
         /// <summary>
-        /// 유가증권잔고유형코드 [2]
-        /// </summary>
-        public string SecBalPtnCode { get; set; }
-
-        /// <summary>
-        /// 유가증권잔고유형명 [40]
-        /// </summary>
-        public string SecBalPtnNm { get; set; }
-
-        /// <summary>
         /// 잔고수량 [16]
         /// </summary>
         public long BalQty { get; set; }
