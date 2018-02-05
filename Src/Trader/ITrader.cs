@@ -14,6 +14,8 @@ namespace Trader
 
         List<string> GetAccountNumbers();
 
+        List<AccountInformation> GetAccountInformations();
+
         bool MakeOrder(Order order);
     }
 }

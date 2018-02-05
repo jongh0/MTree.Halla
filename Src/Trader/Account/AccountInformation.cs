@@ -19,34 +19,52 @@ namespace Trader.Account
         public string AccountNumber { get; set; }
 
         /// <summary>
-        /// 추정순자산
+        /// 계좌명
         /// </summary>
         [DataMember]
-        public long EstimatedNetWorth { get; set; }
+        public string AccountName { get; set; }
 
         /// <summary>
-        /// 실현손익
+        /// 현금주문가능금액
         /// </summary>
         [DataMember]
-        public long RealizedProfit { get; set; }
+        public long OrderableAmount { get; set; }
+
+        /// <summary>
+        /// 출금가능금액
+        /// </summary>
+        [DataMember]
+        public long WithdrawableAmount { get; set; }
+
+        /// <summary>
+        /// 잔고평가금액
+        /// </summary>
+        [DataMember]
+        public long EvaluationAmount { get; set; }
 
         /// <summary>
         /// 매입금액
         /// </summary>
         [DataMember]
-        public long PurchasePrice { get; set; }
+        public long PurchaseAmount { get; set; }
 
         /// <summary>
-        /// 평가금액
+        /// 손익율
         /// </summary>
         [DataMember]
-        public long EvaluationPrice { get; set; }
+        public double ProfitRate { get; set; }
 
         /// <summary>
-        /// 평가손익
+        /// 투자원금
         /// </summary>
         [DataMember]
-        public long EvaluationProfit { get; set; }
+        public long InvestAmount { get; set; }
+
+        /// <summary>
+        /// 투자손익금액
+        /// </summary>
+        [DataMember]
+        public long InvestProfitAmount { get; set; }
 
         /// <summary>
         /// 보유주식
@@ -64,17 +82,23 @@ namespace Trader.Account
     {
         public AccountInfoMappingProfile()
         {
-            CreateMap<t0424OutBlock, AccountInformation>(AutoMapper.MemberList.None)
-                .ForMember(dest => dest.EstimatedNetWorth,
-                           opts => opts.MapFrom(src => src.sunamt))
-                .ForMember(dest => dest.RealizedProfit,
-                           opts => opts.MapFrom(src => src.dtsunik))
-                .ForMember(dest => dest.PurchasePrice,
-                           opts => opts.MapFrom(src => src.mamt))
-                .ForMember(dest => dest.EvaluationPrice,
-                           opts => opts.MapFrom(src => src.tappamt))
-                .ForMember(dest => dest.EvaluationProfit,
-                           opts => opts.MapFrom(src => src.tdtsunik));
+            CreateMap<CSPAQ12300OutBlock2, AccountInformation>(AutoMapper.MemberList.None)
+                .ForMember(dest => dest.AccountName,
+                           opts => opts.MapFrom(src => src.AcntNm))
+                .ForMember(dest => dest.OrderableAmount,
+                           opts => opts.MapFrom(src => src.MnyOrdAbleAmt))
+                .ForMember(dest => dest.WithdrawableAmount,
+                           opts => opts.MapFrom(src => src.MnyoutAbleAmt))
+                .ForMember(dest => dest.EvaluationAmount,
+                           opts => opts.MapFrom(src => src.BalEvalAmt))
+                .ForMember(dest => dest.PurchaseAmount,
+                           opts => opts.MapFrom(src => src.PchsAmt))
+                .ForMember(dest => dest.ProfitRate,
+                           opts => opts.MapFrom(src => src.PnlRat))
+                .ForMember(dest => dest.InvestAmount,
+                           opts => opts.MapFrom(src => src.InvstOrgAmt))
+                .ForMember(dest => dest.InvestProfitAmount,
+                           opts => opts.MapFrom(src => src.InvstPlAmt));
         }
     }
 }

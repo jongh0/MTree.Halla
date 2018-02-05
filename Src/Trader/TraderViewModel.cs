@@ -204,6 +204,10 @@ namespace Trader
                     }
 
                     SelectedAccount = AccountNumbers[0];
+
+#if false // 테스트
+                    var accInfos = Trader.GetAccountInformations(); 
+#endif
                 });
             }
         }

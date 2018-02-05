@@ -46,13 +46,13 @@ namespace Trader.Account
         /// 매입금액
         /// </summary>
         [DataMember]
-        public int PurchasePrice { get; set; }
+        public int PurchaseAmount { get; set; }
 
         /// <summary>
         /// 평가금액
         /// </summary>
         [DataMember]
-        public long EvaluationPrice { get; set; }
+        public long EvaluationAmount { get; set; }
 
         /// <summary>
         /// 평가손익
@@ -76,25 +76,25 @@ namespace Trader.Account
     {
         public HoldingStockMappingProfile()
         {
-            CreateMap<t0424OutBlock1, HoldingStock>(AutoMapper.MemberList.None)
+             CreateMap<CSPAQ12300OutBlock3, HoldingStock>(AutoMapper.MemberList.None)
                 .ForMember(dest => dest.Code,
-                           opts => opts.MapFrom(src => src.expcode))
+                           opts => opts.MapFrom(src => src.IsuNo))
                 .ForMember(dest => dest.Name,
-                           opts => opts.MapFrom(src => src.hname))
+                           opts => opts.MapFrom(src => src.IsuNm))
                 .ForMember(dest => dest.Quantity,
-                           opts => opts.MapFrom(src => src.janqty))
+                           opts => opts.MapFrom(src => src.BalQty))
                 .ForMember(dest => dest.SellableQuantity,
-                           opts => opts.MapFrom(src => src.mdposqt))
+                           opts => opts.MapFrom(src => src.SellAbleQty))
                 .ForMember(dest => dest.AveragePrice,
-                           opts => opts.MapFrom(src => src.pamt))
-                .ForMember(dest => dest.PurchasePrice,
-                           opts => opts.MapFrom(src => src.mamt))
-                .ForMember(dest => dest.EvaluationPrice,
-                           opts => opts.MapFrom(src => src.appamt))
+                           opts => opts.MapFrom(src => src.AvrUprc))
+                .ForMember(dest => dest.PurchaseAmount,
+                           opts => opts.MapFrom(src => src.PchsAmt))
+                .ForMember(dest => dest.EvaluationAmount,
+                           opts => opts.MapFrom(src => src.BalEvalAmt))
                 .ForMember(dest => dest.EvaluationProfit,
-                           opts => opts.MapFrom(src => src.dtsunik))
+                           opts => opts.MapFrom(src => src.EvalPnl))
                 .ForMember(dest => dest.ProfitRate,
-                           opts => opts.MapFrom(src => src.sunikrt));
+                           opts => opts.MapFrom(src => src.PnlRat));
         }
     }
 }

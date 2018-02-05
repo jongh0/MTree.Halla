@@ -55,25 +55,6 @@ namespace EbestTrader
 
                 _session.LastCommTick = Environment.TickCount;
 
-#if true
-                var query = new EbestQuery<t0424InBlock>();
-                if (query.ExecuteQueryAndWait(new t0424InBlock { accno = accountNum, passwd = accountPw }) == false)
-                {
-                    _logger.Error($"Deposit query error, {GetLastErrorMessage(query.Result)}");
-                    return null;
-                }
-
-                var info = AutoMapper.Mapper.Map<AccountInformation>(query.GetOutBlock<t0424OutBlock>());
-
-                var blocks = query.GetAllOutBlocks<t0424OutBlock1>();
-                foreach (var block in blocks)
-                {
-                    var stock = AutoMapper.Mapper.Map<HoldingStock>(block);
-                    info.HoldingStocks.Add(stock);
-                }
-
-                return info; 
-#else
                 var query = new EbestQuery<CSPAQ12300InBlock1>();
                 if (query.ExecuteQueryAndWait(new CSPAQ12300InBlock1 { AcntNo = accountNum, Pwd = accountPw }) == false)
                 {
@@ -81,8 +62,17 @@ namespace EbestTrader
                     return null;
                 }
 
-                var info = AutoMapper.Mapper.Map<AccountInformation>(query.GetOutBlock<t0424OutBlock>());
-#endif
+                var info = AutoMapper.Mapper.Map<AccountInformation>(query.GetOutBlock<CSPAQ12300OutBlock2>());
+                info.AccountNumber = accountNum;
+
+                var blocks = query.GetAllOutBlocks<CSPAQ12300OutBlock3>();
+                foreach (var block in blocks)
+                {
+                    var stock = AutoMapper.Mapper.Map<HoldingStock>(block);
+                    info.HoldingStocks.Add(stock);
+                }
+
+                return info;
             }
             catch (Exception ex)
             {

@@ -26,13 +26,13 @@ namespace CommonLib.Firm.Ebest.Query
         /// <param name="query"></param>
         /// <param name="block"></param>
         /// <returns></returns>
-        public static bool SetFieldData(this XAQueryClass query, BlockBase block)
+        public static bool SetFieldData<T>(this XAQueryClass query, T block) where T : BlockBase
         {
             if (block == null) return false;
 
             try
             {
-                foreach (var property in PropertyUtility.GetProperties(block.GetType()))
+                foreach (var property in PropertyUtility.GetProperties(typeof(T), typeof(IgnorePropertyAttribute)))
                 {
                     var value = property.GetValue(block);
                     if (value == null) continue;
@@ -66,7 +66,7 @@ namespace CommonLib.Firm.Ebest.Query
 
             try
             {
-                foreach (var property in PropertyUtility.GetProperties(typeof(T)))
+                foreach (var property in PropertyUtility.GetProperties(typeof(T), typeof(IgnorePropertyAttribute)))
                 {
                     if (property.CanWrite == false) continue;
 

@@ -23,13 +23,13 @@ namespace CommonLib.Firm.Ebest.Real
         /// <param name="query"></param>
         /// <param name="block"></param>
         /// <returns></returns>
-        public static bool SetFieldData(this XARealClass query, BlockBase block)
+        public static bool SetFieldData<T>(this XARealClass query, T block) where T : BlockBase
         {
             if (block == null) return false;
 
             try
             {
-                foreach (var property in PropertyUtility.GetProperties(block.GetType()))
+                foreach (var property in PropertyUtility.GetProperties(typeof(T), typeof(IgnorePropertyAttribute)))
                 {
                     var value = property.GetValue(block);
                     if (value == null) continue;
@@ -63,7 +63,7 @@ namespace CommonLib.Firm.Ebest.Real
 
             try
             {
-                foreach (var property in PropertyUtility.GetProperties(typeof(T)))
+                foreach (var property in PropertyUtility.GetProperties(typeof(T), typeof(IgnorePropertyAttribute)))
                 {
                     var data = real.GetFieldData(block.BlockName, property.Name);
                     if (string.IsNullOrEmpty(data) == false)

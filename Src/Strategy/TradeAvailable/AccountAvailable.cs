@@ -23,7 +23,7 @@ namespace Strategy.TradeAvailable
 
                 if (order.OrderType != OrderTypes.BuyNew) return false;
 
-                return order.Price * order.Quantity <= accInfo.RealizedProfit; // 틀린 거 같음
+                return order.Price * order.Quantity <= accInfo.OrderableAmount;
             }
             catch (Exception ex)
             {

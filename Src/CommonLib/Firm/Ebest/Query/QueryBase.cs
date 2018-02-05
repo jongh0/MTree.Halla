@@ -26,6 +26,7 @@ namespace CommonLib.Firm.Ebest.Query
         public event Action OutBlockReceived;
 
         private bool QueryDone { get; set; }
+        private bool QueryError { get; set; }
 
         private string _resName;
         public string ResName
@@ -93,12 +94,13 @@ namespace CommonLib.Firm.Ebest.Query
 
                 _logger.Info($"ExecuteQueryAndWait: {block.ToString()}");
 
+                QueryDone = false;
+                QueryError = false;
+
                 Query.SetFieldData(block);
                 WaitQueryInterval();
                 Result = Query.Request(false);
                 if (Result < 0) return false;
-
-                QueryDone = false;
 
                 while (timeout > 0)
                 {
@@ -106,7 +108,7 @@ namespace CommonLib.Firm.Ebest.Query
                     Thread.Sleep(10);
                     DispatcherUtility.DoEvents();
 
-                    if (QueryDone == true) return true;
+                    if (QueryDone == true) return !QueryError;
                 }
 
                 _logger.Error($"{ResName} query time out");
@@ -140,13 +142,20 @@ namespace CommonLib.Firm.Ebest.Query
 
         protected virtual void OnReceiveData(string trCode)
         {
+#if DEBUG
+            _logger.Info($"OnReceiveData: {trCode}");
+#endif
             QueryDone = true;
             OutBlockReceived?.Invoke();
         }
 
         protected virtual void OnReceiveMessage(bool isSystemError, string messageCode, string message)
         {
-            _logger.Log(isSystemError ? LogLevel.Error : LogLevel.Info, $"{nameof(messageCode)}: {messageCode}, {nameof(message)}: {message}");
+            if (message.Contains("오류가") == true)
+                QueryError = true;
+
+            var logLevel = isSystemError ? LogLevel.Error : LogLevel.Info;
+            _logger.Log(logLevel, $"{nameof(isSystemError)}: {isSystemError}, {nameof(messageCode)}: {messageCode}, {nameof(message)}: {message}");
         }
     }
 }

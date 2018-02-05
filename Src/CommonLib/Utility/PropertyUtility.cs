@@ -16,29 +16,31 @@ namespace CommonLib.Utility
 
         private static ConcurrentDictionary<Type, IEnumerable<PropertyInfo>> _propDic = new ConcurrentDictionary<Type, IEnumerable<PropertyInfo>>();
 
-        public static IEnumerable<PropertyInfo> GetProperties(Type type)
+        public static IEnumerable<PropertyInfo> GetProperties(Type type, Type excludeAttributeType = default(Type))
         {
             if (_propDic.TryGetValue(type, out var properties) == false)
             {
-                properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                    .Where(p => System.Attribute.IsDefined(p, typeof(IgnorePropertyAttribute)) == false);
+                properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
                 _propDic.TryAdd(type, properties);
             }
+
+            if (excludeAttributeType != default(Type))
+                return properties.Where(p => System.Attribute.IsDefined(p, excludeAttributeType) == false);
 
             return properties;
         }
 
-        public static string PrintValues(object obj, string seperator = ", ", bool excludeEmptyProperty = true)
+        public static string PrintValues(object obj, string seperator = ", ", bool excludeEmptyProperty = true, Type excludeAttributeType = default(Type))
         {
-            return Print(obj, seperator, excludeEmptyProperty, includePropertyName: false);
+            return Print(obj, seperator, excludeEmptyProperty, includePropertyName: false, excludeAttributeType: excludeAttributeType);
         }
 
-        public static string PrintNameValues(object obj, string seperator = ", ", bool excludeEmptyProperty = true)
+        public static string PrintNameValues(object obj, string seperator = ", ", bool excludeEmptyProperty = true, Type excludeAttributeType = default(Type))
         {
-            return Print(obj, seperator, excludeEmptyProperty, includePropertyName: true);
+            return Print(obj, seperator, excludeEmptyProperty, includePropertyName: true, excludeAttributeType: excludeAttributeType);
         }
 
-        private static string Print(object obj, string seperator, bool excludeEmptyProperty, bool includePropertyName)
+        private static string Print(object obj, string seperator, bool excludeEmptyProperty, bool includePropertyName, Type excludeAttributeType)
         {
             if (obj == null) return string.Empty;
 
@@ -46,7 +48,7 @@ namespace CommonLib.Utility
 
             try
             {
-                foreach (var property in GetProperties(obj.GetType()))
+                foreach (var property in GetProperties(obj.GetType(), excludeAttributeType))
                 {
                     var value = property.GetValue(obj);
                     if (value == null) continue;
