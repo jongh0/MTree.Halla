@@ -17,22 +17,20 @@ namespace CommonLib.Firm.Ebest.Query
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private static ConcurrentDictionary<Type, IEnumerable<PropertyInfo>> _setPropDic = new ConcurrentDictionary<Type, IEnumerable<PropertyInfo>>();
-        private static ConcurrentDictionary<Type, IEnumerable<PropertyInfo>> _getPropDic = new ConcurrentDictionary<Type, IEnumerable<PropertyInfo>>();
-
         /// <summary>
         /// Block Class의 내용을 XAQueryClass Field에 채워준다.
         /// </summary>
+        /// <typeparam name="TInBlock"></typeparam>
         /// <param name="query"></param>
         /// <param name="block"></param>
         /// <returns></returns>
-        public static bool SetFieldData<T>(this XAQueryClass query, T block) where T : BlockBase
+        public static bool SetFieldData<TInBlock>(this XAQueryClass query, TInBlock block) where TInBlock : BlockBase
         {
             if (block == null) return false;
 
             try
             {
-                foreach (var property in PropertyUtility.GetProperties(typeof(T), typeof(IgnorePropertyAttribute)))
+                foreach (var property in PropertyUtility.GetProperties(typeof(TInBlock), typeof(IgnorePropertyAttribute)))
                 {
                     var value = property.GetValue(block);
                     if (value == null) continue;
@@ -56,17 +54,18 @@ namespace CommonLib.Firm.Ebest.Query
         /// <summary>
         /// XAQueryClass Field를 읽어서 Block Class를 만들어준다.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TOutBlock"></typeparam>
         /// <param name="query"></param>
         /// <param name="block"></param>
+        /// <param name="index"></param>
         /// <returns></returns>
-        public static bool GetFieldData<T>(this XAQueryClass query, out T block, int index = 0) where T : BlockBase
+        public static bool GetFieldData<TOutBlock>(this XAQueryClass query, out TOutBlock block, int index = 0) where TOutBlock : BlockBase
         {
-            block = Activator.CreateInstance<T>();
+            block = Activator.CreateInstance<TOutBlock>();
 
             try
             {
-                foreach (var property in PropertyUtility.GetProperties(typeof(T), typeof(IgnorePropertyAttribute)))
+                foreach (var property in PropertyUtility.GetProperties(typeof(TOutBlock), typeof(IgnorePropertyAttribute)))
                 {
                     if (property.CanWrite == false) continue;
 
