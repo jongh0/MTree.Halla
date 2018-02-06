@@ -150,7 +150,12 @@ namespace RealTimeProvider
                             break;
                     }
 
-                    ProcessUtility.Start(ProcessTypes.StrategyManager, ProcessWindowStyle.Minimized);
+                    Task.Run(() =>
+                    {
+                        // Trader 실행 후 잠시 대기한 다음 StrategyManager 실행
+                        Thread.Sleep(5000);
+                        ProcessUtility.Start(ProcessTypes.StrategyManager, ProcessWindowStyle.Minimized);
+                    });
                 }
             }
             catch (Exception ex)
