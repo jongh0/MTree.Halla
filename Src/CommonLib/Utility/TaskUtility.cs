@@ -19,7 +19,7 @@ namespace CommonLib.Utility
 
             return Task.Run(() =>
             {
-                _logger.Info($"{_taskName} task started");
+                //_logger.Info($"{_taskName} task started");
 
                 while (true)
                 {
@@ -38,7 +38,7 @@ namespace CommonLib.Utility
                     }
                 }
 
-                _logger.Info($"{_taskName} task stopped");
+                //_logger.Info($"{_taskName} task stopped");
             }, _cancelToken);
         }
     }

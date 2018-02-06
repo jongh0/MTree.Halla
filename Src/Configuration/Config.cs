@@ -74,7 +74,7 @@ namespace Configuration
                         }
                     });
 
-                    _logger.Info($"{Path.GetFileName(filePath)} loaded");
+                    //_logger.Info($"{Path.GetFileName(filePath)} loaded");
                 }
                 else
                 {
@@ -104,17 +104,8 @@ namespace Configuration
                     writer.Flush();
                     stream.Flush(true);
 
-                    _logger.Info($"{Path.GetFileName(filePath)} saved");
+                    //_logger.Info($"{Path.GetFileName(filePath)} saved");
                 }
-
-                //using (StreamWriter stream = File.CreateText(filePath))
-                //{
-                //    JsonSerializer serializer = new JsonSerializer();
-                //    serializer.NullValueHandling = NullValueHandling.Ignore;
-                //    serializer.Formatting = Formatting.Indented;
-                //    serializer.Serialize(stream, config);
-                //    _logger.Info($"{Path.GetFileName(filePath)} saved");
-                //}
             }
             catch (Exception ex)
             {

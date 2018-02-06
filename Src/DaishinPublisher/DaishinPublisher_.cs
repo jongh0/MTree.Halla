@@ -86,7 +86,7 @@ namespace DaishinPublisher
                     return;
                 }
 
-                _logger.Info($"Server type: {sessionObj.ServerType}");
+                //_logger.Info($"Server type: {sessionObj.ServerType}");
 
                 StartBiddingPriceQueueTask();
                 StartStockConclusionQueueTask();
