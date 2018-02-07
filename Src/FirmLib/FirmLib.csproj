@@ -34,6 +34,21 @@
     <Reference Include="AutoMapper, Version=6.2.2.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <HintPath>..\packages\AutoMapper.6.2.2\lib\net45\AutoMapper.dll</HintPath>
     </Reference>
+    <Reference Include="Interop.CPSYSDIBLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <HintPath>..\packages\Daishin\Interop.CPSYSDIBLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Interop.CPUTILLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <HintPath>..\packages\Daishin\Interop.CPUTILLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Interop.DSCBO1Lib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <HintPath>..\packages\Daishin\Interop.DSCBO1Lib.dll</HintPath>
+    </Reference>
     <Reference Include="Interop.XA_DATASETLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>False</EmbedInteropTypes>
@@ -43,6 +58,9 @@
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>False</EmbedInteropTypes>
       <HintPath>..\packages\Ebest\Interop.XA_SESSIONLib.dll</HintPath>
+    </Reference>
+    <Reference Include="MongoDB.Bson, Version=2.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MongoDB.Bson.2.5.0\lib\net45\MongoDB.Bson.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -61,6 +79,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Daishin\DibBase.cs" />
+    <Compile Include="Daishin\DaishinETFCur.cs" />
+    <Compile Include="Daishin\DaishinIndexCur.cs" />
+    <Compile Include="Daishin\DaishinStockBid.cs" />
+    <Compile Include="Daishin\DaishinStockCur.cs" />
+    <Compile Include="Daishin\DaishinStockOutCur.cs" />
+    <Compile Include="Daishin\SysDibBase.cs" />
     <Compile Include="Ebest\Block\BlockBase.cs" />
     <Compile Include="Ebest\Block\CSPAQ12300InBlock1.cs" />
     <Compile Include="Ebest\Block\CSPAQ12300OutBlock1.cs" />
@@ -140,8 +165,6 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Daishin\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
