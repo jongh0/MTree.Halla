@@ -149,6 +149,10 @@
       <Project>{da1959a9-15fa-47aa-98ac-3844a723fea1}</Project>
       <Name>DataStructure</Name>
     </ProjectReference>
+    <ProjectReference Include="..\FirmLib\FirmLib.csproj">
+      <Project>{e229b559-d37b-436d-8acb-0f468f127209}</Project>
+      <Name>FirmLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Publisher\Publisher.csproj">
       <Project>{891f9baa-d335-4a1b-8fa3-bb0e4d76410a}</Project>
       <Name>Publisher</Name>

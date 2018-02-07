@@ -35,16 +35,6 @@
     <Reference Include="DotNetZip, Version=1.10.1.0, Culture=neutral, PublicKeyToken=6583c7c814667745, processorArchitecture=MSIL">
       <HintPath>..\packages\DotNetZip.1.10.1\lib\net20\DotNetZip.dll</HintPath>
     </Reference>
-    <Reference Include="Interop.XA_DATASETLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-      <HintPath>..\packages\Ebest\Interop.XA_DATASETLib.dll</HintPath>
-    </Reference>
-    <Reference Include="Interop.XA_SESSIONLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-      <HintPath>..\packages\Ebest\Interop.XA_SESSIONLib.dll</HintPath>
-    </Reference>
     <Reference Include="MongoDB.Bson, Version=2.5.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MongoDB.Bson.2.5.0\lib\net45\MongoDB.Bson.dll</HintPath>
     </Reference>
@@ -88,64 +78,6 @@
     <Compile Include="EnumType.cs" />
     <Compile Include="Extension\EventHandlerExtension.cs" />
     <Compile Include="Extension\PropertyExtension.cs" />
-    <Compile Include="Firm\Ebest\Block\CSPAQ12300InBlock1.cs" />
-    <Compile Include="Firm\Ebest\Block\CSPAQ12300OutBlock1.cs" />
-    <Compile Include="Firm\Ebest\Block\CSPAQ12300OutBlock2.cs" />
-    <Compile Include="Firm\Ebest\Block\CSPAQ12300OutBlock3.cs" />
-    <Compile Include="Firm\Ebest\Block\CSPAT00600InBlock1.cs" />
-    <Compile Include="Firm\Ebest\Block\CSPAT00600OutBlock1.cs" />
-    <Compile Include="Firm\Ebest\Block\BlockBase.cs" />
-    <Compile Include="Firm\Ebest\Block\CSPAT00600OutBlock2.cs" />
-    <Compile Include="Firm\Ebest\Block\CSPAT00700InBlock1.cs" />
-    <Compile Include="Firm\Ebest\Block\CSPAT00700OutBlock1.cs" />
-    <Compile Include="Firm\Ebest\Block\CSPAT00700OutBlock2.cs" />
-    <Compile Include="Firm\Ebest\Block\CSPAT00800InBlock1.cs" />
-    <Compile Include="Firm\Ebest\Block\CSPAT00800OutBlock1.cs" />
-    <Compile Include="Firm\Ebest\Block\CSPAT00800OutBlock2.cs" />
-    <Compile Include="Firm\Ebest\Block\DVIInBlock.cs" />
-    <Compile Include="Firm\Ebest\Block\DVIOutBlock.cs" />
-    <Compile Include="Firm\Ebest\Block\SC0OutBlock.cs" />
-    <Compile Include="Firm\Ebest\Block\SC1OutBlock.cs" />
-    <Compile Include="Firm\Ebest\Block\SC2OutBlock.cs" />
-    <Compile Include="Firm\Ebest\Block\SC3OutBlock.cs" />
-    <Compile Include="Firm\Ebest\Block\SC4OutBlock.cs" />
-    <Compile Include="Firm\Ebest\Block\t0424InBlock.cs" />
-    <Compile Include="Firm\Ebest\Block\t0424OutBlock.cs" />
-    <Compile Include="Firm\Ebest\Block\t0424OutBlock1.cs" />
-    <Compile Include="Firm\Ebest\Block\t0425InBlock.cs" />
-    <Compile Include="Firm\Ebest\Block\t0425OutBlock.cs" />
-    <Compile Include="Firm\Ebest\Block\t0425OutBlock1.cs" />
-    <Compile Include="Firm\Ebest\Block\t1102InBlock.cs" />
-    <Compile Include="Firm\Ebest\Block\t1102OutBlock.cs" />
-    <Compile Include="Firm\Ebest\Block\t1404InBlock.cs" />
-    <Compile Include="Firm\Ebest\Block\t1404OutBlock.cs" />
-    <Compile Include="Firm\Ebest\Block\t1404OutBlock1.cs" />
-    <Compile Include="Firm\Ebest\Block\t1405InBlock.cs" />
-    <Compile Include="Firm\Ebest\Block\t1405OutBlock1.cs" />
-    <Compile Include="Firm\Ebest\Block\t1511InBlock.cs" />
-    <Compile Include="Firm\Ebest\Block\t1511OutBlock.cs" />
-    <Compile Include="Firm\Ebest\Block\t1537InBlock.cs" />
-    <Compile Include="Firm\Ebest\Block\t1537OutBlock.cs" />
-    <Compile Include="Firm\Ebest\Block\t1537OutBlock1.cs" />
-    <Compile Include="Firm\Ebest\Block\t8424InBlock.cs" />
-    <Compile Include="Firm\Ebest\Block\t8424OutBlock.cs" />
-    <Compile Include="Firm\Ebest\Block\t8425InBlock.cs" />
-    <Compile Include="Firm\Ebest\Block\t8425OutBlock.cs" />
-    <Compile Include="Firm\Ebest\Block\t8430InBlock.cs" />
-    <Compile Include="Firm\Ebest\Block\t8430OutBlock.cs" />
-    <Compile Include="Firm\Ebest\Block\VIInBlock.cs" />
-    <Compile Include="Firm\Ebest\Block\VIOutBlock.cs" />
-    <Compile Include="Firm\Ebest\EbestSession.cs" />
-    <Compile Include="Firm\Ebest\Query\QueryBase.cs" />
-    <Compile Include="Firm\Ebest\Query\EbestQuery.cs" />
-    <Compile Include="Firm\QueryLimit.cs" />
-    <Compile Include="Firm\Ebest\Query\XAQueryClassExtension.cs" />
-    <Compile Include="Firm\Ebest\Real\RealBase.cs" />
-    <Compile Include="Firm\Ebest\Real\EbestReal.cs" />
-    <Compile Include="Firm\Ebest\Real\XARealClassExtension.cs" />
-    <Compile Include="Firm\Kiwoom\KiwoomScreen.cs" />
-    <Compile Include="Firm\Kiwoom\KiwoomError.cs" />
-    <Compile Include="Firm\LoginInformation.cs" />
     <Compile Include="Utility\AssemblyUtility.cs" />
     <Compile Include="Utility\DispatcherUtility.cs" />
     <Compile Include="Utility\ObjectIdUtility.cs" />

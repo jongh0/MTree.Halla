@@ -2,7 +2,7 @@
 using CommonLib;
 using System;
 using System.Threading;
-using CommonLib.Firm.Kiwoom;
+using FirmLib.Kiwoom;
 
 namespace KiwoomPublisher
 {

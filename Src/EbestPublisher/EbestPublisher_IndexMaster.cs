@@ -2,9 +2,9 @@
 using System.Threading;
 using DataStructure;
 using CommonLib;
-using CommonLib.Firm.Ebest;
-using CommonLib.Firm.Ebest.Block;
-using CommonLib.Firm.Ebest.Query;
+using FirmLib.Ebest;
+using FirmLib.Ebest.Block;
+using FirmLib.Ebest.Query;
 
 namespace EbestPublisher
 {

@@ -2,8 +2,8 @@
 using CommonLib;
 using System;
 using System.Collections.Generic;
-using CommonLib.Firm.Ebest.Block;
-using CommonLib.Firm.Ebest.Query;
+using FirmLib.Ebest.Block;
+using FirmLib.Ebest.Query;
 using Trader.Account;
 
 namespace EbestTrader

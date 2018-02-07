@@ -13,9 +13,10 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.ComponentModel;
 using CommonLib;
-using CommonLib.Firm.Ebest;
-using CommonLib.Firm.Ebest.Block;
-using CommonLib.Firm.Ebest.Query;
+using FirmLib.Ebest;
+using FirmLib.Ebest.Block;
+using FirmLib.Ebest.Query;
+using FirmLib;
 
 namespace EbestPublisher
 {

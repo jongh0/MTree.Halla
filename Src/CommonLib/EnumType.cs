@@ -6,20 +6,6 @@ using System.Threading.Tasks;
 
 namespace CommonLib
 {
-    public enum LoginStates
-    {
-        Disconnect,
-        Login,
-        Logout,
-    }
-
-    public enum FirmTypes
-    {
-        Daishin,
-        Ebest,
-        Kiwoom,
-    }
-
     public enum ProcessTypes
     {
         Unknown,

@@ -128,6 +128,10 @@
       <Project>{9c52064a-188b-449a-89a1-de3a9dd3f766}</Project>
       <Name>Configuration</Name>
     </ProjectReference>
+    <ProjectReference Include="..\FirmLib\FirmLib.csproj">
+      <Project>{e229b559-d37b-436d-8acb-0f468f127209}</Project>
+      <Name>FirmLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RealTimeProvider\RealTimeProvider.csproj">
       <Project>{c9620f6e-d254-45f4-81c1-f33b0855fadc}</Project>
       <Name>RealTimeProvider</Name>

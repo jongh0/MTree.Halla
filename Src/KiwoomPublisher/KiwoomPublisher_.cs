@@ -9,9 +9,10 @@ using System.Threading.Tasks;
 using RealTimeProvider;
 using System.Diagnostics;
 using Configuration;
-using CommonLib.Firm.Kiwoom;
+using FirmLib.Kiwoom;
 using CommonLib.Utility;
 using CommonLib.Windows;
+using FirmLib;
 
 namespace KiwoomPublisher
 {
