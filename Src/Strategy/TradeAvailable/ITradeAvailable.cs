@@ -12,8 +12,8 @@ namespace Strategy.TradeAvailable
     {
         string Name { get; set; }
 
-        bool CanBuy(AccountInformation accInfo, Order order);
+        bool CanBuy(TradeInformation info);
 
-        bool CanSell(AccountInformation accInfo, Order order);
+        bool CanSell(TradeInformation info);
     }
 }

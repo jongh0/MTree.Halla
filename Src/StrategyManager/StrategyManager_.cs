@@ -33,8 +33,7 @@ namespace StrategyManager
         private ITradeAvailable _tradeAvailable;
         private ITradeDecision _tradeDesicion;
 
-        private AccountInformation SelectedAccount { get; set; }
-        private IEnumerable<AccountInformation> AccountInfos { get; set; }
+        private TradeInformation _tradeInfos;
 
         public StrategyManager_()
         {
@@ -51,6 +50,15 @@ namespace StrategyManager
 
         private void BuildStrategy()
         {
+            _tradeInfos = new TradeInformation();
+
+            var availableComposite = new TradeAvailableComposite();
+            availableComposite.Logic = LogicTypes.AND;
+            availableComposite.Add(new DayTradeAvailable());
+            availableComposite.Add(new AccountAvailable());
+
+            _tradeAvailable = availableComposite;
+            _tradeDesicion = new EvenOddTradeDecision();
         }
 
         private void InitializeWCF()
@@ -127,16 +135,16 @@ namespace StrategyManager
 
             trader.RegisterTraderContract(new TraderContract());
 
-            AccountInfos = trader.GetAccountInformations();
-            if (AccountInfos == null)
+            _tradeInfos.AccountInfos = trader.GetAccountInformations();
+            if (_tradeInfos.AccountInfos == null)
             {
-                _logger.Error($"{nameof(AccountInfos)} is null");
+                _logger.Error($"{nameof(_tradeInfos.AccountInfos)} is null");
                 return;
             }
 
-            SelectedAccount = AccountInfos.FirstOrDefault();
+            _tradeInfos.SelectedAccount = _tradeInfos.AccountInfos.FirstOrDefault();
 
-            foreach (var accountInfo in AccountInfos)
+            foreach (var accountInfo in _tradeInfos.AccountInfos)
             {
                 _logger.Info(accountInfo.ToString());
             }
@@ -148,6 +156,64 @@ namespace StrategyManager
 
         private void RealTime_StockConclusionConsumed(StockConclusion conclusion)
         {
+            _tradeInfos.Subscribable = conclusion;
+
+            switch (_tradeDesicion.GetTradeType(_tradeInfos))
+            {
+                case TradeTypes.Buy:
+                    TryBuyStock(_tradeInfos);
+                    break;
+
+                case TradeTypes.Sell:
+                    TrySellStock(_tradeInfos);
+                    break;
+            }
+        }
+
+        private void TryBuyStock(TradeInformation info)
+        {
+            try
+            {
+                var order = new Order();
+                info.SelectedAccount.CopyTo(order);
+                order.OrderType = OrderTypes.BuyNew;
+                order.Code = info.Subscribable.Code;
+                order.Quantity = 1;
+                order.PriceType = PriceTypes.MarketPrice;
+
+                info.Order = order;
+
+                if (_tradeAvailable.CanBuy(info) == false) return;
+
+                _trader.MakeOrder(order);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+        }
+
+        private void TrySellStock(TradeInformation info)
+        {
+            try
+            {
+                var order = new Order();
+                info.SelectedAccount.CopyTo(order);
+                order.OrderType = OrderTypes.SellNew;
+                order.Code = info.Subscribable.Code;
+                order.Quantity = 1;
+                order.PriceType = PriceTypes.MarketPrice;
+
+                info.Order = order;
+
+                if (_tradeAvailable.CanSell(info) == false) return;
+
+                _trader.MakeOrder(order);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
         }
 
         private void RealTime_MessageNotified(MessageTypes type, string message)

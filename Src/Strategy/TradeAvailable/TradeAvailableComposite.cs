@@ -23,7 +23,7 @@ namespace Strategy.TradeAvailable
             _strategyList.Add(strategy);
         }
 
-        public bool CanBuy(AccountInformation accInfo, Order order)
+        public bool CanBuy(TradeInformation info)
         {
             bool ret = false;
 
@@ -31,16 +31,16 @@ namespace Strategy.TradeAvailable
             {
                 foreach (var s in _strategyList)
                 {
-                    ret = s.CanBuy(accInfo, order);
+                    ret = s.CanBuy(info);
 
                     if (ret == false && Logic == LogicTypes.AND)
                     {
-                        _logger.Info($"[{Name}/{Logic}] CanBuy: false");
+                        //_logger.Info($"[{Name}/{Logic}] CanBuy: false");
                         return false;
                     }
                     else if (ret == true && Logic == LogicTypes.OR)
                     {
-                        _logger.Info($"[{Name}/{Logic}] CanBuy: true");
+                        //_logger.Info($"[{Name}/{Logic}] CanBuy: true");
                         return true;
                     }
                 }
@@ -53,11 +53,11 @@ namespace Strategy.TradeAvailable
                 ret = false;
             }
 
-            _logger.Info($"[{Name}/{Logic}] CanBuy: {ret}");
+            //_logger.Info($"[{Name}/{Logic}] CanBuy: {ret}");
             return ret;
         }
 
-        public bool CanSell(AccountInformation accInfo, Order order)
+        public bool CanSell(TradeInformation info)
         {
             bool ret = false;
 
@@ -65,16 +65,16 @@ namespace Strategy.TradeAvailable
             {
                 foreach (var s in _strategyList)
                 {
-                    ret = s.CanSell(accInfo, order);
+                    ret = s.CanSell(info);
 
                     if (ret == false && Logic == LogicTypes.AND)
                     {
-                        _logger.Info($"[{Name}/{Logic}] CanSell: false");
+                        //_logger.Info($"[{Name}/{Logic}] CanSell: false");
                         return false;
                     }
                     else if (ret == true && Logic == LogicTypes.OR)
                     {
-                        _logger.Info($"[{Name}/{Logic}] CanSell: true");
+                        //_logger.Info($"[{Name}/{Logic}] CanSell: true");
                         return true;
                     }
                 }
@@ -87,7 +87,7 @@ namespace Strategy.TradeAvailable
                 ret = false;
             }
 
-            _logger.Info($"[{Name}/{Logic}] CanSell: {ret}");
+            //_logger.Info($"[{Name}/{Logic}] CanSell: {ret}");
             return ret;
         }
     }

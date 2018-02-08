@@ -14,16 +14,17 @@ namespace Strategy.TradeAvailable
 
         public string Name { get; set; } = nameof(AccountAvailable);
 
-        public bool CanBuy(AccountInformation accInfo, Order order)
+        public bool CanBuy(TradeInformation info)
         {
             try
             {
-                if (accInfo == null) throw new ArgumentNullException(nameof(accInfo));
-                if (order == null) throw new ArgumentNullException(nameof(order));
+                if (info == null) throw new ArgumentNullException(nameof(info));
+                if (info.SelectedAccount == null) throw new ArgumentNullException(nameof(info.SelectedAccount));
+                if (info.Order == null) throw new ArgumentNullException(nameof(info.Order));
 
-                if (order.OrderType != OrderTypes.BuyNew) return false;
+                if (info.Order.OrderType != OrderTypes.BuyNew) return false;
 
-                return order.Price * order.Quantity <= accInfo.OrderableAmount;
+                return info.Order.Price * info.Order.Quantity <= info.SelectedAccount.OrderableAmount;
             }
             catch (Exception ex)
             {
@@ -33,10 +34,23 @@ namespace Strategy.TradeAvailable
             return false;
         }
 
-        public bool CanSell(AccountInformation accInfo, Order order)
+        public bool CanSell(TradeInformation info)
         {
-            var holdingStock = accInfo.HoldingStocks.FirstOrDefault(s => s.Code == order.Code && s.Quantity > 0);
-            return holdingStock != null;
+            try
+            {
+                if (info == null) throw new ArgumentNullException(nameof(info));
+                if (info.SelectedAccount == null) throw new ArgumentNullException(nameof(info.SelectedAccount));
+                if (info.Order == null) throw new ArgumentNullException(nameof(info.Order));
+
+                var holdingStock = info.SelectedAccount.HoldingStocks.FirstOrDefault(s => s.Code == info.Order.Code && s.Quantity > 0);
+                return holdingStock != null;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+
+            return false;
         }
     }
 }

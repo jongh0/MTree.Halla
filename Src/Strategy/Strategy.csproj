@@ -46,12 +46,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="TradeAvailable\AccountAvailable.cs" />
+    <Compile Include="TradeAvailable\DayTradeAvailable.cs" />
     <Compile Include="TradeDecision\ITradeDecision.cs" />
     <Compile Include="EnumType.cs" />
     <Compile Include="TradeAvailable\ITradeAvailable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TradeDecision\EvenOddTradeDecision.cs" />
     <Compile Include="TradeAvailable\TradeAvailableComposite.cs" />
+    <Compile Include="TradeInformation.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

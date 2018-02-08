@@ -11,6 +11,6 @@ namespace Strategy.TradeDecision
     {
         string Name { get; set; }
 
-        TradeTypes DecideTradeType(Subscribable subscribable);
+        TradeTypes GetTradeType(TradeInformation info);
     }
 }

@@ -31,6 +31,8 @@ namespace EbestTrader
                     if (info != null)
                     {
                         info.AccountNumber = accountNum;
+                        info.AccountPassword = _loginInfo.AccountPassword;
+
                         accountInfos.Add(info);
                     }
                 }
@@ -113,6 +115,8 @@ namespace EbestTrader
         {
             try
             {
+                _logger.Info(order.ToString());
+
                 if (_session.WaitLogin() == false)
                 {
                     _logger.Error("Not login state");

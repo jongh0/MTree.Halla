@@ -13,7 +13,7 @@ namespace Strategy.TradeDecision
 
         public string Name { get; set; } = nameof(EvenOddTradeDecision);
 
-        public TradeTypes DecideTradeType(Subscribable subscribable)
+        public TradeTypes GetTradeType(TradeInformation info)
         {
             var result = TradeTypes.Hold;
 

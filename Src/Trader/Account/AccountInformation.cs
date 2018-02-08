@@ -19,6 +19,12 @@ namespace Trader.Account
         public string AccountNumber { get; set; }
 
         /// <summary>
+        /// 계좌비밀번호
+        /// </summary>
+        [DataMember]
+        public string AccountPassword { get; set; }
+
+        /// <summary>
         /// 계좌명
         /// </summary>
         [DataMember]
@@ -75,6 +81,14 @@ namespace Trader.Account
         public override string ToString()
         {
             return PropertyUtility.PrintNameValues(this, Environment.NewLine);
+        }
+
+        public void CopyTo(Order dst)
+        {
+            if (dst == null) return;
+
+            dst.AccountNumber = this.AccountNumber;
+            dst.AccountPassword = this.AccountPassword;
         }
     }
 
