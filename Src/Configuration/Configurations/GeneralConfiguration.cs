@@ -37,7 +37,7 @@ namespace Configuration
 
         public bool ExcludeKiwoom { get; set; } = true;
 
-        public bool LaunchStrategyManager { get; set; } = true;
+        public bool LaunchStrategyManager { get; set; } = false;
 
         [JsonConverter(typeof(StringEnumConverter))]
         public TraderTypes TraderType { get; set; } = TraderTypes.Ebest;
