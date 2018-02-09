@@ -13,8 +13,6 @@ namespace Strategy.TradeAvailable
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public string Name { get; set; } = nameof(DayTradeAvailable);
-
         private bool _tradeDone = false;
 
         private DateTime _tradeStartTime;

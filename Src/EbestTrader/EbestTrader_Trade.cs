@@ -115,7 +115,7 @@ namespace EbestTrader
         {
             try
             {
-                _logger.Info(order.ToString());
+                _logger.Info($"MakeOrder\n{order}");
 
                 if (_session.WaitLogin() == false)
                 {
@@ -148,7 +148,7 @@ namespace EbestTrader
 
                 if (ret == true)
                 {
-                    _logger.Info($"Order success, {order.ToString()}");
+                    _logger.Info($"MakeOrder success\n{order}");
                     return true;
                 }
             }
@@ -157,7 +157,7 @@ namespace EbestTrader
                 _logger.Error(ex);
             }
 
-            _logger.Error($"Order fail, {order.ToString()}");
+            _logger.Error($"MakeOrder fail\n{order}");
             return false;
         }
 
@@ -170,7 +170,7 @@ namespace EbestTrader
                 var query = new EbestQuery<CSPAT00600InBlock1>();
                 if (query.ExecuteQuery(block) == false)
                 {
-                    _logger.Error($"New order error, {order.ToString()}, {GetLastErrorMessage(query.Result)}");
+                    _logger.Error($"MakeNewOrder error\n{order}\n{GetLastErrorMessage(query.Result)}");
                     return false;
                 }
 
@@ -193,7 +193,7 @@ namespace EbestTrader
                 var query = new EbestQuery<CSPAT00700InBlock1>();
                 if (query.ExecuteQuery(block) == false)
                 {
-                    _logger.Error($"Modify order error, {order.ToString()}, {GetLastErrorMessage(query.Result)}");
+                    _logger.Error($"MakeModifyOrder error\n{order}\n{GetLastErrorMessage(query.Result)}");
                     return false;
                 }
 
@@ -216,7 +216,7 @@ namespace EbestTrader
                 var query = new EbestQuery<CSPAT00800InBlock1>();
                 if (query.ExecuteQuery(block) == false)
                 {
-                    _logger.Error($"Cancel order error, {order.ToString()}, {GetLastErrorMessage(query.Result)}");
+                    _logger.Error($"MakeCancelOrder error\n{order}\n{GetLastErrorMessage(query.Result)}");
                     return false;
                 }
 

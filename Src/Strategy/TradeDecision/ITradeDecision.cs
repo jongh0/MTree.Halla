@@ -9,8 +9,6 @@ namespace Strategy.TradeDecision
 {
     public interface ITradeDecision
     {
-        string Name { get; set; }
-
         TradeTypes GetTradeType(TradeInformation info);
     }
 }

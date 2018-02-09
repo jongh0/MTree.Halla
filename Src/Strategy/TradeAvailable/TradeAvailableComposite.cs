@@ -12,8 +12,6 @@ namespace Strategy.TradeAvailable
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public string Name { get; set; } = nameof(TradeAvailableComposite);
-
         public LogicTypes Logic { get; set; } = LogicTypes.AND;
 
         private List<ITradeAvailable> _strategyList = new List<ITradeAvailable>();
@@ -35,12 +33,12 @@ namespace Strategy.TradeAvailable
 
                     if (ret == false && Logic == LogicTypes.AND)
                     {
-                        //_logger.Info($"[{Name}/{Logic}] CanBuy: false");
+                        //_logger.Info($"CanBuy: false");
                         return false;
                     }
                     else if (ret == true && Logic == LogicTypes.OR)
                     {
-                        //_logger.Info($"[{Name}/{Logic}] CanBuy: true");
+                        //_logger.Info($"CanBuy: true");
                         return true;
                     }
                 }
@@ -53,7 +51,7 @@ namespace Strategy.TradeAvailable
                 ret = false;
             }
 
-            //_logger.Info($"[{Name}/{Logic}] CanBuy: {ret}");
+            //_logger.Info($"CanBuy: {ret}");
             return ret;
         }
 
@@ -69,12 +67,12 @@ namespace Strategy.TradeAvailable
 
                     if (ret == false && Logic == LogicTypes.AND)
                     {
-                        //_logger.Info($"[{Name}/{Logic}] CanSell: false");
+                        //_logger.Info($"CanSell: false");
                         return false;
                     }
                     else if (ret == true && Logic == LogicTypes.OR)
                     {
-                        //_logger.Info($"[{Name}/{Logic}] CanSell: true");
+                        //_logger.Info($"CanSell: true");
                         return true;
                     }
                 }
@@ -87,7 +85,7 @@ namespace Strategy.TradeAvailable
                 ret = false;
             }
 
-            //_logger.Info($"[{Name}/{Logic}] CanSell: {ret}");
+            //_logger.Info($"CanSell: {ret}");
             return ret;
         }
     }

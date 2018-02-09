@@ -11,8 +11,6 @@ namespace Strategy.TradeDecision
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public string Name { get; set; } = nameof(EvenOddTradeDecision);
-
         public TradeTypes GetTradeType(TradeInformation info)
         {
             var result = TradeTypes.Hold;
@@ -22,7 +20,7 @@ namespace Strategy.TradeDecision
             else
                 result = TradeTypes.Sell;
 
-            _logger.Info($"[{Name}] DecideTradeType: {result}");
+            //_logger.Info($"GetTradeType: {result}");
             return result;
         }
     }

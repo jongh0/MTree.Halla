@@ -12,8 +12,6 @@ namespace Strategy.TradeAvailable
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public string Name { get; set; } = nameof(AccountAvailable);
-
         public bool CanBuy(TradeInformation info)
         {
             try

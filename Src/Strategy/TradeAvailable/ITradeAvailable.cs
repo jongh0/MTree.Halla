@@ -10,8 +10,6 @@ namespace Strategy.TradeAvailable
 {
     public interface ITradeAvailable
     {
-        string Name { get; set; }
-
         bool CanBuy(TradeInformation info);
 
         bool CanSell(TradeInformation info);
