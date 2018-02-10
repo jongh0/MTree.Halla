@@ -78,6 +78,7 @@
     <Compile Include="EnumType.cs" />
     <Compile Include="Extension\EventHandlerExtension.cs" />
     <Compile Include="Extension\PropertyExtension.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\AssemblyUtility.cs" />
     <Compile Include="Utility\DispatcherUtility.cs" />
     <Compile Include="Utility\ObjectIdUtility.cs" />

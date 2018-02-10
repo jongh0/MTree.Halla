@@ -12,7 +12,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("MTree")]
 [assembly: AssemblyProduct("Dashboard")]
-[assembly: AssemblyCopyright("Copyright © MTree 2016")]
+[assembly: AssemblyCopyright("Copyright © MTree 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
