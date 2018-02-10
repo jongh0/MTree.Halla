@@ -61,6 +61,7 @@ namespace StrategyManager
             _tradeDesicion = new EvenOddTradeDecision();
         }
 
+        #region WCF Initialization
         private void InitializeWCF()
         {
             try
@@ -78,7 +79,7 @@ namespace StrategyManager
                 _realTime.ChannelOpened += RealTime_ChannelOpened;
                 _realTime.MessageNotified += RealTime_MessageNotified;
                 _realTime.StockMasterConsumed += RealTime_StockMasterConsumed;
-                _realTime.StockConclusionConsumed += RealTime_StockConclusionConsumed; 
+                _realTime.StockConclusionConsumed += RealTime_StockConclusionConsumed;
 #endif
 
                 string traderConfiguration;
@@ -119,9 +120,11 @@ namespace StrategyManager
             {
                 _logger.Error(ex);
             }
-        }
+        } 
+        #endregion
 
-        private void Trader_OrderResultNotified(OrderResult result)
+        #region Trader Event
+        private void Trader_OrderResultNotified(StockOrderResult result)
         {
         }
 
@@ -135,21 +138,23 @@ namespace StrategyManager
 
             trader.RegisterTraderContract(new TraderContract());
 
-            _tradeInfos.AccountInfos = trader.GetAccountInformations();
-            if (_tradeInfos.AccountInfos == null)
+            var accounts = trader.GetAccountInformations();
+            if (accounts == null)
             {
-                _logger.Error($"{nameof(_tradeInfos.AccountInfos)} is null");
+                _logger.Error($"{nameof(accounts)} is null");
                 return;
             }
 
-            _tradeInfos.SelectedAccount = _tradeInfos.AccountInfos.FirstOrDefault();
+            _tradeInfos.Account = accounts.FirstOrDefault(); // 보유 계좌 중 첫 번째걸로 사용
 
-            foreach (var accountInfo in _tradeInfos.AccountInfos)
+            foreach (var account in accounts)
             {
-                _logger.Info(accountInfo.ToString());
+                _logger.Info(account.ToString());
             }
-        }
+        } 
+        #endregion
 
+        #region RealTime Event
         private void RealTime_StockMasterConsumed(List<StockMaster> stockMasters)
         {
         }
@@ -167,52 +172,6 @@ namespace StrategyManager
                 case TradeTypes.Sell:
                     TrySellStock(_tradeInfos);
                     break;
-            }
-        }
-
-        private void TryBuyStock(TradeInformation info)
-        {
-            try
-            {
-                var order = new Order();
-                info.SelectedAccount.CopyTo(order);
-                order.OrderType = OrderTypes.BuyNew;
-                order.Code = info.Subscribable.Code;
-                order.Quantity = 1;
-                order.PriceType = PriceTypes.MarketPrice;
-
-                info.Order = order;
-
-                if (_tradeAvailable.CanBuy(info) == false) return;
-
-                _trader.MakeOrder(order);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex);
-            }
-        }
-
-        private void TrySellStock(TradeInformation info)
-        {
-            try
-            {
-                var order = new Order();
-                info.SelectedAccount.CopyTo(order);
-                order.OrderType = OrderTypes.SellNew;
-                order.Code = info.Subscribable.Code;
-                order.Quantity = 1;
-                order.PriceType = PriceTypes.MarketPrice;
-
-                info.Order = order;
-
-                if (_tradeAvailable.CanSell(info) == false) return;
-
-                _trader.MakeOrder(order);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex);
             }
         }
 
@@ -237,6 +196,53 @@ namespace StrategyManager
             if (consumer == null) return;
 
             consumer.RegisterContract(new SubscribeContract(SubscribeTypes.StockConclusion, SubscribeScopes.Partial, _concernCodeList));
+        } 
+        #endregion
+
+        private void TryBuyStock(TradeInformation info)
+        {
+            try
+            {
+                var order = new StockOrder();
+                info.Account.CopyTo(order);
+                order.OrderType = OrderTypes.BuyNew;
+                order.Code = info.Subscribable.Code;
+                order.Quantity = 1;
+                order.PriceType = PriceTypes.MarketPrice; // 시장가
+
+                info.Order = order;
+
+                if (_tradeAvailable.CanBuy(info) == false) return;
+
+                _trader.MakeOrder(order);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+        }
+
+        private void TrySellStock(TradeInformation info)
+        {
+            try
+            {
+                var order = new StockOrder();
+                info.Account.CopyTo(order);
+                order.OrderType = OrderTypes.SellNew;
+                order.Code = info.Subscribable.Code;
+                order.Quantity = 1;
+                order.PriceType = PriceTypes.MarketPrice; // 시장가
+
+                info.Order = order;
+
+                if (_tradeAvailable.CanSell(info) == false) return;
+
+                _trader.MakeOrder(order);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
         }
     }
 }

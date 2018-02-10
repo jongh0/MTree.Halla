@@ -76,8 +76,8 @@
     <Compile Include="IRealTimeTrader.cs" />
     <Compile Include="ITrader.cs" />
     <Compile Include="TraderMappingBootstrapper.cs" />
-    <Compile Include="Order\Order.cs" />
-    <Compile Include="Order\OrderResult.cs" />
+    <Compile Include="Order\StockOrder.cs" />
+    <Compile Include="Order\StockOrderResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RealTimeTrader.cs" />
     <Compile Include="TraderCallback.cs" />

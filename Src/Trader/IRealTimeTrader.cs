@@ -25,7 +25,7 @@ namespace Trader
         List<AccountInformation> GetAccountInformations();
 
         [OperationContract]
-        bool MakeOrder(Order order);
+        bool MakeOrder(StockOrder order);
     }
 
     public interface IRealTimeTraderCallback
@@ -34,6 +34,6 @@ namespace Trader
         void NotifyMessage(MessageTypes type, string message);
 
         [OperationContract]
-        void NotifyOrderResult(OrderResult result);
+        void NotifyOrderResult(StockOrderResult result);
     }
 }

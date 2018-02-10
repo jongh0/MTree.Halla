@@ -16,6 +16,6 @@ namespace Trader
 
         List<AccountInformation> GetAccountInformations();
 
-        bool MakeOrder(Order order);
+        bool MakeOrder(StockOrder order);
     }
 }

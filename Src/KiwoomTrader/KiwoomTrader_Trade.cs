@@ -12,7 +12,7 @@ namespace KiwoomTrader
 {
     public partial class KiwoomTrader_
     {
-        private OrderResult CurrOrderResult { get; set; }
+        private StockOrderResult CurrOrderResult { get; set; }
 
         public List<AccountInformation> GetAccountInformations()
         {
@@ -29,7 +29,7 @@ namespace KiwoomTrader
             throw new NotImplementedException();
         }
         
-        public bool MakeOrder(Order order)
+        public bool MakeOrder(StockOrder order)
         {
             throw new NotImplementedException();
         }

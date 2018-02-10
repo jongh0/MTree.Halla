@@ -22,7 +22,7 @@ namespace Trader
 
         #region Event
         public event Action<MessageTypes, string> MessageNotified;
-        public event Action<OrderResult> OrderResultNotified;
+        public event Action<StockOrderResult> OrderResultNotified;
 
         public event Action<RealTimeTrader> ChannelOpened;
         public event Action<RealTimeTrader> ChannelClosed;
@@ -111,7 +111,7 @@ namespace Trader
             base.NotifyMessage(type, message);
         }
 
-        public override void NotifyOrderResult(OrderResult result)
+        public override void NotifyOrderResult(StockOrderResult result)
         {
             OrderResultNotified?.Invoke(result);
 
@@ -133,7 +133,7 @@ namespace Trader
             return ServiceClient?.GetAccountInformations() ?? null;
         }
 
-        public bool MakeOrder(Order order)
+        public bool MakeOrder(StockOrder order)
         {
             return ServiceClient?.MakeOrder(order) ?? false;
         }

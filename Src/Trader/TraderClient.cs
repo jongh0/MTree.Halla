@@ -38,7 +38,7 @@ namespace Trader
             return base.Channel.GetAccountInformations();
         }
 
-        public bool MakeOrder(Order order)
+        public bool MakeOrder(StockOrder order)
         {
             if (State != CommunicationState.Opened) return false;
             return base.Channel.MakeOrder(order);

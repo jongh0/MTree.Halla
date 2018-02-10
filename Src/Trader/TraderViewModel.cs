@@ -160,7 +160,7 @@ namespace Trader
         public void ExecuteOrder()
         {
 
-            var order = new Order();
+            var order = new StockOrder();
             order.AccountNumber = SelectedAccount;
             order.Code = Code;
             order.OrderType = OrderType;

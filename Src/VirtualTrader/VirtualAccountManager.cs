@@ -40,7 +40,7 @@ namespace VirtualTrader
                 return null;
         }
 
-        public bool MakeOrder(Order order)
+        public bool MakeOrder(StockOrder order)
         {
             try
             {

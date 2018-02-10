@@ -16,7 +16,7 @@ namespace Trader
         {
         }
 
-        public virtual void NotifyOrderResult(OrderResult result)
+        public virtual void NotifyOrderResult(StockOrderResult result)
         {
         }
     }

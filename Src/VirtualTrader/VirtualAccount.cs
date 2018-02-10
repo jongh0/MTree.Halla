@@ -14,13 +14,13 @@ namespace VirtualTrader
 
         public int Deposit { get; private set; } = 0;
 
-        public List<Order> OrderList { get; private set; } = new List<Order>();
+        public List<StockOrder> OrderList { get; private set; } = new List<StockOrder>();
 
         public List<HoldingStock> HoldingStockList { get; private set; } = new List<HoldingStock>();
 
-        public bool MakeOrder(Order order)
+        public bool MakeOrder(StockOrder order)
         {
-            var result = new OrderResult();
+            var result = new StockOrderResult();
 
             try
             {

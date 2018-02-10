@@ -111,7 +111,7 @@ namespace EbestTrader
             return accountNums;
         }
         
-        public bool MakeOrder(Order order)
+        public bool MakeOrder(StockOrder order)
         {
             try
             {
@@ -161,7 +161,7 @@ namespace EbestTrader
             return false;
         }
 
-        private bool MakeNewOrder(Order order)
+        private bool MakeNewOrder(StockOrder order)
         {
             try
             {
@@ -184,7 +184,7 @@ namespace EbestTrader
             return false;
         }
 
-        private bool MakeModifyOrder(Order order)
+        private bool MakeModifyOrder(StockOrder order)
         {
             try
             {
@@ -207,7 +207,7 @@ namespace EbestTrader
             return false;
         }
 
-        private bool MakeCancelOrder(Order order)
+        private bool MakeCancelOrder(StockOrder order)
         {
             try
             {
@@ -234,7 +234,7 @@ namespace EbestTrader
         {
             _session.LastCommTick = Environment.TickCount;
 
-            var result = AutoMapper.Mapper.Map<OrderResult>(block);
+            var result = AutoMapper.Mapper.Map<StockOrderResult>(block);
             NotifyOrderResult(result);
         }
 
@@ -242,7 +242,7 @@ namespace EbestTrader
         {
             _session.LastCommTick = Environment.TickCount;
 
-            var result = AutoMapper.Mapper.Map<OrderResult>(block);
+            var result = AutoMapper.Mapper.Map<StockOrderResult>(block);
             NotifyOrderResult(result);
         }
 
@@ -250,7 +250,7 @@ namespace EbestTrader
         {
             _session.LastCommTick = Environment.TickCount;
 
-            var result = AutoMapper.Mapper.Map<OrderResult>(block);
+            var result = AutoMapper.Mapper.Map<StockOrderResult>(block);
             NotifyOrderResult(result);
         }
 
@@ -258,7 +258,7 @@ namespace EbestTrader
         {
             _session.LastCommTick = Environment.TickCount;
 
-            var result = AutoMapper.Mapper.Map<OrderResult>(block);
+            var result = AutoMapper.Mapper.Map<StockOrderResult>(block);
             NotifyOrderResult(result);
         }
 
@@ -266,11 +266,11 @@ namespace EbestTrader
         {
             _session.LastCommTick = Environment.TickCount;
 
-            var result = AutoMapper.Mapper.Map<OrderResult>(block);
+            var result = AutoMapper.Mapper.Map<StockOrderResult>(block);
             NotifyOrderResult(result);
         }
 
-        private void NotifyOrderResult(OrderResult result)
+        private void NotifyOrderResult(StockOrderResult result)
         {
             _logger.Info($"NotifyOrderResult, {result}");
 

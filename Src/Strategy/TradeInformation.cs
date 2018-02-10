@@ -11,11 +11,9 @@ namespace Strategy
 {
     public class TradeInformation
     {
-        public AccountInformation SelectedAccount { get; set; }
+        public AccountInformation Account { get; set; }
 
-        public IEnumerable<AccountInformation> AccountInfos { get; set; }
-
-        public Order Order { get; set; }
+        public StockOrder Order { get; set; }
 
         public Subscribable Subscribable { get; set; }
     }

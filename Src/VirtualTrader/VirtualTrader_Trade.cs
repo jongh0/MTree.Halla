@@ -10,7 +10,7 @@ namespace VirtualTrader
 {
     public partial class VirtualTrader_
     {
-        private OrderResult CurrOrderResult { get; set; }
+        private StockOrderResult CurrOrderResult { get; set; }
 
         public VirtualAccountManager AccountManager { get; set; } = new VirtualAccountManager();
 
@@ -43,7 +43,7 @@ namespace VirtualTrader
             return null;
         }
 
-        public bool MakeOrder(Order order)
+        public bool MakeOrder(StockOrder order)
         {
             return AccountManager.MakeOrder(order);
         }

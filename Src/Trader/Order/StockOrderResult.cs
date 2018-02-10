@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Trader
 {
-    public class OrderResult
+    public class StockOrderResult
     {
         public string OrderNumber { get; set; }
         
@@ -36,7 +36,7 @@ namespace Trader
     {
         public OrderResultMappingProfile()
         {
-            CreateMap<SC0OutBlock, OrderResult>(AutoMapper.MemberList.None)
+            CreateMap<SC0OutBlock, StockOrderResult>(AutoMapper.MemberList.None)
                 .ForMember(dest => dest.AccountNumber,
                            opts => opts.MapFrom(src => src.accno))
                 .ForMember(dest => dest.OrderNumber,
@@ -48,7 +48,7 @@ namespace Trader
                 .ForMember(dest => dest.ResultType,
                            opts => opts.MapFrom(src => OrderResultTypes.Submitted));
 
-            CreateMap<SC1OutBlock, OrderResult>(AutoMapper.MemberList.None)
+            CreateMap<SC1OutBlock, StockOrderResult>(AutoMapper.MemberList.None)
                 .ForMember(dest => dest.AccountNumber,
                            opts => opts.MapFrom(src => src.accno))
                 .ForMember(dest => dest.OrderNumber,
@@ -66,7 +66,7 @@ namespace Trader
                 .ForMember(dest => dest.ResultType,
                            opts => opts.MapFrom(src => OrderResultTypes.Concluded));
 
-            CreateMap<SC2OutBlock, OrderResult>(AutoMapper.MemberList.None)
+            CreateMap<SC2OutBlock, StockOrderResult>(AutoMapper.MemberList.None)
                 .ForMember(dest => dest.AccountNumber,
                            opts => opts.MapFrom(src => src.accno))
                 .ForMember(dest => dest.OrderNumber,
@@ -84,7 +84,7 @@ namespace Trader
                 .ForMember(dest => dest.ResultType,
                            opts => opts.MapFrom(src => OrderResultTypes.Modified));
 
-            CreateMap<SC3OutBlock, OrderResult>(AutoMapper.MemberList.None)
+            CreateMap<SC3OutBlock, StockOrderResult>(AutoMapper.MemberList.None)
                 .ForMember(dest => dest.AccountNumber,
                            opts => opts.MapFrom(src => src.accno))
                 .ForMember(dest => dest.OrderNumber,
@@ -102,7 +102,7 @@ namespace Trader
                 .ForMember(dest => dest.ResultType,
                            opts => opts.MapFrom(src => OrderResultTypes.Canceled));
 
-            CreateMap<SC4OutBlock, OrderResult>(AutoMapper.MemberList.None)
+            CreateMap<SC4OutBlock, StockOrderResult>(AutoMapper.MemberList.None)
                 .ForMember(dest => dest.AccountNumber,
                            opts => opts.MapFrom(src => src.accno))
                 .ForMember(dest => dest.OrderNumber,

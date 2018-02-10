@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Trader
 {
-    public class Order
+    public class StockOrder
     {
         public string AccountNumber { get; set; }
 
@@ -39,7 +39,7 @@ namespace Trader
         {
             long originOrderNumber;
 
-            CreateMap<Order, CSPAT00600InBlock1>(AutoMapper.MemberList.None)
+            CreateMap<StockOrder, CSPAT00600InBlock1>(AutoMapper.MemberList.None)
                 .ForMember(dest => dest.AcntNo,
                            opts => opts.MapFrom(src => src.AccountNumber))
                 .ForMember(dest => dest.InptPwd,
@@ -61,7 +61,7 @@ namespace Trader
                 .ForMember(dest => dest.OrdCndiTpCode,
                         opts => opts.MapFrom(src => "0"));
 
-            CreateMap<Order, CSPAT00700InBlock1>(AutoMapper.MemberList.None)
+            CreateMap<StockOrder, CSPAT00700InBlock1>(AutoMapper.MemberList.None)
                 .ForMember(dest => dest.OrgOrdNo,
                            opts => opts.MapFrom(src => long.TryParse(src.OriginOrderNumber, out originOrderNumber) ? originOrderNumber : 0))
                 .ForMember(dest => dest.AcntNo,
@@ -79,7 +79,7 @@ namespace Trader
                 .ForMember(dest => dest.OrdCndiTpCode,
                         opts => opts.MapFrom(src => "0"));
 
-            CreateMap<Order, CSPAT00800InBlock1>(AutoMapper.MemberList.None)
+            CreateMap<StockOrder, CSPAT00800InBlock1>(AutoMapper.MemberList.None)
                 .ForMember(dest => dest.OrgOrdNo,
                            opts => opts.MapFrom(src => long.TryParse(src.OriginOrderNumber, out originOrderNumber) ? originOrderNumber : 0))
                 .ForMember(dest => dest.AcntNo,

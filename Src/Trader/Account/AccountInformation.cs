@@ -83,7 +83,7 @@ namespace Trader.Account
             return PropertyUtility.PrintNameValues(this, Environment.NewLine);
         }
 
-        public void CopyTo(Order dst)
+        public void CopyTo(StockOrder dst)
         {
             if (dst == null) return;
 
