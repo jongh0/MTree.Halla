@@ -1,4 +1,5 @@
-﻿using CPSYSDIBLib;
+﻿using CommonLib.Utility;
+using CPSYSDIBLib;
 using DSCBO1Lib;
 using System;
 using System.Collections.Generic;
@@ -68,11 +69,13 @@ namespace FirmLib.Daishin
                 if (Dib.GetDibStatus() != 1) // 1 - 수신대기
                     return true;
 
+                DispatcherUtility.DoEvents(); // 혹시 모르니 Message Pumping
+
                 Thread.Sleep(10);
                 timeout -= 10;
             }
 
-            _logger.Error($"Dib response timeout");
+            _logger.Error($"SysDib response timeout");
             return false;
         }
     }
