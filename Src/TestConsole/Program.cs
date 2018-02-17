@@ -40,6 +40,7 @@ namespace TestConsole
             //TestDaishinInstanceLimit();
             //TestDbCollection();
             //TestDbInsert();
+            //TestPerformanceCounter();
 
             Console.WriteLine("Press any key..");
             Console.ReadLine();
@@ -48,6 +49,17 @@ namespace TestConsole
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             _logger.Error((Exception)e.ExceptionObject);
+        }
+
+        private static void TestPerformanceCounter()
+        {
+            int count = 10;
+
+            while (count-- > 0)
+            {
+                Console.WriteLine($"{PerformanceCounterUtility.CpuUsagePercent}, {PerformanceCounterUtility.AvailableMemory}");
+                Thread.Sleep(1000);
+            }
         }
 
         private static void TestDbInsert()

@@ -82,6 +82,7 @@
     <Compile Include="Utility\AssemblyUtility.cs" />
     <Compile Include="Utility\DispatcherUtility.cs" />
     <Compile Include="Utility\ObjectIdUtility.cs" />
+    <Compile Include="Utility\PerformanceCounterUtility.cs" />
     <Compile Include="Utility\PropertyUtility.cs" />
     <Compile Include="Utility\ServiceUtility.cs" />
     <Compile Include="Sort\GridViewSort.cs" />

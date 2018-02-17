@@ -432,6 +432,13 @@ namespace RealTimeProvider
             NotifyPropertyChanged(nameof(StockConclusionQueueCount));
             NotifyPropertyChanged(nameof(IndexConclusionQueueCount));
             NotifyPropertyChanged(nameof(ETFConclusionQueueCount));
+
+#if true // CPU Usage, Available Memory 로깅
+            var cpu = PerformanceCounterUtility.CpuUsagePercent;
+            var mem = PerformanceCounterUtility.AvailableMemory;
+            if (cpu >= 80 || mem <= 1000) // CPU 80% 이상 or Memory 1GB 이하일 경우 로그 출력
+                _logger.Warn($"CPU Usage: {Math.Round(cpu)}%, Available Memory: {mem}MB"); 
+#endif
         }
 
         private void ClientChannel_Closed(object sender, EventArgs e)
