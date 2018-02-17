@@ -13,6 +13,7 @@ using System.Threading;
 using System.Windows;
 using System.ComponentModel;
 using CommonLib;
+using FirmLib.Daishin;
 
 namespace DaishinPublisher
 {
@@ -28,11 +29,13 @@ namespace DaishinPublisher
         private CpCodeMgrClass codeMgrObj;
         private StockMstClass stockMstObj;
         private StockMstClass indexMstObj;
+#if !SEPERATE_SUBSCRIBE_OBJECT
         private StockCurClass stockCurObj;
         private StockCurClass indexCurObj;
         private CpSvrNew7244SClass etfCurObj;
         private StockOutCurClass stockOutCurObj;
-        private StockJpbidClass stockJpbidObj;
+        private StockJpbidClass stockJpbidObj; 
+#endif
         private StockChartClass stockChartObj;
         private CpSvr8091SClass memberTrendObj;
         private CpSvr8561Class themeListObj;
@@ -56,6 +59,7 @@ namespace DaishinPublisher
                 indexMstObj = new StockMstClass();
                 indexMstObj.Received += indexMstObj_Received;
 
+#if !SEPERATE_SUBSCRIBE_OBJECT
                 stockCurObj = new StockCurClass();
                 stockCurObj.Received += stockCurObj_Received;
 
@@ -69,7 +73,8 @@ namespace DaishinPublisher
                 stockOutCurObj.Received += stockOutCurObj_Received;
 
                 stockJpbidObj = new StockJpbidClass();
-                stockJpbidObj.Received += stockJpbidObj_Received;
+                stockJpbidObj.Received += stockJpbidObj_Received; 
+#endif
 
                 stockChartObj = new StockChartClass();
                 stockChartObj.Received += stockChartObj_Received;

@@ -15,6 +15,8 @@ namespace FirmLib.Daishin
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
+        private static ConcurrentDictionary<string, DaishinIndexCur> _subscribeObjDic = new ConcurrentDictionary<string, DaishinIndexCur>();
+
         private static ConcurrentDictionary<string, long> _prevIndexVolume = new ConcurrentDictionary<string, long>();
         private static ConcurrentDictionary<string, long> _prevIndexMarketCapitalization = new ConcurrentDictionary<string, long>();
 
@@ -129,6 +131,17 @@ namespace FirmLib.Daishin
             {
                 _logger.Error(ex);
             }
+        }
+
+        public static DaishinIndexCur GetSubscribeObject(string code)
+        {
+            if (_subscribeObjDic.TryGetValue(code, out var obj) == false)
+            {
+                obj = new DaishinIndexCur();
+                _subscribeObjDic.TryAdd(code, obj);
+            }
+
+            return obj;
         }
     }
 }

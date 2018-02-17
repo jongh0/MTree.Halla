@@ -3,6 +3,7 @@ using CPSYSDIBLib;
 using DataStructure;
 using DSCBO1Lib;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,8 @@ namespace FirmLib.Daishin
     public class DaishinETFCur : SysDibBase
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
+
+        private static ConcurrentDictionary<string, DaishinETFCur> _subscribeObjDic = new ConcurrentDictionary<string, DaishinETFCur>();
 
         protected override ISysDib Dib { get; set; }
 
@@ -104,6 +107,17 @@ namespace FirmLib.Daishin
             {
                 _logger.Error(ex);
             }
+        }
+
+        public static DaishinETFCur GetSubscribeObject(string code)
+        {
+            if (_subscribeObjDic.TryGetValue(code, out var obj) == false)
+            {
+                obj = new DaishinETFCur();
+                _subscribeObjDic.TryAdd(code, obj);
+            }
+
+            return obj;
         }
     }
 }

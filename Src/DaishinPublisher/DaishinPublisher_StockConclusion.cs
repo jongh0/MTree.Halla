@@ -5,6 +5,7 @@ using CommonLib;
 using System;
 using System.Threading;
 using CommonLib.Utility;
+using FirmLib.Daishin;
 
 namespace DaishinPublisher
 {
@@ -29,6 +30,21 @@ namespace DaishinPublisher
                 return false;
             }
 
+#if SEPERATE_SUBSCRIBE_OBJECT
+            var stockOutCur = DaishinStockOutCur.GetSubscribeObject(code);
+            stockOutCur.Received += StockOutCur_Received;
+            var result1 = stockOutCur.Subscribe(code);
+            if (result1 == true)
+                StockSubscribeCount += 1;
+
+            var stockCur = DaishinStockCur.GetSubscribeObject(code);
+            stockCur.Received += StockCur_Received;
+            var result2 = stockOutCur.Subscribe(code);
+            if (result2 == true)
+                StockSubscribeCount += 1;
+
+            return result1 && result2;
+#else
             short status = 1;
 
             try
@@ -75,10 +91,22 @@ namespace DaishinPublisher
             }
 
             return (status == 0);
+#endif
         }
 
         public override bool UnsubscribeStock(string code)
         {
+#if SEPERATE_SUBSCRIBE_OBJECT
+            var result1 = DaishinStockOutCur.GetSubscribeObject(code).Unsubscribe();
+            if (result1 == true)
+                StockSubscribeCount -= 1;
+
+            var result2 = DaishinStockCur.GetSubscribeObject(code).Unsubscribe();
+            if (result2 == true)
+                StockSubscribeCount -= 1;
+
+            return result1 && result2;
+#else
             short status = 1;
 
             try
@@ -125,8 +153,20 @@ namespace DaishinPublisher
             }
 
             return (status == 0);
+#endif
         }
 
+#if SEPERATE_SUBSCRIBE_OBJECT
+        private void StockCur_Received(StockConclusion conslusion)
+        {
+            StockConclusionQueue.Enqueue(conslusion);
+        }
+
+        private void StockOutCur_Received(StockConclusion conslusion)
+        {
+            StockConclusionQueue.Enqueue(conslusion);
+        }
+#else
         private void stockOutCurObj_Received()
         {
             var startTick = Environment.TickCount;
@@ -296,5 +336,6 @@ namespace DaishinPublisher
                 }
             }
         }
+#endif
     }
 }

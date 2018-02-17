@@ -2,6 +2,7 @@
 using DataStructure;
 using DSCBO1Lib;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,8 @@ namespace FirmLib.Daishin
     public class DaishinStockBid : DibBase
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
+
+        private static ConcurrentDictionary<string, DaishinStockBid> _subscribeObjDic = new ConcurrentDictionary<string, DaishinStockBid>();
 
         private readonly int[] _biddingIndexes = { 3, 7, 11, 15, 19, 27, 31, 35, 39, 43 };
 
@@ -65,6 +68,17 @@ namespace FirmLib.Daishin
             {
                 _logger.Error(ex.Message);
             }
+        }
+
+        public static DaishinStockBid GetSubscribeObject(string code)
+        {
+            if (_subscribeObjDic.TryGetValue(code, out var obj) == false)
+            {
+                obj = new DaishinStockBid();
+                _subscribeObjDic.TryAdd(code, obj);
+            }
+
+            return obj;
         }
     }
 }

@@ -2,6 +2,7 @@
 using DataStructure;
 using DSCBO1Lib;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,8 @@ namespace FirmLib.Daishin
     public class DaishinStockOutCur : DibBase
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
+
+        private static ConcurrentDictionary<string, DaishinStockOutCur> _subscribeObjDic = new ConcurrentDictionary<string, DaishinStockOutCur>();
 
         protected override IDib Dib { get; set; }
 
@@ -78,6 +81,17 @@ namespace FirmLib.Daishin
             {
                 _logger.Error(ex);
             }
+        }
+
+        public static DaishinStockOutCur GetSubscribeObject(string code)
+        {
+            if (_subscribeObjDic.TryGetValue(code, out var obj) == false)
+            {
+                obj = new DaishinStockOutCur();
+                _subscribeObjDic.TryAdd(code, obj);
+            }
+
+            return obj;
         }
     }
 }
