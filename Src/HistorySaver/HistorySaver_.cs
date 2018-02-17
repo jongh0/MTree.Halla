@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define ADD_DELAY_FOR_EACH_INSERT
+
+using System;
 using System.ServiceModel;
 using DbProvider;
 using System.Threading;
@@ -77,6 +79,9 @@ namespace HistorySaver
                 {
                     DbAgent.Instance.Insert(biddingPrice);
                     Counter.Increment(CounterTypes.BiddingPrice);
+#if ADD_DELAY_FOR_EACH_INSERT
+                    Thread.Sleep(1);
+#endif
                 }
                 else
                     Thread.Sleep(10);
@@ -95,6 +100,9 @@ namespace HistorySaver
                 {
                     DbAgent.Instance.Insert(circuitBreak);
                     Counter.Increment(CounterTypes.CircuitBreak);
+#if ADD_DELAY_FOR_EACH_INSERT
+                    Thread.Sleep(1);
+#endif
                 }
                 else
                     Thread.Sleep(10);
@@ -113,6 +121,9 @@ namespace HistorySaver
                 {
                     DbAgent.Instance.Insert(conclusion);
                     Counter.Increment(CounterTypes.StockConclusion);
+#if ADD_DELAY_FOR_EACH_INSERT
+                    Thread.Sleep(1);
+#endif
                 }
                 else
                     Thread.Sleep(10); 
@@ -131,6 +142,9 @@ namespace HistorySaver
                 {
                     DbAgent.Instance.Insert(conclusion);
                     Counter.Increment(CounterTypes.IndexConclusion);
+#if ADD_DELAY_FOR_EACH_INSERT
+                    Thread.Sleep(1);
+#endif
                 }
                 else
                     Thread.Sleep(10); 
@@ -149,6 +163,9 @@ namespace HistorySaver
                 {
                     DbAgent.Instance.Insert(conclusion);
                     Counter.Increment(CounterTypes.ETFConclusion);
+#if ADD_DELAY_FOR_EACH_INSERT
+                    Thread.Sleep(1);
+#endif
                 }
                 else
                     Thread.Sleep(10); 
