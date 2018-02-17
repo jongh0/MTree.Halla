@@ -39,6 +39,7 @@ namespace TestConsole
             //TestEmail();
             //TestDaishinInstanceLimit();
             //TestDbCollection();
+            //TestDbInsert();
 
             Console.WriteLine("Press any key..");
             Console.ReadLine();
@@ -47,6 +48,68 @@ namespace TestConsole
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             _logger.Error((Exception)e.ExceptionObject);
+        }
+
+        private static void TestDbInsert()
+        {
+            int startTick = Environment.TickCount;
+
+            int count = 10000;
+
+            var task1 = Task.Run(() =>
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    var conclusion = new StockConclusion();
+                    conclusion.Time = DateTime.Now;
+                    conclusion.Code = "000020";
+                    conclusion.Id = ObjectIdUtility.GenerateNewId(DateTime.Now);
+                    conclusion.Amount = 100;
+                    DbAgent.Instance.Insert(conclusion);
+                    Thread.Sleep(1);
+                }
+            });
+
+            var task2 = Task.Run(() =>
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    var conclusion = new IndexConclusion();
+                    conclusion.Time = DateTime.Now;
+                    conclusion.Code = "000020";
+                    conclusion.Id = ObjectIdUtility.GenerateNewId(DateTime.Now);
+                    conclusion.Amount = 100;
+                    DbAgent.Instance.Insert(conclusion);
+                    Thread.Sleep(1);
+                }
+            });
+
+            var task3 = Task.Run(() =>
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    var bidding = new BiddingPrice();
+                    bidding.Code = "000020";
+                    bidding.Time = DateTime.Now;
+                    bidding.Id = ObjectIdUtility.GenerateNewId(DateTime.Now);
+                    bidding.Bids = new List<BiddingPriceEntity>();
+                    bidding.Bids.Add(new BiddingPriceEntity());
+                    bidding.Bids.Add(new BiddingPriceEntity());
+                    bidding.Bids.Add(new BiddingPriceEntity());
+                    bidding.Bids.Add(new BiddingPriceEntity());
+                    bidding.Offers = new List<BiddingPriceEntity>();
+                    bidding.Offers.Add(new BiddingPriceEntity());
+                    bidding.Offers.Add(new BiddingPriceEntity());
+                    bidding.Offers.Add(new BiddingPriceEntity());
+                    bidding.Offers.Add(new BiddingPriceEntity());
+                    DbAgent.Instance.Insert(bidding);
+                    Thread.Sleep(1);
+                }
+            });
+
+            Task.WaitAll(task1, task2, task3);
+
+            Console.WriteLine($"Insert time: {Environment.TickCount - startTick}");
         }
 
         private static void TestToString()
