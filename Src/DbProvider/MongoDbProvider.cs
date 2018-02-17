@@ -49,10 +49,10 @@ namespace DbProvider
                 _client3 = new MongoClient(connectionString);
 
 #if true // Write operations that use this write concern will return as soon as the message is written to the socket.
-                _client0.Settings.WriteConcern = WriteConcern.Unacknowledged;
-                _client1.Settings.WriteConcern = WriteConcern.Unacknowledged;
-                _client2.Settings.WriteConcern = WriteConcern.Unacknowledged;
-                _client3.Settings.WriteConcern = WriteConcern.Unacknowledged;
+                _client0 = _client0.WithWriteConcern(WriteConcern.Unacknowledged);
+                _client1 = _client1.WithWriteConcern(WriteConcern.Unacknowledged);
+                _client2 = _client2.WithWriteConcern(WriteConcern.Unacknowledged);
+                _client3 = _client3.WithWriteConcern(WriteConcern.Unacknowledged);
 #endif
 
                 _logger.Info($"MongoDb Connected to {connectionString}");
