@@ -11,6 +11,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using CommonLib.Utility;
+using System.Threading;
 
 namespace DbProvider
 {
@@ -20,62 +21,62 @@ namespace DbProvider
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
         private static readonly object _lockObject = new object();
 
-        private static volatile DbAgent _Instance;
+        private static volatile DbAgent _instance;
         public static DbAgent Instance
         {
             get
             {
-                if (_Instance == null)
+                if (_instance == null)
                 {
                     lock (_lockObject)
                     {
-                        if (_Instance == null)
-                            _Instance = new DbAgent(Config.Database.ConnectionString);
+                        if (_instance == null)
+                            _instance = new DbAgent(Config.Database.ConnectionString);
                     }
                 }
 
-                return _Instance;
+                return _instance;
             }
         }
 
-        private static volatile DbAgent _RemoteInstance;
+        private static volatile DbAgent _remoteInstance;
         public static DbAgent RemoteInstance
         {
             get
             {
-                if (_RemoteInstance == null)
+                if (_remoteInstance == null)
                 {
                     lock (_lockObject)
                     {
-                        if (_RemoteInstance == null)
+                        if (_remoteInstance == null)
                         {
                             if (string.IsNullOrEmpty(Config.Database.RemoteConnectionString) == false)
-                                _RemoteInstance = new DbAgent(Config.Database.RemoteConnectionString);
+                                _remoteInstance = new DbAgent(Config.Database.RemoteConnectionString);
                             else
                                 _logger.Error("Connection string for remote DB is empty");
                         }
                     }
                 }
 
-                return _RemoteInstance;
+                return _remoteInstance;
             }
         }
         #endregion
 
-        public string ConnectionString { get; set; }
+        public string ConnectionString { get; private set; }
 
-        public MongoDbProvider DbProvider { get; set; }
+        public MongoDbProvider DbProvider { get; private set; }
 
-        public IMongoDatabase ChartDb { get; set; }
-        public IMongoDatabase BiddingPriceDb { get; set; }
-        public IMongoDatabase CircuitBreakDb { get; set; }
-        public IMongoDatabase StockMasterDb { get; set; }
-        public IMongoDatabase IndexMasterDb { get; set; }
-        public IMongoDatabase StockConclusionDb { get; set; }
-        public IMongoDatabase IndexConclusionDb { get; set; }
-        public IMongoDatabase ETFConclusionDb { get; set; }
-        public IMongoDatabase TradeConclusionDb { get; set; }
-        public IMongoDatabase CommonDb { get; set; }
+        public IMongoDatabase ChartDb { get; private set; }
+        public IMongoDatabase BiddingPriceDb { get; private set; }
+        public IMongoDatabase CircuitBreakDb { get; private set; }
+        public IMongoDatabase StockMasterDb { get; private set; }
+        public IMongoDatabase IndexMasterDb { get; private set; }
+        public IMongoDatabase StockConclusionDb { get; private set; }
+        public IMongoDatabase IndexConclusionDb { get; private set; }
+        public IMongoDatabase ETFConclusionDb { get; private set; }
+        public IMongoDatabase TradeConclusionDb { get; private set; }
+        public IMongoDatabase CommonDb { get; private set; }
         
         private DbAgent(string connectionString = null)
         {
@@ -109,21 +110,10 @@ namespace DbProvider
 
         public bool ConnectionTest()
         {
-            try
-            {
-                if (DbProvider.GetDatabaseList() != null)
-                    return true;
-                else
-                    return false;
-            }
-            catch(TimeoutException ex)
-            {
-                _logger.Error(ex);
-                return false;
-            }
+            return DbProvider.GetDatabaseList() != null;
         }
 
-        public List<string> GetCollectionList(DbTypes type)
+        public IEnumerable<string> GetCollectionList(DbTypes type)
         {
             List<string> collectionList = new List<string>();
 
@@ -214,6 +204,7 @@ namespace DbProvider
             return null;
         }
 
+        long counter = 0;
         /// <summary>
         /// Type과 Item에 맞는 Collection을 찾아서 Insert를 수행한다
         /// </summary>
@@ -232,7 +223,7 @@ namespace DbProvider
                 var collection = GetCollection(item);
 
                 if (collection != null)
-                    collection.InsertOne(item);
+                    collection.InsertOne(item); 
                 else
                     _logger.Error($"Insert error, {item}");
             }
