@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using CommonLib.Utility;
+using FirmLib.Daishin;
 
 namespace DaishinPublisher
 {
@@ -33,6 +34,15 @@ namespace DaishinPublisher
                 return false;
             }
 
+#if SEPERATE_SUBSCRIBE_OBJECT
+            var indexCur = DaishinIndexCur.GetSubscribeObject(code);
+            indexCur.Received += IndexCur_Received;
+            var result = indexCur.Subscribe(code);
+            if (result == true)
+                IndexSubscribeCount += 1;
+
+            return result;
+#else
             short status = 1;
 
             try
@@ -67,10 +77,18 @@ namespace DaishinPublisher
             }
 
             return (status == 0);
+#endif
         }
 
         public override bool UnsubscribeIndex(string code)
         {
+#if SEPERATE_SUBSCRIBE_OBJECT
+            var result = DaishinIndexCur.GetSubscribeObject(code).Unsubscribe();
+            if (result == true)
+                IndexSubscribeCount -= 1;
+
+            return result;
+#else
             short status = 1;
 
             try
@@ -105,8 +123,15 @@ namespace DaishinPublisher
             }
 
             return (status == 0);
+#endif
         }
 
+#if SEPERATE_SUBSCRIBE_OBJECT
+        private void IndexCur_Received(IndexConclusion conclusion)
+        {
+            IndexConclusionQueue.Enqueue(conclusion);
+        }
+#else
         private void indexCurObj_Received()
         {
             var startTick = Environment.TickCount;
@@ -219,5 +244,6 @@ namespace DaishinPublisher
                 }
             }
         }
+#endif
     }
 }

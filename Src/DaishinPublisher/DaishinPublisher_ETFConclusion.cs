@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CommonLib.Utility;
+using FirmLib.Daishin;
 
 namespace DaishinPublisher
 {
@@ -32,6 +33,15 @@ namespace DaishinPublisher
                 return false;
             }
 
+#if SEPERATE_SUBSCRIBE_OBJECT
+            var etfCur = DaishinETFCur.GetSubscribeObject(code);
+            etfCur.Received += EtfCur_Received;
+            var result = etfCur.Subscribe(code);
+            if (result == true)
+                ETFSubscribeCount += 1;
+
+            return result;
+#else
             short status = 1;
 
             try
@@ -65,11 +75,19 @@ namespace DaishinPublisher
                 }
             }
 
-            return (status == 0);
+            return (status == 0); 
+#endif
         }
 
         public override bool UnsubscribeETF(string code)
         {
+#if SEPERATE_SUBSCRIBE_OBJECT
+            var result = DaishinETFCur.GetSubscribeObject(code).Unsubscribe();
+            if (result == true)
+                ETFSubscribeCount -= 1;
+
+            return result;
+#else
             short status = 1;
 
             try
@@ -103,9 +121,16 @@ namespace DaishinPublisher
                 }
             }
 
-            return (status == 0);
+            return (status == 0); 
+#endif
         }
 
+#if SEPERATE_SUBSCRIBE_OBJECT
+        private void EtfCur_Received(ETFConclusion obj)
+        {
+            throw new NotImplementedException();
+        }
+#else
         private void etfCurObj_Received()
         {
             var startTick = Environment.TickCount;
@@ -196,5 +221,6 @@ namespace DaishinPublisher
                 }
             }
         }
+#endif
     }
 }

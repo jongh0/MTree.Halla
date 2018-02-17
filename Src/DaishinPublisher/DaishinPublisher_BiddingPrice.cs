@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using CommonLib.Utility;
+using FirmLib.Daishin;
 
 namespace DaishinPublisher
 {
@@ -32,6 +33,15 @@ namespace DaishinPublisher
                 return false;
             }
 
+#if SEPERATE_SUBSCRIBE_OBJECT
+            var stockBid = DaishinStockBid.GetSubscribeObject(code);
+            stockBid.Received += StockBid_Received;
+            var result = stockBid.Subscribe(code);
+            if (result == true)
+                BiddingSubscribeCount += 1;
+
+            return result;
+#else
             short status = 1;
 
             try
@@ -65,11 +75,19 @@ namespace DaishinPublisher
                 }
             }
 
-            return (status == 0);
+            return (status == 0); 
+#endif
         }
 
         public override bool UnsubscribeBidding(string code)
         {
+#if SEPERATE_SUBSCRIBE_OBJECT
+            var result = DaishinStockBid.GetSubscribeObject(code).Unsubscribe();
+            if (result == true)
+                BiddingSubscribeCount -= 1;
+
+            return result;
+#else
             short status = 1;
 
             try
@@ -103,9 +121,16 @@ namespace DaishinPublisher
                 }
             }
 
-            return (status == 0);
+            return (status == 0); 
+#endif
         }
 
+#if SEPERATE_SUBSCRIBE_OBJECT
+        private void StockBid_Received(BiddingPrice biddingPrice)
+        {
+            BiddingPriceQueue.Enqueue(biddingPrice);
+        }
+#else
         private void stockJpbidObj_Received()
         {
             var startTick = Environment.TickCount;
@@ -156,5 +181,6 @@ namespace DaishinPublisher
                 }
             }
         }
+#endif
     }
 }
