@@ -14,22 +14,19 @@ namespace DbProvider
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private const string ChartDbString = "MTree_Chart";
-        private const string BiddingPriceDbString = "MTree_BiddingPrice";
-        private const string CircuitBreakDbString = "MTree_CircuitBreak";
-        private const string StockMasterDbString = "MTree_StockMaster";
-        private const string IndexMasterDbString = "MTree_IndexMaster";
-        private const string StockConclusionDbString = "MTree_StockConclusion";
-        private const string IndexConclusionDbString = "MTree_IndexConclusion";
-        private const string ETFConclusionDbString = "MTree_ETFConclusion";
-        private const string TradeConclusionDbString = "MTree_TradeConclusion";
-        private const string CommonDbString = "MTree_Common";
-        private const string TestDbString = "MTree_Test";
+        private readonly string chartDbString = "MTree_Chart";
+        private readonly string biddingPriceDbString = "MTree_BiddingPrice";
+        private readonly string circuitBreakDbString = "MTree_CircuitBreak";
+        private readonly string stockMasterDbString = "MTree_StockMaster";
+        private readonly string indexMasterDbString = "MTree_IndexMaster";
+        private readonly string stockConclusionDbString = "MTree_StockConclusion";
+        private readonly string indexConclusionDbString = "MTree_IndexConclusion";
+        private readonly string etfConclusionDbString = "MTree_ETFConclusion";
+        private readonly string tradeConclusionDbString = "MTree_TradeConclusion";
+        private readonly string commonDbString = "MTree_Common";
+        private readonly string testDbString = "MTree_Test";
 
-        private IMongoClient _client0;
-        private IMongoClient _client1;
-        private IMongoClient _client2;
-        private IMongoClient _client3;
+        private IMongoClient Client { get; set; }
 
         public MongoDbProvider(string connectionString)
         {
@@ -43,18 +40,7 @@ namespace DbProvider
                 if (ServiceUtility.IsServiceRunning("MongoDb") == false)
                     ServiceUtility.StartService("MongoDb");
 
-                _client0 = new MongoClient(connectionString);
-                _client1 = new MongoClient(connectionString);
-                _client2 = new MongoClient(connectionString);
-                _client3 = new MongoClient(connectionString);
-
-#if true // Write operations that use this write concern will return as soon as the message is written to the socket.
-                _client0 = _client0.WithWriteConcern(WriteConcern.Unacknowledged);
-                _client1 = _client1.WithWriteConcern(WriteConcern.Unacknowledged);
-                _client2 = _client2.WithWriteConcern(WriteConcern.Unacknowledged);
-                _client3 = _client3.WithWriteConcern(WriteConcern.Unacknowledged);
-#endif
-
+                Client = new MongoClient(connectionString);
                 _logger.Info($"MongoDb Connected to {connectionString}");
             }
             catch (Exception ex)
@@ -67,7 +53,7 @@ namespace DbProvider
         {
             try
             {
-                var list = _client0.ListDatabases().ToList();
+                var list = Client.ListDatabases().ToList();
                 return list;
             }
             catch (TimeoutException)
@@ -81,17 +67,17 @@ namespace DbProvider
         {
             switch (type)
             {
-                case DbTypes.Chart:             return _client0.GetDatabase(ChartDbString);
-                case DbTypes.BiddingPrice:      return _client1.GetDatabase(BiddingPriceDbString);
-                case DbTypes.CircuitBreak:      return _client0.GetDatabase(CircuitBreakDbString);
-                case DbTypes.StockMaster:       return _client0.GetDatabase(StockMasterDbString);
-                case DbTypes.IndexMaster:       return _client0.GetDatabase(IndexMasterDbString);
-                case DbTypes.StockConclusion:   return _client2.GetDatabase(StockConclusionDbString);
-                case DbTypes.IndexConclusion:   return _client3.GetDatabase(IndexConclusionDbString);
-                case DbTypes.ETFConclusion:     return _client3.GetDatabase(ETFConclusionDbString);
-                case DbTypes.TradeConclusion:   return _client0.GetDatabase(TradeConclusionDbString);
-                case DbTypes.Common:            return _client0.GetDatabase(CommonDbString);
-                case DbTypes.Test:              return _client0.GetDatabase(TestDbString);
+                case DbTypes.Chart:             return Client.GetDatabase(chartDbString);
+                case DbTypes.BiddingPrice:      return Client.GetDatabase(biddingPriceDbString);
+                case DbTypes.CircuitBreak:      return Client.GetDatabase(circuitBreakDbString);
+                case DbTypes.StockMaster:       return Client.GetDatabase(stockMasterDbString);
+                case DbTypes.IndexMaster:       return Client.GetDatabase(indexMasterDbString);
+                case DbTypes.StockConclusion:   return Client.GetDatabase(stockConclusionDbString);
+                case DbTypes.IndexConclusion:   return Client.GetDatabase(indexConclusionDbString);
+                case DbTypes.ETFConclusion:     return Client.GetDatabase(etfConclusionDbString);
+                case DbTypes.TradeConclusion:   return Client.GetDatabase(tradeConclusionDbString);
+                case DbTypes.Common:            return Client.GetDatabase(commonDbString);
+                case DbTypes.Test:              return Client.GetDatabase(testDbString);
                 default:                        return null;
             }
         }
