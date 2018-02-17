@@ -14,17 +14,17 @@ namespace DbProvider
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private readonly string ChartDbString = "MTree_Chart";
-        private readonly string BiddingPriceDbString = "MTree_BiddingPrice";
-        private readonly string CircuitBreakDbString = "MTree_CircuitBreak";
-        private readonly string StockMasterDbString = "MTree_StockMaster";
-        private readonly string IndexMasterDbString = "MTree_IndexMaster";
-        private readonly string StockConclusionDbString = "MTree_StockConclusion";
-        private readonly string IndexConclusionDbString = "MTree_IndexConclusion";
-        private readonly string ETFConclusionDbString = "MTree_ETFConclusion";
-        private readonly string TradeConclusionDbString = "MTree_TradeConclusion";
-        private readonly string CommonDbString = "MTree_Common";
-        private readonly string TestDbString = "MTree_Test";
+        private const string ChartDbString = "MTree_Chart";
+        private const string BiddingPriceDbString = "MTree_BiddingPrice";
+        private const string CircuitBreakDbString = "MTree_CircuitBreak";
+        private const string StockMasterDbString = "MTree_StockMaster";
+        private const string IndexMasterDbString = "MTree_IndexMaster";
+        private const string StockConclusionDbString = "MTree_StockConclusion";
+        private const string IndexConclusionDbString = "MTree_IndexConclusion";
+        private const string ETFConclusionDbString = "MTree_ETFConclusion";
+        private const string TradeConclusionDbString = "MTree_TradeConclusion";
+        private const string CommonDbString = "MTree_Common";
+        private const string TestDbString = "MTree_Test";
 
         private IMongoClient _client0;
         private IMongoClient _client1;
