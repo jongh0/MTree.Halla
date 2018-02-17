@@ -41,6 +41,9 @@ namespace DbProvider
                     ServiceUtility.StartService("MongoDb");
 
                 Client = new MongoClient(connectionString);
+                // Write operations that use this write concern will return as soon as the message is written to the socket.
+                Client.Settings.WriteConcern = WriteConcern.Unacknowledged;
+
                 _logger.Info($"MongoDb Connected to {connectionString}");
             }
             catch (Exception ex)
