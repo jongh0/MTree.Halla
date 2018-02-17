@@ -66,7 +66,6 @@ namespace TestConsole
                     conclusion.Id = ObjectIdUtility.GenerateNewId(DateTime.Now);
                     conclusion.Amount = 100;
                     DbAgent.Instance.Insert(conclusion);
-                    Thread.Sleep(1);
                 }
             });
 
@@ -80,7 +79,6 @@ namespace TestConsole
                     conclusion.Id = ObjectIdUtility.GenerateNewId(DateTime.Now);
                     conclusion.Amount = 100;
                     DbAgent.Instance.Insert(conclusion);
-                    Thread.Sleep(1);
                 }
             });
 
@@ -103,7 +101,6 @@ namespace TestConsole
                     bidding.Offers.Add(new BiddingPriceEntity());
                     bidding.Offers.Add(new BiddingPriceEntity());
                     DbAgent.Instance.Insert(bidding);
-                    Thread.Sleep(1);
                 }
             });
 
