@@ -151,18 +151,12 @@ namespace DbProvider
 
         public IMongoCollection<T> GetCollection<T>(string collectionName)
         {
+            if (string.IsNullOrEmpty(collectionName) == true) return null;
+
             try
             {
-                if (typeof(T) == typeof(Candle))
-                    return (IMongoCollection<T>)ChartDb.GetCollection<Candle>(collectionName);
-                else if (typeof(T) == typeof(BiddingPrice))
+                if (typeof(T) == typeof(BiddingPrice))
                     return (IMongoCollection<T>)BiddingPriceDb.GetCollection<BiddingPrice>(collectionName);
-                else if (typeof(T) == typeof(CircuitBreak))
-                    return (IMongoCollection<T>)CircuitBreakDb.GetCollection<CircuitBreak>(collectionName);
-                else if (typeof(T) == typeof(StockMaster))
-                    return (IMongoCollection<T>)StockMasterDb.GetCollection<StockMaster>(collectionName);
-                else if (typeof(T) == typeof(IndexMaster))
-                    return (IMongoCollection<T>)IndexMasterDb.GetCollection<IndexMaster>(collectionName);
                 else if (typeof(T) == typeof(StockConclusion))
                     return (IMongoCollection<T>)StockConclusionDb.GetCollection<StockConclusion>(collectionName);
                 else if (typeof(T) == typeof(IndexConclusion))
@@ -171,6 +165,14 @@ namespace DbProvider
                     return (IMongoCollection<T>)ETFConclusionDb.GetCollection<ETFConclusion>(collectionName);
                 else if (typeof(T) == typeof(TradeConclusion))
                     return (IMongoCollection<T>)TradeConclusionDb.GetCollection<TradeConclusion>(collectionName);
+                else if (typeof(T) == typeof(CircuitBreak))
+                    return (IMongoCollection<T>)CircuitBreakDb.GetCollection<CircuitBreak>(collectionName);
+                else if (typeof(T) == typeof(StockMaster))
+                    return (IMongoCollection<T>)StockMasterDb.GetCollection<StockMaster>(collectionName);
+                else if (typeof(T) == typeof(IndexMaster))
+                    return (IMongoCollection<T>)IndexMasterDb.GetCollection<IndexMaster>(collectionName);
+                else if (typeof(T) == typeof(Candle))
+                    return (IMongoCollection<T>)ChartDb.GetCollection<Candle>(collectionName);
                 else if (typeof(T) == typeof(DataCounter))
                     return (IMongoCollection<T>)CommonDb.GetCollection<DataCounter>(collectionName);
                 else if (typeof(T) == typeof(CodeMapDbObject))
@@ -188,56 +190,17 @@ namespace DbProvider
 
         public IMongoCollection<T> GetCollection<T>(T item)
         {
-            try
-            {
-                var collectionName = GetCollectionName(item);
-                if (string.IsNullOrEmpty(collectionName) == true)
-                {
-                    _logger.Error("Collection name is empty");
-                    return null;
-                }
-
-                if (item is Candle)
-                    return (IMongoCollection<T>)ChartDb.GetCollection<Candle>(collectionName);
-                else if (item is BiddingPrice)
-                    return (IMongoCollection<T>)BiddingPriceDb.GetCollection<BiddingPrice>(collectionName);
-                else if (item is CircuitBreak)
-                    return (IMongoCollection<T>)CircuitBreakDb.GetCollection<CircuitBreak>(collectionName);
-                else if (item is StockMaster)
-                    return (IMongoCollection<T>)StockMasterDb.GetCollection<StockMaster>(collectionName);
-                else if (item is IndexMaster)
-                    return (IMongoCollection<T>)IndexMasterDb.GetCollection<IndexMaster>(collectionName);
-                else if (item is StockConclusion)
-                    return (IMongoCollection<T>)StockConclusionDb.GetCollection<StockConclusion>(collectionName);
-                else if (item is IndexConclusion)
-                    return (IMongoCollection<T>)IndexConclusionDb.GetCollection<IndexConclusion>(collectionName);
-                else if (item is ETFConclusion)
-                    return (IMongoCollection<T>)ETFConclusionDb.GetCollection<ETFConclusion>(collectionName);
-                else if (item is TradeConclusion)
-                    return (IMongoCollection<T>)TradeConclusionDb.GetCollection<TradeConclusion>(collectionName);
-                else if (item is DataCounter)
-                    return (IMongoCollection<T>)CommonDb.GetCollection<DataCounter>(collectionName);
-                else if (item is CodeMapDbObject)
-                    return (IMongoCollection<T>)CommonDb.GetCollection<CodeMapDbObject>(collectionName);
-                else
-                    _logger.Error($"Can not find collection, item: {item}");
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex);
-            }
-
-            return null;
+            return GetCollection<T>(GetCollectionName(item));
         }
 
-        public string GetCollectionName<T>(T item)
+        public string GetCollectionName(object item)
         {
             try
             {
-                if (item is TradeConclusion)
-                    return (item as TradeConclusion).AccountNumber;
-                else if (item is Subscribable)
-                    return (item as Subscribable).Code;
+                if (item is TradeConclusion tradeConclusion) // Subscribable 보다 먼저 있어야 한다.
+                    return tradeConclusion.AccountNumber;
+                else if (item is Subscribable subscribable)
+                    return subscribable.Code;
                 else if (item is DataCounter)
                     return nameof(DataCounter);
                 else
@@ -279,29 +242,6 @@ namespace DbProvider
             }
         }
 
-        public void InsertMany<T>(IEnumerable<T> items)
-        {
-            if (items == null || items.Count() == 0)
-            {
-                _logger.Error("items is empty");
-                return;
-            }
-
-            try
-            {
-                var collection = GetCollection(items.First());
-
-                if (collection != null)
-                    collection.InsertMany(items, new InsertManyOptions() { IsOrdered = false });
-                else
-                    _logger.Error("InsertMany error");
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex);
-            }
-        }
-
         public void Delete<T>(string collectionName, FilterDefinition<T> filter)
         {
             if (string.IsNullOrEmpty(collectionName) == true || filter == null) return;
@@ -332,13 +272,9 @@ namespace DbProvider
                 if (collection != null)
                 {
                     if (sortExpression == null)
-                    {
                         return GetCollection<T>(collectionName).Find(filter);
-                    }
                     else
-                    {
                         return GetCollection<T>(collectionName).Find(filter).SortBy(sortExpression);
-                    }
                 }
                 else
                 {

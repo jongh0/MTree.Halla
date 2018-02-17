@@ -1,6 +1,4 @@
-﻿#define USE_INSERT_MANY
-
-using System;
+﻿using System;
 using System.ServiceModel;
 using DbProvider;
 using System.Threading;
@@ -75,27 +73,6 @@ namespace HistorySaver
         {
             try
             {
-#if USE_INSERT_MANY
-                if (BiddingPriceQueue.IsEmpty == true)
-                {
-                    Thread.Sleep(100);
-                    return;
-                }
-
-                var items = new List<BiddingPrice>();
-                var count = BiddingPriceQueue.Count;
-
-                while (--count >= 0)
-                {
-                    if (BiddingPriceQueue.TryDequeue(out var biddingPrice) == false)
-                        break;
-
-                    items.Add(biddingPrice);
-                }
-
-                DbAgent.Instance.InsertMany(items);
-                Counter.Add(CounterTypes.BiddingPrice, items.Count);
-#else
                 if (BiddingPriceQueue.TryDequeue(out var biddingPrice) == true)
                 {
                     DbAgent.Instance.Insert(biddingPrice);
@@ -103,7 +80,6 @@ namespace HistorySaver
                 }
                 else
                     Thread.Sleep(10);
-#endif
             }
             catch (Exception ex)
             {
@@ -133,27 +109,6 @@ namespace HistorySaver
         {
             try
             {
-#if USE_INSERT_MANY
-                if (StockConclusionQueue.IsEmpty == true)
-                {
-                    Thread.Sleep(100);
-                    return;
-                }
-
-                var items = new List<StockConclusion>();
-                var count = StockConclusionQueue.Count;
-
-                while (--count >= 0)
-                {
-                    if (StockConclusionQueue.TryDequeue(out var conclusion) == false)
-                        break;
-
-                    items.Add(conclusion);
-                }
-
-                DbAgent.Instance.InsertMany(items);
-                Counter.Add(CounterTypes.StockConclusion, items.Count);
-#else
                 if (StockConclusionQueue.TryDequeue(out var conclusion) == true)
                 {
                     DbAgent.Instance.Insert(conclusion);
@@ -161,7 +116,6 @@ namespace HistorySaver
                 }
                 else
                     Thread.Sleep(10); 
-#endif
             }
             catch (Exception ex)
             {
@@ -173,27 +127,6 @@ namespace HistorySaver
         {
             try
             {
-#if USE_INSERT_MANY
-                if (IndexConclusionQueue.IsEmpty == true)
-                {
-                    Thread.Sleep(100);
-                    return;
-                }
-
-                var items = new List<IndexConclusion>();
-                var count = IndexConclusionQueue.Count;
-
-                while (--count >= 0)
-                {
-                    if (IndexConclusionQueue.TryDequeue(out var conclusion) == false)
-                        break;
-
-                    items.Add(conclusion);
-                }
-
-                DbAgent.Instance.InsertMany(items);
-                Counter.Add(CounterTypes.IndexConclusion, items.Count);
-#else
                 if (IndexConclusionQueue.TryDequeue(out var conclusion) == true)
                 {
                     DbAgent.Instance.Insert(conclusion);
@@ -201,7 +134,6 @@ namespace HistorySaver
                 }
                 else
                     Thread.Sleep(10); 
-#endif
             }
             catch (Exception ex)
             {
@@ -213,27 +145,6 @@ namespace HistorySaver
         {
             try
             {
-#if USE_INSERT_MANY
-                if (ETFConclusionQueue.IsEmpty == true)
-                {
-                    Thread.Sleep(100);
-                    return;
-                }
-
-                var items = new List<ETFConclusion>();
-                var count = ETFConclusionQueue.Count;
-
-                while (--count >= 0)
-                {
-                    if (ETFConclusionQueue.TryDequeue(out var conclusion) == false)
-                        break;
-
-                    items.Add(conclusion);
-                }
-
-                DbAgent.Instance.InsertMany(items);
-                Counter.Add(CounterTypes.ETFConclusion, items.Count);
-#else
                 if (ETFConclusionQueue.TryDequeue(out var conclusion) == true)
                 {
                     DbAgent.Instance.Insert(conclusion);
@@ -241,7 +152,6 @@ namespace HistorySaver
                 }
                 else
                     Thread.Sleep(10); 
-#endif
             }
             catch (Exception ex)
             {
@@ -255,7 +165,11 @@ namespace HistorySaver
 
             try
             {
-                DbAgent.Instance.InsertMany(stockMasters);
+                foreach (var master in stockMasters)
+                {
+                    DbAgent.Instance.Insert(master);
+                }
+
                 Counter.Add(CounterTypes.StockMaster, stockMasters.Count);
             }
             catch (Exception ex)
@@ -270,7 +184,11 @@ namespace HistorySaver
 
             try
             {
-                DbAgent.Instance.InsertMany(indexMasters);
+                foreach (var master in indexMasters)
+                {
+                    DbAgent.Instance.Insert(master);
+                }
+
                 Counter.Add(CounterTypes.IndexMaster, indexMasters.Count);
             }
             catch (Exception ex)
@@ -314,7 +232,11 @@ namespace HistorySaver
                     }
                 }
 
-                DbAgent.Instance.InsertMany(candles);
+                foreach (var candle in candles)
+                {
+                    DbAgent.Instance.Insert(candle);
+                }
+
                 Counter.Add(CounterTypes.Chart, candles.Count);
             }
             catch (Exception ex)
