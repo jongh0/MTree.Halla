@@ -170,7 +170,6 @@ namespace RealTimeProvider
                         kiwoomContract.Callback.NotifyMessage(MessageTypes.CloseClient, string.Empty);
                     } 
                     #endregion
-
                 });
             }
             catch (Exception ex)

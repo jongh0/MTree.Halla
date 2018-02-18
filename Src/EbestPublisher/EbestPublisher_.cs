@@ -194,7 +194,7 @@ namespace EbestPublisher
         private void SessionObj_Event_Logout()
         {
             CommTimer.Stop();
-            LoginInfo.State = LoginStates.Logout;
+            LoginInfo.Status = LoginStatus.Logout;
             _logger.Info(LoginInfo.ToString());
         }
 
@@ -202,7 +202,7 @@ namespace EbestPublisher
         {
             if (szCode == "0000")
             {
-                LoginInfo.State = LoginStates.Login;
+                LoginInfo.Status = LoginStatus.Login;
                 _logger.Info($"Login success, {LoginInfo.ToString()}");
                 SetLogin();
             }
@@ -215,7 +215,7 @@ namespace EbestPublisher
         private void SessionObj_Disconnect()
         {
             CommTimer.Stop();
-            LoginInfo.State = LoginStates.Disconnect;
+            LoginInfo.Status = LoginStatus.Disconnect;
             _logger.Error(LoginInfo.ToString());
         }
         #endregion
@@ -256,7 +256,7 @@ namespace EbestPublisher
             {
                 CommTimer.Stop();
                 sessionObj.DisconnectServer();
-                LoginInfo.State = LoginStates.Disconnect;
+                LoginInfo.Status = LoginStatus.Disconnect;
 
                 _logger.Info("Logout success");
                 return true;

@@ -77,7 +77,7 @@ namespace KiwoomPublisher
             try
             {
                 _kiwoomObj.CommTerminate();
-                LoginInfo.State = LoginStates.Logout;
+                LoginInfo.Status = LoginStatus.Logout;
                 _logger.Info("Logout success");
                 return true;
             }
@@ -96,7 +96,7 @@ namespace KiwoomPublisher
                 if (e.nErrCode == 0)
                 {
                     _logger.Info("Login sucess");
-                    LoginInfo.State = LoginStates.Login;
+                    LoginInfo.Status = LoginStatus.Login;
                     GetCodeMap(CodeMapTypes.Theme);
                     SetLogin();
                 }

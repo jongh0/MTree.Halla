@@ -84,7 +84,7 @@ namespace KiwoomTrader
             try
             {
                 _kiwoomObj.CommTerminate();
-                LoginInfo.State = LoginStates.Logout;
+                LoginInfo.Status = LoginStatus.Logout;
                 _logger.Info("Logout success");
                 return true;
             }
@@ -103,7 +103,7 @@ namespace KiwoomTrader
                 if (e.nErrCode == 0)
                 {
                     _logger.Info("Login sucess");
-                    LoginInfo.State = LoginStates.Login;
+                    LoginInfo.Status = LoginStatus.Login;
                 }
                 else
                 {

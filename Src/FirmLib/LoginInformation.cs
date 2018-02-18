@@ -14,14 +14,14 @@ namespace FirmLib
     {
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        private LoginStates _state = LoginStates.Disconnect;
-        public LoginStates State
+        private LoginStatus _state = LoginStatus.Disconnect;
+        public LoginStatus Status
         {
             get { return _state; }
             set
             {
                 _state = value;
-                NotifyPropertyChanged(nameof(State));
+                NotifyPropertyChanged(nameof(Status));
             }
         }
 

@@ -76,7 +76,7 @@ namespace FirmLib.Ebest
                     return false;
                 }
 
-                if (LoginInfo.State != LoginStates.Login && 
+                if (LoginInfo.Status != LoginStatus.Login && 
                     Session.Login(LoginInfo.UserId, LoginInfo.UserPassword, LoginInfo.CertPassword, (int)LoginInfo.ServerType, true) == false)
                 {
                     _logger.Error($"Login error, {GetLastErrorMessage()}");
@@ -125,7 +125,7 @@ namespace FirmLib.Ebest
         {
             if (LoginInfo == null) return false;
 
-            while (LoginInfo.State != LoginStates.Login)
+            while (LoginInfo.Status != LoginStatus.Login)
             {
                 if (timeout <= 0) return false;
 
@@ -211,7 +211,7 @@ namespace FirmLib.Ebest
 
         private void Session__IXASessionEvents_Event_Logout()
         {
-            LoginInfo.State = LoginStates.Logout;
+            LoginInfo.Status = LoginStatus.Logout;
             Logouted?.Invoke();
         }
 
@@ -219,14 +219,14 @@ namespace FirmLib.Ebest
         {
             _logger.Info($"{nameof(szCode)}: {szCode}, {nameof(szMsg)}: {szMsg}");
 
-            LoginInfo.State = LoginStates.Login;
+            LoginInfo.Status = LoginStatus.Login;
             _commTimer.Start();
             Logined?.Invoke();
         }
 
         private void Session_Disconnect()
         {
-            LoginInfo.State = LoginStates.Disconnect;
+            LoginInfo.Status = LoginStatus.Disconnect;
             _commTimer.Stop();
             Disconnected?.Invoke();
         }

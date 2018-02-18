@@ -30,15 +30,15 @@
         <StackPanel Orientation="Vertical" Margin="10" VerticalAlignment="Center" HorizontalAlignment="Center">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Type : "/>
-                <TextBox Text="{Binding Path=LoginInstance.ServerType, Mode=OneWay, Converter={StaticResource EnumToStringConverter}}"/>
+                <TextBox Text="{Binding Path=LoginInfo.ServerType, Mode=OneWay, Converter={StaticResource EnumToStringConverter}}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="UserId : "/>
-                <TextBox Text="{Binding Path=LoginInstance.UserId, Mode=OneWay}"/>
+                <TextBox Text="{Binding Path=LoginInfo.UserId, Mode=OneWay}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="LoginState : "/>
-                <TextBox Text="{Binding Path=LoginInstance.State, Mode=OneWay, Converter={StaticResource EnumToStringConverter}}"/>
+                <TextBlock Text="LoginStatus : "/>
+                <TextBox Text="{Binding Path=LoginInfo.Status, Mode=OneWay, Converter={StaticResource EnumToStringConverter}}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="CircuitBreak Subscribe : "/>

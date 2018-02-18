@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FirmLib
 {
-    public enum LoginStates
+    public enum LoginStatus
     {
         Disconnect,
         Login,
