@@ -17,8 +17,6 @@ namespace FirmLib.Daishin
 
         private static ConcurrentDictionary<string, DaishinStockCur> _subscribeObjDic = new ConcurrentDictionary<string, DaishinStockCur>();
 
-        protected override IDib Dib { get; set; }
-
         public event Action<StockConclusion> Received;
 
         public DaishinStockCur()

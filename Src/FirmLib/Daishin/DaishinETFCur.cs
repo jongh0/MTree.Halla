@@ -18,8 +18,6 @@ namespace FirmLib.Daishin
 
         private static ConcurrentDictionary<string, DaishinETFCur> _subscribeObjDic = new ConcurrentDictionary<string, DaishinETFCur>();
 
-        protected override ISysDib Dib { get; set; }
-
         public event Action<ETFConclusion> Received;
 
         public DaishinETFCur()

@@ -14,7 +14,7 @@ namespace FirmLib.Daishin
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
-        protected abstract ISysDib Dib { get; set; }
+        protected ISysDib Dib { get; set; }
 
         private string _code;
 

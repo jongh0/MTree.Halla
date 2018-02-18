@@ -19,8 +19,6 @@ namespace FirmLib.Daishin
 
         private readonly int[] _biddingIndexes = { 3, 7, 11, 15, 19, 27, 31, 35, 39, 43 };
 
-        protected override IDib Dib { get; set; }
-
         public event Action<BiddingPrice> Received;
 
         public DaishinStockBid()

@@ -20,8 +20,6 @@ namespace FirmLib.Daishin
         private static ConcurrentDictionary<string, long> _prevIndexVolume = new ConcurrentDictionary<string, long>();
         private static ConcurrentDictionary<string, long> _prevIndexMarketCapitalization = new ConcurrentDictionary<string, long>();
 
-        protected override IDib Dib { get; set; }
-
         public event Action<IndexConclusion> Received;
 
         public DaishinIndexCur()
