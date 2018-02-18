@@ -109,14 +109,14 @@ namespace RealTimeProvider
                     ProcessUtility.Start(ProcessTypes.KiwoomPublisher, ProcessWindowStyle.Minimized);
 
                 // Daishin
-                int daishinProcessCount;
-                if (Config.General.SkipBiddingPrice == true)
-                    daishinProcessCount = (StockCodeList.Count * 2 + IndexCodeList.Count) / 400 + 1;
-                else
-                    daishinProcessCount = (StockCodeList.Count * 3 + IndexCodeList.Count) / 400 + 1;
-
+                
+                int daishinSubscribeCount = StockCodeList.Count * 2 + IndexCodeList.Count;
+                if (Config.General.SkipBiddingPrice == false)
+                    daishinSubscribeCount += StockCodeList.Count;
                 if (Config.General.SkipETFConclusion == false)
-                    daishinProcessCount += StockCodeList.Values.Where(c => c.MarketType == MarketTypes.ETF).Count() / 400;
+                    daishinSubscribeCount += StockCodeList.Values.Where(c => c.MarketType == MarketTypes.ETF).Count();
+
+                int daishinProcessCount = daishinSubscribeCount / 600 + 1;
 
                 for (int i = 0; i < daishinProcessCount; i++)
                     ProcessUtility.Start(ProcessTypes.DaishinPublisher, ProcessWindowStyle.Minimized);
