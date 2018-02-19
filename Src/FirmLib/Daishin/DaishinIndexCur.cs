@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace FirmLib.Daishin
 {
-    public class DaishinIndexCur : DibBase
+    public class DaishinIndexCur : IDaishinSubscribe
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -22,11 +22,74 @@ namespace FirmLib.Daishin
 
         public event Action<IndexConclusion> Received;
 
+        private string _code;
+        private StockCurClass _dib;
+
         public DaishinIndexCur()
         {
-            var c = new StockCurClass();
-            c.Received += OnReceived;
-            Dib = c;
+            _dib = new StockCurClass();
+            _dib.Received += OnReceived;
+        }
+
+        public bool Subscribe(string code)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(code) == true)
+                    return false;
+
+                _code = code;
+
+                _dib.SetInputValue(0, code);
+                _dib.Subscribe();
+
+                return WaitResponse();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+
+            return false;
+        }
+
+        public bool Unsubscribe()
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(_code) == true)
+                    return false;
+
+                _dib.SetInputValue(0, _code);
+                _dib.Unsubscribe();
+
+                return WaitResponse();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+
+            return false;
+        }
+
+        public bool WaitResponse()
+        {
+            int timeout = 5000;
+
+            while (timeout > 0)
+            {
+                if (_dib.GetDibStatus() != 1) // 1 - 수신대기
+                    return true;
+
+                DispatcherUtility.DoEvents(); // 혹시 모르니 Message Pumping
+
+                Thread.Sleep(10);
+                timeout -= 10;
+            }
+
+            _logger.Error($"Dib response timeout");
+            return false;
         }
 
         private void OnReceived()
@@ -40,11 +103,11 @@ namespace FirmLib.Daishin
                 conclusion.ReceivedTime = now;
 
                 // 0 - (string) 종목 코드
-                string fullCode = Dib.GetHeaderValue(0).ToString();
+                string fullCode = _dib.GetHeaderValue(0).ToString();
                 conclusion.Code = CodeEntity.RemovePrefix(fullCode);
 
                 // 9 - (long) 누적거래량
-                conclusion.Amount = Convert.ToInt64(Dib.GetHeaderValue(9));
+                conclusion.Amount = Convert.ToInt64(_dib.GetHeaderValue(9));
                 if (_prevIndexVolume.ContainsKey(conclusion.Code))
                 {
                     long newReceived = conclusion.Amount;
@@ -57,7 +120,7 @@ namespace FirmLib.Daishin
                 }
 
                 // 10 - (long) 누적거래대금
-                conclusion.MarketCapitalization = Convert.ToInt64(Dib.GetHeaderValue(10));
+                conclusion.MarketCapitalization = Convert.ToInt64(_dib.GetHeaderValue(10));
                 if (_prevIndexMarketCapitalization.ContainsKey(conclusion.Code))
                 {
                     long newReceived = conclusion.MarketCapitalization;
@@ -70,12 +133,12 @@ namespace FirmLib.Daishin
                 }
 
                 // 13 - (long) 현재가
-                conclusion.Price = Convert.ToSingle(Dib.GetHeaderValue(13)) / 100;
+                conclusion.Price = Convert.ToSingle(_dib.GetHeaderValue(13)) / 100;
                 if (conclusion.Price <= 0)
                     _logger.Error($"Index conclusion price error, Price: {conclusion.Price}");
 
                 // 18 - (long) 시간 (초)
-                long time = Convert.ToInt64(Dib.GetHeaderValue(18));
+                long time = Convert.ToInt64(_dib.GetHeaderValue(18));
                 try
                 {
                     if (time == 240000)
@@ -94,7 +157,7 @@ namespace FirmLib.Daishin
                 }
 
                 // 20 - (char) 장 구분 플래그
-                char marketTimeType = Convert.ToChar(Dib.GetHeaderValue(20));
+                char marketTimeType = Convert.ToChar(_dib.GetHeaderValue(20));
                 switch (marketTimeType)
                 {
                     case '1':
