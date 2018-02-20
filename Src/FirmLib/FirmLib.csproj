@@ -84,7 +84,8 @@
     <Compile Include="Daishin\DaishinStockBid.cs" />
     <Compile Include="Daishin\DaishinStockCur.cs" />
     <Compile Include="Daishin\DaishinStockOutCur.cs" />
-    <Compile Include="Daishin\IDaishinSubscribe.cs" />
+    <Compile Include="Daishin\DibBase.cs" />
+    <Compile Include="Daishin\SysDibBase.cs" />
     <Compile Include="Ebest\Block\BlockBase.cs" />
     <Compile Include="Ebest\Block\CSPAQ12300InBlock1.cs" />
     <Compile Include="Ebest\Block\CSPAQ12300OutBlock1.cs" />
