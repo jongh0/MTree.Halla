@@ -116,7 +116,7 @@ namespace RealTimeProvider
                 if (Config.General.SkipETFConclusion == false)
                     daishinSubscribeCount += StockCodeList.Values.Where(c => c.MarketType == MarketTypes.ETF).Count();
 
-                int daishinProcessCount = daishinSubscribeCount / 600 + 1;
+                int daishinProcessCount = daishinSubscribeCount / 300 + 1;
 
                 for (int i = 0; i < daishinProcessCount; i++)
                     ProcessUtility.Start(ProcessTypes.DaishinPublisher, ProcessWindowStyle.Minimized);
